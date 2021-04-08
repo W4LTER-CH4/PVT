@@ -64,6 +64,7 @@ Route::group([
         Route::patch('loans', 'Api\V1\LoanController@bulk_update_role');
         Route::patch('loan_payments', 'Api\V1\LoanPaymentController@bulk_update_role');
         Route::apiResource('record', 'Api\V1\RecordController')->only('index');
+        Route::get('record_payment', 'Api\V1\RecordController@record_loan_payment');
         Route::apiResource('statistic', 'Api\V1\StatisticController')->only('index', 'show');
         Route::apiResource('voucher_type', 'Api\V1\VoucherTypeController')->only('index', 'show');
         Route::apiResource('financial_entity', 'Api\V1\FinancialEntityController')->only('index', 'show');

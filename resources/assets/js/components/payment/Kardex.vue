@@ -2,10 +2,34 @@
   <div>
     <template>
       <v-col cols="12" class>
-        <v-toolbar-title>KARDEX</v-toolbar-title>
+        <v-toolbar-title>KARDEX
+                      <v-card-title v-if="$store.getters.permissions.includes('print-payment-plan')">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    fab
+                    x-small
+                    color="dark"
+                    top
+                    left
+                    absolute
+                    v-on="on"
+                    style="margin-left: 100px; margin-top: 20px;"
+                    @click="imprimirK($route.params.id)"
+                  >
+                    <v-icon>mdi-printer</v-icon>
+                  </v-btn>
+                </template>
+                <div>
+                  <span>Imprimir Kardex</span>
+                </div>
+              </v-tooltip>
+              <!--FORMULARIO PARA CALIFICACION-->
+            </v-card-title>
+        </v-toolbar-title>
       </v-col>
     </template>
-    <template v-if="$route.params.workTray == 'received' || $route.params.workTray == 'my_received' || $route.params.workTray == 'validated'">
+    <template >
       <v-tooltip top v-if="$store.getters.userRoles.includes('PRE-cobranzas')">
         <template v-slot:activator="{ on }">
           <v-btn
@@ -89,6 +113,21 @@
           </template>
           <span>Ver registro de cobro</span>
         </v-tooltip>
+        
+        <v-tooltip bottom v-if="$store.getters.permissions.includes('update-payment-loan')">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              small
+              v-on="on"
+              color="success"
+              :to="{ name: 'paymentAdd',  params: { hash: 'edit'},  query: { loan_payment: item.id}}"
+            >
+              <v-icon>mdi-file-document-edit-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>Editar pago</span>
+        </v-tooltip>
 
         <!--<v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -106,7 +145,7 @@
           <span>Editar amortización</span>
         </v-tooltip>-->
 
-        <v-tooltip bottom v-if="$store.getters.permissions.includes('delete-payment-loan') && $store.getters.userRoles.includes('PRE-cobranzas')">
+        <v-tooltip bottom v-if="$store.getters.permissions.includes('delete-payment-loan')">
           <template v-slot:activator="{ on }">
             <v-btn
               icon
@@ -320,7 +359,22 @@ export default {
       }
       this.printDocs = docs;
       console.log(this.printDocs);
-    }
+    },
+    async imprimirK(item) {
+      try {
+        let res = await axios.get(`loan/${item}/print/kardex`)
+        console.log("kardex " + item)
+        printJS({
+          printable: res.data.content,
+          type: res.data.type,
+          file_name: res.data.file_name,
+          base64: true
+        })
+      } catch (e) {
+        this.toastr.error("Ocurrió un error en la impresión.")
+        console.log(e)
+      }
+    },
   }
 };
 </script>

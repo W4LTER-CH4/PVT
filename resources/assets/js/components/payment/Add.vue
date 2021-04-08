@@ -12,11 +12,9 @@
       <v-container>
         <div>
           <v-row>
-            <v-col  cols="5" v-show="!ver">
+            <v-col cols="5" v-show="!ver">
               <span>
-                <v-tooltip
-                left          
-                >
+                <v-tooltip left >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     icon
@@ -24,15 +22,15 @@
                     small
                     color="success"
                     bottom
-                    right                        
+                    right
                     v-on="on"
-                    :to="{ name: 'affiliateAdd', params: { id: loan.lenders[0].id}}"
+                    :to="{ name: 'flowAdd', params: { id: $route.query.loan_id,  workTray: 'received'}, query:{ redirectTab: 6 } }"
                   >
                   <v-icon>mdi-arrow-left-bold-outline</v-icon>
                   </v-btn>
                 </template>
                 <span>Regresar</span>
-                </v-tooltip>            
+                </v-tooltip>
               </span>
               {{"TITULAR: "+$options.filters.fullName(this.loan.lenders[0], true)}}
             </v-col>
@@ -47,9 +45,7 @@
             </v-col>
             <v-col  cols="4" v-show="ver" class='mb-0 pb-0'>
                 <span>
-                <v-tooltip
-                left          
-                >
+                <v-tooltip left>
                 <template v-slot:activator="{ on }">
                   <v-btn
                     icon
@@ -57,15 +53,15 @@
                     small
                     color="success"
                     bottom
-                    right                        
+                    right
                     v-on="on"
-                    :to="{ name: 'affiliateAdd', params: { id: loan.lenders[0].id}}"
+                    :to="{ name: 'flowAdd', params: { id: $route.query.loan_id,  workTray: 'received'}, query:{ redirectTab: 6 } }"
                   >
                   <v-icon>mdi-arrow-left-bold-outline</v-icon>
                   </v-btn>
                 </template>
                 <span>Regresar</span>
-                </v-tooltip>            
+                </v-tooltip>
               </span>
              {{"TITULAR: "+$options.filters.fullName(this.loan.lenders[0], true)}}
             </v-col>
@@ -110,7 +106,6 @@ export default {
     loan_payment:{},
     degree_name: null,
     category_name: null,
-    loan_id:null
   }),
   computed: {
     isNew() {
@@ -144,8 +139,7 @@ export default {
         this.loading = true;
         let res = await axios.get(`loan/${id}`);
         this.loan = res.data;
-        console.log('esta sacando el loan')
-      } catch (e) {
+       } catch (e) {
         console.log(e);
       } finally {
         this.loading = false;
@@ -166,33 +160,33 @@ export default {
       }
     },
   //Metodo del cambio setBreadcrumbs
-  setBreadcrumbs() {
-    let breadcrumbs = [
-      {
-        text: 'Cobros',
-        to: { name: 'paymentIndex' }
-      }
-    ]
-    if (this.isNew) {
-      breadcrumbs.push({
-        text: 'Nuevo Cobro',
-        to: { name: 'paymentIndex' }
-      })
+    setBreadcrumbs() {
+      let breadcrumbs = [
+        {
+          text: 'Cobros',
+          to: { name: 'paymentIndex' }
+        }
+      ]
+      if (this.isNew) {
+        breadcrumbs.push({
+          text: 'Nuevo Cobro',
+          to: { name: 'paymentIndex' }
+        })
       } else {
-          if (this.ver) {
-            breadcrumbs.push({
-              text: 'Ver Cobro',
-              to: { name: 'paymentIndex' }
-            })
-            }else{
-               breadcrumbs.push({
-              text: 'Editar Cobro',
-              to: { name: 'paymentIndex' }
-            })
-            }
+        if (this.ver) {
+          breadcrumbs.push({
+          text: 'Ver Cobro',
+          to: { name: 'paymentIndex' }
+          })
+        }else{
+          breadcrumbs.push({
+            text: 'Editar Cobro',
+            to: { name: 'paymentIndex' }
+          })
+        }
+      }
+      this.$store.commit('setBreadcrumbs', breadcrumbs)
     }
-    this.$store.commit('setBreadcrumbs', breadcrumbs)
-  }
   }
 }
 </script>

@@ -201,6 +201,10 @@ class Loan extends Model
     {
         return $this->hasMany(LoanPayment::class)->orderBy('quota_number', 'desc')->orderBy('created_at');
     }
+    public function paymentsKardex()
+    {
+        return $this->hasMany(LoanPayment::class)->where('state_id', 6)->orWhere('state_id',7)->orderBy('quota_number', 'desc')->orderBy('created_at');
+    }
     //relacion uno a muchos
     public function loan_contribution_adjusts()
     {
@@ -244,7 +248,7 @@ class Loan extends Model
     {
         $balance = $this->amount_approved;
         if ($this->payments()->count() > 0) {
-            $balance -= $this->payments()->where('validated', true)->sum('capital_payment');
+            $balance -= $this->payments()->where('state_id', 6)->orWhere('state_id',7)->sum('capital_payment');
         }
         return Util::round($balance);
     }
@@ -301,7 +305,21 @@ class Loan extends Model
                     $amount = Util::round($this->estimated_quota);
                     break;
                 }
+                case 61:{
+                    $amount = Util::round($this->estimated_quota);
+                    break;
+                }
                 case 56:{
+                    $amount = Util::round($this->balance);
+                    $liquidate = true;
+                    break;
+                }
+                case 58:{
+                    $amount = Util::round($this->balance);
+                    $liquidate = true;
+                    break;
+                }
+                case 60:{
                     $amount = Util::round($this->balance);
                     $liquidate = true;
                     break;

@@ -12,7 +12,7 @@
                     <ValidationObserver ref="observer">
                     <v-form>
                       <center>
-                       <v-toolbar-title>AMORTIZACIONES</v-toolbar-title>
+                       <v-toolbar-title>AMORTIZACIONES </v-toolbar-title>
                       </center>
                       <v-progress-linear></v-progress-linear>
                       <template>
@@ -114,7 +114,7 @@
                                   <v-radio-group  v-model="radios" class="py-0 my-0">
                               <v-radio
                               color="info"
-                               :click="prueba()"
+                               :click="generateGuarantorCode()"
                               :value="guarantor.id"
                               class="py-0  my-0"
                             ></v-radio>
@@ -146,7 +146,7 @@
                             :clearable="editable"
                             :outlined="isNew"
                             :readonly="!isNew"
-                            :disabled="ver"
+                            :disabled="ver || editable"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="2" class="ma-0 pb-0" v-show="view" v-if="regular">
@@ -156,7 +156,7 @@
                           <v-text-field
                             dense
                             v-model="data_payment.pago_total"
-                            :outlined="isNew || $store.getters.userRoles.includes('PRE-cobranzas')"
+                            :outlined="isNew || $store.getters.permissions.includes('create-payment') "
                             :readonly="!isNew "
                             :disabled="ver"
                           ></v-text-field>
@@ -182,10 +182,10 @@
                             :disabled="ver"
                           ></v-select>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.userRoles.includes('PRE-tesoreria')">
+                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')">
                           <label >TIPO DE PAGO:</label>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.userRoles.includes('PRE-tesoreria')">
+                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')">
                           <v-select
                             class="caption"
                             style="font-size: 10px;"
@@ -199,10 +199,10 @@
                             persistent-hint
                           ></v-select>
                         </v-col>
-                        <v-col cols="3" class="ma-0 pb-0" v-show="editable">
+                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')">
                           <label  >NRO DE COMPROBANTE:</label>
                         </v-col>
-                        <v-col cols="5" v-show="editable" >
+                        <v-col cols="2" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')" >
                           <v-text-field
                             v-model="data_payment.comprobante"
                             :outlined="editable"
@@ -210,7 +210,17 @@
                             dense
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="7" class="ma-0 pb-0" >
+                        <v-col cols="12" class="ma-0 pb-0" v-show="$store.getters.permissions.includes('create-payment')">
+                          <v-text-field
+                            v-show="editable" v-if="!ver"
+                            v-model="data_payment.glosa"
+                            :outlined="isNew || editable"
+                            :readonly="!isNew || !editable"
+                            dense
+                            label="Glosa"
+                          ></v-text-field>
+                        </v-col>
+                         <v-col cols="5" class="ma-0 pb-0" v-show="$store.getters.permissions.includes('create-payment-loan')">
                           <v-text-field
                             v-show="editable" v-if="!ver"
                             v-model="data_payment.glosa"
@@ -220,18 +230,27 @@
                             label="Glosa"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="1">
+                         <v-col cols="3" class="ma-0 py-0" v-show="$store.getters.permissions.includes('create-payment-loan')" v-if="editable">
+                          <v-checkbox class="ma-0 py-3"
+                            :outlined="editable"
+                            :readonly="!editable"
+                            :disabled="ver "
+                            v-model="data_payment.validated"
+                            label="Validar Pago"
+                          ></v-checkbox>
                         </v-col>
-                        <v-col cols="8">
+                         <v-col cols="8" v-if="$store.getters.permissions.includes('create-payment-loan')">
                         </v-col>
-                        <v-col cols="4" class="ma-0 py-0">
+                        <v-col cols="4" class="ma-0 py-0" v-if="$store.getters.permissions.includes('create-payment-loan')">
                           <v-checkbox class="ma-0 py-0"
                             :outlined="isNew"
                             :readonly="!isNew"
-                            :disabled="ver"
+                            :disabled="ver || editable"
                             v-model="data_payment.refinanciamiento"
                             label="Pendiente por Refinanciamiento"
                           ></v-checkbox>
+                        </v-col>
+                          <v-col cols="8" v-show="$store.getters.permissions.includes('create-payment-loan')">
                         </v-col>
                       </v-row>
                     </template>
@@ -359,10 +378,6 @@ export default {
               this.data_payment.procedure_modality_name = this.tipo_de_amortizacion[i].name
             }
          }
-   // this.toastr.error(this.data_payment.procedure_modality_id)
-
-
-
       },
       OnchangeAffiliate(){
       if(this.data_payment.affiliate_id=="G")
@@ -375,13 +390,12 @@ export default {
         {
           this.data_payment.voucher=null
         }
-       // this.data_payment.voucher=null
          for (let i = 0; i<  this.garantes.lenders.length; i++) {
             this.data_payment.affiliate_id_paid_by=this.garantes.lenders[0].id
          }
-        console.log("garante"+ this.data_payment.affiliate_id_paid_by)}
+        }
     },
-    prueba()
+    generateGuarantorCode()
     {
       if(this.data_payment.affiliate_id=='G')
       {
@@ -445,11 +459,7 @@ export default {
       {
         this.data_payment.procedure_id=this.loanTypeSelected
         this.getTypeAmortization(this.loanTypeSelected)
-            console.log("verdadero"+this.loanTypeSelected)
-      }
-      else{
-        console.log("falso"+this.loanTypeSelected)
-      }
+       }
     },
     async getTypeProcedure() {
       try {
@@ -531,7 +541,6 @@ export default {
         this.loading = true
         let res = await axios.get(`loan/${id}`)
         this.garantes=res.data
-        console.log('entro al get loan')
       } catch (e) {
         console.log(e)
       } finally {

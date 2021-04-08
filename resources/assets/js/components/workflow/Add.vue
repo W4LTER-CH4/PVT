@@ -6,7 +6,7 @@
           <Breadcrumbs />
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <template v-if="$route.params.workTray == 'received' || $route.params.workTray == 'my_received' || $route.params.workTray == 'validated'">
+        <template v-if="$route.params.workTray == 'received' || $route.params.workTray == 'my_received' || $route.params.workTray == 'validated' || $route.params.workTray == 'all'">
           <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn

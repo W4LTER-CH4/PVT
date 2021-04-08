@@ -111,9 +111,9 @@
                 @else
                 <td class="data-row py-5 m-b-10 text-xs">{{ Util::money_format($loan->amount_approved) }} <span class="capitalize">Bs.</span></td>
                 @endif
-                @if($loan->payments->first() != null)
-                <td class="data-row py-5 m-b-10 text-xs">{{ $loan->payments->first()->interest_accumulated}}</td>
-                <td class="data-row py-5 m-b-10 text-xs">{{ $loan->payments->first()->penal_accumulated}}</td>
+                @if($loan->paymentsKardex->first() != null)
+                <td class="data-row py-5 m-b-10 text-xs">{{ $loan->paymentsKardex->first()->interest_accumulated}}</td>
+                <td class="data-row py-5 m-b-10 text-xs">{{ $loan->paymentsKardex->first()->penal_accumulated}}</td>
                 @else
                 <td class="data-row py-5 m-b-10 text-xs">0</td>
                 <td class="data-row py-5 m-b-10 text-xs">0</td>
@@ -156,7 +156,7 @@
             </thead>
             <tbody>
                 @php ($capital = $loan->parent_loan->amount_approved)
-                @foreach ($loan->parent_loan->payments->sortBy('quota_number') as $parent_loan_payment)
+                @foreach ($loan->parent_loan->paymentsKardex->sortBy('quota_number') as $parent_loan_payment)
                 @php ($res_saldo_capital = $capital-$parent_loan_payment->capital_payment)
                 <tr>
                     <td class="w-5">{{ $parent_loan_payment->quota_number }}</td>
@@ -198,7 +198,7 @@
             </thead>
                 @php ($res_saldo_capital = 0)
                 @php ($capital = $loan->amount_approved)
-                @foreach ($loan->payments->sortBy('quota_number') as $payment)
+                @foreach ($loan->paymentsKardex->sortBy('quota_number') as $payment)
                 @php ($res_saldo_capital = $capital-$payment->capital_payment)
                 <tr>
                     <td class="w-5">{{ $payment->quota_number }}</td>

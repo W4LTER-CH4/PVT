@@ -135,10 +135,7 @@ export default {
     atras(){
        try {
         this.loading = true
-     //   let res = await axios.get(`loan_payment/${this.$route.query.loan_payment}`)
-     //  this.loan_payment = res.data
-     //   this.$router.push('/workflow/'+this.loan_payment.loan_id)
-       this.$router.push('/loanPayment')
+        this.$router.push('/loanPayment')
       } catch (e) {
         console.log(e)
       } finally {
@@ -156,24 +153,10 @@ export default {
     beforeStep (n) {
       this.e1 = n -1
     },
-    async validatedPayment(){
-      try {
-          console.log('entro a grabar tesoreria')
-               let res1 = await axios.patch(`loan_payment/${this.$route.query.loan_payment}`,{
-            validated:true
-          })
-            this.$router.push('/loanPayment')
-      }catch (e) {
-        console.log(e)
-      }finally {
-        this.loading = false
-      }
-    },
     //Metodo para el creado del voucher
       async savePaymentTreasury() {
       try {
-          console.log('entro a grabar tesoreria')
-               let res1 = await axios.patch(`loan_payment/${this.$route.query.loan_payment}`,{
+            let res1 = await axios.patch(`loan_payment/${this.$route.query.loan_payment}`,{
             validated:true
           })
           let res = await axios.post(`loan_payment/${this.$route.query.loan_payment}/voucher`,{
@@ -182,6 +165,21 @@ export default {
             voucher_number:this.data_payment.comprobante,
             description:this.data_payment.glosa
           })
+            this.$router.push('/loanPayment')
+      }catch (e) {
+        console.log(e)
+      }finally {
+        this.loading = false
+      }
+    },
+    //Validar Pago
+      async validatePayment() {
+      try {
+            let res1 = await axios.patch(`loan_payment/${this.$route.query.loan_payment}`,{
+            validated:this.data_payment.validated,
+            description:this.data_payment.glosa
+          })
+          this.toastr.success('Se valido correctamente')
             this.$router.push('/loanPayment')
       }catch (e) {
         console.log(e)
@@ -206,10 +204,8 @@ export default {
             printJS({
             printable: res.data.attachment.content,
             type: res.data.attachment.type,
-            base64: true
+            base64: true 
           })
-          //this.$router.push('/loanPayment')
-          //this.$router.push({path:`/workflow/${this.$route.query.loan_id}?redirectTab=${6}`})
           this.$router.push({ name: 'flowAdd',  params: { id: this.$route.query.loan_id, workTray: 'received'}, query:{ redirectTab: 6 } })
           this.payment = res.data
       }catch (e) {
@@ -225,8 +221,6 @@ export default {
         this.loading = true
         let res = await axios.get(`loan_payment/${id}`)
         this.loan_payment = res.data
-console.log('este es el loan')
-console.log(this.loan_payment)
         this.data_payment.code=this.loan_payment.code
         this.data_payment.payment_date= this.loan_payment.estimated_date
         this.data_payment.pago_total=this.loan_payment.estimated_quota
@@ -234,6 +228,8 @@ console.log(this.loan_payment)
         this.data_payment.voucher=this.loan_payment.voucher
         this.data_payment.pago  =this.loan_payment.amortization_type_id
         this.data_payment.loan_id  =this.loan_payment.loan_id
+        this.data_payment.validated =this.loan_payment.validated
+        this.data_payment.glosa =this.loan_payment.description
         this.data_payment.amortization=2
 
       } catch (e) {
@@ -288,10 +284,7 @@ console.log(this.loan_payment)
           else{
             if(this.editar)
             {
-              this.toastr.error("entro por editar")
-              //this.savePayment()
-            }else{
-              this.toastr.error("entro por editar")
+              this.toastr.error("No tiene los permisos")
             }
           }
       }catch (e) {
@@ -304,15 +297,15 @@ console.log(this.loan_payment)
       try {
            if(!this.isNew)
           {
-            if(!this.$store.getters.userRoles.includes('PRE-tesoreria'))
+            if(this.$store.getters.permissions.includes('create-payment'))
             {
-             // this.toastr.error("tesoreriaaaaaaa")
-              //this.savePaymentTreasury()
-           //   this.toastr.error("cobranzasssssss")
-              this.Calcular(this.data_payment.loan_id)
-               this.nextStep(1)
-              //this.validatedPayment()
-          }
+                this.savePaymentTreasury()
+            }else{
+             if(this.$store.getters.permissions.includes('update-payment-loan'))
+             {
+               this.validatePayment()
+             }
+            }
           }
           else{
             if(this.data_payment.procedure_id)
