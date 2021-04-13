@@ -90,6 +90,31 @@
                   </v-card-text>
                 </v-card>
               </v-tab-item>
+
+              <v-tab>HISTORIAL DE PAGOS</v-tab>
+              <v-tab-item >
+                <v-card flat tile>
+                  <v-card-text>
+                    <v-col cols="12" class="mb-0">
+                      <v-data-table
+                        :headers="headersHist2"
+                        :items="record_payment"
+                        :items-per-page="6"
+                        class="elevation-1"
+                      >
+                        <template v-slot:item="items">
+                          <tr>
+                            <td>{{items.item.created_at|datetime}}</td>
+                            <td>{{items.item.updated_at|datetime}}</td>
+                            <td>{{items.item.action}}</td>
+                          </tr>
+                        </template>
+                      </v-data-table>
+                    </v-col>
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
+
             </v-tabs>
           </v-col>
         </v-row>
@@ -116,6 +141,26 @@ export default {
     observation_type: [],
     bus: new Vue(),
     headersHist: [
+      {
+        text: "Fecha creación",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "created_at"
+      },
+      {
+        text: "Fecha actualización",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "update_at"
+      },
+      {
+        text: "Acciones realizadas",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "accion"
+      }
+    ],
+      headersHist2: [
       {
         text: "Fecha creación",
         class: ["normal", "white--text"],
@@ -168,7 +213,8 @@ export default {
         sortable: false
       }
     ],
-    record: []
+    record: [],
+    record_payment: []
   }),
   props: {
     loan: {
@@ -188,6 +234,7 @@ export default {
   mounted() {
     this.getObservationType()
     this.getRecords(this.loan.id)
+    this.getRecordsPayment(this.loan.id)
     this.bus.$on("saveObservation", observation => {
       this.observations.unshift(observation)
     })
@@ -230,6 +277,22 @@ export default {
           }
         })
         this.record = res.data.data
+        console.log(this.record)
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+    async getRecordsPayment(id) {
+      try {
+        this.loading = true
+        let res = await axios.get(`record_payment`, {
+          params: {
+            loan_id: id
+          }
+        })
+        this.record_payment = res.data.data
         console.log(this.record)
       } catch (e) {
         console.log(e)

@@ -140,7 +140,7 @@
         @click.stop="saveLoan()"
         :disabled="this.status_click"
         :loading="this.status_click"
-        >Finalizar</v-btn>
+        >Crear Trámite</v-btn>
       </v-col>
     </v-row>
     </v-form>

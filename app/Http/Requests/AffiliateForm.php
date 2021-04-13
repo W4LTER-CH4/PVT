@@ -30,10 +30,10 @@ class AffiliateForm extends FormRequest
             'gender' => 'in:M,F',
             'birth_date' => 'date_format:"Y-m-d"',
             'city_birth_id' => 'exists:cities,id',
-            'city_identity_card_id' => 'exists:cities,id',
             'civil_status' => 'in:C,D,S,V',
             'identity_card' => 'alpha_dash|min:5|max:15',
             'affiliate_state_id' => 'nullable|exists:affiliate_states,id',
+            'city_identity_card_id' => 'nullable|exists:cities,id',
             'degree_id' => 'nullable|exists:degrees,id',
             'pension_entity_id' => 'nullable|required_if:affiliate_state_id,4,5,6|exists:pension_entities,id',
             'last_name' => 'sometimes|required_without:mothers_last_name|nullable|alpha_spaces|min:3',
@@ -52,7 +52,7 @@ class AffiliateForm extends FormRequest
         ];
         switch ($this->method()) {
             case 'POST': {
-                foreach (array_slice($rules, 0, 8) as $key => $rule) {
+                foreach (array_slice($rules, 0, 7) as $key => $rule) {
                     $rules[$key] = implode('|', ['required', $rule]);
                 }
                 $rules['identity_card'] = implode('|', ['unique:affiliates', $rules['identity_card']]);

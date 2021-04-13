@@ -83,7 +83,7 @@
             <h3 class="text-uppercase text-center">{{modalidad.name}}</h3>
             <v-card class="ma-3">
               <BallotsResult ref="BallotsResult"
-                v-show="modalidad.procedure_type_name != 'Préstamo hipotecario'"
+                v-show="modalidad.procedure_type_name != 'Préstamo hipotecario' && modalidad.procedure_type_name != 'Refinanciamiento Préstamo hipotecario'"
                 :data_sismu.sync="data_sismu"
                 :calculator_result.sync="calculator_result"
                 :loan_detail.sync="loan_detail"
@@ -97,7 +97,7 @@
                 </template>
               </BallotsResult>
               <BallotsResultHipotecary
-                v-show="modalidad.procedure_type_name == 'Préstamo hipotecario'"
+                v-show="modalidad.procedure_type_name == 'Préstamo hipotecario' || modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario'"
                 :data_sismu.sync="data_sismu"
                 :calculator_result.sync="calculator_result"
                 :loan_detail.sync="loan_detail"
@@ -129,20 +129,20 @@
           <v-card color="grey lighten-1">
             <h3 class="text-uppercase text-center">{{modalidad.name}}</h3>
             <HipotecaryData ref="HipotecaryData"
-              v-show="modalidad.procedure_type_name=='Préstamo hipotecario'"
+              v-show="modalidad.procedure_type_name=='Préstamo hipotecario' || modalidad.procedure_type_name=='Refinanciamiento Préstamo hipotecario'"
               :loan_detail.sync="loan_detail"
               :loan_property="loan_property"
               :bus="bus"
             />
             <Guarantor
-            v-show="modalidad.procedure_type_name != 'Préstamo hipotecario'"
+            v-show="modalidad.procedure_type_name != 'Préstamo hipotecario' && modalidad.procedure_type_name != 'Refinanciamiento Préstamo hipotecario'"
             :modalidad_guarantors.sync="modalidad.guarantors"
             :modalidad.sync="modalidad"
             :loan_detail.sync="loan_detail"
             :guarantors.sync="guarantors"
             :affiliate.sync="affiliate"
             :modalidad_id.sync="modalidad.id"/>
-          <v-container class="py-0" v-show="modalidad.procedure_type_name!='Préstamo hipotecario' ">
+          <v-container class="py-0" v-show="modalidad.procedure_type_name!='Préstamo hipotecario' && modalidad.procedure_type_name!='Refinanciamiento Préstamo hipotecario'">
             <v-row>
             <v-spacer></v-spacer><v-spacer></v-spacer> <v-spacer></v-spacer>
               <v-col class="py-0">
@@ -173,7 +173,7 @@
               @click="beforeStep(4)">Atras</v-btn>
               <v-btn right
               color="primary"
-              @click="nextStep(4)">
+              @click="validateStepsFour()">
               Siguiente
               </v-btn>
             </v-col>
@@ -637,7 +637,7 @@ export default {
 
         this.liquid_calificated = res.data
 
-         if(this.modalidad.procedure_type_name == 'Préstamo hipotecario')
+         if(this.modalidad.procedure_type_name == 'Préstamo hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario')
           {
               if(this.loan_detail.net_realizable_value<=this.intervalos.maximun_amoun)
               {
@@ -874,7 +874,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
           }
           //validar otros casos
           if(continuar == true && !this.type_sismu){
-            if(this.modalidad.procedure_type_name == 'Préstamo hipotecario'){
+            if(this.modalidad.procedure_type_name == 'Préstamo hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario'){
               if(this.loan_detail.net_realizable_value >= this.intervalos.minimun_amoun){
                  this.saveAdjustment()
                 this.liquidCalificated()
@@ -888,7 +888,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
                 this.nextStep(1)
             }
           }else if(continuar == true && this.type_sismu){
-            if(this.modalidad.procedure_type_name == 'Préstamo hipotecario'){
+            if(this.modalidad.procedure_type_name == 'Préstamo hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario'){
               if(this.loan_detail.net_realizable_value >= this.intervalos.minimun_amoun){
                 if(this.data_sismu.quota_sismu > 0){
                    this.saveAdjustment()
@@ -983,7 +983,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
                 }
               }
             }else{
-              if(this.modalidad.procedure_type_name=='Préstamo hipotecario'){
+              if(this.modalidad.procedure_type_name=='Préstamo hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario'){
                  if(parseFloat(this.calculator_result.amount_requested) > parseFloat(this.loan_detail.net_realizable_value) )
                 {
                   this.toastr.error("El Monto Solicitado no puede ser mayor al Monto del Inmueble")
@@ -1023,6 +1023,16 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
           }
         }else{
           this.nextStep(3)
+        }
+      //}
+    },
+        validateStepsFour()
+    {
+        if(this.affiliate.city_identity_card_id == null)
+        {
+          this.toastr.error("Por favor registre la ciudad de expedición del CI.")
+        }else{
+          this.nextStep(4)
         }
       //}
     },

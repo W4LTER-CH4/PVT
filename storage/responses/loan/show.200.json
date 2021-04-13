@@ -266,6 +266,14 @@
             }
         }
     ],
+    "intereses": {
+        "id": 3,
+        "procedure_modality_id": 34,
+        "annual_interest": "20.00",
+        "penal_interest": "6.00",
+        "created_at": "2021-04-09T23:06:18.000000Z",
+        "updated_at": "2021-04-09T23:06:18.000000Z"
+    },
     "parent_loan": {
         "id": 1,
         "code": "PTMO000001-2021",

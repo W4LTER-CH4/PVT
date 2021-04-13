@@ -73,7 +73,7 @@ class LoanForm extends FormRequest
 
         if ($this->procedure_modality_id) {
             $procedure_modality = ProcedureModality::findOrFail($this->procedure_modality_id);
-            if($procedure_modality->procedure_type->name == "Préstamo hipotecario") $hypothecary = true;
+            if($procedure_modality->procedure_type->name == "Préstamo hipotecario" || $procedure_modality->procedure_type->name == "Refinanciamiento Préstamo hipotecario") $hypothecary = true;
         } else {
             $procedure_modality = $this->loan->modality;
         }

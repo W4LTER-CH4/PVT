@@ -12,19 +12,11 @@
                     <ValidationObserver ref="observer">
                     <v-form>
                       <center>
-                       <v-toolbar-title>AMORTIZACIONES </v-toolbar-title>
+                       <v-toolbar-title>AMORTIZACIONES</v-toolbar-title>
                       </center>
                       <v-progress-linear></v-progress-linear>
                       <template>
                       <v-row>
-                        <v-col cols="7" class="ma-0 pb-0" v-show="!isNew">
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="!isNew">
-                          <label class="caption"><strong> CODIGO DE PAGO:</strong></label>
-                        </v-col>
-                        <v-col cols="3" class="ma-0 pb-0" v-show="!isNew">
-                          <label class="caption"><strong>{{data_payment.code}}</strong></label>
-                        </v-col>
                         <v-col cols="2" class="ma-0  pr-1">
                           <label class="caption">Tipo de Tramite: </label>
                         </v-col>
@@ -37,7 +29,7 @@
                             class="caption"
                             style="font-size: 10px;"
                             @change="Onchange()"
-                            v-model="loanTypeSelected"
+                            v-model="data_payment.procedure_id"
                             :outlined="!editable"
                             :readonly="editable"
                             :items="tipo_tramite"
@@ -96,7 +88,7 @@
                             item-text="name"
                             item-value="id"
                             persistent-hint
-                            :disabled="ver"
+                            :disabled="ver || editable"
                           ></v-select>
                         </v-col>
                         <v-col cols="3" class="ma-0 pb-0" v-show="garante_show">
@@ -179,7 +171,7 @@
                             item-text="name"
                             item-value="id"
                             persistent-hint
-                            :disabled="ver"
+                            :disabled="ver || editable"
                           ></v-select>
                         </v-col>
                         <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')">
@@ -212,17 +204,7 @@
                         </v-col>
                         <v-col cols="12" class="ma-0 pb-0" v-show="$store.getters.permissions.includes('create-payment')">
                           <v-text-field
-                            v-show="editable" v-if="!ver"
-                            v-model="data_payment.glosa"
-                            :outlined="isNew || editable"
-                            :readonly="!isNew || !editable"
-                            dense
-                            label="Glosa"
-                          ></v-text-field>
-                        </v-col>
-                         <v-col cols="5" class="ma-0 pb-0" v-show="$store.getters.permissions.includes('create-payment-loan')">
-                          <v-text-field
-                            v-show="editable" v-if="!ver"
+                            v-if="!ver"
                             v-model="data_payment.glosa"
                             :outlined="editable"
                             :readonly="!editable"
@@ -230,7 +212,17 @@
                             label="Glosa"
                           ></v-text-field>
                         </v-col>
-                         <v-col cols="3" class="ma-0 py-0" v-show="$store.getters.permissions.includes('create-payment-loan')" v-if="editable">
+                         <v-col cols="5" class="ma-0 pb-0" v-show="$store.getters.permissions.includes('create-payment-loan')">
+                          <v-text-field
+                            v-show="isNew || editable" v-if="!ver"
+                            v-model="data_payment.glosa"
+                            :outlined=" isNew || editable "
+                            :readonly="ver"
+                            dense
+                            label="Glosa"
+                          ></v-text-field>
+                        </v-col>
+                         <v-col cols="3" class="ma-0 py-0" v-show="$store.getters.permissions.includes('create-payment-loan') && this.data_payment.validar" v-if="editable">
                           <v-checkbox class="ma-0 py-3"
                             :outlined="editable"
                             :readonly="!editable"
@@ -239,10 +231,13 @@
                             label="Validar Pago"
                           ></v-checkbox>
                         </v-col>
-                         <v-col cols="8" v-if="$store.getters.permissions.includes('create-payment-loan')">
+                         <v-col cols="8" v-if="$store.getters.permissions.includes('create-payment-loan')"
+                          v-show="!isNew"
+                          :disabled="ver || editable">
                         </v-col>
-                        <v-col cols="4" class="ma-0 py-0" v-if="$store.getters.permissions.includes('create-payment-loan')">
-                          <v-checkbox class="ma-0 py-0"
+                        <!--v-col cols="4" class="ma-0 py-0" v-if="$store.getters.permissions.includes('create-payment-loan')"-->
+                        <v-col cols="4" class="ma-0 py-0" v-show="false">
+                          <v-checkbox class="ma-0 py-3"
                             :outlined="isNew"
                             :readonly="!isNew"
                             :disabled="ver || editable"
@@ -280,7 +275,6 @@ export default {
     loan: {},
     radios:[],
     garante_show: false,
-    loanTypeSelected:null,
     loanTypeSelectedOne:null,
     loanTypeSelectedTwo:null,
     loanTypeSelectedThree:null,
@@ -334,10 +328,23 @@ export default {
     },
   },
   beforeMount(){
+        if(this.$route.params.hash == 'edit')
+    {
+      this.getLoanPayment(this.$route.query.loan_payment)
+    }
+     if(this.$route.params.hash == 'view')
+    {
+      this.getLoanPayment(this.$route.query.loan_payment)
+    }
     this.getTypeProcedure()
     this.getPymentTypes()
     this.getAmortizationTypes()
     this.getVoucherTypes()
+
+    if(this.isNew)
+    {
+      this.getLoan(this.$route.query.loan_id)
+    }
     if(this.$route.params.hash == 'view')
     {
       this.formatDate('paymentDate',this.data_payment.payment_date)
@@ -347,11 +354,8 @@ export default {
       this.formatDate('paymentDate',this.data_payment.payment_date)
     }
   },
-  mounted(){
-    if(this.isNew)
-    {
-      this.getLoan(this.$route.query.loan_id)
-    }
+   mounted(){
+    this.$forceUpdate()
   },
    watch: {
     'data_payment.payment_date': function(date) {
@@ -386,10 +390,10 @@ export default {
       }
      else{
         this.garante_show= false
-        if(this.isNew)
+      /*  if(this.isNew)
         {
           this.data_payment.voucher=null
-        }
+        }*/
          for (let i = 0; i<  this.garantes.lenders.length; i++) {
             this.data_payment.affiliate_id_paid_by=this.garantes.lenders[0].id
          }
@@ -452,14 +456,51 @@ export default {
         }
         }
       }
+      }else{
+        this.data_payment.voucher=this.data_payment.voucher
+      }
+    },
+      //Metodo para sacar datos del pago
+     async getLoanPayment(id) {
+      try {
+        this.loading = true
+        let res = await axios.get(`loan_payment/${id}`)
+        this.loan_payment = res.data
+        this.data_payment.code=this.loan_payment.code
+        this.data_payment.payment_date= this.loan_payment.estimated_date
+        this.data_payment.pago_total=this.loan_payment.estimated_quota
+        this.data_payment.affiliate_id =this.loan_payment.paid_by
+        this.data_payment.voucher=this.loan_payment.voucher
+        this.data_payment.pago  =this.loan_payment.amortization_type_id
+        this.data_payment.loan_id  =this.loan_payment.loan_id
+        this.data_payment.validated =this.loan_payment.validated
+        this.data_payment.glosa =this.loan_payment.description
+        this.data_payment.procedure_modality_name =this.loan_payment.modality.procedure_type.name
+        this.data_payment.procedure_id= this.loan_payment.procedure_modality_id
+        this.data_payment.amortization=2
+        if(this.data_payment.procedure_modality_name == 'Amortización Complemento Económico' ||
+            this.data_payment.procedure_modality_name == 'Amortización Fondo de Retiro' ||
+            this.data_payment.procedure_modality_name == 'Amortización por Ajuste' ||
+            this.data_payment.procedure_modality_name == 'Amortización Automática')
+          {
+            this.data_payment.validar =true
+          }else{
+            if(this.data_payment.procedure_modality_name == 'Amortización Directa')
+            {
+              this.data_payment.validar =false
+            }
+          }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
       }
     },
     Onchange(){
-      if(this.loanTypeSelected!=null)
+      if(this.data_payment.procedure_id!=null)
       {
-        this.data_payment.procedure_id=this.loanTypeSelected
-        this.getTypeAmortization(this.loanTypeSelected)
-       }
+         this.getTypeAmortization(this.data_payment.procedure_id)
+      }
     },
     async getTypeProcedure() {
       try {

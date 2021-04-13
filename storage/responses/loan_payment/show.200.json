@@ -106,8 +106,8 @@
     "modality": {
         "id": 61,
         "procedure_type_id": 19,
-        "name": "AA Regular",
-        "shortened": "AAR",
+        "name": "A.AUT. Cuota pactada",
+        "shortened": "AA-Cuota-pactada",
         "is_valid": true,
         "procedure_type": {
             "id": 19,

@@ -5,6 +5,7 @@ return [
     'affiliates' => 'Afiliado',
     'spouses' => 'Cónyugue',
     'addresses' => 'Dirección',
+    'addresses_valid' => 'Dirección activa',
     'roles' => 'Rol',
     'permissions' => 'Permiso',
     'loans' => 'Préstamo',

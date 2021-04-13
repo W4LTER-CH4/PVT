@@ -225,7 +225,7 @@ export default {
       trays: [
         {
           name: 'received',
-          display_name: 'RECIBIDOS',
+          display_name: 'REALIZADOS',
           count: 0,
           color: 'info'
         },

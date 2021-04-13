@@ -10,7 +10,7 @@
           v-model="filters.traySelected"
           active-class="primary white--text"
           mandatory
-          v-if="!track"
+          v-if="!track" v-show="!$store.getters.userRoles.includes('PRE-cobranzas')"
           ><!--filtros superiores
           v-if="!track" v-show="affiliate_id==0"-->
           <v-btn

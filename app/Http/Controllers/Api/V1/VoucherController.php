@@ -102,7 +102,26 @@ class VoucherController extends Controller
         $voucher->delete();
         return $voucher;
     }
+      /**
+    * Anular registro de vaucher y registro de cobro
+    * @urlParam voucher required ID del vaucher. Example: 1
+    * @authenticated
+    * @responseFile responses/voucher/delete_voucher_payment.200.json
+    */
+    public function delete_voucher_payment($id_payment){
+        $voucher = Voucher::findOrFail($id_payment);
+        if($voucher->payable_type = "loan_payments")
+        {
+            $state = LoanState::whereName('Anulado')->first();
+            $loan_payment = $voucher->payable;
+            $loan_payment->state()->associate($state);
+            $loan_payment->save();
+            $loan_payment->delete();
+        }
+        $voucher->delete();
+        return $voucher;
 
+    } 
     /** @group Tesoreria
     * Impresión del Voucher de Pago
     * Devuelve un pdf del Voucher acorde a un ID de pago

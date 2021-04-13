@@ -4,7 +4,7 @@
       <v-form>
         <!--v-card-->
           <v-row justify="center">
-            <v-col cols="3" class="py-2" v-show="editar">
+            <v-col cols="3" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
                <v-text-field
                 class="py-0"
                 dense
@@ -14,7 +14,7 @@
                 v-model="data_loan_parent_aux.code"
               ></v-text-field>
           </v-col>
-          <v-col cols="3" class="py-2" v-show="editar">
+          <v-col cols="3" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
             <ValidationProvider v-slot="{ errors }" name="monto" :rules="'required|numeric|min_value:'+loan_detail.minimun_amoun+'|max_value:'+loan_detail.maximun_amoun"  mode="aggressive">
               <v-text-field
                 :error-messages="errors"
@@ -27,7 +27,7 @@
               ></v-text-field>
             </ValidationProvider>
           </v-col>
-          <v-col cols="2" class="py-2" v-show="editar">
+          <v-col cols="2" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
             <ValidationProvider v-slot="{ errors }" name="plazo" :rules="'required|numeric|min_value:'+loan_detail.minimum_term+'|max_value:'+loan_detail.maximum_term" mode="aggressive">
               <v-text-field
                 :error-messages="errors"
@@ -40,7 +40,7 @@
               ></v-text-field>
             </ValidationProvider>
           </v-col>
-          <v-col cols="2" class="py-2" v-show="editar">
+          <v-col cols="2" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
             <ValidationProvider v-slot="{ errors }" name="saldo" :rules="'required|min_value:0|max_value:'+calculator_result.amount_requested" mode="aggressive">
               <v-text-field
                 :error-messages="errors"
@@ -53,7 +53,7 @@
               ></v-text-field>
             </ValidationProvider>
           </v-col>
-          <v-col cols="2" class="py-2" v-show="editar">
+          <v-col cols="2" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
               <v-text-field
                 class="py-0"
                 dense
@@ -207,7 +207,7 @@ export default {
         return true
       }
     },
-    editar() {
+    /*editar() {
       if(this.$route.query.type_sismu)
       {
         return true
@@ -221,6 +221,19 @@ export default {
           }
       }
       return this.$route.params.hash == 'new'
+    },*/
+    editar() {
+      if(this.refinancing || this.reprogramming)
+      {
+        return true
+      }
+      /*if(this.$route.params.hash == 'remake' && this.data_loan_parent_aux.parent_reason != null)
+      {
+        return true
+      }*/else{
+        return false
+      }
+
     },
     habilitar() {
       if(this.$route.query.type_sismu)

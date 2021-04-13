@@ -203,7 +203,7 @@ class Loan extends Model
     }
     public function paymentsKardex()
     {
-        return $this->hasMany(LoanPayment::class)->where('state_id', 6)->orWhere('state_id',7)->orderBy('quota_number', 'desc')->orderBy('created_at');
+        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [6,7])->orderBy('quota_number', 'desc')->orderBy('created_at');
     }
     //relacion uno a muchos
     public function loan_contribution_adjusts()
@@ -248,7 +248,7 @@ class Loan extends Model
     {
         $balance = $this->amount_approved;
         if ($this->payments()->count() > 0) {
-            $balance -= $this->payments()->where('state_id', 6)->orWhere('state_id',7)->sum('capital_payment');
+            $balance -= $this->payments()->whereIn('state_id', [6,7])->sum('capital_payment');
         }
         return Util::round($balance);
     }
@@ -301,25 +301,25 @@ class Loan extends Model
             $total_amount = Util::round($estimated_quota);$amount = 0;
             $liquidate = false;
             switch($procedure_modality_id){
-                case 54:{
+                case 53:{
                     $amount = Util::round($this->estimated_quota);
-                    break;
-                }
-                case 61:{
-                    $amount = Util::round($this->estimated_quota);
-                    break;
-                }
-                case 56:{
-                    $amount = Util::round($this->balance);
-                    $liquidate = true;
-                    break;
-                }
-                case 58:{
-                    $amount = Util::round($this->balance);
-                    $liquidate = true;
                     break;
                 }
                 case 60:{
+                    $amount = Util::round($this->estimated_quota);
+                    break;
+                }
+                case 54:{
+                    $amount = Util::round($this->balance);
+                    $liquidate = true;
+                    break;
+                }
+                case 57:{
+                    $amount = Util::round($this->balance);
+                    $liquidate = true;
+                    break;
+                }
+                case 59:{
                     $amount = Util::round($this->balance);
                     $liquidate = true;
                     break;
@@ -799,7 +799,7 @@ class Loan extends Model
    {
      $loan_global_parameter  = $loan_global_parameter = LoanGlobalParameter::latest()->first();
      $number_payment_consecutive = $loan_global_parameter->consecutive_manual_payment;//3
-     $modality_id=ProcedureModality::whereShortened("ADR")->first()->id;
+     $modality_id=ProcedureModality::whereShortened("AD-Cuota-pactada")->first()->id;
 
      $Pagado = LoanState::whereName('Pagado')->first()->id;
     

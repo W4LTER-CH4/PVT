@@ -18,34 +18,32 @@ class ProcedureAmortizationSeeder extends Seeder
             'procedures' => [
                 'amortizacion directa' => [
                     'type' => ['module_id' => $module->id,'name'=>'Amortización Directa','second_name'=>'Amort. DIRECTA'],
-                    'modalities' => [ ['name'=>'AD Parcial','shortened'=>'ADP','requirements'=>[]],
-                                      ['name'=>'AD Regular','shortened'=>'ADR','requirements'=>[]],
-                                      ['name'=>'AD Adelantado','shortened'=>'ADA','requirements'=>[]],
-                                      ['name'=>'AD Total','shortened'=>'ADT','requirements'=>[]],
+                    'modalities' => [ ['name'=>'A.D. Cuota pactada','shortened'=>'AD-Cuota-pactada','requirements'=>[]],
+                                      ['name'=>'A.D. Liquidar préstamo','shortened'=>'AD-Liquidar-préstamo','requirements'=>[]],
+                                      ['name'=>'A.D. Introducir monto','shortened'=>'AD-Indroducir-monto','requirements'=>[]],
                     ]
                 ],
                 'amortizacion complemento' => [
                     'type' => ['module_id' => $module->id,'name'=>'Amortización Complemento Económico','second_name'=>'Amort. CE'],
-                    'modalities' => [ ['name'=>'ACE Parcial','shortened'=>'ACEP','requirements'=>[]],
-                                      ['name'=>'ACE Total','shortened'=>'ACET','requirements'=>[]],
+                    'modalities' => [ ['name'=>'A.C.E. Introducir monto','shortened'=>'ACE-Indroducir-monto','requirements'=>[]],
+                                      ['name'=>'A.C.E. Liquidar préstamo','shortened'=>'ACE-Liquidar-préstamo','requirements'=>[]],
                     ]
                 ],
                 'amortizacion fondo' => [
                     'type' => ['module_id' => $module->id,'name'=>'Amortización Fondo de Retiro','second_name'=>'Amort. FR'],
-                    'modalities' => [ ['name'=>'AFR Parcial','shortened'=>'AFRP','requirements'=>[]],
-                                       ['name'=>'AFR Total','shortened'=>'AFRT','requirements'=>[]],
+                    'modalities' => [ ['name'=>'A.F.R. Introducir monto','shortened'=>'AFR-Indroducir-monto','requirements'=>[]],
+                                       ['name'=>'A.F.R. Liquidar préstamo','shortened'=>'AFRT','requirements'=>[]],
                     ]
                 ],
                 'amortizacion automatica' => [
                     'type' => ['module_id' => $module->id,'name'=>'Amortización Automática','second_name'=>'Amort. AUT'],
-                    'modalities' => [ ['name'=>'AA Regular','shortened'=>'AAR','requirements'=>[]],
-                                    ['name'=>'AA Parcial','shortened'=>'AAP','requirements'=>[]],
-                                    ['name'=>'AA Adelantado','shortened'=>'AAA','requirements'=>[]],
+                    'modalities' => [ ['name'=>'A.AUT. Cuota pactada','shortened'=>'AA-Cuota-pactada','requirements'=>[]],
+                                    ['name'=>'A.AUT. Parcial','shortened'=>'AA-Parcial','requirements'=>[]],
                     ]
                 ],
                 'amortizacion por ajuste' => [
                     'type' => ['module_id' => $module->id,'name'=>'Amortización por Ajuste','second_name'=>'Amort. AJUST'],
-                    'modalities' => [ ['name'=>'AAJ Adelantado','shortened'=>'AAJA','requirements'=>[]]
+                    'modalities' => [ ['name'=>'A.AJ. Introducir monto','shortened'=>'AAJ-Introducir-monto','requirements'=>[]]
                     ]
                 ],
             ]

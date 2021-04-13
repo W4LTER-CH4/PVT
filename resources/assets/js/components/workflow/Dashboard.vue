@@ -12,7 +12,7 @@
                 </v-icon>
                 <h6>
                   <strong><b style="color:white">CI: </b></strong>
-                  {{ loan.lenders[0].identity_card }}
+                  {{ affiliate.identity_card }}
                 </h6>
                 <h6>
                   <strong><b style="color:white">PRESTATARIO: </b></strong>
@@ -120,13 +120,14 @@ export default {
     mothers_last_name: null,
     last_name:null,
     first_name:null,
-    identity_card: null,
+    //identity_card: null,
     procedure_modality_name: ""
   }),
   computed: {
     isNew() {
       return this.$route.params.id == "new"
     },
+
     /*spouseNombre: function() {
       return (
         this.spouse.mothers_last_name +

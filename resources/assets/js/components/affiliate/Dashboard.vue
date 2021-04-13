@@ -142,7 +142,7 @@
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
               </template>
-              <span>Nuevo trámite</span>
+              <span>Iniciar trámite</span>
             </v-tooltip>
             <v-tooltip
               left v-if="$store.getters.permissions.includes('create-loan')"              

@@ -129,6 +129,49 @@ class LoanPaymentController extends Controller
         return $data;
     }
 
+
+    /**
+    * Kardex de pagos
+    * Devuelve el kardex de pagos con los datos paginados
+    * @queryParam loan_id integer required ID del tramite de préstamo. Example 1
+    * @queryParam search Parámetro de búsqueda. Example: PAY000016
+    * @queryParam per_page Número de datos por página. Example: 8
+    * @queryParam page Número de página. Example: 1
+    * @authenticated
+    * @responseFile responses/loan_payment/indexKardex.200.json
+     */
+    public function indexKardex(Request $request){
+        $loan = Loan::find($request->loan_id);
+        $balance = $loan->amount_approved;
+        $loan['estimated_quota'] = $loan->estimated_quota;
+        $loan['interest'] = $loan->interest;
+
+        if(!$request->has('search')){
+            $loan_payments = LoanPayment::where('loan_id', $request->loan_id)->WhereIn('state_id', [6,7])->orWhere('loan_id', $request->loan_id)->where('procedure_modality_id', 61)->orderby('quota_number')->paginate(5);
+            foreach($loan_payments as $payment){
+                $balance = $balance - $payment->capital_payment;
+                $payment->loan = $loan;
+                $payment->state = LoanState::findOrFail($payment->state_id);
+
+            }
+            //$loan->balance->$balance;
+        }
+        else{
+            $loan_payments = LoanPayment::where('loan_id', $request->loan_id)->WhereIn('state_id', [6,7])->where('code', 'ilike','%'.$request->search.'%')->orWhere('loan_id', $request->loan_id)->where('procedure_modality_id', 61)->where('code', 'ilike','%'.$request->search.'%')->orderby('quota_number')->paginate(7);
+            foreach($loan_payments as $payment){
+                $payment->balance = 0;
+                $payment->loan = $loan;
+                $payment->state = LoanState::findOrFail($payment->state_id);
+               
+              
+            }
+        }
+        /*$loan->estimated_quota = $loan->estimated_quota;
+        $loan->interest = $loan->interest;
+        $loan->payments = $loan_payments;*/
+        return $loan_payments;
+    }
+
     /**
     * Detalle de Registro de pago
     * Devuelve el detalle de un registro de pago mediante su ID
@@ -194,11 +237,15 @@ class LoanPaymentController extends Controller
     public function destroy(LoanPayment $loanPayment)
     {
         $PendientePago = LoanState::whereName('Pendiente de Pago')->first()->id;
-        if ($loanPayment->state_id != $PendientePago){
-            abort(403, 'El registro a eliminar no está pendiente de pago');
-        }else{
+        $PendienteAjuste = LoanState::whereName('Pendiente de ajuste')->first()->id;
+        if ($loanPayment->state_id == $PendientePago || $loanPayment->state_id == $PendienteAjuste){
+            $state = LoanState::whereName('Anulado')->first();
+            $loanPayment->state()->associate($state);
+            $loanPayment->save();
             $loanPayment->delete();
-            return $loanPayment;
+            return $loanPayment;  
+        }else{
+            abort(403, 'El registro a eliminar no está en estado Pendiente');
         }
     }
 
@@ -261,10 +308,10 @@ class LoanPaymentController extends Controller
         $from_role = null;
         $to_role = $request->role_id;
 
-        $PendientePago = LoanState::whereName('Pendiente de Pago')->first()->id;
+        //$PendientePago = LoanState::whereName('Pendiente de Pago')->first()->id;
 
         $to_role = $request->role_id;
-        $loanPayment =  LoanPayment::whereIn('id',$request->ids)->where('role_id', '!=', $request->role_id)->where('state_id', $PendientePago)->orderBy('code');
+        $loanPayment =  LoanPayment::whereIn('id',$request->ids)->where('role_id', '!=', $request->role_id)->whereIn('state_id', [5,7])->orderBy('code');
         $derived = $loanPayment->get();
         $to_role = Role::find($to_role);
         
@@ -379,14 +426,13 @@ class LoanPaymentController extends Controller
         $procedure_modality = $loan->modality;
         $lenders = []; 
         $is_dead = false;
-        $estimated_days=null;
         foreach ($loan->lenders as $lender) {
             $lenders[] = LoanController::verify_spouse_disbursable($lender)->disbursable;
             if($lender->dead) $is_dead = true;
         }
         $global_parameter=LoanGlobalParameter::latest()->first();
         $max_current=$global_parameter->grace_period+$global_parameter->days_current_interest;
-        if($estimated_days == null){
+
             $num_quota=$loan_payment->quota_number;
             if($num_quota == 1){
                 $estimated_days['previous_balance']=$loan->amount_approved;
@@ -412,7 +458,6 @@ class LoanPaymentController extends Controller
                 else
                 $estimated_days['penal'] = 0;
             }
-        }
         $persons = collect([]);
         foreach ($lenders as $lender){ 
             $persons->push([
@@ -560,7 +605,7 @@ class LoanPaymentController extends Controller
         $payment_type = AmortizationType::get();
         $payment_type_desc = $payment_type->where('name', 'LIKE', 'Descuento automático')->first();
         $description = $request->description? $request->description : 'Por descuento automatico';
-        $procedure_modality = ProcedureModality::whereName('AA Regular')->first();
+        $procedure_modality = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();
         $voucher = $request->voucher? $request->voucher : "AUTOMATICO";
         //$paid_by = "T";
         $loans_quantity = 0;
@@ -640,7 +685,7 @@ class LoanPaymentController extends Controller
         $array = Excel::toArray(new LoanPaymentImport, $file);
         $pendientePago = LoanState::whereName('Pendiente de Pago')->first()->id;
         $pagado = LoanState::whereName('Pagado')->first()->id;
-        $procedure_modality = ProcedureModality::whereName('AA Regular')->first();
+        $procedure_modality = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();
         $estimated_date_importation = $request->estimated_date? Carbon::parse($request->estimated_date) : Carbon::now()->endOfMonth();
         
             for($i=1;$i<count($array[0]);$i++){   

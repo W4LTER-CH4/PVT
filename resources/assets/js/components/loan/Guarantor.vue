@@ -10,7 +10,7 @@
             </v-container>
           </v-card>
          </v-col>
-      <v-col cols="4" class="py-0" v-if="modalidad_guarantors>0" >
+      <v-col cols="4" class="py-0" v-if="modalidad_guarantors > 0" >
         <v-card>
           <v-container class="py-0">
             <v-row>
@@ -227,7 +227,7 @@
             </v-container>
           </v-card>
         </v-col>
-        <v-col cols="8" class="py-0" >
+        <v-col cols="8" class="py-0" v-if="modalidad_guarantors>0">
           <v-card v-show="show_garante">
             <v-container v-if="modalidad_guarantors>0">
               <v-row>

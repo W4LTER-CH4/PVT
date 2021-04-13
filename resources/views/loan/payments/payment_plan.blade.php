@@ -65,6 +65,14 @@
                 <td>{{ $loan->estimated_quota }}</td>
                 <td>{{ Carbon::parse($loan->disbursement_date)->format('d/m/y') }}</td>
             </tr>
+            <tr class="bg-grey-darker text-xxs text-white">
+                <td>Certificacion Presupuestaria</td>
+                <td>N° Comprobante Contable</td>
+            </tr>
+            <tr>
+            <td>{{$loan->num_budget_certification}}</td>
+            <td>{{$loan->num_accounting_voucher}}</td>
+            </tr>
         </table>
     </div>
 
@@ -182,8 +190,11 @@
         </table>
     </div>
     <div class="block">
-    ESTE CRONOGRAMA SE ELABORA BAJO EL SUPUESTO DEL CUMPLIMIENTO DEL PAGO DE LAS CUOTAS EN FECHAS INDICADAS. CUALQUIER ALTERACIÓN EN LOS PAGOS O EN LAS CONDICIONES DEL CRÉDITO DEJE SIN EFECTO ESTE DOCUMENTO.
-    SI TUVIERA ALGUNA CONSULTA SÍRVASE APERSONARSE A NUESTRAS OFICINAS
+        <div class="font leading-tight text-left m-b-10 text-xs">
+            LA PRESENTE TABLA DE AMORTIZACIÓN ES REFERENCIAL YA QUE LA MISMA PODRÍA SUFRIR ALTERACIONES EN FUNCIÓN A LA VARIACIÓN DEL PAGO DE CUOTAS Y/O EN LAS FECHAS DE PAGOS ESTABLECIDAS; POR TANTO, CUALQUIER ALTERACIÓN DEJA SIN EFECTO ESTE DOCUMENTO.
+            <p>
+            EN CASO DE TENER ALGUNA CONSULTA, FAVOR APERSONARSE POR EL ÁREA DE COBRANZAS
+        </div>
     </div>
 </body>
 </html>

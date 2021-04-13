@@ -31,7 +31,7 @@
                           :items="areas"
                           item-text="display_name"
                           item-value="id"
-                          :onchange="searchUserFlow()"
+                          @change="searchUserFlow()"
                         ></v-select>
                         <h4 class="text-center">{{user_name}}</h4>
                       </v-col>

@@ -689,30 +689,45 @@ class LoanStructureSeeder extends Seeder
             ],
              // LARGO PLAZO GARANTÍA HIPOTECARIA CPOP //Eliminar en caso de que no proceda
               ['name'=>'Préstamo con garantia hipotecaria de bien inmueble para el sector activo - CPOP','shortened'=>'PLP-GH-CPOP','requirements'=>[
-              ['name' =>'Cédula de Identidad del(la) Titular en copia simple','number'=>1],
-              ['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando General de la Policía Boliviana','number'=>2],
-              ['name' => 'Certificado de años de servicio desglosado en fotocopia Legalizada emitido por el Comando General de la Policía Boliviana','number'=>2],
-              ['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando Regional de la Policía Boliviana','number'=>2],
-              ['name' => 'Croquis de ubicación del inmueble','number'=>3], //nuevo
-              ['name' => 'Factura de Luz del Inmueble','number'=>4], //nuevo
-              ['name' => 'Factura de Agua del Inmueble','number'=>4], //nuevo
-              ['name' => 'Folio Real','number'=>5], //nuevo
-              ['name' => 'Informacion rapida del Inmueble','number'=>5], //nuevo
-              ['name' => 'Fotocopia de Testimonio de Propiedad','number'=>6], //nuevo
-              ['name' => 'Fotocopia de Impuestos 3 Ultimos Años','number'=>7], //nuevo
-              ['name' => 'Fotocopia de Plano de lote','number'=>8], //nuevo
-              ['name' => 'Fotocopia de Catastro','number'=>9], //nuevo
-              ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A','number'=>10],
-              ['name' => 'Certificado de estado civil en original emitido por el SERECI.','number'=>11],
+                ['name' => 'Cedula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1],
+                ['name' => 'Tres Últimas Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes','number'=>2],
+                ['name' => 'Certificado de años de servicio (Original y/o fotocopia legalizada).','number'=>3],
+                ['name' => 'Croquis de ubicación del inmueble.','number'=>4],
+                ['name' => 'Factura de Agua o Luz del inmueble (Con antigüedad no mayor a 60 días).','number'=>5],
+                ['name' => 'Folio Real actualizado (No mayor a 90 días de su emisión).','number'=>6],
+                ['name' => 'Información rápida del inmueble – Original (En caso que el Folio Real este desactualizado, mayor a 90 días).','number'=>7],
+                ['name' => 'Fotocopia de Testimonio de Propiedad.','number'=>8],
+                ['name' => 'Fotocopia de Pago de Impuestos de los 3 últimos años','number'=>9],
+                ['name' => 'Fotocopia del Plano del Lote.','number'=>10],
+                ['name' => 'Fotocopia del Catastro.','number'=>11],
+                ['name' => 'Certificado de Estado Civil o Soltería de todos los participantes del Préstamo (Original).','number'=>12],
+                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>13],
+                ['name' => 'Formulario SIGEP.','number'=>14],
+                ['name' => 'En caso que el cónyuge sea policía debe cumplir con los mismos requisitos que el solicitante, excepto  la documentación de la garantía..','number'=>15],
+                //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
+                //['name' => 'Tres últimas Boletas de pago en copia simple.','number'=>2],
+                //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
+                //['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando General de la Policía Boliviana','number'=>3],
+                //['name' => 'Certificado de años de servicio desglosado en fotocopia Legalizada emitido por el Comando General de la Policía Boliviana','number'=>3],
+                //['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando Regional de la Policía Boliviana','number'=>3],
+                //['name' => 'Croquis de ubicación del inmueble','number'=>4], //nuevo
+                //['name' => 'Factura de Luz del Inmueble','number'=>5], //nuevo
+                //['name' => 'Factura de Agua del Inmueble','number'=>6], //nuevo
+                //['name' => 'Folio Real','number'=>7], //nuevo
+                //['name' => 'Información rapida del Inmueble','number'=>8], //nuevo
+                //['name' => 'Fotocopia de Testimonio de Propiedad','number'=>9], //nuevo
+                //['name' => 'Fotocopia de Impuestos 3 Ultimos Años','number'=>10], //nuevo
+                //['name' => 'Fotocopia de Plano de lote','number'=>11], //nuevo
+                //['name' => 'Fotocopia de Catastro','number'=>12], //nuevo
+                //['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A','number'=>13],
+                //['name' => 'Certificado de estado civil en original emitido por el SERECI.','number'=>14],
+                //['name' => 'Formulario de Calificación y Aprobación de Préstamos FORM/CAYAP/PTMO/UIP/004.','number'=>15],
                 /*Estos documentos son solicitados por MUSERPOL en caso de ser requeridos*/
-              ['name' => 'Boleta de pago en copia simple.','number'=>0],  // *caso garante activo
-              ['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>0],  // En caso de no tener la boleta de pago
-              ['name' => 'Nota de aclaración de Boleta de Pago.','number'=>0],  // En caso de que el afiliado tenga datos erroneos en su boleta de pago
-              ['name' => 'Certificado de no adeudo.','number'=>0],  // en caso de que el afiliado haya tenido deudas de otras entidades (Ej: COMIPOL , COVIPOL)
-              ['name' => 'Certificado de pago emitido por la entidad correspondiente.','number'=>0],  // en caso de que el afiliado tenga deudas con otras entidades (Ej: COMIPOL , COVIPOL)
-              ['name' => 'Conformidad de devolución de descuento por garantia original o fotocopia legalizada.','number'=>0],
-
-              /**/
+                //['name' => 'Solicitud de aclaración de datos personales en la Boleta de Pago.','number'=>0],  // En caso de que el afiliado tenga datos erroneos en su boleta de pago
+                ['name' => 'Certificado de no adeudo, emitido por la instancia correspondiente.','number'=>0],  // en caso de que el afiliado haya tenido deudas de otras entidades (Ej: COMIPOL , COVIPOL)
+                //['name' => 'Certificado de pago emitido por la entidad correspondiente.','number'=>0],  // en caso de que el afiliado tenga deudas con otras entidades (Ej: COMIPOL , COVIPOL)
+                //['name' => 'Conformidad de devolución de descuento por garantía original o fotocopia legalizada.','number'=>0],
+                /**/
             ],
             'parameters' => [
               'debt_index' => 80,
@@ -786,29 +801,45 @@ class LoanStructureSeeder extends Seeder
             ],
           //REFINANCIAMIENTO DE PRÉSTAMOS A LARGO PLAZO GARANTÍA HIPOTECARIA CPOP * //Eliminar en caso de que no proceda
           ['name'=>'Refinanciamiento de Préstamo con garantía hipotecaria de bien inmueble para el sector activo - CPOP','shortened'=>'PLP-R-GH-CPOP','requirements'=>[
-            ['name' => 'Cédula de Identidad del(la) Titular en copia simple','number'=>1],
-            ['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando General de la Policía Boliviana','number'=>2],
-            ['name' => 'Certificado de años de servicio desglosado en fotocopia Legalizada emitido por el Comando General de la Policía Boliviana','number'=>2],
-            ['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando Regional de la Policía Boliviana','number'=>2],
-            ['name' => 'Croquis de ubicación del inmueble','number'=>3], //nuevo
-            ['name' => 'Factura de Luz del Inmueble','number'=>4], //nuevo
-            ['name' => 'Factura de Agua del Inmueble','number'=>4], //nuevo
-            ['name' => 'Folio Real','number'=>5], //nuevo
-            ['name' => 'Información rapida del Inmueble','number'=>5], //nuevo
-            ['name' => 'Fotocopia de Testimonio de Propiedad','number'=>6], //nuevo
-            ['name' => 'Fotocopia de Impuestos 3 Ultimos Años','number'=>7], //nuevo
-            ['name' => 'Fotocopia de Plano de lote','number'=>8], //nuevo
-            ['name' => 'Fotocopia de Catastro','number'=>9], //nuevo
-            ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A','number'=>10],
-            ['name' => 'Certificado de estado civil en original emitido por el SERECI.','number'=>11],
+            ['name' => 'Cedula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1],
+              ['name' => 'Tres Últimas Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes','number'=>2],
+              ['name' => 'Certificado de años de servicio (Original y/o fotocopia legalizada).','number'=>3],
+              ['name' => 'Croquis de ubicación del inmueble.','number'=>4],
+              ['name' => 'Factura de Agua o Luz del inmueble (Con antigüedad no mayor a 60 días).','number'=>5],
+              ['name' => 'Folio Real actualizado (No mayor a 90 días de su emisión).','number'=>6],
+              ['name' => 'Información rápida del inmueble – Original (En caso que el Folio Real este desactualizado, mayor a 90 días).','number'=>7],
+              ['name' => 'Fotocopia de Testimonio de Propiedad.','number'=>8],
+              ['name' => 'Fotocopia de Pago de Impuestos de los 3 últimos años','number'=>9],
+              ['name' => 'Fotocopia del Plano del Lote.','number'=>10],
+              ['name' => 'Fotocopia del Catastro.','number'=>11],
+              ['name' => 'Certificado de Estado Civil o Soltería de todos los participantes del Préstamo (Original).','number'=>12],
+              ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>13],
+              ['name' => 'Formulario SIGEP.','number'=>14],
+              ['name' => 'En caso que el cónyuge sea policía debe cumplir con los mismos requisitos que el solicitante, excepto  la documentación de la garantía..','number'=>15],
+              //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
+              //['name' => 'Tres últimas Boletas de pago en copia simple.','number'=>2],
+              //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
+              //['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando General de la Policía Boliviana','number'=>3],
+              //['name' => 'Certificado de años de servicio desglosado en fotocopia Legalizada emitido por el Comando General de la Policía Boliviana','number'=>3],
+              //['name' => 'Certificado de años de servicio desglosado en original emitido por el Comando Regional de la Policía Boliviana','number'=>3],
+              //['name' => 'Croquis de ubicación del inmueble','number'=>4], //nuevo
+              //['name' => 'Factura de Luz del Inmueble','number'=>5], //nuevo
+              //['name' => 'Factura de Agua del Inmueble','number'=>6], //nuevo
+              //['name' => 'Folio Real','number'=>7], //nuevo
+              //['name' => 'Información rapida del Inmueble','number'=>8], //nuevo
+              //['name' => 'Fotocopia de Testimonio de Propiedad','number'=>9], //nuevo
+              //['name' => 'Fotocopia de Impuestos 3 Ultimos Años','number'=>10], //nuevo
+              //['name' => 'Fotocopia de Plano de lote','number'=>11], //nuevo
+              //['name' => 'Fotocopia de Catastro','number'=>12], //nuevo
+              //['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A','number'=>13],
+              //['name' => 'Certificado de estado civil en original emitido por el SERECI.','number'=>14],
+              //['name' => 'Formulario de Calificación y Aprobación de Préstamos FORM/CAYAP/PTMO/UIP/004.','number'=>15],
               /*Estos documentos son solicitados por MUSERPOL en caso de ser requeridos*/
-            ['name' => 'Boleta de pago en copia simple.','number'=>0],  // *caso garante activo
-            ['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>0],  // En caso de no tener la boleta de pago
-            ['name' => 'Nota de aclaración de Boleta de Pago.','number'=>0],  // En caso de que el afiliado tenga datos erroneos en su boleta de pago
-            ['name' => 'Certificado de no adeudo.','number'=>0],  // en caso de que el afiliado haya tenido deudas de otras entidades (Ej: COMIPOL , COVIPOL)
-            ['name' => 'Certificado de pago emitido por la entidad correspondiente.','number'=>0],  // en caso de que el afiliado tenga deudas con otras entidades (Ej: COMIPOL , COVIPOL)
-            ['name' => 'Conformidad de devolución de descuento por garantía original o fotocopia legalizada.','number'=>0],
-            /**/
+              //['name' => 'Solicitud de aclaración de datos personales en la Boleta de Pago.','number'=>0],  // En caso de que el afiliado tenga datos erroneos en su boleta de pago
+              ['name' => 'Certificado de no adeudo, emitido por la instancia correspondiente.','number'=>0],  // en caso de que el afiliado haya tenido deudas de otras entidades (Ej: COMIPOL , COVIPOL)
+              //['name' => 'Certificado de pago emitido por la entidad correspondiente.','number'=>0],  // en caso de que el afiliado tenga deudas con otras entidades (Ej: COMIPOL , COVIPOL)
+              //['name' => 'Conformidad de devolución de descuento por garantía original o fotocopia legalizada.','number'=>0],
+              /**/
           ],
           'parameters' => [
             'debt_index' => 80,

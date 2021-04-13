@@ -466,7 +466,7 @@ export default {
       for (let i = 0; i< this.interval.length; i++) {
         if(this.loanTypeSelected.id==this.interval[i].procedure_type_id){
           //if($store.getters.modalityLoan.find(item => item.id == loanTypeSelected.id).name == 12){
-          if(this.modalitySelected.name == 'Préstamo hipotecario'){
+          if(this.modalitySelected.name == 'Préstamo hipotecario' || this.modalitySelected.name == 'Refinanciamiento Préstamo hipotecario'){
             this.hipotecario=true
             this.window_size=3
             this.see_field=true

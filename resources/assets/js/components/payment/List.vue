@@ -48,7 +48,7 @@
     </template>
 
       <template v-slot:[`item.actions`]="{ item }">
-        <v-tooltip bottom v-if="$store.getters.userRoles.includes('PRE-cobranzas')">
+        <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn
               icon
@@ -69,6 +69,7 @@
               icon
               small
               v-on="on"
+              v-if="item.state.name!='Pagado'"
               color="success"
               :to="{ name: 'paymentAdd',  params: { hash: 'edit'},  query: { loan_payment: item.id}}"
             >
@@ -84,6 +85,7 @@
               icon
               small
               v-on="on"
+              v-if="item.state.name!='Pagado'"
               color="light-blue accent-4"
               :to="{ name: 'paymentAdd',  params: { hash: 'edit'},  query: { loan_payment: item.id}}"
             >
@@ -93,14 +95,14 @@
           <span>Registrar pago</span>
         </v-tooltip>
 
-        <v-tooltip bottom v-if="$store.getters.permissions.includes('delete-payment-loan') && $store.getters.userRoles.includes('PRE-cobranzas')">
+        <v-tooltip bottom v-if="$store.getters.permissions.includes('delete-payment-loan')">
           <template v-slot:activator="{ on }">
             <v-btn
               icon
               small
               v-on="on"
               color="error"
-              v-if="item.state_id==5"
+              v-if="item.state.name == 'Pendiente de ajuste' || item.state.name == 'Pendiente de Pago' "
               @click.stop="bus.$emit('openRemoveDialog', `loan_payment/${item.id}`)"
             >
               <v-icon>mdi-file-cancel-outline</v-icon>
