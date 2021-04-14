@@ -1,0 +1,19 @@
+{
+    "loans": [
+        {
+            "id": "20295",
+            "code": "P18-20900484",
+            "request_date": "2010-12-09 00:00:00.000",
+            "disbursement_date": "2010-12-09 00:00:00.000",
+            "estimated_quota": "433.0700",
+            "loan_term": "18",
+            "state": "CANCELADO",
+            "amount": "7050.0000",
+            "balance": ".0000",
+            "modality": "PASIVOS AL 1.1% MENSUAL",
+            "shortened": "PA1M",
+            "origin": "SISMU"
+        }
+    ],
+    "guarantees": []
+}

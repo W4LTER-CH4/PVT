@@ -35,7 +35,7 @@
              <v-col cols="12" md="4" v-if="visible">
               <v-text-field
                 dense
-                v-model="affiliate.date_death"
+                v-model="affiliate.birth_date"
                   label="Fecha Fallecimiento"
                   hint="Día/Mes/Año"
                   class="purple-input"

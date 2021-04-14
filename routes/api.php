@@ -12,9 +12,10 @@ Route::group([
     //Route::get('senasir_save_payment', 'Api\V1\LoanPaymentController@senasir_save_payment');
     Route::get('loans_delay', 'Api\V1\LoanPaymentController@loans_delay');
     //sismu
+    //Route::get('prueba', 'Api\V1\AffiliateController@prueba');
 
     //
-    Route::get('depuracion', 'Api\V1\AffiliateController@eliminacion');
+    //Route::get('depuracion', 'Api\V1\AffiliateController@eliminacion');
     Route::get('ballot/{loan_id}', 'Api\V1\LoanController@show_ballot_loan');
 
     // INDEFINIDO (TODO)
@@ -93,6 +94,7 @@ Route::group([
             Route::get('affiliate_existence','Api\V1\AffiliateController@get_existence');
             Route::get('affiliate/{affiliate}/maximum_loans','Api\V1\AffiliateController@evaluate_maximum_loans');
             Route::get('affiliate_record', 'Api\V1\AffiliateController@affiliate_record');
+            Route::get('affiliate_loans_guarantees', 'Api\V1\AffiliateController@loans_guarantees');
             Route::get('affiliate/{affiliate}/verify_affiliate_spouse','Api\V1\AffiliateController@verify_affiliate_spouse');
 
         });

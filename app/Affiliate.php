@@ -121,7 +121,7 @@ class Affiliate extends Model
 
     public function getDeadAttribute()
     {
-        return ($this->date_death != null || $this->reason_death != null || $this->death_certificate_number != null);
+      return ($this->date_death != null || $this->reason_death != null || $this->death_certificate_number != null || $this->affiliate_state->name == "Fallecido");
     }
 
     public function getDefaultedLenderAttribute()
@@ -376,7 +376,8 @@ class Affiliate extends Model
           'affiliate' => AffiliateController::append_data($this, true),
           'guarantor' => $guarantor,
           'active_guarantees_quantity' => count($this->active_guarantees()),
-          'guarantor_information' => self::verify_information($this)
+          'guarantor_information' => self::verify_information($this),
+          'double_perception'=>self::verify_double_perception($this)
 
       ]);
   }
@@ -390,30 +391,45 @@ class Affiliate extends Model
       }
       return $information;
     }
+    public static function verify_double_perception(Affiliate $affiliate){
+      if(count(Spouse::where('identity_card', '=', $affiliate->identity_card)->get())>0 && Spouse::where('identity_card', '=', $affiliate->identity_card)->first()->affiliate->dead){
+        $double_perception= true;
+      } else{
+      $double_perception = false;}
+      return $double_perception;
+    }
     //veriifca si garante no es fallecido, ademas verificas que garante= SENASIR en caso pasivo
     public static function verify_guarantor(Affiliate $affiliate)
-    {    $guarantor=false;
-         if($affiliate->affiliate_state->name == 'Fallecido')
-         {
-         $guarantor=false; 
-         }
-         else{        
-           if($affiliate->affiliate_state->affiliate_state_type->name == 'Pasivo'){ 
-              if($affiliate->pension_entity){
-                    if($affiliate->pension_entity->name == 'SENASIR')
-                    {
-                      $guarantor=true;
-                    } 
-                    else{
-                      $guarantor=false;
-                    }  
+    {    $guarantor = false;
+          if($affiliate->affiliate_state->name == 'Fallecido'){ 
+            if($affiliate->pension_entity){
+            if($affiliate->pension_entity->name == 'SENASIR'){
+              $spouse = Spouse::where($affiliate->affiliate_id)->first();
+              if(isset($spouse)){ 
+                    $guarantor = true;
+                  } else{
+                    $guarantor = false;
+                  }
+              } else{
+                $guarantor = false;
               }
-            } 
-            else{ 
-              $guarantor=true;  
-            }  
-          }              
-         return $guarantor;     
+          }else{ 
+            $guarantor = false;
+          }
+         }elseif($affiliate->affiliate_state->affiliate_state_type->name == 'Pasivo'){
+          if($affiliate->pension_entity){
+                 if($affiliate->pension_entity->name == 'SENASIR'){
+                   $guarantor=true;
+                }else{
+                  $guarantor=false;
+                 }              
+         }else{ 
+        $guarantor = false;
+        }
+      }else{ 
+        $guarantor = true;
+      }
+      return $guarantor;                             
     }  
     
    //verificar si se tiene boletas del affiliado

@@ -708,9 +708,9 @@ class Loan extends Model
                 
                     if(!$cpop_sismu || !$type_sismu){
                         if($cpop_affiliate){
-                            //$modality=ProcedureModality::whereShortened("PLP-CPOP")->first();
+                            //$modality=ProcedureModality::whereShortened("PLP-CPOP")->first();//NO aplica la modalidad cpop sector pasivo 
                     }else{
-                            $modality=ProcedureModality::whereShortened("PLP-GP-SAYADM")->first(); //Largo plazo activo  y adm con garantia personal
+                            $modality=ProcedureModality::whereShortened("PLP-GP-SP")->first(); //Largo plazo Sector PAsivo
                     }
                     }
                 }
