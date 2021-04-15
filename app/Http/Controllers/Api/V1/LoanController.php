@@ -1064,7 +1064,7 @@ class LoanController extends Controller
             $payment = $loan->next_payment2($request->input('affiliate_id'), $request->input('estimated_date', null), $request->input('paid_by'), $request->input('procedure_modality_id'), $request->input('estimated_quota', null), $request->input('adjust'));
             $payment->description = $request->input('description', null);
             if($request->state)
-                $payment->state_id = LoanState::whereName('Pendiente de ajuste')->first()->id;
+                $payment->state_id = LoanState::whereName('Pendiente por confirmar')->first()->id;
             else
                 $payment->state_id = LoanState::whereName('Pendiente de Pago')->first()->id;
             $payment->role_id = Role::whereName('PRE-cobranzas')->first()->id;

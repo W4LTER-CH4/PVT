@@ -239,7 +239,7 @@ class LoanPaymentController extends Controller
     public function destroy(LoanPayment $loanPayment)
     {
         $PendientePago = LoanState::whereName('Pendiente de Pago')->first()->id;
-        $PendienteAjuste = LoanState::whereName('Pendiente de ajuste')->first()->id;
+        $PendienteAjuste = LoanState::whereName('Pendiente por confirmar')->first()->id;
         if ($loanPayment->state_id == $PendientePago || $loanPayment->state_id == $PendienteAjuste){
             $state = LoanState::whereName('Anulado')->first();
             $loanPayment->state()->associate($state);
