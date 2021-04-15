@@ -350,7 +350,7 @@ export default {
                 {
                   if(this.data_payment.pago)
                   {
-                    if( this.data_payment.procedure_modality_name == 'AD Parcial' || this.data_payment.procedure_modality_name == 'ACE Parcial' || this.data_payment.procedure_modality_name == 'AA Parcial' || this.data_payment.procedure_modality_name == 'AFR Parcial')
+                    if( this.data_payment.procedure_modality_name == 'A.AUT. Parcial')
                     {
                        if(this.data_payment.pago_total)
                         {
@@ -366,17 +366,15 @@ export default {
                         }
                     }
                     else{
-                      if(this.data_payment.procedure_modality_name == 'AD Adelantado' || this.data_payment.procedure_modality_name == 'AA Adelantado' || this.data_payment.procedure_modality_name == 'AAJ Adelantado')
+                      if(this.data_payment.procedure_modality_name == 'A.C.E. Introducir monto'
+                          || this.data_payment.procedure_modality_name == 'A.D. Introducir monto'
+                          || this.data_payment.procedure_modality_name == 'A.F.R. Introducir monto'
+                          || this.data_payment.procedure_modality_name == 'A.AJ. Introducir monto')
                       {
                         if(this.data_payment.pago_total)
                         {
-                          if(this.data_payment.pago_total > this.loan.estimated_quota)
-                          {
                             this.Calcular(this.$route.query.loan_id)
                             this.nextStep(1)
-                          }else{
-                            this.toastr.error('Un pago adelantado no puede ser menor a la cuota')
-                          }
                         }else{
                           this.toastr.error('Debe introducir el total pagado')
                         }

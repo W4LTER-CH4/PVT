@@ -892,6 +892,5 @@ class Loan extends Model
             $modality=[];
             return $modality;
         }
-
     }
 }

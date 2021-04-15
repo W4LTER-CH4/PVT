@@ -37,10 +37,8 @@
                             item-value="id"
                           ></v-select>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="isNew" >
-                          <label class="caption" >Tipo de Amortizacion:</label>
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="isNew">
+                       
+                        <v-col cols="4" class="ma-0 pb-0" v-show="isNew">
                           <v-select
                             dense
                             class="caption"
@@ -52,6 +50,7 @@
                             :items="tipo_de_amortizacion"
                             item-text="name"
                             item-value="id"
+                            label="Tipo de Amortizacion"
                             persistent-hint
                           ></v-select>
                         </v-col>
@@ -236,7 +235,7 @@
                           :disabled="ver || editable">
                         </v-col>
                         <!--v-col cols="4" class="ma-0 py-0" v-if="$store.getters.permissions.includes('create-payment-loan')"-->
-                        <v-col cols="4" class="ma-0 py-0" v-show="false">
+                        <v-col cols="4" class="ma-0 py-0" >
                           <v-checkbox class="ma-0 py-3"
                             :outlined="isNew"
                             :readonly="!isNew"
@@ -295,14 +294,7 @@ export default {
       id:2
       }
     ],
-    tipo_afiliado:[
-      {name:"Titular",
-      id:"T"
-      },
-      {name:"Garante",
-      id:"G"
-      }
-    ],
+    tipo_afiliado:[],
     view:true,
     efectivo:false,
     loan_payment:{},
@@ -368,11 +360,14 @@ export default {
         this.data_payment.pago_total=null
          for (let i = 0; i<  this.tipo_de_amortizacion.length; i++) {
             if(this.data_payment.procedure_modality_id == this.tipo_de_amortizacion[i].id){
-              if(this.tipo_de_amortizacion[i].name == 'AD Regular' || this.tipo_de_amortizacion[i].name == 'AA Regular' )
+              if(this.tipo_de_amortizacion[i].name == 'A.AUT. Cuota pactada'
+                || this.tipo_de_amortizacion[i].name == 'A.D. Cuota pactada' )
               {
                 this.regular=false
               }else{
-                if(this.tipo_de_amortizacion[i].name == 'AD Total' || this.tipo_de_amortizacion[i].name == 'ACE Total' || this.tipo_de_amortizacion[i].name == 'AFR Total'){
+                if(this.tipo_de_amortizacion[i].name == 'A.C.E. Liquidar préstamo'
+                  || this.tipo_de_amortizacion[i].name == 'A.D. Liquidar préstamo'
+                  || this.tipo_de_amortizacion[i].name == 'A.F.R. Liquidar préstamo'){
                   this.regular=false
                 }
                 else{
@@ -582,6 +577,25 @@ export default {
         this.loading = true
         let res = await axios.get(`loan/${id}`)
         this.garantes=res.data
+        console.log(this.garantes.guarantors.length)
+        if(this.garantes.guarantors.length > 0)
+        {
+            this.tipo_afiliado.push(
+              {
+                name:"Titular",
+                id:"T"
+              },
+              {
+                name:"Garante",
+                id:"G"
+              })
+        }else{
+           this.tipo_afiliado.push(
+              {
+                name:"Titular",
+                id:"T"
+              })
+        }
       } catch (e) {
         console.log(e)
       } finally {

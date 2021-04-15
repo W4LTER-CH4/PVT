@@ -21,10 +21,11 @@
                         :items="payment_types"
                         item-text="name"
                         item-value="id"
+                        outlined
                       ></v-select>
                     </ValidationProvider>
                   </v-col>
-                  <v-col cols="12" md="3" class="py-0" v-show="visible">
+                  <!--<v-col cols="12" md="3" class="py-0" v-show="visible">
                       <v-text-field
                         label="Entidad Financiera"
                         class="py-0"
@@ -32,15 +33,113 @@
                         v-model="entity"
                         readonly
                       ></v-text-field>
+                  </v-col>-->
+
+                  <v-col cols="12" md="3" class="py-0" v-show="visible">
+                    <ValidationProvider
+                      v-slot="{ errors }"
+                      vid="financial_entity_id"
+                      name="Entidad Financiera"
+                      :rules="loanTypeSelected == 1 ? 'required': ''"
+                    >
+                      <v-select
+                        :error-messages="errors"
+                        dense
+                        :items="entity"
+                        item-text="name"
+                        item-value="id"
+                        label="Entidad Financiera"
+                        v-model="affiliate.financial_entity_id"
+                        :readonly="!editable || !permission.secondary"
+                        :outlined="editable && permission.secondary"
+                        :disabled="editable && !permission.secondary"
+                      ></v-select>
+                    </ValidationProvider>
                   </v-col>
                   <v-col cols="12" md="3" class="py-0" v-show="visible">
+                    <ValidationProvider
+                      v-slot="{ errors }"
+                      vid="account_number"
+                      name="Cuenta SIGEP Activa"
+                      :rules="loanTypeSelected == 1 ? 'required': ''"
+                    >
                       <v-text-field
-                        label="Cuenta"
+                        :error-messages="errors"
+                        label="Cuenta SIGEP Activa"
                         class="py-0"
                         dense
                         v-model="affiliate.account_number"
-                        readonly
+                        :readonly="!editable || !permission.secondary"
+                        :outlined="editable && permission.secondary"
+                        :disabled="editable && !permission.secondary"
                       ></v-text-field>
+                    </ValidationProvider>
+                  </v-col>
+                  <v-col cols="12" md="1" class="ma-0 pa-0" v-show="visible">
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          fab
+                          dark
+                          x-small
+                          :color="'error'"
+                          bottom
+                          right
+                          v-on="on"
+                          style="margin-right: 45px;"
+                          @click.stop="resetForm()"
+                          v-show="editable"
+                        >
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </template>
+                      <div>
+                        <span>Cancelar</span>
+                      </div>
+                    </v-tooltip>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          fab
+                          dark
+                          x-small
+                          :color="'light-blue accent-4'"
+                          bottom
+                          right
+                          v-on="on"
+                          style="margin-right: 45px;margin-top:5px;"
+                          @click.stop="clear()"
+                          v-show="editable"
+                        >
+                          <v-icon>mdi-eraser</v-icon>
+                        </v-btn>
+                      </template>
+                      <div>
+                        <span>Borrar</span>
+                      </div>
+                    </v-tooltip>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          fab
+                          dark
+                          x-small
+                          :color="editable ? 'danger' : 'success'"
+                          bottom
+                          right
+                          v-on="on"
+                          style="margin-right: -9px; margin-top:5px;"
+                          @click.stop="saveAffiliate()"
+                        >
+                          <v-icon v-if="editable">mdi-check</v-icon>
+                          <v-icon v-else>mdi-pencil</v-icon>
+                        </v-btn>
+                      </template>
+                      <div>
+                        <span v-if="editable">Guardar</span>
+                        <span v-else>Editar</span>
+                      </div>
+                    </v-tooltip>
                   </v-col>
                   <v-col cols="12" md="6" v-show="espacio"></v-col>
                   <v-col cols="12" md="2" class="py-1">
@@ -56,6 +155,7 @@
                         :items="destino"
                         item-text="name"
                         item-value="id"
+                        outlined
                       ></v-select>
                     </ValidationProvider>
                   </v-col>
@@ -283,6 +383,7 @@ export default {
     val_per_ref: false,
     reference: [],
     cosigners:[],
+    editable: false,
   }),
   watch: {
     modalidad_id(newVal, oldVal){
@@ -297,6 +398,32 @@ export default {
   beforeMount() {
     this.getCities();
     this.getPaymentTypes();
+  },
+    computed: {
+    permission() {
+      return {
+        primary: this.primaryPermission,
+        secondary: this.secondaryPermission
+      }
+    },
+    secondaryPermission() {
+      if (this.affiliate.id) {
+        return this.$store.getters.permissions.includes(
+          "update-affiliate-secondary"
+        )
+      } else {
+        return this.$store.getters.permissions.includes("create-affiliate")
+      }
+    },
+    primaryPermission() {
+      if (this.affiliate.id) {
+        return this.$store.getters.permissions.includes(
+          "update-affiliate-primary"
+        )
+      } else {
+        return this.$store.getters.permissions.includes("create-affiliate")
+      }
+    },
   },
   methods: {
     beforeStepBus(val) {
@@ -366,18 +493,28 @@ export default {
         this.loading = false
       }
     },
-    async getEntity() {
+    /*async getEntityAffiliate() {
       try {
         this.loading = true
         let res = await axios.get(`financial_entity/${this.affiliate.financial_entity_id}`)
         this.entity = res.data.name
-        //console.log("XXXXXXXXXXXXXXXXX")
-        //console.log(this.entity)
       } catch (e) {
         console.log(e)
       }finally {
           this.loading = false
         }
+    },*/
+    async getEntity() {
+      try {
+        this.loading = true;
+        let res = await axios.get(`financial_entity`);
+        this.entity = res.data;
+      } catch (e) {
+        this.dialog = false;
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
     async savePersonalReference()
     {
@@ -454,33 +591,32 @@ export default {
         this.loading = false
       }
     },
-    /*async validateDestiny() {
+    async saveAffiliate() {
       try {
-        this.val_destiny = await this.$refs.observerDestiny.validate();
-        if (this.val_destiny ) {
-          this.val_destiny == true
+        if (!this.editable) {
+          this.editable = true
         } else {
-          this.val_destiny == false
+          await axios.patch(`affiliate/${this.affiliate.id}`, {
+            financial_entity_id: this.affiliate.financial_entity_id,
+            account_number: this.affiliate.account_number,
+            sigep_status: (this.affiliate.financial_entity_id != null && this.affiliate.account_number != null) ? 'ACTIVO' : null
+          })
+          this.toastr.success("Registro guardado correctamente")
+          this.editable = false
         }
-        console.log(" val_destiny " + this.val_destiny);
       } catch (e) {
-        this.$refs.observerPerRef.setErrors(e);
+        console.log(e)
+      } finally {
+        this.loading = false
       }
     },
-    async validatePerRef() {
-      try {
-        this.val_per_ref = await this.$refs.observerDestiny.validate();
-        if (this.val_per_ref ) {
-          this.val_per_ref == true
-          this.personal()
-        } else {
-          this.val_per_ref == false
-        }
-        console.log(" val_per_ref " + this.val_per_ref);
-      } catch (e) {
-        this.$refs.observerPerRef.setErrors(e);
-      }
-    },*/
+    resetForm() {
+      this.editable = false
+    },
+    clear(){
+      this.affiliate.financial_entity_id = null
+      this.affiliate.account_number= null
+    },
      async validateStepsFive(){
 
       try {

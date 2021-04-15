@@ -14,11 +14,23 @@
         <v-card>
           <v-container class="py-0">
             <v-row>
-              <v-col cols="12" md="4"></v-col>
-              <v-col cols="12" md="6" >
-                Afiliado
-              </v-col>
-              <v-col cols="12" md="2"></v-col>
+              <v-col cols="12" md="2" ></v-col>
+                <v-col cols="12" md="10" class="pb-0 ma-0">
+                  <v-radio-group
+                    class="pb-0 ma-0"
+                    v-model="tipo_afiliado"
+                    row
+                  >
+                    <v-radio
+                      label="Afiliado"
+                      :value="false"
+                    ></v-radio>
+                    <v-radio
+                      label="Viuda"
+                      :value="true"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
               <v-col cols="12" md="1"></v-col>
               <v-col cols="12" md="8" >
                 <v-text-field
@@ -67,48 +79,7 @@
                             v-model="payable_liquid[0]"
                           ></v-text-field>
                         </v-col>
-                        <!--v-col cols="12" md="2"  v-show="retroceder_meses">
-                          <v-tooltip>
-                            <template v-slot:activator="{ on }">
-                              <v-btn
-                               
-                                dark
-                                x-small
-                                v-on="on"
-                                style="width:15px; height:15px"
-                                color="info"
-                                @click.stop="retrocederContribusiones()">
-                                <v-icon x-small> mdi-minus</v-icon>
-                              </v-btn>
-                            </template>
-                          </v-tooltip>
-                        </-v-col>
-                        <v-col cols="12" md="2" class="pb-0"  v-show="retroceder_meses">
-                          <v-text-field
-                            v-model="cantidad_boletas"
-                            class="mt-0 pt-0"
-                            type="number"
-                            style="width: 60px"
-                            :readonly="true"
-                          ></v-text-field>
-                        </v-col>
-                         <v-col-- cols="12" md="1"  v-show="retroceder_meses">
-                          <v-tooltip>
-                            <template v-slot:activator="{ on }">
-                              <v-btn
-                                fab
-                                dark
-                                x-small
-                                v-on="on"
-                                style="width:25px; height:25px"
-                                color="info"
-                                @click.stop="retrocederContribusiones()">
-                                <v-icon>mdi-plus</v-icon>
-                              </v-btn>
-                            </template>
-                          </v-tooltip>
-                        </v-col-->
-                                       <v-col cols="12" md="3" v-show="show_ajuste" >
+                <v-col cols="12" md="3" v-show="show_ajuste" >
                <label><small  class=" caption" > Meses atras</small> </label>
                   </v-col>
                            <v-col cols="12" md="3" v-show="show_ajuste" >
@@ -231,7 +202,7 @@
           <v-card v-show="show_garante">
             <v-container v-if="modalidad_guarantors>0">
               <v-row>
-                <v-col class="text-center">
+                <v-col class="text-center"  cols="12" md="12">
                     <h4 class="error--text" > CANTIDAD DE GARANTES QUE NECESITA ESTA MODALIDAD:{{modalidad_guarantors}}<br>
                   EL GARANTE DEBE ESTAR ENTRE UNA CATEGORIA DE {{loan_detail.min_guarantor_category}} A {{loan_detail.max_guarantor_category}} </h4>
                 </v-col>
@@ -250,13 +221,17 @@
                 <v-col cols="12" md="12" class="py-0" v-show="affiliate_garantor.affiliate.cpop">
                   <h5 class="success--text text-center">AFILIADO CPOP</h5>
                 </v-col>
-                <v-col cols="12" md="6" class="ma-0 pb-0 font-weight-light caption">
+                <v-progress-linear></v-progress-linear>
+                <v-col cols="12" md="8" class="font-weight-black caption ma-0 py-0 " >
+                  DATOS DEL AFILIADO
+                </v-col>
+                <v-col cols="12" md="6" class="ma-0 py-0 font-weight-light caption">
                   AFILIADO :{{affiliate_garantor.affiliate.full_name}}
                 </v-col>
-                <v-col cols="12" md="3" class="ma-0 pb-0 font-weight-light caption" >
+                <v-col cols="12" md="3" class="ma-0 py-0 font-weight-light caption" >
                   C.I :{{affiliate_garantor.affiliate.identity_card_ext}}
                 </v-col>
-                <v-col cols="12" md="3" class="ma-0 pb-0 font-weight-light caption" >
+                <v-col cols="12" md="3" class="ma-0 py-0 font-weight-light caption" >
                   CATEGORIA:   {{affiliate_garantor.affiliate.category.name}}
                 </v-col>
                 <v-col cols="12" md="6" class="py-0 font-weight-light caption" >
@@ -265,13 +240,30 @@
                 <v-col cols="12" md="6" class="text-uppercase py-0 font-weight-light caption">
                   ESTADO:{{affiliate_garantor.affiliate.affiliate_state.name}}
                 </v-col>
+                <v-progress-linear v-show="spouse_view" ></v-progress-linear>
+                <v-col cols="12" md="8" class="error--text font-weight-black caption py-0" v-show="spouse_view" v-if="affiliate_garantor.double_perception" >
+                  AFILIADO CON DOBLE PERCEPCION
+                </v-col>
+                <v-col cols="12" md="8" class="font-weight-black caption py-0" v-show="spouse_view" >
+                  DATOS DE LA CONGUYE
+                </v-col>
+                <v-col cols="12" md="6" class="text-uppercase py-0 font-weight-light caption" v-show="spouse_view">
+                  CONGUYE:{{this.$options.filters.fullName(spouse, true)}}
+                </v-col>
+                 <v-col cols="12" md="6" class="text-uppercase py-0 font-weight-light caption" v-show="spouse_view">
+                  C.I.:{{spouse.identity_card}}
+                </v-col>
+                <v-progress-linear></v-progress-linear>
                 <v-col cols="12" md="8" class="font-weight-black caption py-0" >
+                  DATOS DEL PRESTAMO
+                </v-col>
+                <v-col cols="12" md="8" class="text-uppercase py-0 font-weight-light caption"  >
                   PRESTAMOS QUE ESTA GARANTIZANDO:
                 </v-col>
                 <v-col cols="12" md="2" class="font-weight-black caption py-0" >
                   {{affiliate_garantor.active_guarantees_quantity}}
                 </v-col>
-                <v-col cols="12" md="8" class="font-weight-black caption py-1">
+                <v-col cols="12" md="8" class="text-uppercase py-0 font-weight-light caption" >
                   PRESTAMOS VIGENTES QUE TIENE EL AFILIADO:
                 </v-col>
                  <v-col cols="12" md="2" class="font-weight-black caption py-1">
@@ -413,6 +405,11 @@
         affiliate_state:{}
       },
     },
+    spouse:{},
+    spouse_view:false,
+    nombre:null,
+
+    tipo_afiliado:false,
     valido:true,
     monto_ajustable_descripcion:null,
     number_diff_month:1,
@@ -603,13 +600,35 @@ ver()
         {
           this.toastr.error("El garante no puede tener el mismo carnet que el titular.")
         }
-        else{
+        else
+        {
           let resp = await axios.post(`affiliate_guarantor`,{
             identity_card: this.guarantor_ci,
             procedure_modality_id:this.modalidad_id,
+            type_guarantor_spouse:this.tipo_afiliado,
           })
           this.affiliate_garantor=resp.data
-          let res = await axios.get(`affiliate/${this.affiliate_garantor.affiliate.id}/contribution`, {
+          if(this.affiliate_garantor.validate)
+          {
+            this.toastr.error(this.affiliate_garantor.validate)
+          }else{
+            if(this.affiliate_garantor.affiliate.spouse == null)
+            {
+              this.spouse_view = false
+              this.nombre=this.affiliate_garantor.affiliate.full_name
+            }else
+            {
+              this.spouse_view = true
+              this.spouse=this.affiliate_garantor.affiliate.spouse
+              if(this.tipo_afiliado == false)
+              {
+                this.nombre=this.affiliate_garantor.affiliate.full_name
+              }else{
+                this.nombre=this.$options.filters.fullName(this.affiliate_garantor.affiliate.spouse, true)
+              }
+          }
+
+        let res = await axios.get(`affiliate/${this.affiliate_garantor.affiliate.id}/contribution`, {
           params:{
             city_id: this.$store.getters.cityId,
             choose_diff_month: 1,
@@ -691,11 +710,9 @@ ver()
             } else{
               this.editar=true
               this.show_ajuste=true
-              this.payable_liquid[0] = this.data_ballots[0].rent
-              this.bonos[0] = this.data_ballots[0].dignity_rent
+            //  this.payable_liquid[0] = this.data_ballots[0].rent
+            //  this.bonos[0] = this.data_ballots[0].dignity_rent
             }
-
-            
             //this.payable_liquid[0] = this.data_ballots[0].rent,
             //this.bonos[0] = this.data_ballots[0].dignity_rent,
 
@@ -711,7 +728,7 @@ ver()
                 //this.periodo=res.data.current_date
                 //this.periodo=this.periodo.getMonth()
                 this.retroceder_meses=false
-               // this.toastr.error("afiliado que esta de comision")
+              //  this.toastr.error("afiliado que esta de comision")
               }
 
             }
@@ -721,6 +738,7 @@ ver()
           this.show_calculated=this.affiliate_garantor.guarantor
           this.loan=this.affiliate_garantor.affiliate.loans
           this.show_garante=false
+          }
         }
       } catch (e) {
         console.log(e)
@@ -811,7 +829,7 @@ ver()
           }
         }
       }
-        this.garantes_detalle.push(this.affiliate_garantor.affiliate.full_name);
+        this.garantes_detalle.push(this.nombre);
         this.garantes_simulador.push(this.garante_boletas);
         this.guarantors.push(this.guarantor_objeto);
 
@@ -885,17 +903,10 @@ ver()
           }
         }
       }
-        this.garantes_detalle.push(this.affiliate_garantor.affiliate.full_name);
+        this.garantes_detalle.push(this.nombre);
         this.garantes_simulador.push(this.garante_boletas);
         this.guarantors.push(this.guarantor_objeto);
       }
-      
-
-
-
-
-
-
         this.garante_boletas={}
         this.guarantor_objeto={}
         this.loan_contributions_adjust_ids=[]

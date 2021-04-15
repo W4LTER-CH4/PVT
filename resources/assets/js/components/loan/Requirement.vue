@@ -256,6 +256,7 @@ export default {
       this.bus.$emit("beforeStepBus", val)
     },
     async getRequirement(id) {
+      this.ids_items=[]
       try {
         this.loading = true;
         let res = await axios.get(`procedure_modality/${id}/requirement`);

@@ -86,6 +86,12 @@ class Spouse extends Model
     {
         return $this->morphMany(Loan::class, 'disbursable');
     }
-     
-
+    
+    public function active_loans()
+    {
+        return Loan::where('disbursable_id', $this->id)->where('disbursable_type', 'spouses')->whereIn('state_id', [1,3])->count();
+    }
+    public function loans(){
+        return Loan::where('disbursable_id', $this->id)->where('disbursable_type', 'spouses')->whereIn('state_id', [1,3])->get();
+    }
 }

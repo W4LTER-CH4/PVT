@@ -189,13 +189,13 @@
            @php ($sum_mount_adjust = 0)
            @php ($num_reg = 0)
            @foreach($ballots as $ballot)
-           @php ($mount_adjust= 0)         
+           @php ($mount_adjust = 0)         
            <tr>
                 <td>{{Carbon::parse($ballot->period_date)->format('d/m/y')}}</td>  
                 <td>{{Util::money_format($ballot->amount)}}</td> 
                 @foreach($adjusts as $adjust)
                     @if($ballot->period_date == $adjust->period_date)
-                    @php($mount_adjust =$adjust->amount)
+                    @php($mount_adjust = $adjust->amount)
                     @endif
                     @endforeach
                 <td>{{Util::money_format($mount_adjust)}}</td>            
@@ -231,7 +231,7 @@
     </div>
    </div>
    <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. PROPUESTA DE APROBACIÓN</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DE EVALUACIÓN AL TITULAR</div>
     </div>
     <div class="block">
         <table class="table-info w-100 text-center uppercase my-20">
@@ -269,10 +269,42 @@
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">ÍNDICE DE ENDEUDAMIENTO</td>
-            <td class="w-50 text-left px-10">{{ $loan->indebtedness_calculated }}</td>
+            <td class="w-50 text-left px-10">{{ $loan->indebtedness_calculated }} </td>
             </tr>      
         </table>
     </div>
+    @php($plural = $loan->guarantors()->count() > 1)
+    @php ($num_gar = 1)
+    @if ($loan->guarantors()->count())
+    <div class="block">
+        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DE EVALUACIÓN DE{{ $plural ? ' LOS' : 'L' }} GARANTE{{ $plural ? 'S' : ''}}</div>
+    </div>
+    <div class="block ">
+        @foreach ($loan->guarantors as $guarantor)
+        <table class="table-info w-100 text-center uppercase my-20">
+            <tr class="bg-grey-darker text-sm-1 text-white">
+                    <td class="w-100" colspan="2">Garante {{ $num_gar++ }}</td>               
+            </tr>
+            <tr  class="w-100">
+                <td class="w-50 text-left px-10">NOMBRES</td>
+                <td class="w-50 text-left px-10">{{ $guarantor->full_name }}</td> 
+            </tr>
+            <tr  class="w-100">
+                <td class="w-50 text-left px-10">LÍQUIDO PARA CALIFICACIÓN</td>
+                <td class="w-50 text-left px-10">{{ $guarantor->pivot->liquid_qualification_calculated }}</td> 
+            </tr>
+            <tr  class="w-100">
+                <td class="w-50 text-left px-10">ÍNDICE DE ENDEUDAMIENTO</td>
+                <td class="w-50 text-left px-10">{{ $guarantor->pivot->indebtedness_calculated }} </td> 
+            </tr>
+            <tr  class="w-100">
+                <td class="w-50 text-left px-10">PORCENTAJE DE PAGO</td>
+                <td class="w-50 text-left px-10">{{ $guarantor->pivot->payment_percentage }} %</td> 
+            </tr>
+        </table>
+        @endforeach
+    </div>
+    @endif
     <table class="text-center">
             <tbody>
                 <tr class="align-top">                  

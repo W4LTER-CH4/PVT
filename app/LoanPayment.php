@@ -190,19 +190,22 @@ class LoanPayment extends Model
         return $this->belongsTo(Affiliate::class);
     }
 
-    public static function registry_payment(Loan $loan, $estimated_date, $description, $procedure_modality, $voucher, $paid_by, $payment_type, $percentage_quota, $affiliate_id)
+    public static function registry_payment(Loan $loan, $estimated_date, $description, $procedure_modality, $voucher, $paid_by, $payment_type, $percentage_quota, $affiliate_id, $state_id = null, $validated_payment = false)
     {
         $payment = $loan->next_payment2($affiliate_id, $estimated_date, $paid_by, $procedure_modality, $percentage_quota); //$percentage_quota
         $payment->description = $description;
-        $payment->state_id = LoanState::whereName('Pendiente de Pago')->first()->id;
+        if($state_id == null) $payment->state_id = LoanState::whereName('Pendiente de Pago')->first()->id;
+        if($state_id !== null)$payment->state_id = $state_id;
         $payment->role_id = Role::whereName('PRE-cobranzas')->first()->id;
         $payment->procedure_modality_id = $procedure_modality;
+        $payment->validated = $validated_payment;
         //$payment->affiliate_id = $loan->disbursable->id;
         $payment->affiliate_id = $affiliate_id;
         $payment->voucher = $voucher;
         $payment->paid_by = $paid_by;
         $payment->amortization_type_id = $payment_type->id;
         $loan_payment = $loan->payments()->create($payment->toArray());
+        return $loan_payment;
     }
 
     public static function interest_by_days($days, $annual_interest, $balance){

@@ -856,10 +856,13 @@ class AffiliateController extends Controller
                 $data = [
                     "affiliate" => $affiliate,
                     "spouse" => $spouse,
+                    "observables" => null
                 ];
             }
             else{
                 $data = [
+                    "affiliate" => null,
+                    "spouse" => null,
                     "observables" => $this->observables($request->ci)
                 ];
             }
@@ -870,23 +873,33 @@ class AffiliateController extends Controller
     /**
     * Historial de Tramites
     * Devuelve el Historio de tramites de un afiliado.
-    * @queryParam Affiliate_id integer required id de afiliado. Example:1
+    * @bodyParam affiliate_id integer required ID de afiliado. Example: 22773
+    * @bodyParam $type boolean required estado true afiliado o  false esposa. Example:true
     * @authenticated
     * @responseFile responses/affiliate/affiliate_history.200.json
     */
-    public function loans_guarantees(Affiliate $affiliate){
+    public function loans_guarantees(request $request){
         $data = [
-            "loans" => $this->get_mixed_loans($affiliate->identity_card),
-            "guarantees" => $this->get_mixed_guarantees($affiliate->identity_card),
+            "loans" => $this->get_mixed_loans($request->affiliate_id, $request->type),
+            "guarantees" => $this->get_mixed_guarantees($request->affiliate_id, $request->type),
         ];
         return $data;
     }
 
-    public function get_mixed_loans($ci){
-        $affiliate = Affiliate::whereIdentity_card($ci)->first();
+    public function get_mixed_loans($id, $type){
+        if($type){
+            $affiliate = Affiliate::where('id',$id)->first();
+            $loans = $affiliate->loans;
+        }
+        else{
+            $affiliate = Spouse::where('id',$id)->first();
+            $loans = $affiliate->loans();
+        }
+        $ci=$affiliate->identity_card;
         $data = array();
         if($affiliate){
-            $loans = $affiliate->loans;
+            //$loans = $affiliate->loans;
+            //$loans = Loan::where('',);
             foreach($loans as $loan){
                 $data_loan = array(
                     "id" => $loan->id,
@@ -900,6 +913,7 @@ class AffiliateController extends Controller
                     "balance" => $loan->balance,
                     "modality" => $loan->modality->name,
                     "shortened" => $loan->modality->shortened,
+                    "disbursable" => $loan->disbursable_type,
                     "origin" => "PVT"
                 );
                 array_push($data, $data_loan);
@@ -932,13 +946,14 @@ class AffiliateController extends Controller
                 "balance" => $prestamo->PresSaldoAct,
                 "modality" => $prestamo->PrdDsc,
                 "shortened" => $shortened,
+                "disbursable" => $type ? 'affiliates': 'spouses',
                 "origin" => "SISMU"
             );
             array_push($data, $data_prestamos);
         }
         return $data;
     }
-    public function get_mixed_guarantees($ci){
+    public function get_mixed_guarantees($ci, $type){
         $affiliate = Affiliate::whereIdentity_card($ci)->first();
         $data = array();
         if($affiliate){
@@ -956,6 +971,7 @@ class AffiliateController extends Controller
                     "balance" => $loan->balance,
                     "modality" => $loan->modality->name,
                     "shortened" => $loan->modality->shortened,
+                    "disbursable" => $type ? 'affiliates': 'spouses',
                     "origin" => "PVT"
                 );
                 array_push($data, $data_loan);
@@ -987,6 +1003,7 @@ class AffiliateController extends Controller
                 "balance" => $loan->PresSaldoAct,
                 "modality" => $loan->PrdDsc,
                 "shortened" => $shortened,
+                "disbursable" => $type ? 'affiliates': 'spouses',
                 "origin" => "SISMU"
             );
             array_push($data, $data_prestamos);
@@ -1039,7 +1056,7 @@ class AffiliateController extends Controller
     */
 
     public function verify_affiliate_spouse(Affiliate $affiliate){
-        if(count(Spouse::where('identity_card', '=', $affiliate->identity_card)->get())>0 && Spouse::where('identity_card', '=', $affiliate->identity_card)->first()->affiliate->dead){
+        if(count(Spouse::where('identity_card', $affiliate->identity_card)->get())>0 && Spouse::where('identity_card', $affiliate->identity_card)->first()->affiliate->dead){
             return $message=[
                 'message' => 'Affiliado tambien es viudo(a)',
                 'verify' => true

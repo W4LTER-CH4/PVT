@@ -1028,11 +1028,14 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
     },
         validateStepsFour()
     {
-        if(this.affiliate.city_identity_card_id == null)
-        {
-          this.toastr.error("Por favor registre la ciudad de expedición del CI.")
+        if(this.affiliate.city_identity_card_id != null){
+          if(this.addresses.length != 0){
+            this.nextStep(4)
+          }else{
+            this.toastr.error("No se encuentra registrada ninguna dirección. Por favor registre la dirección del afiliado.")
+          }
         }else{
-          this.nextStep(4)
+          this.toastr.error("Por favor registre la ciudad de expedición del CI.")
         }
       //}
     },
