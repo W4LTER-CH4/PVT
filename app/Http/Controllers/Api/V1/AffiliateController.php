@@ -45,7 +45,7 @@ class AffiliateController extends Controller
     {
         $affiliate->full_name = $affiliate->full_name;
         $affiliate->civil_status_gender = $affiliate->civil_status_gender;
-        if($affiliate->affilaite_state !=null) $affiliate->dead = $affiliate->dead;
+        if($affiliate->affiliate_state !=null) $affiliate->dead = $affiliate->dead;
         $affiliate->identity_card_ext = $affiliate->identity_card_ext;
         $affiliate->picture_saved = $affiliate->picture_saved;
         $affiliate->fingerprint_saved = $affiliate->fingerprint_saved;
@@ -58,6 +58,7 @@ class AffiliateController extends Controller
             {$affiliate->spouse = [];
             }
         if ($with_category) $affiliate->category = $affiliate->category;
+        if($affiliate->affiliate_state !=null) $affiliate->affiliate_state;
         return $affiliate;
     }
 
@@ -76,7 +77,7 @@ class AffiliateController extends Controller
     {
         $data = Util::search_sort(new Affiliate(), $request);
         $data->getCollection()->transform(function ($affiliate) {
-            return self::append_data($affiliate, false);
+            return self::append_data($affiliate, true);
         });
         return $data;
     }
@@ -834,6 +835,10 @@ class AffiliateController extends Controller
             $spouse = null;
             if(Affiliate::where('identity_card', $request->ci)->orWhere('registration', $request->ci)->first()){
                 $affiliate = Affiliate::where('identity_card', $request->ci)->orWhere('registration', $request->ci)->first();
+                $affiliate->category = $affiliate->category;
+                $affiliate->state = $affiliate->affiliate_state;
+                $affiliate->degree = $affiliate->degree;
+                $affiliate->unit = $affiliate->unit;
                 $affiliate->origin = "Affiliate";
                 if(Affiliate::where('identity_card', $request->ci)->orWhere('registration', $request->ci)->first()->spouse){
                     $spouse = Affiliate::where('identity_card', $request->ci)->orWhere('registration', $request->ci)->first()->spouse;
@@ -845,10 +850,18 @@ class AffiliateController extends Controller
                     $spouse = Spouse::where('identity_card', $request->ci)->orWhere('registration', $request->ci)->first();
                     $spouse->origin = "spouse";
                     $affiliate = $spouse->affiliate;
+                    $affiliate->category = $affiliate->category;
+                    $affiliate->state = $affiliate->affiliate_state;
+                    $affiliate->degree = $affiliate->degree;
+                    $affiliate->unit = $affiliate->unit;
                     $affiliate->origin = "affiliate";
                 }
                 else{
                     $spouse = Spouse::where('identity_card', $request->ci)->orWhere('registration', $request->ci)->first()->affiliate;
+                    $spouse->category = $spouse->category;
+                    $spouse->state = $spouse->affiliate_state;
+                    $spouse->degree = $spouse->degree;
+                    $spouse->unit = $spouse->unit;
                     $spouse->origin = "affiliate";
                 }
             }

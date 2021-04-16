@@ -262,7 +262,7 @@
 <script>
 import Breadcrumbs from '@/components/shared/Breadcrumbs'
 import Profile from '@/components/affiliate/Profile'
-import PoliceData from '@/components/affiliate/PoliceData'
+//import PoliceData from '@/components/affiliate/PoliceData'
 import Spouse from '@/components/affiliate/Spouse'
 import Fingerprint from '@/components/affiliate/Fingerprint'
 import Document from '@/components/affiliate/Document'
@@ -274,7 +274,7 @@ export default {
   components: {
     Breadcrumbs,
     Profile,
-    PoliceData,
+    //PoliceData,
     Spouse,
     Fingerprint,
     Document,

@@ -343,13 +343,35 @@
                     <v-layout row wrap>
                       <v-flex xs12 class="px-2">
                         <fieldset class="pa-3">
-                          <p class="py-0 mb-0 caption">Monto del Prestamo: {{loan_detail.amount_requested +' '}}<b>|</b> Plazo del Prestamo:{{loan_detail.months_term+' '}}<b>|</b> Cuota del Titular:{{simulator_guarantors.quota_calculated_estimated_total  }}</p>
+                          <v-row class='py-0'>
+                            <v-col cols="12" md="4" style="color:teal" class='py-0'>
+                              Monto del Prestamo: {{loan_detail.amount_requested}}
+                            </v-col>
+                            <v-col cols="12" md="4" style="color:teal" class='py-0'>
+                              Plazo del Prestamo:{{loan_detail.months_term}}
+                            </v-col>
+                            <v-col cols="12" md="4" style="color:teal" class='py-0'>
+                              Cuota del Titular:{{simulator_guarantors.quota_calculated_estimated_total  }}
+                            </v-col>
+                          </v-row>
                             <ul style="list-style: none" class="pa-0">
                               <li v-for="(afiliados,i) in simulator_guarantors.affiliates" :key="i" >
                                 <v-progress-linear></v-progress-linear>
-                                <p class="py-0 mb-0 caption">Nombre del Afiliado: {{ garantes_detalle[i]}}</p>
-                                <p class="py-0 mb-0 caption">Cuota: {{afiliados.quota_calculated+"  "}}{{"  "+"Indice de Endeudamiento:"+afiliados.indebtedness_calculated}}{{" "}}Porcentaje de Pago: {{" "+afiliados.payment_percentage}}%</p>
-                              </li>
+                                 <v-row>
+                                  <v-col cols="12" md="12" class="py-0">
+                                    Nombre del Afiliado: {{ garantes_detalle[i]}}
+                                  </v-col>
+                                  <v-col cols="12" md="3" class="py-0">
+                                    Cuota: {{afiliados.quota_calculated}}
+                                  </v-col>
+                                   <v-col cols="12" md="5" class="py-0">
+                                    Indice de Endeudamiento: {{afiliados.indebtedness_calculated+' %'}}
+                                  </v-col>
+                                   <v-col cols="12" md="4" class="py-0">
+                                    Porcentaje de Pago: {{" "+afiliados.payment_percentage+' %'}}
+                                  </v-col>
+                                </v-row>
+                               </li>
                             </ul>
                         </fieldset>
                       </v-flex>
@@ -461,7 +483,7 @@
         value: "code"
       },
       {
-        text: "Monto Aprovado",
+        text: "Monto Aprobado",
         class: ["normal", "white--text"],
         align: "left",
         value: "amount_approved"

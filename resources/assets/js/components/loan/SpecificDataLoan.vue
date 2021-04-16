@@ -133,6 +133,18 @@
                                             <v-col cols="12" md="3">
                                               <p><b>PORCENTAJE DE PAGO:</b> {{guarantor.pivot.payment_percentage}} %</p>
                                             </v-col>
+                                             <v-col cols="12" md="3">
+                                              <p><b>LIQUIDO PARA CALIFICACION:</b> {{guarantor.pivot.payable_liquid_calculated}}</p>
+                                            </v-col>
+                                            <v-col cols="12" md="3">
+                                              <p><b>PROMEDIO DE BONOS:</b> {{guarantor.pivot.bonus_calculated }}</p>
+                                            </v-col>
+                                            <v-col cols="12" md="3">
+                                              <p><b>LIQUIDO PARA CALIFICACION CALCULADO:</b> {{guarantor.pivot.liquid_qualification_calculated}}</p>
+                                            </v-col>
+                                            <v-col cols="12" md="3">
+                                              <p><b>INDICE DE ENDEUDAMIENTO CALCULADO:</b> {{guarantor.pivot.indebtedness_calculated}} %</p>
+                                            </v-col>
                                           </v-row>
                                         </v-col>
                                       </li>

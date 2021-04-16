@@ -603,7 +603,10 @@ class LoanPaymentController extends Controller
     public function command_senasir_save_payment(Request $request)
     {
         $estimated_date = $request->estimated_date? Carbon::parse($request->estimated_date) : Carbon::now()->endOfMonth();
-        $loans = Loan::get(); 
+        $loan_state = LoanState::where('name', 'Desembolsado')->first();
+        //return $loan_state->id;
+        $loans = Loan::where('state_id', $loan_state->id)->get();
+        //$loans = Loan::get(); 
         $payment_type = AmortizationType::get();
         $payment_type_desc = $payment_type->where('name', 'LIKE', 'Descuento automático')->first();
         $description = $request->description? $request->description : 'Por descuento automatico';
@@ -612,7 +615,7 @@ class LoanPaymentController extends Controller
         $loans_quantity = 0;
         foreach($loans as $loan){
             if($loan->balance != 0){
-                if($loan->guarantor_amortizing == true){
+                if($loan->guarantor_amortizing){
                     $paid_by = "G";
                     foreach($loan->guarantors as $guarantor){
                         $percentage = $guarantor->pivot->payment_percentage;

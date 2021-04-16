@@ -3,40 +3,40 @@
     <v-stepper v-model="e1" >
       <v-stepper-header class=" !pa-0 ml-0" >
         <template>
-         <v-stepper-step 
-            :key="`${1}-step`" 
+         <v-stepper-step
+            :key="`${1}-step`"
             :complete="e1 > 1"
             :step="1">Modalidad
           </v-stepper-step >
           <v-divider v-if="1 !== steps" :key="1" ></v-divider>
-          <v-stepper-step 
+          <v-stepper-step
             :key="`${2}-step`"
-            :complete="e1 > 2" 
+            :complete="e1 > 2"
             :step="2">Calculo
           </v-stepper-step>
           <v-divider v-if="2 !== steps" :key="2" ></v-divider>
-          <v-stepper-step 
+          <v-stepper-step
             :key="`${3}-step`"
-            :complete="e1 > 3" 
+            :complete="e1 > 3"
             :step="3">Garantía
           </v-stepper-step>
           <v-divider v-if="3 !== steps" :key="3" ></v-divider>
-          <v-stepper-step 
-            :key="`${4}-step`" 
+          <v-stepper-step
+            :key="`${4}-step`"
             :complete="e1 > 4"
             :step="4"
             >Afiliado
           </v-stepper-step>
           <v-divider v-if="4 !== steps" :key="4" ></v-divider>
-          <v-stepper-step 
-            :key="`${5}-step`" 
+          <v-stepper-step
+            :key="`${5}-step`"
             :complete="e1 > 5"
             :step="5"
            >Formulario
           </v-stepper-step>
           <v-divider v-if="5 !== steps" :key="5" ></v-divider>
-          <v-stepper-step 
-            :key="`${6}-step`" 
+          <v-stepper-step
+            :key="`${6}-step`"
             :complete="e1 > 6"
             :step="6"
             >Requisitos
@@ -443,6 +443,7 @@ export default {
       console.log('entro a añadir loan')
       if(!this.isNew){ //Si es nuevo y rehacer de nuevo
         //this.data_loan_parent.push(this.data_loan_parent_aux);
+          this.data_loan_parent=[]
           this.data_loan_parent.push({
             code: this.data_loan_parent_aux.code,
             amount_approved: this.data_loan_parent_aux.amount_approved,
@@ -450,8 +451,6 @@ export default {
             balance: this.data_loan_parent_aux.balance,
             estimated_quota: this.data_loan_parent_aux.estimated_quota,
           });
-          console.log('modalidad no considerada')
-          this.data_loan_parent.push(this.data_loan_parent_aux);
         }
        console.log(this.data_loan_parent)
       
@@ -963,7 +962,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
                           }
                         }
                       }else{
-                        if(this.data_loan_parent_aux.balance >= this.calculator_result.amount_requested)
+                        if(parseFloat(this.data_loan_parent_aux.balance) >= parseFloat(this.calculator_result.amount_requested))
                         {
                           this.toastr.error("El saldo no puede ser mayor al Monto Solicitado.")
                         }
@@ -1026,7 +1025,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
         }
       //}
     },
-        validateStepsFour()
+         validateStepsFour()
     {
         if(this.affiliate.city_identity_card_id != null){
           if(this.addresses.length != 0){

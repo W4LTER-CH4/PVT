@@ -140,10 +140,10 @@
         <v-tab :href="`#tab-5`">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-icon v-if="icons" v-bind="attrs" v-on="on">mdi-police-badge</v-icon>
+              <v-icon v-if="icons" v-bind="attrs" v-on="on">mdi-file-account</v-icon>
             </template>
             <span>
-              <b>INFORMACION POLICIAL</b>
+              <b>INFORMACION ADICIONAL</b>
             </span>
           </v-tooltip>
         </v-tab>
@@ -257,7 +257,7 @@
             </v-card-text>
           </v-card>
         </v-tab-item>
-        <v-tab-item :value="'tab-5'">
+        <!--<v-tab-item :value="'tab-5'">
           <v-card flat tile>
             <v-card-text class="py-0 pl-0">
               <PoliceData
@@ -265,6 +265,21 @@
                 :affiliate.sync="affiliate"
                 :editable.sync="editable"
                 :permission="permission"
+              />
+            </v-card-text>
+          </v-card>
+        </v-tab-item>-->
+        <v-tab-item :value="'tab-5'">
+          <v-card flat tile>
+            <v-card-text class="py-0 pl-0">
+              <AdditionalInformation
+                v-if="!reload"
+                :affiliate.sync="affiliate"
+                :addresses.sync="addresses"
+                :editable.sync="editable"
+                :permission="permission"
+                :id_street.sync="id_street"
+                :has_registered_spouse="has_registered_spouse"
               />
             </v-card-text>
           </v-card>
@@ -300,9 +315,10 @@ import SpecificDataLoan from "@/components/loan/SpecificDataLoan"
 import DocumentsFlow from "@/components/workflow/DocumentsFlow"
 import ObserverFlow from "@/components/workflow/ObserverFlow"
 import AddObservation from "@/components/workflow/AddObservation"
-import PoliceData from "@/components/affiliate/PoliceData"
+//import PoliceData from "@/components/affiliate/PoliceData"
 import Dashboard from "@/components/workflow/Dashboard"
 import Kardex from "@/components/payment/Kardex"
+import AdditionalInformation from '@/components/affiliate/AdditionalInformation'
 
 export default {
   name: "flow-index",
@@ -311,11 +327,12 @@ export default {
     Profile,
     SpecificDataLoan,
     DocumentsFlow,
-    PoliceData,
+    //PoliceData,
     ObserverFlow,
     AddObservation,
     Dashboard,
-    Kardex
+    Kardex,
+    AdditionalInformation
   },
   data: () => ({
     bus: new Vue(),
