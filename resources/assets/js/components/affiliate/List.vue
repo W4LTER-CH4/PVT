@@ -11,8 +11,9 @@
     <tr>
       <td class="text-xs-left">{{ props.item | fullName(byFirstName = true) }} </td>
       <td class="text-xs-left">{{ props.item.identity_card }}</td>
+       <td class="text-xs-left">{{ searchState(props.item.affiliate_state_id) }}</td>
       <td class="text-xs-left">{{ searchCategory(props.item.category_id) }}</td>
-      <td class="text-xs-left">{{ searchState(props.item.affiliate_state_id) }}</td>
+     
       <td>
         <v-icon class="mr-1" :color="props.item.picture_saved ? 'success' : 'error'">mdi-camera</v-icon>
         <v-icon class="ml-1" :color="props.item.fingerprint_saved ? 'success' : 'error'">mdi-fingerprint</v-icon>

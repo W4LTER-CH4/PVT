@@ -113,7 +113,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo a largo Plazo para el sect
         </ol>
     </div>
     <div>
-        <b>NOVENA.- (DE LA GARANTÍA):</b>El PRESTATARIO, garantiza el pago de lo adeudado con todos sus bienes, derechos y acciones habidos y por haber, presentes y futuros conforme lo determina el Art. 1335 del Código Civil y además con los beneficios del Fondo de Retiro Policial Solidario y Complemento Económico así como establece el Artículo 65 del Reglamento de Préstamos de la MUSERPOL. Asimismo se {{ count($guarantors) > 1 ? 'constituyen como garantes solidarios, mancomunados, e indivisibles' : 'constituye como garante solidario, mancomunado e indivisible' }}:
+        <b>NOVENA.- (DE LA GARANTÍA):</b>El PRESTATARIO, garantiza el pago de lo adeudado con todos sus bienes, derechos y acciones habidos y por haber, presentes y futuros conforme lo determina el Art. 1335 del Código Civil y además con los beneficios del Fondo de Retiro Policial Solidario y Complemento Económico así como establece el Artículo 65 del Reglamento de Préstamos de la MUSERPOL, tomando en cuenta que ambos beneficios no se encuentran dentro del régimen de beneficios sociales y/o derecho laboral conforme establece el Art. 134 de la ley Orgánica de la Policía. Asimismo se {{ count($guarantors) > 1 ? 'constituyen como garantes solidarios, mancomunados, e indivisibles' : 'constituye como garante solidario, mancomunado e indivisible' }}:
         <?php $cont = 0; $concat_guarantor = "";
             foreach($guarantors as $guarantor){
                 $male_female_guarantor = Util::male_female($guarantor->gender);
@@ -315,7 +315,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo a largo Plazo para el sect
         </ol>
     </div>
     <div>
-        <b>OCTAVA.- (DE LA GARANTÍA):</b>El PRESTATARIO, garantiza el pago de lo adeudado con todos sus bienes, derechos y acciones habidos y por haber, presentes y futuros conforme lo determina el Art. 1335 del Código Civil y además con los beneficios del Fondo de Retiro Policial Solidario y Complemento Económico así como establece el Artículo 65 del Reglamento de Préstamos de la MUSERPOL. Asimismo se {{ count($guarantors) > 1 ? 'constituyen como garantes solidarios, mancomunados, e indivisibles' : 'constituye como garante solidario, mancomunado e indivisible' }}:
+        <b>OCTAVA.- (DE LA GARANTÍA):</b>El PRESTATARIO, garantiza el pago de lo adeudado con todos sus bienes, derechos y acciones habidos y por haber, presentes y futuros conforme lo determina el Art. 1335 del Código Civil y además con los beneficios del Fondo de Retiro Policial Solidario y Complemento Económico así como establece el Artículo 65 del Reglamento de Préstamos de la MUSERPOL, tomando en cuenta que ambos beneficios no se encuentran dentro del régimen de beneficios sociales y/o derecho laboral conforme establece el Art. 134 de la ley Orgánica de la Policía. Asimismo se {{ count($guarantors) > 1 ? 'constituyen como garantes solidarios, mancomunados, e indivisibles' : 'constituye como garante solidario, mancomunado e indivisible' }}:
         <?php $cont = 0; $concat_guarantor = "";
             foreach($guarantors as $guarantor){
                 $male_female_guarantor = Util::male_female($guarantor->gender);

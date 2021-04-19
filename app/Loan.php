@@ -670,7 +670,7 @@ class Loan extends Model
                 }
             break;
             case 'Refinanciamiento Préstamo a corto plazo':
-                if($affiliate_state_type == "Activo")
+                if($affiliate_state_type == "Activo" && $affiliate_state !== "Disponibilidad") //affiliados con estado en disponibilidad no realizaran refinanciamientos 
                 {
                     $modality = ProcedureModality::whereShortened("PCP-R-SA")->first();//Refinanciamiento corto plazo activo                           
                 }else{
@@ -768,7 +768,7 @@ class Loan extends Model
             case 'Refinanciamiento Préstamo hipotecario':
                 if($affiliate_state_type == "Activo")
                 {
-                    if($affiliate_state_type !== "Comisión"){
+                    if($affiliate_state_type !== "Comisión" && $affiliate_state !== "Disponibilidad"){//affiliados con estado en disponibilidad no realizaran refinanciamientos 
                         if($type_sismu && $cpop_sismu) $modality=ProcedureModality::whereShortened("PLP-R-GH-CPOP")->first(); // Refinanciamiento hipotecario CPOP
                         if($type_sismu && !$cpop_sismu) $modality=ProcedureModality::whereShortened("PLP-R-GH-SA")->first(); // Refinanciamiento hipotecario Sector Activo
                 

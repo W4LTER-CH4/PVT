@@ -1,188 +1,269 @@
 <template>
-<v-card flat>
+  <v-card flat>
     <v-card-title>
       <v-toolbar dense color="tertiary">
         <v-toolbar-title>Préstamos</v-toolbar-title>
       </v-toolbar>
     </v-card-title>
-      <v-card-text>
-  <v-container  class="py-0 px-0">
-    <ValidationObserver ref="observer">
-      <v-form>
-        <!--v-card-->
-        <v-row justify="center" >
-          <v-col cols="12" md="4">
-              <v-card>
-                <v-container class="py-0">
-                  <v-row>
-                    <v-col cols="12" md="4"></v-col>
-                    <v-col cols="12" md="6"> Afiliado </v-col>
-                    <v-col cols="12" md="2"></v-col>
-                    <v-col cols="12" md="1"></v-col>
-                    <v-col cols="12" md="8">
-                      <v-text-field
-                        dense
-                        label="CI ó Matrícula"
-                        v-model="affiliate_ci"
-                        class="py-0"
-                        single-line
-                        hide-details
-                        clearable
-                       :loading="loading"
-                       v-on:keyup.enter="getLoansHistory()"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="2">
-                      <v-tooltip top>
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            fab
-                            dark
-                            x-small
-                            v-on="on"
-                            color="info"
-                            @click.stop="getLoansHistory()"
-                          >
-                            <v-icon>mdi-magnify</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Buscar afiliado</span>
-                      </v-tooltip>
+    <v-card-text>
+      <v-container class="py-0 px-0">
+        <ValidationObserver ref="observer">
+          <v-form>
+            <!--v-card-->            
+            <v-row justify="center">
+              <v-col cols="12" md="4">
+                <v-card>
+                  <v-container class="py-0 pb-2">
+                    <v-row>
+                      <v-col cols="12" md="4"></v-col>
+                      <v-col cols="12" md="6"> Afiliado </v-col>
+                      <v-col cols="12" md="2"></v-col>
+                      <v-col cols="12" md="1"></v-col>
+                      <v-col cols="12" md="8">
+                        <ValidationProvider v-slot="{ errors }" 
+                        vid="affiliate_ci" 
+                        name="CI ó Matrícula" 
+                        rules="required|min:3|max:20">
+                        <v-text-field
+                        :error-messages="errors"
+                          dense
+                          label="CI ó Matrícula"
+                          v-model="affiliate_ci"
+                          class="py-0"
+                          single-line
+                          hide-details
+                          clearable
+                          :loading="loading"
+                          v-on:keyup.enter="validar()"
+                        ></v-text-field>
+                        </ValidationProvider>
+                      </v-col>
+                      <v-col cols="12" md="2">
+                        <v-tooltip top>
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              fab
+                              dark
+                              x-small
+                              v-on="on"
+                              color="info"
+                              @click.stop="validar()"
+                            >
+                              <v-icon>mdi-magnify</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Buscar afiliado</span>
+                        </v-tooltip>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card>
+              </v-col>
+              <v-col cols="12" md="8">
+                <v-card>
+                  <!--affiliados-->
+                  <v-row v-if="history_affiliate != null && ver">
+                    <template>
+                      <v-col cols="12" md="12" class="ma-0 pb-0 text-center">
+                        <h2 style="color: teal">
+                          TITULAR: {{history_affiliate.degree ? history_affiliate.degree.shortened : ''}} 
+                          {{$options.filters.fullName(history_affiliate, true)}}
+                        <v-tooltip left>
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              icon
+                              dark
+                              x-large
+                              color="warning"
+                              bottom
+                              right
+                              v-on="on"
+                              :to="{name: 'affiliateAdd', params: { id: history_affiliate.id, workTray: 'received'}}"
+                              target="_blank"
+                            >
+                              <v-icon>mdi-eye</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Ver datos del afiliado</span>
+                        </v-tooltip>
+                        </h2></v-col
+                      >
+                      <v-progress-linear></v-progress-linear>
+                      <v-col cols="12" md="3" class="ma-0 pb-0">
+                        <div>C.I: {{ history_affiliate.identity_card }}</div>
+                        <div>MATRÍCULA: {{ history_affiliate.registration }} </div>
+
+                      </v-col>
+                      <v-col cols="12" md="3" class="ma-0 pb-0">
+                        <div> CATEGORÍA: {{ history_affiliate.category ? history_affiliate.category.name : ''}}</div>
+                        <div> ESTADO: {{ history_affiliate.state ? history_affiliate.state.name : '' }}</div>
+                      </v-col>
+                       <v-col cols="12" md="6" class="ma-0 pb-0">
+                        <div>GRADO: {{ history_affiliate.degree ? history_affiliate.degree.name : '' }}</div>
+                        <div>UNIDAD: {{ history_affiliate.unit ? history_affiliate.unit.name : '' }}</div>
+                      </v-col>
+
+                      <v-col cols="12"  md="8" class="font-weight-black caption ma-0 py-0"
+                      >
+                        NRO DE PRÉSTAMOS SOLICITADOS: {{loans_lender.loans ? loans_lender.loans.length : 0}}
+                      </v-col>
+                      <v-col cols="12" md="8"  class="font-weight-black caption ma-0 pt-0 pb-1"
+                      >
+                        NRO DE PRÉSTAMOS GARANTIZADOS: {{loans_lender.guarantees ? loans_lender.guarantees.length : 0}}
+                      </v-col>
+                    </template>
+                  </v-row>
+
+                  <!--conygue affiliada-->
+                  <v-row v-if="history_spouse != null && ver">
+                    <template v-if="history_spouse.origin == 'affiliate'">
+                      <v-col cols="12" md="12" class="ma-0 pb-0 text-center">
+                        <h2 style="color: teal">
+                          CONYUGUE: {{history_spouse.degree ? history_spouse.degree.shortened : ''}} 
+                          {{$options.filters.fullName(history_spouse, true) }}
+                        <v-tooltip left>
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              icon
+                              dark
+                              x-large
+                              color="warning"
+                              bottom
+                              right
+                              v-on="on"
+                              :to="{name: 'affiliateAdd', params: { id: history_spouse.id, workTray: 'received'}}"
+                              target="_blank"
+                            >
+                              <v-icon>mdi-eye</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Ver datos del afiliado</span>
+                        </v-tooltip>
+                        </h2>
+                      </v-col>
+                      <v-progress-linear></v-progress-linear>
+                      <v-col cols="12" md="3" class="ma-0 pb-0">
+                        <div>C.I: {{ history_spouse.identity_card }}</div>
+                        <div>MATRÍCULA: {{ history_spouse.registration }} </div>
+                      </v-col>
+                      <v-col cols="12" md="3" class="ma-0 pb-0">
+                        <div> CATEGORÍA: {{ history_spouse.category ? history_spouse.category.name : ''}}</div>
+                        <div> ESTADO: {{ history_spouse.state ? history_spouse.state.name : '' }}</div>
+                      </v-col>
+                       <v-col cols="12" md="6" class="ma-0 pb-0">
+                        <div>GRADO: {{ history_spouse.degree ? history_spouse.degree.name : '' }}</div>
+                        <div>UNIDAD: {{ history_spouse.unit ? history_spouse.unit.name : '' }}</div>
+                      </v-col>
+
+                      <v-col cols="12"  md="8" class="font-weight-black caption ma-0 py-0">
+                        NRO DE PRÉSTAMOS SOLICITADOS: {{loans_spouse.loans ? loans_spouse.loans.length : 0}}
+                      </v-col>
+                      <v-col cols="12" md="8"  class="font-weight-black caption ma-0 pt-0 pb-1">
+                        NRO DE PRÉSTAMOS GARANTIZADOS: {{loans_spouse.guarantees ? loans_spouse.guarantees.length : 0}}
+                      </v-col>
+                    </template>
+
+                     <!--conygue no afiliada-->
+                    <template v-if="history_spouse.origin == 'spouse' && ver">
+                      <v-col cols="12" md="12" class="ma-0 pb-0 text-center">
+                        <h2 style="color: teal">
+                          CONYUGUE: {{$options.filters.fullName(history_spouse, true)}}
+                        </h2></v-col
+                      >
+                       <v-progress-linear></v-progress-linear>
+                      <v-col cols="12" md="3" class="ma-0 pb-0">
+                        <div>C.I: {{ history_spouse.identity_card }}</div>
+                        <div>MATRÍCULA: {{ history_spouse.registration }} </div>
+
+                      </v-col>
+                      <v-col cols="12" md="3" class="ma-0 pb-0">
+                        <div> APELLIDO DE CASADA: {{ history_spouse.surname_husband ? history_spouse.surname_husband : ''}}</div>
+                        <div> ESTADO CIVIL: {{ history_spouse.civil_status ? history_spouse.civil_status : '' }}</div>
+                      </v-col>
+                       <v-col cols="12" md="6" class="ma-0 pb-0">
+                        <div>FECHA DE NACIMIENTO: {{ history_spouse.birth_date ? history_spouse.birth_date : '' }}</div>
+                        <div>NUMERO DE CERIFICADO DE DEFUNCIÓN: {{ history_spouse.death_certificate_number ? history_spouse.death_certificate_number : '' }}</div>
+                      </v-col>
+
+                      <v-col cols="12"  md="8" class="font-weight-black caption ma-0 py-0">
+                        NRO DE PRÉSTAMOS SOLICITADOS: {{loans_spouse.loans ? loans_spouse.loans.length: 0}}
+                      </v-col>
+                      <v-col cols="12" md="8"  class="font-weight-black caption ma-0 pt-0 pb-1">
+                        NRO DE PRÉSTAMOS GARANTIZADOS: {{loans_spouse.guarantees ? loans_spouse.guarantees.length : 0}}
+                      </v-col>
+                    </template>
+                  </v-row>
+                    <!--observables-->
+                  <v-row class="ma-0 pb-0 text-uppercase" v-if="history_observables != null && ver">
+                    <v-col class="text-center" cols="12" md="12">
+                      <h3 class="error--text aling-text-center">
+                        NO EXISTE UNA COINCIDENCIA EXACTA <br> CON EL AFILIADO
+                      </h3>
                     </v-col>
                   </v-row>
-                </v-container>
-              </v-card>
-            </v-col>
-              <v-col cols="12" md="8">
-              <v-card>
-                <v-row class="ma-0 pb-0 text-uppercase">
-                  <v-col
-                    class="text-center"
-                    cols="12"
-                    md="8"
-                    v-show="!exist_affiliate"
-                    v-if="ver"
-                  >
-                    <h3 class="error--text aling-text--center">
-                      <ul style="list-style: none" class="pa-0">
-                        <li
-                          v-for="(message, index) in loans.message"
-                          :key="index"
-                          class="pb-2"
-                        >
-                          {{ message }}
-                        </li>
-                      </ul>
-                    </h3>
-                  </v-col>
-                  <template v-if="ver && exist_affiliate">
-                    <v-col cols="12" md="2" class="ma-0 pb-0 text-left">
-                      
-                    </v-col>
-                    <v-col cols="12" md="6" class="ma-0 pb-0 text-center">
-                      <h2 style="color:teal">
-                        {{ $options.filters.fullName(loans, true) }}
-                      </h2></v-col>
-                      <v-col cols="12" md="4" class="ma-0 py-0 text-left">
-             
-                      <v-tooltip
-                        left              
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            icon
-                            dark
-                            x-large
-                            color="warning"
-                            bottom
-                            right                        
-                            v-on="on" 
-                            :to="{ name: 'affiliateAdd', params: { id: affiliate.id, workTray: 'received' }}" 
-                          >
-                            <v-icon>mdi-eye</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Ver datos del afiliado</span>
-                      </v-tooltip>            
                   
-                    </v-col>
-
-                    <v-progress-linear></v-progress-linear>
-                    <v-col cols="12" md="6" class="ma-0 pb-0">
-                      C.I: {{ loans.identity_card }}</v-col
+                </v-card>
+              </v-col>
+              <!--TABLA DE OBSERVABLES-->
+            <template v-if="history_observables != null && ver">
+              <h2 class="pa-1 text-center">COINCIDENCIAS CON BASE DE DATOS ANTIGUA</h2>
+              <v-row>
+                <v-col cols="12" md="12" class="py-0">
+                  <h3 class="pa-1 text-center">EXACTOS</h3>
+                  <v-card>
+                    <v-data-table
+                      class="text-uppercase"
+                      dense
+                      :headers="headers_observables"
+                      :items="history_observables.exactos"
+                      :items-per-page="4"
+                      hide-default-footer
                     >
-                    <v-col cols="12" md="6" class="ma-0 pb-0">
-                      MATRÍCULA: {{ loans.registration }}
-                    </v-col>
-                    <template v-if="loans.tit_pvt">
-                      <v-col cols="12" md="6" class="ma-0 pb-0">
-                        CATEGORÍA: {{ category_name }}
-                      </v-col>
-                      <v-col cols="12" md="6" class="ma-0 pb-0">
-                        ESTADO: {{ state_name_status }}</v-col>
-                      <v-col cols="12" md="6" class="ma-0 pb-0">
-                        GRADO: {{ degree_name }}
-                      </v-col>
-                      <v-col cols="12" md="6" class="ma-0 pb-2">
-                        UNIDAD: {{ unit_name }}
-                      </v-col>
-                    </template>
-                    <template v-if="loans.spouse_pvt || loans.spouse_sismu">
-                      <v-col cols="12" md="6" class="ma-0 pb-2">
-                        CONYUGUE
-                      </v-col>
-                    </template>
-
-                    <v-col
-                      cols="12"
-                      md="8"
-                      class="font-weight-black caption ma-0 py-0"
+                      <template v-slot:[`item.PadFechaRegistro`]="{ item }">
+                        {{ item.PadFechaRegistro | date }}
+                      </template>   
+                      <template v-slot:[`item.fullname`]="{ item }">
+                        {{ item.PadPaterno + " "+ item.PadPaterno +" "+ item.PadNombres}}
+                      </template> 
+                    </v-data-table>
+                  </v-card>
+                </v-col>
+                <v-col cols="12" md="12" class="py-0">
+                  <h3 class="pa-1 text-center">APROXIMACIONES</h3>
+                  <v-card>
+                    <v-data-table
+                      class="text-uppercase"
+                      dense
+                      :headers="headers_observables"
+                      :items="history_observables.aproximaciones"
+                      :items-per-page="4"
+                      hide-default-footer
                     >
-                      NRO DE PRÉSTAMOS SOLICITADOS:
-                      {{ loans.loans.length }}
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="8"
-                      class="font-weight-black caption ma-0 pt-0 pb-1"
-                    >
-                      NRO DE PRÉSTAMOS GARANTIZADOS:
-                      {{ loans.guarantees.length }}
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="8"
-                      class="font-weight-black caption ma-0 pt-0 pb-1 red--text"
-                      v-if="loans.observables.length > 0"
-                    >
-                      <ul style="list-style: none" class="pa-0">
-                        <li
-                          v-for="(message, index) in loans.message"
-                          :key="index"
-                          class="pb-2"
-                        >
-                          {{ message }}
-                        </li>
-                      </ul>
-                    </v-col>
-                  </template>
-                </v-row>
-              </v-card>
-            </v-col>
-
-            <v-col cols="12" class="py-0 px-0 ">
+                      <template v-slot:[`item.PadFechaRegistro`]="{ item }">
+                        {{ item.PadFechaRegistro | date }}
+                      </template>   
+                      <template v-slot:[`item.fullname`]="{ item }">
+                        {{ item.PadPaterno + " "+ item.PadPaterno +" "+ item.PadNombres}}
+                      </template> 
+                    </v-data-table>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </template>
+            <!--tabs-->
+            <v-col cols="12" class="py-0 px-0 " v-if="history_observables == null && ver">
               <v-container fluid class="py-0 px-0 ">
-                <v-row class="py-0" v-if="ver && exist_affiliate">
+                <v-row class="py-0">
                   <v-col cols="12" class="py-0">
                     <v-tabs dark active-class="secondary">
                       <v-tab>Información de Préstamos</v-tab>
                         <v-tab-item>
                           <DataLoanInformation
-                            :loans.sync="loans"
-                            :exist_affiliate.sync="exist_affiliate"
+                            :loans_lender.sync="loans_lender"
+                            :loans_spouse.sync="loans_spouse"
                             :ver.sync="ver"/>
                         </v-tab-item>
-                      <v-tab>CALCULADORA</v-tab>
+                      <v-tab>EVALUACIÓN PREVIA</v-tab>
                         <v-tab-item >
                           <DataLoanAffiliate
                             :loans1.sync="loans1"
@@ -197,72 +278,68 @@
                 </v-row>
               </v-container>
             </v-col>
-          </v-row>
-        <!--/v-card-->
-      </v-form>
-    </ValidationObserver>
-  </v-container>
+            </v-row>
+            <!--/v-card-->
+          </v-form>
+        </ValidationObserver>
+      </v-container>
     </v-card-text>
   </v-card>
 </template>
 <script>
-import DataLoanInformation from '@/components/dashboard/DataLoanInformation'
-import DataLoanAffiliate from '@/components/dashboard/DataLoanAffiliate'
+import DataLoanInformation from "@/components/dashboard/DataLoanInformation";
+import DataLoanAffiliate from "@/components/dashboard/DataLoanAffiliate";
 
 export default {
   name: "index",
   components: {
     DataLoanInformation,
-    DataLoanAffiliate
+    DataLoanAffiliate,
   },
 
-   data: () => ({
-     civil_statuses: [
+  data: () => ({
+    civil_statuses: [
       { name: "Soltero", value: "S" },
       { name: "Casado", value: "C" },
       { name: "Viudo", value: "V" },
-      { name: "Divorciado", value: "D" }
-    ],
-    items_measurement: [
-      { name: "Metros cuadrados", value: "METROS CUADRADOS" },
-      { name: "Hectáreas", value: "HECTÁREAS" }
+      { name: "Divorciado", value: "D" },
     ],
     genders: [
       {
         name: "Femenino",
-        value: "F"
+        value: "F",
       },
       {
         name: "Masculino",
-        value: "M"
-      }
+        value: "M",
+      },
     ],
 
-loans:{},
-affiliate_ci:null,
-loading:false,
-ver:false,
-affiliate: {},
-  degree_name: null,
+    loans: {},
+    affiliate_ci: null,
+    loading: false,
+    ver: false,
+    /*affiliate: {},
+    degree_name: null,
     category_name: null,
     unit_name: null,
     state_name_status: null,
-     exist_affiliate: false,
+*/
 
-loans1:{
-   message:{
-        accomplished:null
+    loans1: {
+      message: {
+        accomplished: null,
       },
-      state_affiliate:{
-        name:null,
-}},
-       largo_plazo:{},
-    corto_plazo:{},
-    anticipo:{},
-    evaluacion:false,
+      state_affiliate: {
+        name: null,
+      },
+    },
+    largo_plazo: {},
+    corto_plazo: {},
+    anticipo: {},
+    evaluacion: false,
 
-
-
+    /* //no son utilizadas en ninguna parte
       dialog: false,
       dialog1: false,
       editedIndex: -1,
@@ -296,18 +373,150 @@ loans1:{
     payment_types:[],
     city: [],
     entity: [],
-    entities:null,
+    entities:null,*/
+
+    history_affiliate: {},
+    history_spouse: {},
+    history_observables: {},
+    headers_observables: [
+      {
+        text: "Id",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "IdPadron",
+     
+      },
+      {
+        text: "CI",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "PadCedulaIdentidad",
+  
+      },  
+      {
+        text: "Expedición",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "PadExpCedula",
+
+      },    
+      {
+        text: "Matrícula",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "PadMatricula",
+
+      },
+      {
+        text: "Mombre",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "fullname",
+
+      },
+      {
+        text: "Tipo",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "PadTipo",
+
+      },
+
+      {
+        text: "Fecha de registro",
+        class: ["normal", "white--text"],
+        align: "left",
+        value: "PadFechaRegistro",
+
+      },
+
+    ],
+    //para guardar los prestamos y garantias
+    loans_lender:{},
+    loans_spouse:{}
   }),
 
   watch: {
     affiliate_ci() {
       this.ver = false;
+      this.history_affiliate = {},
+      this.history_spouse = {},
+      this.history_observables = {},
+      this.loans_lender= {},
+      this.loans_spouse= {}
     },
   },
- 
-  methods:{
 
-   async getLoansHistory() {
+  methods: {
+
+    async validar() {
+      if (await this.$refs.observer.validate()) {
+         
+        this.getHistoryAffiliate()
+
+      }
+  },
+    //obtener los afiliados u observables
+    async getHistoryAffiliate() {
+       
+      this.getCalculator();
+      try {
+        this.loading = true;
+        let res = await axios.get(`affiliate_record`, {
+          params: {
+            ci: this.affiliate_ci,
+          },
+        });
+        this.history_affiliate = res.data.affiliate;
+        this.history_spouse = res.data.spouse;
+        this.history_observables = res.data.observables;
+        
+        
+          if (this.history_affiliate != null){   
+            
+            let res2 = await axios.post(`affiliate_loans_guarantees`, { 
+                affiliate_id: this.history_affiliate.id,
+                type: true
+            });
+            this.loans_lender = res2.data
+            this.ver = true
+          
+            if (this.history_spouse != null){
+              if (this.history_spouse.origin == "affiliate") {
+                
+                let res3 = await axios.post(`affiliate_loans_guarantees`, {        
+                    affiliate_id: this.history_spouse.id,
+                    type: false      
+                });            
+                this.loans_spouse = res3.data
+                this.ver = true
+                console.log("Afiliada conyugue")
+              } 
+              else if(this.history_spouse.origin == "spouse") {         
+                   
+                let res3 = await axios.post(`affiliate_loans_guarantees`, {
+                    affiliate_id: this.history_spouse.id,
+                    type: false
+                });
+                this.loans_spouse = res3.data
+                this.ver = true
+                console.log("conyugue")
+              } else{
+                console.log("No tiene conyugue")
+              }
+            }  
+          }
+     
+        
+      } catch (e) {
+        this.$refs.observer.setErrors(e)
+      } finally {
+        this.loading = false
+      }
+    
+    },
+
+    async getLoansHistory() {
       try {
         this.getCalculator();
         this.loading = true;
@@ -320,13 +529,13 @@ loans1:{
         this.loans = res.data;
         message = this.loans.message[0];
         if (message != "afiliado-inexistente") {
-          this.exist_affiliate = true;
+  
           this.ver = true;
           if (this.loans.tit_pvt) {
             this.getAffiliate(this.loans.id);
           }
         } else {
-          this.exist_affiliate = false;
+
           this.ver = true;
           console.log("no coincide");
         }
@@ -339,54 +548,54 @@ loans1:{
     async getCalculator() {
       try {
         this.loading = false;
-         this.ver= true
-          let res = await axios.post(`search_loan`, {
-            identity_card : this.affiliate_ci });
-            this.loans1=res.data
-            this.cont=this.loans1.modalities.length
-            for (let i = 0; i < this.loans1.modalities.length; i++)
-             {
-               if(this.loans1.modalities[i].name_procedure_modality == 'Préstamo Anticipo')
-               {
-                  this.anticipo.name=this.loans1.modalities[i].name_procedure_modality
-                  this.anticipo.amount_max=this.loans1.modalities[i].amount_max
-                  this.anticipo.maximum_term=this.loans1.modalities[i].modality_affiliate.procedure_type.interval.maximum_term
-                  this.anticipo.liquid_calification=this.loans1.modalities[i].liquid_calification
-                  this.anticipo.annual_interest=this.loans1.modalities[i].interest.annual_interest
-               }
-               if(this.loans1.modalities[i].name_procedure_modality == 'Préstamo a corto plazo')
-               {
-                  this.corto_plazo.name=this.loans1.modalities[i].name_procedure_modality
-                  this.corto_plazo.amount_max=this.loans1.modalities[i].amount_max
-                  this.corto_plazo.maximum_term=this.loans1.modalities[i].modality_affiliate.procedure_type.interval.maximum_term
-                  this.corto_plazo.liquid_calification=this.loans1.modalities[i].liquid_calification
-                  this.corto_plazo.annual_interest=this.loans1.modalities[i].interest.annual_interest
-               }
-               if(this.loans1.modalities[i].name_procedure_modality == 'Préstamo a largo plazo')
-               {
-                  this.largo_plazo.name=this.loans1.modalities[i].name_procedure_modality
-                  this.largo_plazo.amount_max=this.loans1.modalities[i].amount_max
-                  this.largo_plazo.maximum_term=this.loans1.modalities[i].modality_affiliate.procedure_type.interval.maximum_term
-                  this.largo_plazo.liquid_calification=this.loans1.modalities[i].liquid_calification
-                  this.largo_plazo.annual_interest=this.loans1.modalities[i].interest.annual_interest
-               }
+        this.ver = true;
+        let res = await axios.post(`search_loan`, {
+          identity_card: this.affiliate_ci,
+        });
+        this.loans1 = res.data;
+        this.cont = this.loans1.modalities.length;
+        for (let i = 0; i < this.loans1.modalities.length; i++) {
+          if (
+            this.loans1.modalities[i].name_procedure_modality == "Préstamo Anticipo") {
+            this.anticipo.name = this.loans1.modalities[i].name_procedure_modality;
+            this.anticipo.amount_max = this.loans1.modalities[i].amount_max;
+            this.anticipo.maximum_term = this.loans1.modalities[i].modality_affiliate.procedure_type.interval.maximum_term;
+            this.anticipo.liquid_calification = this.loans1.modalities[i].liquid_calification;
+            this.anticipo.annual_interest = this.loans1.modalities[i].interest.annual_interest;
+            this.anticipo.quota_calculated = this.loans1.modalities[i].quota_calculated;
+          }
+          if (this.loans1.modalities[i].name_procedure_modality == "Préstamo a corto plazo") {
+            this.corto_plazo.name = this.loans1.modalities[i].name_procedure_modality;
+            this.corto_plazo.amount_max = this.loans1.modalities[i].amount_max;
+            this.corto_plazo.maximum_term = this.loans1.modalities[i].modality_affiliate.procedure_type.interval.maximum_term;
+            this.corto_plazo.liquid_calification = this.loans1.modalities[i].liquid_calification;
+            this.corto_plazo.annual_interest = this.loans1.modalities[i].interest.annual_interest;
+            this.corto_plazo.quota_calculated = this.loans1.modalities[i].quota_calculated;
+          }
+          if (this.loans1.modalities[i].name_procedure_modality == "Préstamo a largo plazo") {
+            this.largo_plazo.name = this.loans1.modalities[i].name_procedure_modality;
+            this.largo_plazo.amount_max = this.loans1.modalities[i].amount_max;
+            this.largo_plazo.maximum_term = this.loans1.modalities[i].modality_affiliate.procedure_type.interval.maximum_term;
+            this.largo_plazo.liquid_calification = this.loans1.modalities[i].liquid_calification;
+            this.largo_plazo.annual_interest = this.loans1.modalities[i].interest.annual_interest;
+            this.largo_plazo.quota_calculated = this.loans1.modalities[i].quota_calculated;
+          }
+        }
 
-             }
-            
-            this.evaluacion=res.data.evaluate
-              this.$forceUpdate()
+        this.evaluacion = res.data.evaluate;
+        this.$forceUpdate();
       } catch (e) {
         console.log(e);
       } finally {
         this.loading = false;
       }
     },
-    async getAffiliate(id) {
+    /*async getAffiliate(id) {
       try {
         this.loading = true;
         let res = await axios.get(`affiliate/${id}`);
         this.affiliate = res.data;
-        this.getDegree_name(this.affiliate.degree_id);
+        this.yyy=this.getDegree_name(this.affiliate.degree_id);
         this.getCategory_name(this.affiliate.category_id);
         this.getUnit_name(this.affiliate.unit_id);
         this.getState_name(id);
@@ -441,9 +650,7 @@ loans1:{
       } finally {
         this.loading = false;
       }
-    },
-
-
-  }
-}
+    },*/
+  },
+};
 </script>

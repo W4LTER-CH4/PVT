@@ -159,7 +159,7 @@
                     v-slot="{ errors }"
                     vid="financial_entity_id"
                     name="Entidad Financiera"
-                    rules="required|integer|min:1"
+                    rules=""
                   >
                     <v-select
                       :error-messages="errors"
@@ -180,7 +180,7 @@
                   <ValidationProvider
                     v-slot="{ errors }"
                     name="Numero de Cuenta"
-                    rules="required|min:1|max:20"
+                    rules=""
                   >
                     <v-text-field
                       :error-messages="errors"
@@ -197,7 +197,7 @@
                   <ValidationProvider
                     v-slot="{ errors }"
                     name="Cuenta de Segip"
-                    rules="required|min:1|max:20"
+                    rules=""
                   >
                     <v-select
                       :error-messages="errors"

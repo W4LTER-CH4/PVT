@@ -424,6 +424,7 @@ export default {
     this.getSpouse(this.$route.params.id)
     this.getObservation(this.$route.params.id)
     this.getProceduretype(this.$route.params.id)
+    
     this.bus1.$on("emitGetObservation", id => {
       //escuchamos la emision de ObserverFlow
       this.getObservation(id) //y monstramos la lista de observaciones segun el id del prestamo
@@ -431,7 +432,7 @@ export default {
   },
   methods: {
     resetForm() {
-      this.getAddress(this.$route.params.id)
+      this.getAddress(this.affiliate.id)
       this.editable = false
       this.reload = true
       this.$nextTick(() => {
@@ -467,6 +468,8 @@ export default {
           this.getSpouse(this.affiliate.id)
         }
         this.setBreadcrumbs()
+        this.getAddress(this.affiliate.id)
+    
         this.role(this.loan.role_id)
         this.user(this.loan.user_id)
         console.log(this.loan)

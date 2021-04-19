@@ -832,13 +832,43 @@ class LoanController extends Controller
             if($lender->dead) $is_dead = true;
         }
         $persons = collect([]);
+        $loans = collect([]);
         foreach ($lenders as $lender) {
+            //balance de otros prestamos
+            if(!$lender->affiliate_id){
+                foreach($lender->current_loans as $current_loans){
+                    $loans->push([
+                        'code' => $current_loans->code,
+                        'balance' => $current_loans->balance,
+                        'origin' => "PVT",
+                    ]);
+                }
+        }
+        else{
+            foreach($lender->current_loans() as $current_loans){
+                $loans->push([
+                    'code' => $current_loans->code,
+                    'balance' => $current_loans->balance,
+                    'origin' => "PVT",
+                ]);
+            }
+        }
+            $loans_sismu = $this->get_balance_sismu($lender->identity_card);
+            foreach($loans_sismu as $sismu){
+                $loans->push([
+                    'code' => $sismu->PresNumero,
+                    'balance' => $sismu->PresSaldoAct,
+                    'origin' => "SISMU"
+                ]);
+            }
+            //
             $persons->push([
                 'id' => $lender->id,
                 'full_name' => implode(' ', [$lender->title, $lender->full_name]),
                 'identity_card' => $lender->identity_card_ext,
-                'position' => 'SOLICITANTE'
+                'position' => 'SOLICITANTE',
             ]);
+            $lender->loans_balance = $loans;
         }
         foreach ($loan->guarantors as $guarantor) {
             $persons->push([
@@ -1577,5 +1607,15 @@ class LoanController extends Controller
             }
         }
         return  $procedure_ref;
+    }
+
+    public function get_balance_sismu($ci){
+        $query = "select Prestamos.PresNumero, Prestamos.PresSaldoAct, Prestamos.PresEstPtmo
+        from Prestamos
+        join Padron on Padron.IdPadron = Prestamos.IdPadron
+        where Padron.PadCedulaIdentidad = '$ci'
+        and Prestamos.PresEstPtmo = 'V'";
+        $prestamos = DB::connection('sqlsrv')->select($query);
+        return $prestamos;
     }
 }

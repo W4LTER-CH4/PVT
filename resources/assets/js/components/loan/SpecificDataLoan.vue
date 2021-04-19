@@ -81,7 +81,7 @@
                                     <p><b>LIQUIDO PARA CALIFICACION:</b>{{' '+loan.liquid_qualification_calculated}} Bs.</p>
                                   </v-col>
                                    <v-col cols="12" md="4">
-                                    <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+loan.indebtedness_calculated}} Bs.</p>
+                                    <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+loan.indebtedness_calculated}} </p>
                                   </v-col>
                                   <v-col cols="12" md="4">
                                     <p><b>CALCULO DE CUOTA:</b>{{' '+loan.estimated_quota}} Bs.</p>

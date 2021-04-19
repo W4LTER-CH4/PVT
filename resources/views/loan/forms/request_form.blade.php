@@ -96,6 +96,7 @@
                 @endif
                 </td>
             </tr>
+            @if (!$lender->affiliate_id)
             <tr class="bg-grey-darker text-sm-1 text-white">
                 @php ($inactive = $lender->pension_entity)
                 <td colspan="{{$inactive ? 1 : 2}}">Unidad</td>
@@ -111,6 +112,22 @@
                     <td class="data-row py-5">{{ $lender->afp ? $lender->pension_entity ? $lender->pension_entity->name : "APS" : "SENASIR"}}</td>
                 @endif
             </tr>
+            @endif
+            @if(count($lender->loans_balance)>0)
+            <tr class="bg-grey-darker text-sm-1 text-white">
+                <td>Codigo de Prestamo</td>
+                <td>Saldo</td>
+                <td>origen</td>
+            </tr>
+            @foreach ($lender->loans_balance as $loans_balance)
+            <tr>
+                <td>{{$loans_balance['code']}}</td>
+                <td>{{round($loans_balance['balance'],2)}}</td>
+                <td>{{$loans_balance['origin']}}</td>
+            </tr>
+            @endforeach
+            </tr>
+            @endif
         </table>
         @endforeach
     </div>
@@ -121,7 +138,11 @@
     </div>
 
     <div class="block ">
+    @php ($count = 1)
         @foreach ($loan->guarantors as $guarantor)
+        <div class="block">
+            <div class="font-semibold leading-tight text-left m-b-10 text-base">Garante {{$count}}</div>@php ($count = $count + 1)
+        </div>
         <table class="table-info w-100 text-center uppercase my-20">
             <tr class="bg-grey-darker text-sm-1 text-white">
                 <td class="w-70">Garante</td>

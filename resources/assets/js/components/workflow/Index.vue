@@ -346,7 +346,7 @@ export default {
         this.getLoans()
       } else {
         this.filters.procedureTypeSelected = this.$store.getters.modalityLoan[0]
-         alert('track'+ this.filters.procedureTypeSelected)
+         //alert('track'+ this.filters.procedureTypeSelected)
         this.filters.roleSelected = this.roles[0].id
         this.clearNotification()
       }

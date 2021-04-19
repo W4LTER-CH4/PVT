@@ -15,7 +15,9 @@ Vue.filter('datetime', value => {
 	return moment(value).format('LLL')
 })
 Vue.filter('date', value => {
+	if(value != null)
 	return moment(value).format('L')
+	else ''
 })
 Vue.filter('money', value => {
   if (value) return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')

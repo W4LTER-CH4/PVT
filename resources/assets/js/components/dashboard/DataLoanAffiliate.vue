@@ -99,8 +99,14 @@
                         <v-col cols="12" md="4" >
                             {{ anticipo.maximum_term +" meses"}}
                         </v-col>
+                        <v-col cols="12" md="8" >                            
+                            Cuota Calculada:
+                        </v-col>
+                        <v-col cols="12" md="4" >
+                            {{ anticipo.quota_calculated +" Bs."}}
+                        </v-col>
                         <v-col cols="12" md="8" >
-                            Interes:
+                            Interes Mensual:
                         </v-col>
                         <v-col cols="12" md="4" >
                             {{ (anticipo.annual_interest/12).toFixed(2) +" %"}}
@@ -137,8 +143,14 @@
                         <v-col cols="12" md="4" >
                             {{ corto_plazo.maximum_term +" meses"}}
                         </v-col>
+                        <v-col cols="12" md="8" >                            
+                            Cuota Calculada:
+                        </v-col>
+                        <v-col cols="12" md="4" >
+                            {{ corto_plazo.quota_calculated +" Bs."}}
+                        </v-col>
                         <v-col cols="12" md="8" >
-                            Interes:
+                            Interes Mensual:
                         </v-col>
                         <v-col cols="12" md="4" >
                             {{ (corto_plazo.annual_interest/12).toFixed(2)  +" %"}}
@@ -164,19 +176,25 @@
                             {{ largo_plazo.liquid_calification +" Bs."}}
                         </v-col>
                         <v-col cols="12" md="8" >
-                            Monto Maximo:
+                            Monto Máximo:
                         </v-col>
                         <v-col cols="12" md="4" >
                             {{ largo_plazo.amount_max +" Bs."}}
                         </v-col>
                         <v-col cols="12" md="8" >
-                            Plazo Maximo:
+                            Plazo Máximo:
                         </v-col>
                         <v-col cols="12" md="4" >
                             {{ largo_plazo.maximum_term +" meses"}}
                         </v-col>
+                        <v-col cols="12" md="8" >                            
+                            Cuota Calculada:
+                        </v-col>
+                        <v-col cols="12" md="4" >
+                            {{ largo_plazo.quota_calculated +" Bs."}}
+                        </v-col>
                         <v-col cols="12" md="8" >
-                            Interes:
+                            Interes Mensual:
                         </v-col>
                         <v-col cols="12" md="4" >
                             {{(largo_plazo.annual_interest/12).toFixed(2)  +" %"}}
