@@ -6,6 +6,7 @@ use \Waavi\Sanitizer\Sanitizer;
 use Util;
 use Carbon;
 use App\Affiliate;
+use App\Spouse;
 use App\RecordType;
 use App\User;
 use App\Category;
@@ -14,7 +15,6 @@ use App\City;
 use App\Hierarchy;
 use App\AffiliateState;
 use App\AffiliateStateType;
-use App\Spouse;
 use App\Contribution;
 use App\AidContribution;
 use App\Unit;
@@ -901,18 +901,14 @@ class AffiliateController extends Controller
 
     public function get_mixed_loans($id, $type){
         if($type){
-            $affiliate = Affiliate::where('id',$id)->first();
-            $loans = $affiliate->loans;
+            $loans = Loan::where('disbursable_id', $id)->where('disbursable_type', 'affiliates')->get();
+            $ci=Affiliate::whereId($id)->first()->identity_card;
         }
         else{
-            $affiliate = Spouse::where('id',$id)->first();
-            $loans = $affiliate->loans();
+            $loans = Loan::where('disbursable_id', $id)->where('disbursable_type', 'spouses')->get();
+            $ci=Spouse::whereId($id)->first()->identity_card;
         }
-        $ci=$affiliate->identity_card;
         $data = array();
-        if($affiliate){
-            //$loans = $affiliate->loans;
-            //$loans = Loan::where('',);
             foreach($loans as $loan){
                 $data_loan = array(
                     "id" => $loan->id,
@@ -931,7 +927,6 @@ class AffiliateController extends Controller
                 );
                 array_push($data, $data_loan);
             }
-        }
         $query = "SELECT Prestamos.IdPrestamo, trim(Prestamos.PresNumero) as PresNumero, Prestamos.PresFechaPrestamo, Prestamos.PresFechaDesembolso, Prestamos.PresCuotaMensual, Prestamos.PresMeses, trim(EstadoPrestamo.PresEstDsc) as PresEstDsc, Prestamos.PresMntDesembolso, Prestamos.PresSaldoAct, trim(Producto.PrdDsc) as PrdDsc, trim(Padron.PadCedulaIdentidad) as PadCedulaIdentidad, trim(Padron.PadMatricula) as PadMatricula, trim(Padron.PadMatriculaTit) as PadMatriculaTit
                     FROM Prestamos
                     join Padron ON Prestamos.idPadron = Padron.idPadron
@@ -966,12 +961,19 @@ class AffiliateController extends Controller
         }
         return $data;
     }
-    public function get_mixed_guarantees($ci, $type){
-        $affiliate = Affiliate::whereIdentity_card($ci)->first();
+    public function get_mixed_guarantees($id, $type){
+        if($type){
+            $affiliate = Affiliate::whereId($id)->first();
+            $ci = $affiliate->identity_card;
+        }
+        else{
+            $affiliate = Spouse::whereId($id)->first()->affiliate;
+            $ci = Spouse::whereId($id)->first()->identity_card;
+        }
+        $loans = $affiliate->guarantees;
         $data = array();
-        if($affiliate){
-            $loans_guarantees = $affiliate->active_guarantees();
-            foreach($loans_guarantees as $loan){
+        $loans_guarantees = $affiliate->active_guarantees();
+        foreach($loans_guarantees as $loan){
                 $data_loan = array(
                     "id" => $loan->id,
                     "code" => $loan->code,
@@ -988,7 +990,6 @@ class AffiliateController extends Controller
                     "origin" => "PVT"
                 );
                 array_push($data, $data_loan);
-            }
         }
         $query = "SELECT Prestamos.IdPrestamo, trim(Prestamos.PresNumero) as PresNumero, Prestamos.PresFechaPrestamo, Prestamos.PresFechaDesembolso, Prestamos.PresCuotaMensual, Prestamos.PresMeses, trim(EstadoPrestamo.PresEstDsc) as PresEstDsc, Prestamos.PresMntDesembolso, Prestamos.PresSaldoAct, trim(Producto.PrdDsc) as PrdDsc, trim(Padron.PadCedulaIdentidad) as PadCedulaIdentidad, trim(Padron.PadMatricula) as PadMatricula, trim(Padron.PadMatriculaTit) as PadMatriculaTit
                     FROM Prestamos
@@ -1092,7 +1093,7 @@ class AffiliateController extends Controller
     public function search_loan(Request $request){
       // return $request;
        $request->validate([
-           'identity_card' => 'required|string'
+           'identity_card' => 'required|string|exists:affiliates,identity_card'
        ]);
        $message = array();
        $ci=$request->identity_card;

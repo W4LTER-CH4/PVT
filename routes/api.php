@@ -12,7 +12,7 @@ Route::group([
     //Route::get('senasir_save_payment', 'Api\V1\LoanPaymentController@senasir_save_payment');
     Route::get('loans_delay', 'Api\V1\LoanPaymentController@loans_delay');
     //sismu
-    //Route::get('prueba', 'Api\V1\AffiliateController@prueba');
+    //Route::get('prueba', 'Api\V1\AffiliateController@get_mixed_guarantees');
 
     //
     //Route::get('depuracion', 'Api\V1\AffiliateController@eliminacion');

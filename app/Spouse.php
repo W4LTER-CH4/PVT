@@ -100,4 +100,7 @@ class Spouse extends Model
       return Loan::where('disbursable_id', $this->id)->where('disbursable_type', 'spouses')->where('state_id', $loan_state->id)->get();
       //return $this->belongsToMany(Loan::class, 'loan_affiliates')->withPivot(['payment_percentage'])->whereGuarantor(false)->where('state_id', $loan_state->id)->orderBy('loans.created_at', 'desc');
     }
+    public function guarantees(){
+        return $this->affiliate();
+    }
 }
