@@ -78,7 +78,7 @@ export default {
         width: '10%',
         sortable: false
       },{
-        text: 'Categoria',
+        text: 'Categoría',
         value: 'category_id',
         class: ['normal', 'white--text'],
         width: '10%',
@@ -89,7 +89,7 @@ export default {
         width: '15%',
         sortable: false
       },{ 
-        text: 'Accion',
+        text: 'Acción',
         class: ['normal', 'white--text'],
         width: '10%',
         sortable: false

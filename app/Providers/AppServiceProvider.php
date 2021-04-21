@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Validator;
@@ -42,6 +43,15 @@ class AppServiceProvider extends ServiceProvider
             'aid_contributions' => 'App\AidContribution',
             'loan_contribution_adjusts'=>'App\LoanContributionAdjust'    
         ]);
+
+        // DATABASE eloquent logs
+        DB::listen(function($query) {
+            \Log::channel('database')->info(
+                $query->sql,
+                $query->bindings,
+                $query->time
+            );
+        });
     }
 
     /**

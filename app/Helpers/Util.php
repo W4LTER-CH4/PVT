@@ -407,7 +407,7 @@ class Util
             $req = collect(json_decode(file_get_contents(implode('/', [env("RRHH_URL"), 'city', $req['city_identity_card_id']])), true));
             $employee['identity_card'] .= ' ' . $req['shortened'];
         } catch (\Exception $e) {
-            \Log::error('RRHH server not found');
+            \Log::channel('error')->error('RRHH server not found');
         } finally {
             return $employee;
         }

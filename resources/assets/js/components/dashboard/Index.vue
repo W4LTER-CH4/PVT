@@ -486,7 +486,7 @@ export default {
                 
                 let res3 = await axios.post(`affiliate_loans_guarantees`, {        
                     affiliate_id: this.history_spouse.id,
-                    type: false      
+                    type: true      
                 });            
                 this.loans_spouse = res3.data
                 this.ver = true

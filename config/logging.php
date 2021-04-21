@@ -67,6 +67,35 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug'
-        ]
+        ],
+        /* Logs especificos */
+        'access' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/access.log'),
+            'level' => 'debug',
+            'days' => env('APP_ENV', 'development') == 'production' ? 30 : 7,
+            'permission' => 0666
+        ],
+        'error' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/error.log'),
+            'level' => 'debug',
+            'days' => env('APP_ENV', 'development') == 'production' ? 30 : 7,
+            'permission' => 0666
+        ],
+        'request' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/request.log'),
+            'level' => 'debug',
+            'days' => env('APP_ENV', 'development') == 'production' ? 30 : 7,
+            'permission' => 0666
+        ],
+        'database' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/database.log'),
+            'level' => 'debug',
+            'days' => env('APP_ENV', 'development') == 'production' ? 30 : 7,
+            'permission' => 0666
+        ],
     ]
 ];

@@ -85,7 +85,7 @@ class Handler extends ExceptionHandler
 		} elseif ($exception instanceof \PDOException) {
 			$db_code = trim($exception->getCode());
 			$code = 400;
-			\Log::error('PDOException: ' . $db_code);
+			\Log::channel('error')->error('PDOException: ' . $db_code);
 			switch (intval($db_code)) {
 				case 23505:
 					$error_message = 'Solicitud inválida';
@@ -154,7 +154,7 @@ class Handler extends ExceptionHandler
 				'errors' => $exception->errors()
 			], 409);
 		} else {
-			\Log::error('Error inesperado: ' . $exception);
+			\Log::channel('error')->error('Error inesperado: ' . $exception);
 		}
 		return parent::render($request, $exception);
 	}

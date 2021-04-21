@@ -77,7 +77,7 @@ class AuthController extends Controller
             }
         }
         if ($token) {
-            \Log::info("Usuario ".Auth::user()->username." autenticado desde la dirección ".request()->ip());
+            \Log::channel('access')->info("Usuario ".Auth::user()->username." autenticado desde la dirección ".request()->ip());
             return $token;
         }
         return response()->json([

@@ -70,7 +70,7 @@
                     label="Segundo Apellido"
                     class="purple-input"
                     :readonly="!editable || !permission.secondary"
-                    :outlined="editable && permission.secondary4"
+                    :outlined="editable && permission.secondary"
                     :disabled="(editable && !permission.secondary) || state_id != 4"
                   ></v-text-field>
                 </ValidationProvider>
@@ -145,7 +145,6 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="3">
-                {{ spouse.is_duedate_undefined }}
                 <v-checkbox
                   v-model="spouse.is_duedate_undefined"
                   :readonly="!editable || !permission.secondary"
