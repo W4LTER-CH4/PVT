@@ -59,7 +59,7 @@
             "modality_affiliate": {
                 "id": 35,
                 "procedure_type_id": 10,
-                "name": "Corto plazo con disponibilidad de letra \"A\"",
+                "name": "Corto plazo con disponibilidad de letra",
                 "shortened": "PCP-DLA",
                 "is_valid": true,
                 "loan_modality_parameter": {

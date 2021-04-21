@@ -192,6 +192,8 @@ class LoanController extends Controller
     * @bodyParam cosigners array Lista de IDs de codeudores no afiliados a la muserpol. Example: [2,3]
     * @bodyParam user_id integer ID del usuario. Example: 1.
     * @bodyParam remake_loan_id integer ID del prestamo que se esta rehaciendo. Example: 1
+    * @bodyParam delivery_contract_date string Fecha de entrega del contrato al afiliado. Example: 2021-04-05
+    * @bodyParam return_contract_date string Fecha de devolución del contrato del afiliado. Example: 2021-04-07
     * @bodyParam lenders array required Lista de afiliados Titular(es) del préstamo.
     * @bodyParam lenders[0].affiliate_id integer required ID del afiliado. Example: 47461
     * @bodyParam lenders[0].payment_percentage integer required ID del afiliado. Example: 50
@@ -348,6 +350,8 @@ class LoanController extends Controller
     * @bodyParam cosigners array Lista de codeudores no afiliados a la muserpol. Example: [2,3]
     * @bodyParam user_id integer ID del usuario. Example: 1.
     * @bodyParam remake_loan_id integer ID del prestamo que se esta rehaciendo. Example: 1
+    * @bodyParam delivery_contract_date string Fecha de entrega del contrato al afiliado. Example: 2021-04-05
+    * @bodyParam return_contract_date string Fecha de devolución del contrato del afiliado. Example: 2021-04-07
     * @bodyParam lenders array Lista de afiliados Titular(es) del préstamo.
     * @bodyParam lenders[0].affiliate_id integer ID del afiliado.Example: 47461
     * @bodyParam lenders[0].payment_percentage integer ID del afiliado. Example: 50

@@ -110,8 +110,8 @@ class LoanStructureSeeder extends Seeder
               ],
               'interest' => ['annual_interest' => 20,'penal_interest' => 6]
             ],
-              // CORTO PLAZO SECTOR ACTIVO DISPONIBILIDAD LETRA 'A', el refinanciamiento de esta sub mod no corresponde según reglamento de prestamos ART 76 I. c) 
-              ['name'=>'Corto plazo con disponibilidad de letra "A"','shortened'=>'PCP-DLA','requirements'=>[
+              // CORTO PLAZO SECTOR ACTIVO DISPONIBILIDAD LETRA, el refinanciamiento de esta sub mod no corresponde según reglamento de prestamos ART 76 I. c) 
+              ['name'=>'Corto plazo con disponibilidad de letra','shortened'=>'PCP-DLA','requirements'=>[
                 ['name' => 'Cédula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1],
                 ['name' => 'Tres últimas boletas (Original y Fotocopia) y/o Certificado de haberes.','number'=>2], //( 3 boletas)
                 ['name' => 'Memorándum de asignación de la Letra (Original y Fotocopia).','number'=>3],

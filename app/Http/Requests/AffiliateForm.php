@@ -48,7 +48,8 @@ class AffiliateForm extends FormRequest
             'sigep_status' => 'nullable|alpha_spaces|min:3|in:ACTIVO,ELABORADO,VALIDADO,SIN REGISTRO',
             'account_number' => 'nullable|integer',
             'service_years' => 'nullable|integer|min:0',
-            'service_months' => 'nullable|integer|min:0|max:11'
+            'service_months' => 'nullable|integer|min:0|max:11',
+            'unit_police_description' =>'nullable|alpha_spaces|min:3'
         ];
         switch ($this->method()) {
             case 'POST': {
@@ -82,7 +83,8 @@ class AffiliateForm extends FormRequest
             'gender' => 'trim|uppercase',
             'civil_status' => 'trim|uppercase',
             'sigep_status' => 'trim|uppercase',
-            'cell_phone_number' => 'cast:string'
+            'cell_phone_number' => 'cast:string',
+            'unit_police_description' => 'trim|uppercase'
         ];
     }
 

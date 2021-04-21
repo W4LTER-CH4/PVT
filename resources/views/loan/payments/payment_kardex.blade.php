@@ -33,7 +33,11 @@
                 <td class="data-row py-5">{{ $lender->title }} {{ $lender->full_name }}</td>
                 <td class="data-row py-5">{{ $lender->identity_card_ext }}</td>
                 <td class="data-row py-5">{{ $lender->registration }}</td>
-                <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
+                @if($loan->affiliate_state)
+                    <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
+                @else
+                    <td class="data-row py-5"></td>
+                @endif
             </tr>
         </table>
         @endforeach
@@ -120,12 +124,14 @@
             @if($loan->paymentsKardex->first() != null)
                 <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_budget_certification}}</td>
                 <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_accounting_voucher}}</td>
+                <td class="w-25">{{ $loan->paymentsKardex->first()->interest_accumulated}}</td>
+                <td colspan="2">{{ $loan->paymentsKardex->first()->penal_accumulated}}</td>
                 @else
                 <td class="data-row py-5 m-b-10 text-xs">0</td>
                 <td class="data-row py-5 m-b-10 text-xs">0</td>
-                @endif
-            <td class="w-25">{{ $loan->paymentsKardex->first()->interest_accumulated}}</td>
-            <td colspan="2">{{ $loan->paymentsKardex->first()->penal_accumulated}}</td>
+                <td class="w-25">0</td>
+                <td colspan="2">0</td>
+            @endif
             </tr>
         </table>
     </div>

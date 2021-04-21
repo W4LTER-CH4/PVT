@@ -33,7 +33,7 @@ class Loan extends Model
         'disbursable_type',
         'procedure_modality_id',
         'disbursement_date',
-        'num_budget_certification',
+        //'num_budget_certification',
         'num_accounting_voucher',
         'parent_loan_id',
         'parent_reason',
@@ -54,7 +54,9 @@ class Loan extends Model
         'financial_entity_id',
         'role_id',
         'validated',
-        'user_id'
+        'user_id',
+        'delivery_contract_date',
+        'return_contract_date'
     ];
 
     function __construct(array $attributes = [])

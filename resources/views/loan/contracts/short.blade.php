@@ -275,7 +275,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sect
         <b>QUINTA.- (DE LA FORMA DE PAGO Y OTRAS CONTINGENCIAS):</b> Para el cumplimiento estricto de la obligación (capital e intereses) el PRESTATARIO, se obliga a cumplir con la cuota de amortización en forma mensual mediante pago directo en la oficina central de la MUSERPOL de la ciudad de La Paz o efectuar el depósito en la cuenta bancaria de la MUSERPOL y enviar la boleta de depósito original a la oficina central inmediatamente; caso contrario el PRESTATARIO se hará pasible al recargo correspondiente a los intereses que se generen al día de pago por la deuda contraída. Caso contrario se procederá al descuento del garante personal incluido los intereses penales pasado los dos meses sin necesidad de previo aviso.
         <?php }
         else{
-            if($modality->name == 'Corto plazo sector activo' || $modality->name == 'Corto plazo con disponibilidad de letra "A"' || $modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sector Activo'){
+            if($modality->name == 'Corto plazo sector activo' || $modality->name == 'Corto plazo con disponibilidad de letra' || $modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sector Activo'){
                 $quinta = 'Comando General de la Policía Boliviana';
             }
             if($modality->name == 'Corto plazo el sector pasivo y viudas Senasir' || $modality->name =='Refinanciamiento de Préstamo a corto plazo para el sector Pasivo y Viudas Senasir'){
@@ -333,7 +333,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sect
             @endif
         <?php }
             else{
-                if($modality->name == 'Corto plazo sector activo' || $modality->name == 'Corto plazo con disponibilidad de letra "A"' || $modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sector Activo'){ ?>
+                if($modality->name == 'Corto plazo sector activo' || $modality->name == 'Corto plazo con disponibilidad de letra' || $modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sector Activo'){ ?>
                     <b>OCTAVA.- (DE LA GARANTÍA):</b> El PRESTATARIO, garantiza el pago de lo adeudado con todos sus bienes, derechos y acciones habidos y por haber, presentes y futuros conforme determina el Art. 1335 del Código Civil y además con los beneficios que otorga la <b>MUSERPOL, que son Fondo de Retiro Policial Solidario y Complemento Económico así como establece el Artículo 65 del Reglamento de Préstamos de la MUSERPOL</b>, tomando en cuenta que ambos beneficios no se encuentran dentro del régimen de beneficios sociales y/o derecho laboral conforme establece el Art. 134 de la ley Orgánica de la Policía.
                 <?php }?>
                 <?php if($modality->name == 'Corto plazo el sector pasivo y viudas Senasir' || $modality->name =='Refinanciamiento de Préstamo a corto plazo para el sector Pasivo y Viudas Senasir'){ ?>
@@ -352,7 +352,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sect
         </div>
         <?php }
             else{
-                if($modality->name == 'Corto plazo sector activo' || $modality->name == 'Corto plazo con disponibilidad de letra "A"' || $modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sector Activo'){ ?>
+                if($modality->name == 'Corto plazo sector activo' || $modality->name == 'Corto plazo con disponibilidad de letra' || $modality->name == 'Refinanciamiento de Préstamo a corto plazo para el sector Activo'){ ?>
                 <div>
                     <b>NOVENA.- (MODIFICACIÓN DE LA SITUACIÓN DEL PRESTATARIO):</b> El PRESTATARIO, en caso de fallecimiento, retiro voluntario o retiro forzoso garantizan con la totalidad de los beneficios de <b>Fondo de Retiro Policial Solidario y Complemento Económico</b> otorgados por la MUSERPOL, el cumplimiento efectivo de la presente obligación; por cuanto la liquidación de dichos beneficios pasarán a cubrir el monto total de la obligación que resulte adecuada, más los intereses devengados en fecha, previas las formalidades de ley.
                 <div>

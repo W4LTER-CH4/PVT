@@ -29,6 +29,7 @@ Route::group([
         Route::apiResource('user', 'Api\V1\UserController');//->only('index', 'show', 'update');
         if (!env("LDAP_AUTHENTICATION")) Route::apiResource('user', 'Api\V1\UserController')->only('update');
         Route::get('user/{user}/role', 'Api\V1\UserController@get_roles');
+        Route::get('user_role/{module_id}/permission', 'Api\V1\UserController@role_permision');
         Route::apiResource('auth', 'Api\V1\AuthController')->only('index');
         Route::patch('auth', 'Api\V1\AuthController@refresh');
         Route::delete('auth', 'Api\V1\AuthController@logout');

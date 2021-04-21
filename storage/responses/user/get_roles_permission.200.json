@@ -1,0 +1,199 @@
+[
+    {
+        "id": 82,
+        "module_id": 6,
+        "display_name": "Recepción",
+        "action": "Recepcionado",
+        "created_at": "2021-04-13T13:49:41.000000Z",
+        "updated_at": "2021-04-13T13:49:41.000000Z",
+        "correlative": null,
+        "name": "PRE-recepcion",
+        "sequence_number": null,
+        "permissions": [
+            {
+                "id": 584,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2019-10-11T20:45:43.000000Z",
+                "updated_at": "2019-10-11T20:45:43.000000Z",
+                "name": "update-affiliate-secondary",
+                "display_name": "Editar datos secundarios de afiliados"
+            },
+            {
+                "id": 585,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2019-10-11T20:45:44.000000Z",
+                "updated_at": "2019-10-11T20:45:44.000000Z",
+                "name": "show-affiliate",
+                "display_name": "Ver afiliados"
+            },
+            {
+                "id": 595,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "show-all-loan",
+                "display_name": "Ver todos los trámites de préstamo"
+            },
+            {
+                "id": 594,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "show-loan",
+                "display_name": "Ver trámites de préstamo para el rol"
+            },
+            {
+                "id": 592,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "create-loan",
+                "display_name": "Crear trámites de préstamo"
+            },
+            {
+                "id": 618,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:41.000000Z",
+                "updated_at": "2021-04-13T13:49:41.000000Z",
+                "name": "create-address",
+                "display_name": "Crear dirección"
+            },
+            {
+                "id": 619,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:41.000000Z",
+                "updated_at": "2021-04-13T13:49:41.000000Z",
+                "name": "update-address",
+                "display_name": "Editar datos de dirección"
+            },
+            {
+                "id": 621,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:41.000000Z",
+                "updated_at": "2021-04-13T13:49:41.000000Z",
+                "name": "delete-address",
+                "display_name": "Eliminar dirección"
+            },
+            {
+                "id": 593,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "update-loan",
+                "display_name": "Editar trámites de préstamo"
+            },
+            {
+                "id": 596,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "delete-loan",
+                "display_name": "Anular trámites de préstamo"
+            },
+            {
+                "id": 597,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "print-contract-loan",
+                "display_name": "Imprimir contrato de préstamo"
+            },
+            {
+                "id": 598,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "show-deleted-loan",
+                "display_name": "Ver trámites anulados de préstamo"
+            },
+            {
+                "id": 616,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:41.000000Z",
+                "updated_at": "2021-04-13T13:49:41.000000Z",
+                "name": "update-note",
+                "display_name": "Actualizar notas"
+            },
+            {
+                "id": 617,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:41.000000Z",
+                "updated_at": "2021-04-13T13:49:41.000000Z",
+                "name": "delete-note",
+                "display_name": "Eliminar notas"
+            }
+        ]
+    },
+    {
+        "id": 83,
+        "module_id": 6,
+        "display_name": "Calificación",
+        "action": "Calificado",
+        "created_at": "2021-04-13T13:49:41.000000Z",
+        "updated_at": "2021-04-13T13:49:41.000000Z",
+        "correlative": null,
+        "name": "PRE-calificacion",
+        "sequence_number": null,
+        "permissions": [
+            {
+                "id": 584,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2019-10-11T20:45:43.000000Z",
+                "updated_at": "2019-10-11T20:45:43.000000Z",
+                "name": "update-affiliate-secondary",
+                "display_name": "Editar datos secundarios de afiliados"
+            },
+            {
+                "id": 585,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2019-10-11T20:45:44.000000Z",
+                "updated_at": "2019-10-11T20:45:44.000000Z",
+                "name": "show-affiliate",
+                "display_name": "Ver afiliados"
+            },
+            {
+                "id": 594,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "show-loan",
+                "display_name": "Ver trámites de préstamo para el rol"
+            },
+            {
+                "id": 619,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:41.000000Z",
+                "updated_at": "2021-04-13T13:49:41.000000Z",
+                "name": "update-address",
+                "display_name": "Editar datos de dirección"
+            },
+            {
+                "id": 593,
+                "operation_id": null,
+                "action_id": null,
+                "created_at": "2021-04-13T13:49:40.000000Z",
+                "updated_at": "2021-04-13T13:49:40.000000Z",
+                "name": "update-loan",
+                "display_name": "Editar trámites de préstamo"
+            }
+        ]
+    }
+]

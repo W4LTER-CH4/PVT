@@ -85,6 +85,9 @@ class LoanPermissionSeeder extends Seeder
             ], [
                 'name' => 'release-loan-user',
                 'display_name' => 'Liberar usuario de préstamo'
+            ], [
+                'name' => 'update-accounting-loan',
+                'display_name' => 'Editar tramite en contabilidad'
             ]
         ];
         foreach ($permissions as $permission) {

@@ -124,6 +124,7 @@ class AffiliateController extends Controller
     * @bodyParam account_number integer required Numero de Cuenta del afiliado. Example: 5412132113
     * @bodyParam financial_entity_id required integer Entidad financiera de la cuenta del afiliado. Example: 1
     * @bodyParam sigep_status string required Estado del SIGEP. Example: ACTIVO
+    * @bodyParam unit_police_description string Descripcion de la unidad policial mas especifiico Example: Epi turistica de La Paz
     * @authenticated
     * @responseFile responses/affiliate/store.200.json
     */
@@ -187,6 +188,7 @@ class AffiliateController extends Controller
     * @bodyParam account_number integer Numero de Cuenta del afiliado. Example: 5412132113
     * @bodyParam financial_entity_id integer Entidad financiera de la cuenta del afiliado. Example: 1
     * @bodyParam sigep_status string Estado del SIGEP. Example: ACTIVO
+    * @bodyParam unit_police_description string Descripcion de la unidad policial mas especifiico Example: Epi turistica de La Paz
     * @authenticated
     * @responseFile responses/affiliate/update.200.json
     */

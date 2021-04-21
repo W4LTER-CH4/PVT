@@ -3,6 +3,7 @@
 namespace App\Observers;
 use App\LoanPayment;
 use App\Helpers\Util;
+use App\Loan;
 
 
 class LoanPaymentObserver
@@ -30,6 +31,11 @@ class LoanPaymentObserver
     }*/
     public function updating(LoanPayment $object)
     {
+        /*$loans = $object->loan;
+        echo $loans->balance;
+        if($loans->balance == Util::round(0))
+            $loans->state_id = 6;
+        $loans->save();*/
         Util::save_record($object, 'datos-de-un-tramite', Util::concat_action($object));
     }
 

@@ -21,7 +21,7 @@ class CreateLoansTable extends Migration
             $table->unsignedBigInteger('procedure_modality_id'); // id modalidad
             $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
             $table->date('disbursement_date')->nullable(); //fecha de desembolso
-            $table->string('num_budget_certification')->nullable();//codigo de certificacion presupuestaria
+            //$table->string('num_budget_certification')->nullable();//codigo de certificacion presupuestaria
             $table->string('num_accounting_voucher')->nullable();//codigo de comprobante contable
             $table->unsignedBigInteger('parent_loan_id')->nullable();  // id padre , loan padre
             $table->enum('parent_reason', ['REFINANCIAMIENTO', 'REPROGRAMACIÓN'])->nullable();// para indicar si es reprogramación y refinanciamiento 
@@ -52,6 +52,8 @@ class CreateLoansTable extends Migration
             $table->boolean('validated')->default(true);
             $table->unsignedBigInteger('user_id')->nullable();  // id usuario
             $table->foreign('user_id')->references('id')->on('users');
+            $table->date('delivery_contract_date')->nullable(); //fecha de entrega de contrato al affiliado
+            $table->date('return_contract_date')->nullable(); //fecha de devolución de contrato del affiliado
             $table->timestamps();
             $table->softDeletes();
         });

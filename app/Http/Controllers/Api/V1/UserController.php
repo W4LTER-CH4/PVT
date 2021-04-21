@@ -225,4 +225,25 @@ class UserController extends Controller
         }
         return response()->json(collect($items)->sortBy('last_name')->values());
     }
+    /**
+    * Obtener roles y permisos de usuario
+    * Devuelve un listado de roles y permisos asignados al usuario de la sesion
+    * @urlParam module_id required ID de de Modulo . Example: 6
+    * @authenticated
+    * @responseFile responses/user/get_roles_permission.200.json
+    */
+    public function role_permision($module_id)
+    {  
+      $user =  Auth::user();
+      $roles = $user->roles->where('module_id',$module_id);
+      $items = [];  
+        foreach($roles as $role){
+            array_push($items,$role->permissions);    
+        }
+      $role_permission = [];
+        foreach($roles as $role){
+            array_push($role_permission,$role); 
+        }
+        return $role_permission; 
+    }  
 }

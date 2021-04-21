@@ -127,7 +127,7 @@ class LoanForm extends FormRequest
             'disbursable_type' => ['string', 'in:affiliates,spouses'],
             'number_payment_type' => ['nullable', 'integer', 'min:6'],
             'disbursement_date' => ['nullable', 'date_format:"Y-m-d"'],
-            'num_budget_certification' => ['string','nullable'],
+            //'num_budget_certification' => ['string','nullable'],
             'num_accounting_voucher' => ['string','nullable'],
             'parent_loan_id' => ['integer', 'nullable', 'exists:loans,id'],
             'parent_reason'=> ['string', 'nullable',$refinanciamiento? 'required':'nullable', 'in:REFINANCIAMIENTO,REPROGRAMACIÓN'],
@@ -138,7 +138,9 @@ class LoanForm extends FormRequest
             'guarantor_amortizing' => ['boolean'],
             'financial_entity_id' => ['nullable', 'integer', 'exists:financial_entities,id'],
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
-            'remake_loan_id'=>['integer', 'nullable', 'exists:loans,id']
+            'remake_loan_id'=>['integer', 'nullable', 'exists:loans,id'],
+            'delivery_contract_date' => ['nullable', 'date_format:"Y-m-d"'],
+            'return_contract_date' => ['nullable', 'date_format:"Y-m-d"']
         ];
         switch ($this->method()) {
             case 'POST': {
