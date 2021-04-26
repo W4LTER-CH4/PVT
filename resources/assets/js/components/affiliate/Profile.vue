@@ -635,6 +635,7 @@ export default {
   mounted() {},
   watch: {
     "affiliate.due_date": function (date) {
+      console.log("Fecha "+date);
       this.formatDate("dueDate", date);
     },
     "affiliate.date_entry": function (date) {
@@ -726,6 +727,7 @@ export default {
       try {
         this.loading = true;
         let res = await axios.get(`affiliate_state`);
+        //console.log(res.data);
         this.affiliateState = res.data;
       } catch (e) {
         this.dialog = false;

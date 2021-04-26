@@ -51,7 +51,7 @@
             <span v-else>Editar</span>
           </div>
         </v-tooltip>
-      </v-toolbar>      
+      </v-toolbar>
     </v-card-title>
     <v-card-text>
       <v-tabs
@@ -71,7 +71,7 @@
         >
         <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon 
+          <v-icon
           v-if="icons"
           v-bind="attrs"
           v-on="on"
@@ -86,7 +86,7 @@
         >
         <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon 
+          <v-icon
           v-if="icons"
           v-bind="attrs"
           v-on="on"
@@ -102,7 +102,7 @@
         >
         <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon 
+          <v-icon
           v-if="icons"
           v-bind="attrs"
           v-on="on"
@@ -117,8 +117,8 @@
         >
         <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon 
-          v-if="icons" 
+          <v-icon
+          v-if="icons"
           v-bind="attrs"
           v-on="on"
           >mdi-file-account
@@ -134,7 +134,7 @@
         >
         <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon 
+          <v-icon
           v-if="icons"
           v-bind="attrs"
           v-on="on"
@@ -370,7 +370,7 @@ export default {
       this.editable = true
       this.setBreadcrumbs()
     }
-    
+
   },
   methods: {
     resetForm() {
@@ -397,14 +397,36 @@ export default {
               addresses: this.addresses.map(o => o.id)
             })
           } else {
+            //console.log("editar")
+
+
+            //===Validacion de  la fecha de vencimieto
+            console.log(this.affiliate)
+            if(this.affiliate.due_date!=null){
+              let year=new Date(this.affiliate.due_date).getFullYear();
+
+              if(year<year+10){
+                return
+              }
+
+
+              //const nf= new Date(this.affiliate.due_date);
+              //console.log(nf.getFullYear());
+              //dv.add(10,'y')
+              //console.log(dv)
+            }
+
+            //====
+
+
             // Edit affiliate
             await axios.patch(`affiliate/${this.affiliate.id}`, this.affiliate)
             await axios.patch(`affiliate/${this.affiliate.id}/address`, {
               addresses: this.addresses.map(o => o.id),
               addresses_valid: this.id_street
             })
-            
-            //Preguntar si afiliado esta fallecido 
+
+            //Preguntar si afiliado esta fallecido
             if(this.affiliate.affiliate_state_id == 4){
               if(this.spouse.id){
                 await axios.patch(`spouse/${this.spouse.id}`, this.spouse)
@@ -412,7 +434,7 @@ export default {
                 this.spouse.affiliate_id=this.affiliate.id
                 let res = await axios.post(`spouse`, this.spouse)
                 this.getAffiliate(this.$route.params.id)
-              } else if(Object.entries(this.spouse).length === 0){ 
+              } else if(Object.entries(this.spouse).length === 0){
                 this.toastr.success("Se Actualizó los datos del afiliado...")
               } else {
                 this.toastr.error("Solo puede registrar a la conyugue si el estado del afilaidos es 'Fallecido'")
@@ -422,22 +444,22 @@ export default {
             }
             this.editable = false
           }
-        
+
           /*if(this.spouse.id && this.affiliate.affiliate_state_id == 4){
             alert("1")
             await axios.patch(`spouse/${this.spouse.id}`, this.spouse)
           } else if(this.affiliate.affiliate_state_id == 4 && Object.entries(this.spouse).length !== 0){
             alert("2")
-        
+
             this.spouse.affiliate_id = this.affiliate.id
             await axios.post(`spouse`, this.spouse)
-            
+
           } else if(this.affiliate.affiliate_state_id != 4){
 
           } else {
             this.toastr.error("Solo puede registrar a la conyugue si el estado del afilaidos es 'Fallecido'")
           }*/
-        
+
         }
       } catch (e) {
         console.log(e)
