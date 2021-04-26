@@ -103,4 +103,60 @@ class Spouse extends Model
     public function guarantees(){
         return $this->affiliate();
     }
+
+    public function active_guarantees_sismu(){
+        $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+        FROM Padron
+        join PrestamosLevel1 on PrestamosLevel1.IdPadronGar = Padron.IdPadron
+        join Prestamos on PrestamosLevel1.IdPrestamo = prestamos.IdPrestamo
+        where Padron.PadCedulaIdentidad = '$this->identity_card'
+        and Prestamos.PresEstPtmo = 'V'";
+        $loans = DB::connection('sqlsrv')->select($query);
+        foreach($loans as $loan){
+          $query = "SELECT count(*) as quantity
+            from PrestamosLevel1
+            where PrestamosLevel1.IdPrestamo = '$loan->IdPrestamo'";
+            $quantity = DB::connection('sqlsrv')->select($query);
+            $loan->quantity_guarantors = $quantity[0]->quantity;
+        }
+        return $loans;
+       }
+    
+       public function active_loans_sismu(){
+        $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+        FROM Prestamos
+        join Padron on Prestamos.IdPadron = Padron.IdPadron
+        where Padron.PadCedulaIdentidad = '$this->identity_card'
+        and Prestamos.PresEstPtmo = 'V'";
+        $loans = DB::connection('sqlsrv')->select($query);
+        return $loans;
+       }
+    
+       public function process_loans_sismu(){
+        $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+        FROM Prestamos
+        join Padron on Prestamos.IdPadron = Padron.IdPadron
+        where Padron.PadCedulaIdentidad = '$this->identity_card'
+        and Prestamos.PresEstPtmo = 'A'";
+        $loans = DB::connection('sqlsrv')->select($query);
+        return $loans;
+       }
+    
+       public function process_guarantees_sismu(){
+        $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+        FROM Padron
+        join PrestamosLevel1 on PrestamosLevel1.IdPadronGar = Padron.IdPadron
+        join Prestamos on PrestamosLevel1.IdPrestamo = prestamos.IdPrestamo
+        where Padron.PadCedulaIdentidad = '$this->identity_card'
+        and Prestamos.PresEstPtmo = 'A'";
+        $loans = DB::connection('sqlsrv')->select($query);
+        foreach($loans as $loan){
+          $query = "SELECT count(*) as quantity
+            from PrestamosLevel1
+            where PrestamosLevel1.IdPrestamo = '$loan->IdPrestamo'";
+            $quantity = DB::connection('sqlsrv')->select($query);
+            $loan->quantity = $quantity->quantity;
+        }
+        return $loans;
+       }
 }

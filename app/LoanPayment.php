@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\CarbonImmutable;
 use Carbon;
+use Util;
 use Illuminate\Support\Facades\DB;
 
 class LoanPayment extends Model
@@ -225,6 +226,8 @@ class LoanPayment extends Model
         $interest = [
             'penal' => 0,
             'current' => 0,
+            'penal_generated' => 0,
+            'current_generated' => 0,
             'penal_accumulated' => 0,
             'interest_accumulated' => 0,
         ];
@@ -246,8 +249,10 @@ class LoanPayment extends Model
             return (object)$interest;}
         $diff_days = $estimated_date->diffInDays($payment_date);//correcto
         $interest['current'] = $diff_days;
+        $interest['current_generated'] = Util::round(self::interest_by_days($diff_days,$loan->interest->annual_interest, $loan->balance));
         if ($interest['current'] > 31) {
             $interest['penal'] = $interest['current']-31;
+            $interest['penal_generated'] = Util::round(self::interest_by_days($diff_days-31,$loan->interest->penal_interest, $loan->balance));
         }
         return (object)$interest;
     }

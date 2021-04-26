@@ -281,7 +281,6 @@
         "disbursable_type": "affiliates",
         "procedure_modality_id": 34,
         "disbursement_date": "2020-03-01",
-        "num_budget_certification": "3435345",
         "num_accounting_voucher": "77777",
         "parent_loan_id": null,
         "parent_reason": null,

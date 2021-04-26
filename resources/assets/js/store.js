@@ -31,7 +31,8 @@ export default {
     tokenType: localStorage.getItem('token_type') || null,
     accessToken: localStorage.getItem('access_token') || null,
     tokenExpiration: localStorage.getItem('token_expiration') || null,
-    breadcrumbs: []
+    breadcrumbs: [],
+    rolePermissionSelected: null,
   },
   getters: {
     ldapAuth(state) {
@@ -89,6 +90,26 @@ export default {
     },
     breadcrumbs(state) {
       return state.breadcrumbs
+    },
+    // devuelve todo el objeto seleccionado rol con sus permisos
+    rolePermissionSelected(state) {
+      return state.rolePermissionSelected
+    },
+    // devuelve todo el array de objetos permisos
+    permissionSelected(state) {
+      if(state.rolePermissionSelected && state.rolePermissionSelected.permissions && state.rolePermissionSelected.permissions.length > 0) {
+        return state.rolePermissionSelected.permissions
+      } else {
+        return []
+      }
+    },
+    // devuelve un array de names de los permisos
+    permissionSimpleSelected(state) {
+      if(state.rolePermissionSelected && state.rolePermissionSelected.permissions && state.rolePermissionSelected.permissions.length > 0) {
+        return state.rolePermissionSelected.permissions.map(item => item.name)
+      } else {
+        return []
+      }
     }
   },
   mutations: {
@@ -148,7 +169,10 @@ export default {
     },
     setAmortizationLoan(state, data) {
       state.amortizationLoan = data
-    }
+    },
+    setRolePermissionSelected(state, data) {
+      state.rolePermissionSelected = data
+    },
   },
   actions: {
     selectModule({ commit }, name) {

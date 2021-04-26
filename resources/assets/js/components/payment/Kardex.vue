@@ -4,7 +4,7 @@
     <template v-if="loan.disbursement_date != null ">
       <v-tooltip
         top
-        v-if="$store.getters.permissions.includes('print-payment-kardex-loan')"
+        v-if="permissionSimpleSelected.includes('print-payment-kardex-loan')"
       >
         <template v-slot:activator="{ on }">
           <v-btn
@@ -16,7 +16,7 @@
             absolute
             v-on="on"
             style="margin-left: 150px; margin-top: 20px"
-            @click="imprimirK($route.params.id)"
+            @click="imprimirK($route.params.id, true)"
           >
             <v-icon>mdi-printer</v-icon>
           </v-btn>
@@ -27,6 +27,30 @@
       </v-tooltip>
 
       <v-tooltip
+        top
+        v-if="permissionSimpleSelected.includes('print-payment-kardex-loan')"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            fab
+            x-small
+            color="blue lighten-4"
+            top
+            left
+            absolute
+            v-on="on"
+            style="margin-left: 200px; margin-top: 20px"
+            @click="imprimirK($route.params.id, false)"
+          >
+            <v-icon>mdi-printer</v-icon>
+          </v-btn>
+        </template>
+        <div>
+          <span>Imprimir Kardex desplegado</span>
+        </div>
+      </v-tooltip>
+
+      <v-tooltip top
         v-if="true"
       >
         <template v-slot:activator="{ on }">
@@ -89,7 +113,7 @@
         :loading="loading"
         :options.sync="options"
         :server-items-length="totalPayments"
-        :footer-props="{ itemsPerPageOptions: [5] }"
+        :footer-props="{ itemsPerPageOptions: [10] }"
       >
         <!--<template v-slot:[`header.data-table-select`]="{ on, props }">
           <v-simple-checkbox
@@ -161,7 +185,7 @@
 
           <v-tooltip
             bottom
-            v-if="$store.getters.permissions.includes('update-payment-loan')"
+            v-if="permissionSimpleSelected.includes('update-payment-loan')"
           >
             <template v-slot:activator="{ on }">
               <v-btn
@@ -200,7 +224,7 @@
 
           <v-tooltip
             bottom
-            v-if="$store.getters.permissions.includes('delete-payment-loan')"
+            v-if="permissionSimpleSelected.includes('delete-payment-loan')"
           >
             <template v-slot:activator="{ on }">
               <v-btn
@@ -279,7 +303,7 @@ export default {
     search: "",
     options: {
       page: 1,
-      itemsPerPage: 8,
+      itemsPerPage: 100,
       sortBy: ["quota_number"],
       sortDesc: [false],
     },
@@ -480,7 +504,12 @@ export default {
       },
     ],
   }),
-
+  computed:{
+   //Metodo para obtener Permisos por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },
+  },
   watch: {
     options: function (newVal, oldVal) {
       if (
@@ -576,7 +605,7 @@ export default {
     },
     docsLoans() {
       let docs = [];
-      if (this.$store.getters.permissions.includes("print-payment-loan")) {
+      if (this.permissionSimpleSelected.includes("print-payment-loan")) {
         docs.push({
           id: 5,
           title: "Registro de cobro",
@@ -590,9 +619,13 @@ export default {
       this.printDocs = docs;
       console.log(this.printDocs);
     },
-    async imprimirK(item) {
+    async imprimirK(item, folded) {
       try {
-        let res = await axios.get(`loan/${item}/print/kardex`);
+        let res = await axios.get(`loan/${item}/print/kardex`,{
+          params:{
+            folded: folded
+          }
+        });
         console.log("kardex " + item);
         printJS({
           printable: res.data.content,

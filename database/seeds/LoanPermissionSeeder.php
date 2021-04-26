@@ -88,6 +88,15 @@ class LoanPermissionSeeder extends Seeder
             ], [
                 'name' => 'update-accounting-loan',
                 'display_name' => 'Editar tramite en contabilidad'
+            ], [
+                'name' => 'registration-delivery-return-contracts',
+                'display_name' => 'Registro entrega/retorno de Contrato'
+            ],[
+                'name' => 'update-documents-requirements',
+                'display_name' => 'Actualizar documentos y requisitos'
+            ],[
+                'name' => 'update-loan-calculations',
+                'display_name' => 'Actualizar los calculos del préstamo'
             ]
         ];
         foreach ($permissions as $permission) {

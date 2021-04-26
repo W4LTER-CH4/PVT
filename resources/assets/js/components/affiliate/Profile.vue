@@ -143,7 +143,6 @@
                     ></v-select>
                   </ValidationProvider>
                 </v-col>
-
                 <v-col
                   cols="12"
                   md="5"
@@ -193,37 +192,6 @@
                     ></v-select>
                   </ValidationProvider>
                 </v-col>
-                <!--<v-col cols="12" md="6" >
-                      <v-menu
-                        v-model="dates.birthDate.show"
-                        :close-on-content-click="false"
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="290px"
-                        :disabled="!editable || !permission.secondary"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <ValidationProvider v-slot="{ errors }" vid="birth_date" name="Fecha Nacimiento" rules="required">
-                          <v-text-field
-                            :error-messages="errors"
-                            dense
-                            v-model="dates.birthDate.formatted"
-                            label="Fecha Nacimiento"
-                            hint="Día/Mes/Año"
-                            persistent-hint
-                            append-icon="mdi-calendar"
-                            readonly
-                            :clearable="editable"
-                            v-on="on"
-                            :outlined="editable && permission.secondary"
-                            :disabled="editable && !permission.secondary"
-                          ></v-text-field>
-                          </ValidationProvider>
-                        </template>
-                        <v-date-picker v-model="affiliate.birth_date" no-title @input="dates.birthDate.show = false"></v-date-picker>
-                      </v-menu>
-                    </v-col>-->
                 <v-col cols="12" md="6">
                   <v-text-field
                     dense
@@ -259,44 +227,6 @@
                     ></v-select>
                   </ValidationProvider>
                 </v-col>
-                <!--<v-col cols="12" md="6">
-                      <v-menu
-                        v-model="dates.dateDeath.show"
-                        :close-on-content-click="false"
-                        transition="scale-transition"
-                        offset-y
-                        max-width="290px"
-                        min-width="290px"
-                        :disabled="!editable || !permission.secondary"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-text-field
-                            dense
-                            v-model="dates.dateDeath.formatted"
-                            label="Fecha Fallecimiento"
-                            hint="Día/Mes/Año"
-                            persistent-hint
-                            append-icon="mdi-calendar"
-                            readonly
-                            :clearable="editable"
-                            v-on="on"
-                            :outlined="editable && permission.secondary"
-                            :disabled="editable && !permission.secondary"
-                          ></v-text-field>
-                        </template>
-                        <v-date-picker v-model="affiliate.date_death" no-title @input="dates.dateDeath.show = false"></v-date-picker>
-                      </v-menu>
-                    </v-col>
-                    <v-col cols="12" md="6">
-                      <v-text-field
-                        dense
-                        v-model="affiliate.reason_death"
-                        label="Causa Fallecimiento"
-                        :readonly="!editable || !permission.secondary"
-                        :outlined="editable && permission.secondary"
-                        :disabled="editable && !permission.secondary"
-                      ></v-text-field>
-                    </v-col>-->
               </v-row>
             </v-container>
           </v-col>
@@ -328,24 +258,12 @@
                 </ValidationProvider>
               </v-col>
               <v-col cols="12" md="6" v-if="!visible">
-                <span class="red--text" v-show="has_registered_spouse"
-                  >* Se tiene registrado datos del conyugue, cambie el estado
-                  del afiliado. <br
-                /></span>
-                <span
-                  class="red--text"
-                  v-show="
-                    (affiliate.death_certificate_number != null &&
-                      affiliate.death_certificate_number.trim() != '') ||
-                    (affiliate.date_death != null &&
-                      affiliate.date_death.trim() != '') ||
-                    (affiliate.reason_death != null &&
-                      affiliate.reason_death.trim() != '')
-                  "
-                >
+                <span class="red--text" v-show="has_registered_spouse">* Se tiene registrado datos del conyugue, cambie el estado del afiliado. <br/></span>
+                <span class="red--text" v-show="(affiliate.death_certificate_number != null && affiliate.death_certificate_number.trim() != '') ||
+                    (affiliate.date_death != null && affiliate.date_death.trim() != '') ||
+                    (affiliate.reason_death != null && affiliate.reason_death.trim() != '')">
                   ** Se tiene registrado datos de fallecimiento del afiliado,
-                  cambie el estado del afiliado a Fallecido.</span
-                >
+                  cambie el estado del afiliado a Fallecido.</span>
               </v-col>
               <v-col cols="12" md="6" v-if="visible">
                 <v-text-field
@@ -488,6 +406,23 @@
               ></v-text-field>
                </ValidationProvider>
             </v-col>-->
+              <v-col cols="12" md="12">
+                <ValidationProvider
+                  v-slot="{ errors }"
+                  vid="unit_police_description"
+                  name="Descripcion de Unidad"
+                >
+                  <v-text-field
+                    :error-messages="errors"
+                    dense
+                    v-model="affiliate.unit_police_description"
+                    label="Descripcion de Unidad"
+                    :readonly="!editable || !permission.secondary"
+                    :outlined="editable && permission.secondary"
+                    :disabled="editable && !permission.secondary"
+                  ></v-text-field>
+                </ValidationProvider>
+              </v-col>
               <v-col cols="12" md="6">
                 <ValidationProvider
                   v-slot="{ errors }"

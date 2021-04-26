@@ -70,7 +70,7 @@
                 <td>N° Comprobante Contable</td>
             </tr>
             <tr>
-            <td>{{$loan->num_budget_certification}}</td>
+            <td>{{$loan->num_accounting_voucher}}</td>
             <td>{{$loan->num_accounting_voucher}}</td>
             </tr>
         </table>

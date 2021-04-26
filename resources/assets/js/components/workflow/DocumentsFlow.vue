@@ -1,10 +1,13 @@
 <template>
   <v-container fluid >
+    <!--<span>{{ JSON.stringify(permissionSimpleSelected) }}</span>
+     <pre>{{ permissionSimpleSelected }}</pre>
+     <pre>{{ rolePermissionSelected.id }}</pre>-->
     <v-toolbar-title  class="pb-2">DOCUMENTOS PRESENTADOS</v-toolbar-title>
     <v-form>
-      <template v-if="$route.params.workTray == 'received' || $route.params.workTray == 'my_received' || $route.params.workTray == 'validated'">
-        <div v-if="$store.getters.permissions.includes('validate-submitted-documents')">
-            <v-tooltip top>
+      <template top v-if="permissionSimpleSelected.includes('validate-submitted-documents')">
+        <div >
+            <v-tooltip >
               <template v-slot:activator="{ on }">
                 <v-btn
                   fab
@@ -15,7 +18,7 @@
                   right
                   absolute
                   v-on="on"
-                  style="margin-right: 45px;"
+                  style="margin-right: 75px;"
                   @click.stop="resetForm()"
                   v-show="editable"
                 >
@@ -27,7 +30,7 @@
               </div>
             </v-tooltip>
 
-          <v-tooltip top>
+          <v-tooltip top v-if="permissionSimpleSelected.includes('validate-submitted-documents')">
             <template v-slot:activator="{ on }">
               <v-btn
                 fab
@@ -38,7 +41,7 @@
                 right
                 absolute
                 v-on="on"
-                style="margin-right: -9px;"
+                style="margin-right: 35px;"
                 @click.stop="validarDoc()"
               >
                 <v-icon v-if="editable">mdi-check</v-icon>
@@ -52,7 +55,7 @@
           </v-tooltip>
         </div>
       </template>
-      <template v-if="$store.getters.permissions.includes('update-loan')" >
+      <template v-if="permissionSimpleSelected.includes('update-loan')" >
           <div >
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -83,12 +86,12 @@
                 fab
                 dark
                 x-small
-                :color="editar ? 'danger' : 'success'"
+                :color="editar ? 'danger' : 'blue'"
                 top
                 right
                 absolute
                 v-on="on"
-                style="margin-right: -9px;"
+                style="margin-right: 0px;"
                 @click.stop="editarDoc()"
               >
                 <v-icon v-if="editar">mdi-check</v-icon>
@@ -97,7 +100,7 @@
             </template>
             <div>
               <span v-if="editable">Guardar</span>
-              <span v-else>Validar documentos</span>
+              <span v-else>Editar documentos</span>
           </div>
           </v-tooltip>
         </div>
@@ -129,7 +132,7 @@
                               <v-col cols="3" class="py-0 my-0">
                                 <div
                                   class="py-0"
-                                  v-if="$store.getters.permissions.includes('validate-submitted-documents')"
+                                  v-if="permissionSimpleSelected.includes('validate-submitted-documents')"
                                 >
                                   <!--div class="py-0" -->
                                   <v-checkbox
@@ -146,7 +149,7 @@
                           </v-list>
                         </v-col>
                       </v-row>
-                      <v-row v-if="$store.getters.permissions.includes('validate-submitted-documents')">
+                      <v-row v-if="permissionSimpleSelected.includes('validate-submitted-documents')">
                       <!--v-row -->
                         <v-col cols="12" class="ma-0 py-0 px-10">
                           <v-text-field
@@ -209,7 +212,7 @@
                               <v-col cols="3" class="py-0 my-0">
                                 <div
                                   class="py-0"
-                                  v-if="$store.getters.permissions.includes('validate-submitted-documents')"
+                                  v-if="permissionSimpleSelected.includes('validate-submitted-documents')"
                                 >
                                   <v-checkbox
                                     class="py-0"
@@ -225,7 +228,7 @@
                           </v-list>
                         </v-col>
                       </v-row>
-                      <v-row v-if="$store.getters.permissions.includes('validate-submitted-documents')">
+                      <v-row v-if="permissionSimpleSelected.includes('validate-submitted-documents')">
                         <v-col cols="12" class="ma-0 py-0 pl-10 pr-2">
                           <v-text-field
                             dense
@@ -349,7 +352,7 @@
                           </v-dialog>
                         </v-toolbar>
                       </template>
-                      <template v-slot:item.actions="{ item }">
+                      <template v-slot:[`item.actions`]="{ item }">
                         <v-icon
                           small
                           class="mr-2"
@@ -414,6 +417,14 @@ export default {
 
 
 computed: {
+      //Metodo para obtener Permisos por rol
+      permissionSimpleSelected () {
+        return this.$store.getters.permissionSimpleSelected
+      },
+      rolePermissionSelected () {
+        return this.$store.getters.rolePermissionSelected
+      },
+      
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },

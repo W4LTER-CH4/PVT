@@ -26,7 +26,9 @@ class LoanIntervalAmount implements Rule
      */
     public function passes($attribute, $value)
     {
-        return ($value >= $this->procedure_modality->procedure_type->interval->minimum_amount && $value <= $this->procedure_modality->procedure_type->interval->maximum_amount);
+         if($value >= $this->procedure_modality->loan_modality_parameter->minimum_amount_modality && $value <= $this->procedure_modality->loan_modality_parameter->maximum_amount_modality){
+            return true;
+        };
     }
 
     /**
@@ -36,6 +38,6 @@ class LoanIntervalAmount implements Rule
      */
     public function message()
     {
-        return 'El monto no corresponde con la modalidad';
+        return 'El monto no corresponde con la modalidad'.' '.$this->procedure_modality->name;
     }
 }

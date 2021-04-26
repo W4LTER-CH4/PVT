@@ -25,7 +25,7 @@ class AdvanceRoleSeeder extends Seeder
             $old_receipt->delete();
         }
         $module = Module::whereName('prestamos')->first();
-        $receipt_permissions = ['update-affiliate-secondary', 'show-affiliate', 'show-all-loan', 'show-loan', 'create-loan', 'create-address', 'update-address', 'delete-address', 'update-loan', 'delete-loan', 'print-contract-loan', 'show-deleted-loan','update-note','delete-note'];
+        $receipt_permissions = ['update-affiliate-secondary', 'show-affiliate', 'show-all-loan', 'show-loan', 'create-loan', 'create-address', 'update-address', 'delete-address', 'update-loan', 'delete-loan', 'print-contract-loan', 'show-deleted-loan','update-note','delete-note','update-documents-requirements'];
         $sequence_permissions = ['update-affiliate-secondary', 'show-affiliate', 'show-loan', 'update-address', 'update-loan'];
         $leadership_permissions = ['show-all-loan', 'update-loan', 'delete-loan', 'show-setting', 'show-deleted-loan'];
         $executive_permissions = ['update-setting'];
@@ -37,6 +37,8 @@ class AdvanceRoleSeeder extends Seeder
         $treasury_permissions = ['print-payment-plan', 'print-payment-kardex-loan', 'show-loan','disbursement-loan','delete-payment', 'update-loan'];
         $loan_collection = ['show-all-loan', 'show-loan', 'show-affiliate', 'print-payment-plan', 'print-payment-kardex-loan', 'show-payment-loan', 'create-payment-loan', 'update-payment-loan', 'delete-payment-loan', 'print-payment-loan','update-loan'];
         $receipt_roles = ['Regional Santa Cruz', 'Regional Cochabamba', 'Regional Oruro', 'Regional Potosí', 'Regional Sucre', 'Regional Tarija', 'Regional Trinidad', 'Regional Cobija', 'Recepción'];
+        $legal_permissions = ['registration-delivery-return-contracts'];
+        $calification_permissions = ['update-loan-calculations'];
         $sequence_roles = [
             [
                 'name' => 'Calificación',
@@ -116,6 +118,10 @@ class AdvanceRoleSeeder extends Seeder
                     $role->syncPermissions(array_merge($collection_court));
                 } elseif (in_array($role['display_name'], ['Tesorería'])) {
                     $role->syncPermissions(array_merge($treasury_permissions));
+                }elseif (in_array($role['display_name'], ['Revisión Legal','Aprobación Legal'])) {
+                    $role->syncPermissions(array_merge($sequence_permissions,$legal_permissions));
+                }elseif (in_array($role['display_name'], ['Calificación','Aprobación Calificación'])) {
+                    $role->syncPermissions(array_merge($sequence_permissions,$calification_permissions));
                 }
                 else {
                     $role->syncPermissions($sequence_permissions);

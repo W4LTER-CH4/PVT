@@ -10,7 +10,7 @@
           v-model="filters.traySelected"
           active-class="primary white--text"
           mandatory
-          v-if="!track" v-show="!$store.getters.userRoles.includes('PRE-cobranzas')"
+          v-if="!track"
           ><!--filtros superiores
           v-if="!track" v-show="affiliate_id==0"-->
           <v-btn
@@ -31,7 +31,7 @@
           </v-btn>
         </v-btn-toggle>
 
-        <template v-if="$store.getters.permissions.includes('show-deleted-loan') ">
+        <template v-if="permissionSimpleSelected.includes('show-deleted-loan') ">
           <v-tooltip
             top
             v-if="track"
@@ -149,7 +149,7 @@
     <v-card-text>
       <v-row v-if="!track">
         <v-toolbar flat>
-          <v-col :cols="singleRol ? 12 : 10">
+          <v-col :cols="singleRol ? 12 : 12">
               <v-tabs
                 v-model="filters.procedureTypeSelected"
                 dark
@@ -170,9 +170,9 @@
                 </v-tab>
               </v-tabs>
           </v-col>
-          <v-col cols="2" v-show="!singleRol">
+          <v-col cols="2" v-show="false">
             <v-select
-              v-model="filters.roleSelected"
+              :v-model="filters.roleSelected =this.$store.getters.rolePermissionSelected.id"
               :items="roles"
               label="Filtro"
               class="pt-3 my-0"
@@ -185,7 +185,9 @@
         </v-toolbar>
       </v-row>
       <!--<v-row>  <v-col>procedureTypes{{$store.getters.procedureTypes}}</v-col>     </v-row>
-      <v-row>  <v-col>modalityLoan{{$store.getters.modalityLoan}}</v-col>     </v-row>-->
+      <v-row>  <v-col>modalityLoan{{$store.getters.modalityLoan}}</v-col>     </v-row>
+     <pre>{{ permissionSimpleSelected }}</pre>
+     <pre>{{ rolePermissionSelected.id }}</pre>-->
       <v-row>
         <v-col cols="12">
           <List :bus="bus" 
@@ -266,12 +268,20 @@ export default {
     }
   },
   computed: {
+    //permisos del selector global por rol
+      permissionSimpleSelected () {
+        return this.$store.getters.permissionSimpleSelected
+      },
+      rolePermissionSelected () {
+        return this.$store.getters.rolePermissionSelected
+      },
+
     singleRol() {
       return this.roles.length <= 1
     },
     hasTray() {
       if (this.procedureModalities.length) {
-        return this.$store.getters.permissions.includes('update-loan') && this.$store.getters.permissions.includes('show-all-loan')
+        return this.permissionSimpleSelected.includes('update-loan') && this.permissionSimpleSelected.includes('show-all-loan')
       } else {
         return false
       }
@@ -292,6 +302,7 @@ export default {
     this.filters = self.filters
   },
   beforeMount() {
+    this.$store.getters.rolePermissionSelected.id
     Echo.channel('loan').listen('.flow', (msg) => {
       if (msg.data.role_id == this.filters.roleSelected || this.filters.roleSelected == 0) this.newLoans = msg.data.derived
     })
@@ -423,7 +434,7 @@ export default {
     },
     async getLoans() {
       try {
-        if (!this.$store.getters.permissions.includes('update-loan') && this.$store.getters.permissions.includes('show-all-loan')) {
+        if (!this.permissionSimpleSelected.includes('update-loan') && this.permissionSimpleSelected.includes('show-all-loan')) {
           this.track = true
         }
         this.loading = true

@@ -60,14 +60,14 @@
             small
             v-on="on"
             color="warning"
-            :to="{ name: 'flowAdd', params: { id: item.id, workTray: tray}}"
+            :to="tray != 'all'? { name: 'flowAdd', params: { id: item.id }} : { name: 'flowAdd', params: { id: item.id }, query: { workTray: tray}}"
           ><v-icon>mdi-eye</v-icon>
           </v-btn>
         </template>
-        <span>Ver trámite</span>
+        <span>{{tray != 'all'? 'Revisar trámite' : 'Ver trámite'}}</span>
       </v-tooltip>
 
-      <v-tooltip bottom v-if="$store.getters.permissions.includes('release-loan-user')">
+      <v-tooltip bottom v-if="permissionSimpleSelected.includes('release-loan-user')">
         <template v-slot:activator="{ on }" v-if="item.user_id != null">
           <v-btn
             icon
@@ -86,7 +86,7 @@
       <v-menu
         offset-y
         close-on-content-click
-        v-if="$store.getters.permissions.includes('print-contract-loan') || $store.getters.permissions.includes('print-payment-plan') || $store.getters.permissions.includes('print-payment-kardex-loan') "
+        v-if="permissionSimpleSelected.includes('print-contract-loan') || permissionSimpleSelected.includes('print-payment-plan') || permissionSimpleSelected.includes('print-payment-kardex-loan') "
       >
         <template v-slot:activator="{ on }">
           <v-btn
@@ -166,6 +166,10 @@ export default {
     }
   },
   computed:{
+      //permisos del selector global por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },
     fullname(item) {
       return this.$options.filters.fullName(item, true)
     }
@@ -332,40 +336,19 @@ export default {
         }
       }
     },
-    /*docsLoans(){
-      let docs =[]    
-      if(this.$store.getters.permissions.includes('print-contract-loan') && this.$store.getters.permissions.includes('print-payment-plan')){
-        docs=[
-          { id: 1, title: 'Contrato', icon: 'mdi-file-document'},
-          { id: 2, title: 'Solicitud', icon: 'mdi-file'},
-          { id: 3, title: 'Plan de pagos', icon: 'mdi-cash'}
-        ]
-      }
-      else if(this.$store.getters.permissions.includes('print-contract-loan')){
-        docs=[
-          { id: 1, title: 'Contrato', icon: 'mdi-file-document'},
-          { id: 2, title: 'Solicitud', icon: 'mdi-file'}
-        ]
-      }
-      else if(this.$store.getters.permissions.includes('print-payment-plan')){
-        docs=[
-          { id: 3, title: 'Plan de pagos', icon: 'mdi-cash'}
-        ]
-      }
-      this.printDocs=docs
-    },*/
+
       docsLoans(){
         let docs =[]    
-        if(this.$store.getters.permissions.includes('print-contract-loan')){
+        if(this.permissionSimpleSelected.includes('print-contract-loan')){
           docs.push(
             { id: 1, title: 'Contrato', icon: 'mdi-file-document'},
             { id: 2, title: 'Solicitud', icon: 'mdi-file'})
         }
-        if(this.$store.getters.permissions.includes('print-payment-plan')){
+        if(this.permissionSimpleSelected.includes('print-payment-plan')){
           docs.push(
             { id: 3, title: 'Plan de pagos', icon: 'mdi-cash'})
         }    
-        if(this.$store.getters.permissions.includes('print-payment-kardex-loan')){
+        if(this.permissionSimpleSelected.includes('print-payment-kardex-loan')){
           docs.push(
             { id: 4, title: 'Kardex', icon: 'mdi-view-list'})
         }else{

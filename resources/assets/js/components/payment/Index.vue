@@ -30,7 +30,7 @@
           </v-btn>
         </v-btn-toggle>
         
-        <template v-if="$store.getters.permissions.includes('show-deleted-payment') ">
+        <template v-if="permissionSimpleSelected.includes('show-deleted-payment') ">
           <v-tooltip
             top
             v-if="track"
@@ -148,7 +148,7 @@
     <v-card-text>
       <v-row v-if="!track">
         <v-toolbar flat>
-          <v-col :cols="singleRol ? 12 : 10">
+          <v-col :cols="singleRol ? 12 : 12">
               <v-tabs
                 v-model="filters.procedureTypeSelected"
                 dark
@@ -168,9 +168,9 @@
                 </v-tab>
               </v-tabs>
           </v-col>
-          <v-col cols="2" v-show="!singleRol">
+          <v-col cols="2" v-show="false">
             <v-select
-              v-model="filters.roleSelected"
+              :v-model="filters.roleSelected = this.$store.getters.rolePermissionSelected.id"
               :items="roles"
               label="Filtro"
               class="pt-3 my-0"
@@ -268,12 +268,19 @@ export default {
     }
   },
   computed: {
+    //permisos del selector global por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },
+    rolePermissionSelected () {
+      return this.$store.getters.rolePermissionSelected
+    },
     singleRol() {
       return this.roles.length <= 1
     },
     hasTray() {
       if (this.procedureModalities.length) {
-        return this.$store.getters.permissions.includes('update-payment-loan') && this.$store.getters.permissions.includes('show-all-payment-loan')
+        return this.permissionSimpleSelected.includes('update-payment-loan') && this.permissionSimpleSelected.includes('show-all-payment-loan')
       } else {
         return false
       }
@@ -420,7 +427,7 @@ export default {
     },
     async getLoans() {
       try {
-        if (!this.$store.getters.permissions.includes('update-payment-loan') && this.$store.getters.permissions.includes('show-all-payment-loan')) {
+        if (!this.permissionSimpleSelected.includes('update-payment-loan') && this.permissionSimpleSelected.includes('show-all-payment-loan')) {
           this.track = true
         }
         this.loading = true

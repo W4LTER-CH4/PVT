@@ -63,7 +63,7 @@
           <span>Ver registro de cobro</span>
         </v-tooltip>
 
-        <v-tooltip bottom v-if="$store.getters.permissions.includes('create-payment-loan')">
+        <v-tooltip bottom v-if="permissionSimpleSelected.includes('create-payment-loan')">
           <template v-slot:activator="{ on }">
             <v-btn
               icon
@@ -76,10 +76,10 @@
               <v-icon>mdi-file-document-edit-outline</v-icon>
             </v-btn>
           </template>
-          <span>Editar pago</span>
+          <span>Validar pago</span>
         </v-tooltip>
 
-        <v-tooltip bottom v-if="$store.getters.permissions.includes('create-payment')">
+        <v-tooltip bottom v-if="permissionSimpleSelected.includes('create-payment')">
           <template v-slot:activator="{ on }">
             <v-btn
               icon
@@ -95,7 +95,7 @@
           <span>Registrar pago</span>
         </v-tooltip>
 
-        <v-tooltip bottom v-if="$store.getters.permissions.includes('delete-payment-loan')">
+        <v-tooltip bottom v-if="permissionSimpleSelected.includes('delete-payment-loan')">
           <template v-slot:activator="{ on }">
             <v-btn
               icon
@@ -274,6 +274,12 @@ export default {
       if (typeof val === 'string') this.updateHeader()
     }
   },
+  computed: {
+      //Metodo para obtener Permisos por rol
+      permissionSimpleSelected () {
+        return this.$store.getters.permissionSimpleSelected
+      }
+  },
   mounted() {
     this.bus.$on('emitRefreshLoans', val => {
       this.selectedLoans = []
@@ -343,10 +349,10 @@ export default {
     },
     docsLoans() {
       let docs = [];
-      if (this.$store.getters.permissions.includes("print-payment-loan")) {
+      if (this.permissionSimpleSelected.includes("print-payment-loan")) {
         docs.push({ id: 5, title: "Registro de cobro", icon: "mdi-file-check-outline" });
       }
-      if (this.$store.getters.permissions.includes("print-payment-voucher")) {
+      if (this.permissionSimpleSelected.includes("print-payment-voucher")) {
         docs.push({ id: 6, title: "Registro de pago", icon: "mdi-cash-multiple" });
       } else {
         console.log("Se ha producido un error durante la generación de la impresión");

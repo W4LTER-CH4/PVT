@@ -124,7 +124,7 @@
               </ul>
             </div>
             <v-tooltip
-              left v-if="$store.getters.permissions.includes('create-loan')"              
+              left v-if="permissionSimpleSelected.includes('create-loan')"              
             >
               <template v-slot:activator="{ on }">
                 <v-btn
@@ -145,7 +145,7 @@
               <span>Iniciar trámite</span>
             </v-tooltip>
             <v-tooltip
-              left v-if="$store.getters.permissions.includes('create-loan')"              
+              left v-if="permissionSimpleSelected.includes('create-loan')"              
             >
               <template v-slot:activator="{ on }">
                 <v-btn
@@ -166,7 +166,7 @@
               <span>Refinanciamiento SISMU</span>
             </v-tooltip>
             <v-tooltip
-              left v-if="$store.getters.permissions.includes('create-loan')"              
+              left v-if="permissionSimpleSelected.includes('create-loan')"              
             >
               <template v-slot:activator="{ on }">
                 <v-btn
@@ -277,6 +277,10 @@ export default {
     this.randomColor = common.randomColor;
   },
   computed: {
+    //Metodo para obtener Permisos por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },    
     isNew() {
       return this.$route.params.id == "new";
     }

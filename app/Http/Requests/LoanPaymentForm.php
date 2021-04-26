@@ -66,8 +66,14 @@ class LoanPaymentForm extends FormRequest
 
     public function messages()
     {
+        $latest_payment = $this->loan->last_payment_validated;
+        if ($latest_payment) {
+            $date = $latest_payment->estimated_date;
+        } else {
+            $date = $this->loan->disbursement_date;
+        }
         return [
-            'estimated_date.after_or_equal' => 'La fecha estimada debe ser igual a hoy o posterior',
+            'estimated_date.after_or_equal' => "La fecha estimada debe ser igual o posterior al ultimo pago ya cancelado de fecha ".$date,
             'liquidate.boolean' => 'EL atributo liquidado debe ser (true or false)'
         ];
     }

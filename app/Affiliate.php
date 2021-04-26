@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\CarbonImmutable;
 use Util;
 use App\LoanState;
+use Illuminate\Support\Facades\DB;
 
 class Affiliate extends Model
 {
@@ -92,7 +93,7 @@ class Affiliate extends Model
     public function getFullUnitAttribute()
     {
         $data = "";
-        if ($this->unit) $data .= ' ' . $this->unit->district.' - '.$this->unit->name.' ('.$this->unit->shortened.')';
+        if ($this->unit) $data .= ' ' . $this->unit->district.' - '.$this->unit->name.' ('.$this->unit->shortened.')'.' - '.$this->unit_police_description;
         return $data;
     }
 
@@ -357,7 +358,7 @@ class Affiliate extends Model
       return $cpop;
     }
 
-    public function test_guarantor($modality){
+    public function test_guarantor($modality, $sw){
       $guarantor= self::verify_guarantor($this);
       if($guarantor===true){
       if($modality){
@@ -370,10 +371,10 @@ class Affiliate extends Model
       if($guarantor){
           $loan_global_parameter = LoanGlobalParameter::latest()->first();
           if($this->affiliate_state->affiliate_state_type->name == 'Activo'){
-              if($loan_global_parameter->max_guarantor_active <= count($this->active_guarantees())) $guarantor = false;
+              if($loan_global_parameter->max_guarantor_active <= count($this->active_guarantees()) + count($this->active_guarantees_sismu())) $guarantor = false;
           } 
           if($this->affiliate_state->affiliate_state_type->name == 'Pasivo'){          
-            if($loan_global_parameter->max_guarantor_passive <= count($this->active_guarantees())) $guarantor = false;
+            if($loan_global_parameter->max_guarantor_passive <= count($this->active_guarantees()) + count($this->active_guarantees_sismu())) $guarantor = false;
           }
           if($this->affiliate_state->affiliate_state_type->name != 'Activo' && $this->affiliate_state->affiliate_state_type->name != 'Pasivo') $guarantor = false; // en otro caso no corresponde ya que seria Disponibilidad A o C
           if($this->defaulted_lender || $this->defaulted_guarantor) $guarantor = false; 
@@ -385,8 +386,10 @@ class Affiliate extends Model
           'guarantor' => $guarantor,
           'active_guarantees_quantity' => count($this->active_guarantees()),
           'guarantor_information' => self::verify_information($this),
-          'double_perception'=>self::verify_double_perception($this)
-
+          'double_perception'=> $sw ? self::verify_double_perception($this->spouse->identity_card) : false,
+          'id' => $sw ? Affiliate::where('identity_card', $this->spouse->identity_card)->first()->id : null,
+          'loans_sismu' => $this->active_loans_sismu(),
+          'guarantees_sismu' => $this->active_guarantees_sismu()
       ]);
   }
 
@@ -399,11 +402,11 @@ class Affiliate extends Model
       }
       return $information;
     }
-    public static function verify_double_perception(Affiliate $affiliate){
-      if(count(Spouse::where('identity_card', '=', $affiliate->identity_card)->get())>0 && Spouse::where('identity_card', '=', $affiliate->identity_card)->first()->affiliate->dead){
+    public static function verify_double_perception($ci){
+      if(Spouse::where('identity_card', $ci)->first() && Spouse::where('identity_card', '=', $ci)->first()->affiliate->dead){
         $double_perception= true;
       } else{
-      $double_perception = false;}
+        $double_perception = false;}
       return $double_perception;
     }
     //veriifca si garante no es fallecido, ademas verificas que garante= SENASIR en caso pasivo
@@ -462,5 +465,61 @@ class Affiliate extends Model
         }
       }
      return  $responce;
+   }
+
+   public function active_guarantees_sismu(){
+    $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+    FROM Padron
+    join PrestamosLevel1 on PrestamosLevel1.IdPadronGar = Padron.IdPadron
+    join Prestamos on PrestamosLevel1.IdPrestamo = prestamos.IdPrestamo
+    where Padron.PadCedulaIdentidad = '$this->identity_card'
+    and Prestamos.PresEstPtmo = 'V'";
+    $loans = DB::connection('sqlsrv')->select($query);
+    foreach($loans as $loan){
+      $query = "SELECT count(*) as quantity
+        from PrestamosLevel1
+        where PrestamosLevel1.IdPrestamo = '$loan->IdPrestamo'";
+        $quantity = DB::connection('sqlsrv')->select($query);
+        $loan->quantity_guarantors = $quantity[0]->quantity;
+    }
+    return $loans;
+   }
+
+   public function active_loans_sismu(){
+    $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+    FROM Prestamos
+    join Padron on Prestamos.IdPadron = Padron.IdPadron
+    where Padron.PadCedulaIdentidad = '$this->identity_card'
+    and Prestamos.PresEstPtmo = 'V'";
+    $loans = DB::connection('sqlsrv')->select($query);
+    return $loans;
+   }
+
+   public function process_loans_sismu(){
+    $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+    FROM Prestamos
+    join Padron on Prestamos.IdPadron = Padron.IdPadron
+    where Padron.PadCedulaIdentidad = '$this->identity_card'
+    and Prestamos.PresEstPtmo = 'A'";
+    $loans = DB::connection('sqlsrv')->select($query);
+    return $loans;
+   }
+
+   public function process_guarantees_sismu(){
+    $query = "SELECT Prestamos.IdPrestamo, Prestamos.PresNumero, Prestamos.IdPadron, Prestamos.PresCuotaMensual, Prestamos.PresEstPtmo, Prestamos.PresMeses
+    FROM Padron
+    join PrestamosLevel1 on PrestamosLevel1.IdPadronGar = Padron.IdPadron
+    join Prestamos on PrestamosLevel1.IdPrestamo = prestamos.IdPrestamo
+    where Padron.PadCedulaIdentidad = '$this->identity_card'
+    and Prestamos.PresEstPtmo = 'A'";
+    $loans = DB::connection('sqlsrv')->select($query);
+    foreach($loans as $loan){
+      $query = "SELECT count(*) as quantity
+        from PrestamosLevel1
+        where PrestamosLevel1.IdPrestamo = '$loan->IdPrestamo'";
+        $quantity = DB::connection('sqlsrv')->select($query);
+        $loan->quantity_guarantors = $quantity[0]->quantity;
+    }
+    return $loans;
    }
 }

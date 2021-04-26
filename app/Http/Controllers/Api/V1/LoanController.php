@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1;
-
+use App\Http\Controllers\Api\V1\CalculatorController;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -336,7 +336,6 @@ class LoanController extends Controller
     * @bodyParam liquid_qualification_calculated numeric Total de bono calculado. Example: 2000
     * @bodyParam indebtedness_calculated numeric Indice de endeudamiento. Example: 52.26
     * @bodyParam disbursement_date date Fecha de desembolso. Example: 2020-02-01
-    * @bodyParam num_budget_certification string  certificacion presupuestaria. Example: 107
     * @bodyParam num_accounting_voucher string numero de comprobante contable.Example: 107
     * @bodyParam parent_loan_id integer ID de Préstamo Padre. Example: 1
     * @bodyParam parent_reason enum (REFINANCIAMIENTO, REPROGRAMACIÓN) Tipo de trámite hijo. Example: REFINANCIAMIENTO
@@ -634,6 +633,28 @@ class LoanController extends Controller
     public function get_documents(Loan $loan)
     {
         return $loan->submitted_documents_list;
+    }
+
+    /**
+    * Actualización de sismu
+    * Actualiza los datos del sismu
+    * @urlParam loan required ID del préstamo. Example: 3
+    * @bodyParam data_loan array Datos Sismu.
+    * @bodyParam data_loan[0].code string  Codigo del prestamo en el Sismu. Example: PRESTAMO123
+    * @bodyParam data_loan[0].amount_approved numeric Monto aprovado del prestamo del Sismu. Example: 5000.50
+    * @bodyParam data_loan[0].loan_term integer Plazo del prestamo del Sismu. Example: 25
+    * @bodyParam data_loan[0].balance numeric saldo del prestamo del Sismu. Example: 10000.50
+    * @bodyParam data_loan[0].estimated_quota numeric cuota del prestamo del Sismu. Example: 1000.50
+    * @authenticated
+    * @responseFile responses/loan/update_sismu.200.json
+    */
+    public function update_sismu(Request $request, Loan $loan)
+    {
+        if($request->has('data_loan')){
+            $data_loan = $request->data_loan[0];
+            $loan->data_loan()->update($data_loan);
+        }
+        return $loan->data_loan;
     }
 
     /**
@@ -1336,6 +1357,7 @@ class LoanController extends Controller
     * Impresión del Kardex de Pagos
     * Devuelve un pdf del Kardex de pagos acorde a un ID de préstamo
     * @urlParam loan required ID del préstamo. Example: 1
+    * @queryParam folded boolean tipo de kardex, desplegado o no desplegado. Example: true
     * @queryParam copies Número de copias del documento. Example: 2
     * @authenticated
     * @responseFile responses/loan/print_kardex.200.json
@@ -1367,7 +1389,10 @@ class LoanController extends Controller
             ];
             $information_loan= $this->get_information_loan($loan);
             $file_name = implode('_', ['kardex', $procedure_modality->shortened, $loan->code]) . '.pdf';
-            $view = view()->make('loan.payments.payment_kardex')->with($data)->render();
+            if($request->folded == "true")
+                $view = view()->make('loan.payments.payment_kardex')->with($data)->render();
+            else
+                $view = view()->make('loan.payments.payment_kardex_unfolded')->with($data)->render();
             if ($standalone) return Util::pdf_to_base64([$view], $file_name, $information_loan, 'legal', $request->copies ?? 1);
             return $view;
         }else{
@@ -1622,4 +1647,99 @@ class LoanController extends Controller
         $prestamos = DB::connection('sqlsrv')->select($query);
         return $prestamos;
     }
+    /** 
+   * Editar Monto y Plazo del Prestamo
+   * Edita monto y plazo del prestam
+   * @urlParam loan required ID del Prestamo. Example: 5
+   * @bodyParam amount_approved numeric required Monto aprovado del prestamo. Example: 2000
+   * @bodyParam loan_term integer required Plazo del prestamo. Example: 25
+   * @authenticated
+   * @responseFile responses/loan/edit_amounts_loan_term.200.json
+   */
+
+  public function edit_amounts_loan_term(Request $request, Loan $loan){
+    $request->validate([
+       'amount_approved' => 'required|numeric',
+       'loan_term' => 'required|integer'
+   ]);
+   $procedure_modality = ProcedureModality::findOrFail($loan->procedure_modality_id);
+   $quota_estimated = CalculatorController::quota_calculator($procedure_modality,$request->loan_term,$request->amount_approved);
+   $new_indebtedness_calculated = ($quota_estimated/$loan->liquid_qualification_calculated)*100;
+        if(count($loan->guarantors)>0 || count($loan->lenders) > 1){
+            if($new_indebtedness_calculated <= $loan->indebtedness_calculated){
+                $loan->amount_approved = $request->amount_approved;
+                $loan->loan_term = $request->loan_term;
+                $loan->indebtedness_calculated = $new_indebtedness_calculated;
+                $loan->save(); 
+                $lenders_update = [];
+                    foreach ($loan->lenders  as $lender) {     
+                        $quota_estimated = ($quota_estimated/100)*$lender->pivot->payment_percentage;
+                        $lenders_update = [
+                            'loan_id' => $loan->id,
+                            'affiliate_id' => $lender->pivot->affiliate_id,
+                            'payment_percentage' => $lender->pivot->payment_percentage,
+                            'payable_liquid_calculated' =>(float)$lender->pivot->payable_liquid_calculated,
+                            'bonus_calculated' => (float)$lender->pivot->bonus_calculated,
+                            'quota_previous' => Util::round($quota_estimated),
+                            'indebtedness_calculated' => Util::round($new_indebtedness_calculated),
+                            'liquid_qualification_calculated' => (float)$lender->pivot->liquid_qualification_calculated,
+                            'guarantor' => false,
+                            'contributionable_type' => $lender->pivot->contributionable_type,
+                            'contributionable_ids' => $lender->pivot->contributionable_ids
+                            ];
+                        $lender->loans()->where('id',$loan->id)->sync([$lenders_update]);
+                    }
+                $guarantor_update = [];
+                    foreach ($loan->guarantors  as $guarantor) {
+                        $new_quota_estimated = ($quota_estimated/100)*$guarantor->pivot->payment_percentage;
+                        $new_indebtedness_calculated = ($quota_estimated/(float)$guarantor->pivot->liquid_qualification_calculated)*100;
+                        $guarantor_update = [
+                            'loan_id' => $loan->id,
+                            'affiliate_id' => $guarantor->pivot->affiliate_id,
+                            'payment_percentage' => $guarantor->pivot->payment_percentage,
+                            'payable_liquid_calculated' =>(float)$guarantor->pivot->payable_liquid_calculated,
+                            'bonus_calculated' => (float)$guarantor->pivot->bonus_calculated,
+                            'quota_previous' => Util::round($new_quota_estimated),
+                            'indebtedness_calculated' => Util::round($new_indebtedness_calculated),
+                            'liquid_qualification_calculated' => (float)$guarantor->pivot->liquid_qualification_calculated,
+                            'guarantor' => true,
+                            'contributionable_type' => $guarantor->pivot->contributionable_type,
+                            'contributionable_ids' => $guarantor->pivot->contributionable_ids
+                        ];
+                        $guarantor->loans()->where('id',$loan->id)->sync([$guarantor_update]);
+                    } 
+                return self::append_data($loan, true);       
+            }else{
+                abort(403, 'El indice de endeudamiento es superior al evaluado en la creación de tramite');
+            }
+        }else{
+            if($new_indebtedness_calculated<=$procedure_modality->loan_modality_parameter->debt_index){
+                $loan->amount_approved = $request->amount_approved;
+                $loan->loan_term = $request->loan_term;
+                $loan->indebtedness_calculated = $new_indebtedness_calculated;
+                $loan->save(); 
+                $lenders_update = [];
+                foreach ($loan->lenders  as $lender) {
+                    $lenders_update = [
+                        'loan_id' => $loan->id,
+                        'affiliate_id' => $lender->pivot->affiliate_id,
+                        'payment_percentage' => $lender->pivot->payment_percentage,
+                        'payable_liquid_calculated' =>(float)$lender->pivot->payable_liquid_calculated,
+                        'bonus_calculated' => (float)$lender->pivot->bonus_calculated,
+                        'quota_previous' => Util::round($quota_estimated),
+                        'indebtedness_calculated' => Util::round($new_indebtedness_calculated),
+                        'liquid_qualification_calculated' => (float)$lender->pivot->liquid_qualification_calculated,
+                        'guarantor' => false,
+                        'contributionable_type' => $lender->pivot->contributionable_type,
+                        'contributionable_ids' => $lender->pivot->contributionable_ids
+                    ];
+                    $lender->loans()->where('id',$loan->id)->sync([$lenders_update]);
+                }
+                return self::append_data($loan, true);
+            }else {
+            abort(403, 'El indice de endeudamiento es superior a la modalidad');
+            }
+        }
+   }
+
 }

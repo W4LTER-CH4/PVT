@@ -638,17 +638,17 @@ export default {
 
          if(this.modalidad.procedure_type_name == 'Préstamo hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario')
           {
-              if(this.loan_detail.net_realizable_value<=this.intervalos.maximun_amoun)
+              if(this.loan_detail.net_realizable_value<=this.modalidad.maximun_amoun)
               {
                 this.amount_requested=this.loan_detail.net_realizable_value
               }
               else{
-                this.amount_requested=this.intervalos.maximun_amoun
+                this.amount_requested=this.modalidad.maximun_amoun
               }
               let res1 = await axios.post(`simulator`, {
               procedure_modality_id:this.modalidad.id,
               amount_requested: this.amount_requested,
-              months_term:  this.intervalos.maximum_term,
+              months_term:  this.modalidad.maximum_term,
               guarantor: false,
               liquid_qualification_calculated_lender: 0,
               liquid_calculated:this.liquid_calificated
@@ -685,12 +685,12 @@ export default {
 
               }
 
-              this.loan_detail.minimum_term=this.intervalos.minimum_term
-              this.loan_detail.maximum_term=this.intervalos.maximum_term
-              this.loan_detail.minimun_amoun=this.intervalos.minimun_amoun
-              this.loan_detail.maximun_amoun=this.intervalos.maximun_amoun
+              this.loan_detail.minimum_term=this.modalidad.minimum_term
+              this.loan_detail.maximum_term=this.modalidad.maximum_term
+              this.loan_detail.minimun_amoun=this.modalidad.minimun_amoun
+              this.loan_detail.maximun_amoun=this.modalidad.maximun_amoun
 
-              this.loan_detail.months_term=this.intervalos.maximum_term
+              this.loan_detail.months_term=this.modalidad.maximum_term
               this.loan_detail.liquid_qualification_calculated=this.calculator_result.liquid_qualification_calculated_total
               this.loan_detail.indebtedness_calculated=this.calculator_result.indebtedness_calculated_total
               this.loan_detail.maximum_suggested_valid=this.calculator_result.maximum_suggested_valid
@@ -710,18 +710,18 @@ export default {
 
               let res1 = await axios.post(`simulator`, {
               procedure_modality_id:this.modalidad.id,
-              amount_requested: this.intervalos.maximun_amoun,
-              months_term:  this.intervalos.maximum_term,
+              amount_requested: this.modalidad.maximun_amoun,
+              months_term:  this.modalidad.maximum_term,
               guarantor: false,
               liquid_qualification_calculated_lender: 0,
               liquid_calculated:this.liquid_calificated
               })
               this.calculator_result = res1.data
 
-              if( this.calculator_result.amount_maximum_suggested<this.intervalos.maximun_amoun){
+              if( this.calculator_result.amount_maximum_suggested<this.modalidad.maximun_amoun){
                 this.calculator_result.amount_requested=this.calculator_result.amount_maximum_suggested
               }else{
-                this.calculator_result.amount_requested=this.intervalos.maximun_amoun
+                this.calculator_result.amount_requested=this.modalidad.maximun_amoun
               }
               this.lenders=res.data
               this.lenders[0].payment_percentage=this.calculator_result.affiliates[0].payment_percentage
@@ -730,13 +730,13 @@ export default {
               this.lenders[0].loan_contributions_adjust_ids=this.loan_contributions_adjust_ids
               this.lenders[0].contributionable_ids=this.contributionable_ids
 
-              this.loan_detail.minimum_term=this.intervalos.minimum_term
-              this.loan_detail.maximum_term=this.intervalos.maximum_term
-              this.loan_detail.minimun_amoun=this.intervalos.minimun_amoun
-              this.loan_detail.maximun_amoun=this.intervalos.maximun_amoun
+              this.loan_detail.minimum_term=this.modalidad.minimum_term
+              this.loan_detail.maximum_term=this.modalidad.maximum_term
+              this.loan_detail.minimun_amoun=this.modalidad.minimun_amoun
+              this.loan_detail.maximun_amoun=this.modalidad.maximun_amoun
               this.loan_detail.amount_requested=this.calculator_result.amount_requested
               this.loan_detail.amount_maximum_suggested=this.calculator_result.amount_maximum_suggested
-              this.loan_detail.months_term=this.intervalos.maximum_term
+              this.loan_detail.months_term=this.modalidad.maximum_term
               this.loan_detail.liquid_qualification_calculated=this.calculator_result.liquid_qualification_calculated_total
               this.loan_detail.indebtedness_calculated=this.calculator_result.indebtedness_calculated_total
               this.loan_detail.maximum_suggested_valid=this.calculator_result.maximum_suggested_valid
@@ -827,7 +827,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
     },
 
     validateStepsOne(){
-      this.contributions = []
+      //this.contributions = []
       let continuar = false
       //llama al a funcion getContributions del componente Ballots
       this.contributions = this.$refs.ballotsComponent.getLoanModality(this.$route.query.affiliate_id)
@@ -874,12 +874,12 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
           //validar otros casos
           if(continuar == true && !this.type_sismu){
             if(this.modalidad.procedure_type_name == 'Préstamo hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario'){
-              if(this.loan_detail.net_realizable_value >= this.intervalos.minimun_amoun){
+              if(this.loan_detail.net_realizable_value >= this.modalidad.minimun_amoun){
                  this.saveAdjustment()
                 this.liquidCalificated()
                 this.nextStep(1)
               }else{
-                this.toastr.error("El valor VNR debe ser mayor al monto minimo "+this.intervalos.minimun_amoun+ " correspondiente a la modalidad")
+                this.toastr.error("El valor VNR debe ser mayor al monto minimo "+this.modalidad.minimun_amoun+ " correspondiente a la modalidad")
               }
             }else{
                  this.saveAdjustment()
@@ -888,7 +888,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
             }
           }else if(continuar == true && this.type_sismu){
             if(this.modalidad.procedure_type_name == 'Préstamo hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo hipotecario'){
-              if(this.loan_detail.net_realizable_value >= this.intervalos.minimun_amoun){
+              if(this.loan_detail.net_realizable_value >= this.modalidad.minimun_amoun){
                 if(this.data_sismu.quota_sismu > 0){
                    this.saveAdjustment()
                   this.liquidCalificated()
@@ -897,7 +897,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
                   this.toastr.error("Introduzca la CUOTA del SISMU")
                 }
               }else{
-                this.toastr.error("El valor VNR debe ser mayor al monto minimo "+this.intervalos.minimun_amoun+ " correspondiente a la modalidad")
+                this.toastr.error("El valor VNR debe ser mayor al monto minimo "+this.modalidad.minimun_amoun+ " correspondiente a la modalidad")
               }
             }else{
                 if(this.data_sismu.quota_sismu > 0){

@@ -64,9 +64,14 @@ export default {
     search: '',
     bus: new Vue()
   }),
-  computed: {
+  computed: {      
+  //Metodo para obtener Permisos por rol
+   permissionSimpleSelected () {
+     return this.$store.getters.permissionSimpleSelected
+   },
+
     canCreate() {
-      return this.$store.getters.permissions.includes('create-affiliate')
+      return this.permissionSimpleSelected.includes('create-affiliate')
     }
   },
   beforeMount() {

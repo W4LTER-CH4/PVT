@@ -51,4 +51,8 @@ class Contribution extends Model
     {
         return $this->morphMany(LoanContrubutionAdjust::class,'adjustable');
     }
+    public function breakdown()
+    {
+        return $this->belongsTo(Breakdown::class,'breakdown_id','id');
+    }
 }

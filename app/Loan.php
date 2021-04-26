@@ -301,48 +301,16 @@ class Loan extends Model
             $total_interests = 0;
             $partial_amount = 0;
             $total_amount = Util::round($estimated_quota);$amount = 0;
-            $liquidate = false;
-            switch($procedure_modality_id){
-                case 53:{
-                    $amount = Util::round($this->estimated_quota);
-                    break;
-                }
-                case 60:{
-                    $amount = Util::round($this->estimated_quota);
-                    break;
-                }
-                case 54:{
-                    $amount = Util::round($this->balance);
-                    $liquidate = true;
-                    break;
-                }
-                case 57:{
-                    $amount = Util::round($this->balance);
-                    $liquidate = true;
-                    break;
-                }
-                case 59:{
-                    $amount = Util::round($this->balance);
-                    $liquidate = true;
-                    break;
-                }
-                default:
-                {
-                    $amount = Util::round($estimated_quota);
-                    break;
-                }
+            $liquidate = false;//return ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%pactada')->first();
+            if(ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%pactada')->first())
+                $amount = $this->estimated_quota;
+            if(ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%Liquidar%')->first())
+            {
+                $amount = $this->balance;
+                $liquidate = true;
             }
-            /*if ($liquidate) {
-                $amount = Util::round($this->balance);
-            } else {
-                if (!$amount){
-                    $amount = Util::round($this->estimated_quota);
-                    if($paid_by == "T")
-                        $amount = $amount*($this->lenders->where('id',$affiliate_id)->first()->pivot->payment_percentage)/100;
-                    else
-                        $amount = $amount*($this->guarantors->where('id',$affiliate_id)->first()->pivot->payment_percentage)/100;
-                }
-            }*/
+            if(ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%Introducir%')->first() || ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%Parcial')->first())
+                $amount = $estimated_quota;
             $quota = new LoanPayment();
             $next_payment = LoanPayment::quota_date($this);
             if (!$estimated_date) {
@@ -366,14 +334,14 @@ class Loan extends Model
 
             $date_ini = CarbonImmutable::parse($this->disbursement_date);
             $date_compare = CarbonImmutable::parse($date_ini->addMonth()->endOfMonth())->format('Y-m-d');
-            if($date_compare >= $quota->estimated_date && $date_ini->format('d') > LoanGlobalParameter::latest()->first()->offset_interest_day){
+            if($date_compare >= $quota->estimated_date && $date_ini->format('d') > LoanGlobalParameter::latest()->first()->offset_interest_day && ProcedureModality::where('id', $procedure_modality_id)->where('name', ' not like', '%Introducir%')->first()){
                 $date_fin = CarbonImmutable::parse($date_ini->endOfMonth());
                 $rest_days_of_month = $date_fin->diffInDays($date_ini);
                 $partial_amount = ($quota->balance * $interest->daily_current_interest * $rest_days_of_month);
                 $quota->paid_days->penal = 0;
                 $quota->estimated_days->penal = 0;
                 $amount = $amount + $partial_amount;
-            }//return $amount;
+            }
 
         // Calcular intereses
 
@@ -447,8 +415,7 @@ class Loan extends Model
 
         $total_interests += $quota->interest_payment;
 
-        // Calcular amortización de capital
-        //return $amount;
+        // Calcular amortización de capital        
         if($liquidate)
         {
             $quota->capital_payment = $quota->balance;

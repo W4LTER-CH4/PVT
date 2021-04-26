@@ -105,6 +105,10 @@ export default {
     validar:false,
   }),
   computed: {
+    //Metodo para obtener Permisos por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },
     isNew() {
       return this.$route.params.hash == 'new'
     },
@@ -164,7 +168,7 @@ export default {
             payment_type_id:this.data_payment.tipo_pago,
             voucher_type_id:2,
             voucher_number:this.data_payment.comprobante,
-            description:this.data_payment.glosa
+            description:this.data_payment.glosa_voucher
           })
             this.$router.push('/loanPayment')
       }catch (e) {
@@ -333,7 +337,7 @@ export default {
             {
               this.validatePayment()
             }else{
-              if(this.data_payment.procedure_modality_name == 'Amortización Directa' && this.$store.getters.permissions.includes('create-payment') )
+              if(this.data_payment.procedure_modality_name == 'Amortización Directa' && this.permissionSimpleSelected.includes('create-payment') )
               {
                 this.savePaymentTreasury()
               }else{

@@ -668,6 +668,97 @@ class LoanPaymentController extends Controller
     }
 
     /**
+    * Importación pendientes de Pagos Comando SENASIR
+    * Realiza la importación de pagos.
+	* @bodyParam file file required Archivo de importación. Example: file.xls
+    * @bodyParam state boolean required Tipo importacion Activo(1) o Pasivo(0). Example: 1
+    * @bodyParam estimated_date date Fecha estimada para la importacion. Example: 2020-12-31
+    * @bodyParam voucher_payment string Comprobante de pago. Example: D-12/20
+    * @authenticated
+    * @responseFile responses/loan_payment/importation_pending.200.json
+    */
+    public function importation_pending_command_senasir(Request $request)
+    {
+        $request->validate([
+            'file' => 'required',
+            'state'=> 'required|boolean',
+            'estimated_date'=> 'nullable|date_format:"Y-m-d"',
+            'voucher_payment' => 'nullable|string|min:3'
+        ]);
+
+        $file = $request->file('file');
+        $json = collect([]);
+        $payment_automatic = collect([]);//pagos automaticos confirmados
+        $payment_no_automatic = collect([]);//pagos no efectivizados
+        $array = Excel::toArray(new LoanPaymentImport, $file);
+        $pendientePago = LoanState::whereName('Pendiente de Pago')->first()->id;
+        $pendienteConfirmation = LoanState::whereName('Pendiente por confirmar')->first()->id;
+        $pagado = LoanState::whereName('Pagado')->first()->id;
+        $procedure_modality_automatic = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();
+        $procedure_modality_parcial = ProcedureModality::whereName('A.AUT. Parcial')->first();
+        $estimated_date_importation = $request->estimated_date? Carbon::parse($request->estimated_date) : Carbon::now()->endOfMonth();
+        $payment_type = AmortizationType::get();
+        $payment_type_desc = $payment_type->where('name', 'LIKE', 'Descuento automático')->first();
+        $contand=0;
+        $concatenando='';
+        $concatenandoCi='';
+        $loanAll=collect([]);
+        $loanPayments = new LoanPayment();
+
+        $amount_Affiliate=0;
+        
+            for($i=1;$i<count($array[0]);$i++){   
+                $amount_Affiliate = $array[0][$i][1];
+                
+                $totalLoanAmount = 0; 
+                $have_payment=false;
+
+                if($request->state){
+                    $ci=(int)$array[0][$i][0];
+                    $affiliate = Affiliate::where('identity_card', '=',$ci)->first();                    
+                }else{
+                    $matricula= $array[0][$i][0];
+                    $affiliate = Affiliate::where('registration', '=',$matricula)->first();
+                }
+               
+                $loanPayments = LoanPayment::where('affiliate_id',$affiliate->id)->where('state_id','=',$pendienteConfirmation)
+                                            ->where('procedure_modality_id','=',$procedure_modality_automatic->id)->where('estimated_date','=',$estimated_date_importation)->get();
+
+                
+                foreach ($loanPayments as $loanPayment){
+                      $payment_estimated_date=Carbon::parse($loanPayment->estimated_date);
+                        $totalLoanAmount = $totalLoanAmount + $loanPayment->estimated_quota;
+                        $have_payment=true;
+                }
+                
+                if ($totalLoanAmount == $array[0][$i][1] && $have_payment){
+                    foreach ($loanPayments as $loanPayment){
+                        $loanPayment->state_id = $pagado;
+                        if($request->voucher_payment){
+                            $loanPayment->voucher = $request->voucher_payment;
+                        }
+                        $loanPayment->validated = true;
+                        $loanPayment->user_id = auth()->id();
+                        $loanPayment->update();
+                        $payment_automatic->push($loanPayment);
+                    }
+                }else{
+                    foreach ($loanPayments as $loanPayment){
+                        $payment_no_automatic->push($loanPayment);
+                    }
+                }
+            }
+            return response()->json([
+                'payments_automatic' => $payment_automatic,
+                'payments_no_automatic' => $payment_no_automatic,
+               // 'Contandooo ' =>  $contand,
+                //'$concatenando' =>  $concatenando,
+               // 'todosloans' => $loanLender,
+               // 'Concatenando'=>$concatenandoCi
+            ]);
+    }
+
+    /**
     * Importación de Pagos Comando SENASIR
     * Realiza la importación de pagos.
 	* @bodyParam file file required Archivo de importación. Example: file.xls

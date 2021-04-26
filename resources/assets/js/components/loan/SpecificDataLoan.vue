@@ -3,7 +3,7 @@
     <ValidationObserver ref="observer">
       <v-form>
         <!--v-card-->
-        <div v-if="$route.params.workTray == 'received' || $route.params.workTray == 'my_received' || $route.params.workTray == 'validated'">
+        <div>
           <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn
@@ -26,7 +26,7 @@
               <span>Cancelar</span>
             </div>
           </v-tooltip>
-          <v-tooltip top v-if="$store.getters.permissions.includes('disbursement-loan')">
+          <v-tooltip top v-if="permissionSimpleSelected.includes('disbursement-loan')">
             <template v-slot:activator="{ on }">
               <v-btn
                 fab
@@ -62,30 +62,108 @@
                             <v-card-text class="py-0">
                               <v-col cols="12" md="12" color="orange">
                                 <v-row>
-                                  <v-col cols="12" md="12">
+                                  <v-col cols="12" md="11" class="py-0">
                                     <p style="color:teal"><b>TITULAR</b></p>
                                   </v-col>
-                                  <v-col cols="12" md="4">
-                                    <p><b>PLAZO EN MESES:</b>{{' '+loan.loan_term}}</p>
+                                  <v-col cols="12" md="1" class="py-0" >
+                                <div v-if="permissionSimpleSelected.includes('update-loan-calculations')" >
+                                  <v-tooltip top >
+                                    <template v-slot:activator="{ on }">
+                                      <v-btn
+                                        fab
+                                        dark
+                                        x-small
+                                        :color="'error'"
+                                        top
+                                        right
+                                        v-on="on"
+                                        @click.stop="resetForm()"
+                                        v-show="calificacion_edit"
+                                      >
+                                        <v-icon>mdi-close</v-icon>
+                                      </v-btn>
+                                    </template>
+                                    <div>
+                                      <span>Cancelar</span>
+                                    </div>
+                                  </v-tooltip>
+                                  <v-tooltip top >
+                                    <template v-slot:activator="{ on }">
+                                      <v-btn
+                                        fab
+                                        dark
+                                        x-small
+                                        :color="calificacion_edit ? 'danger' : 'success'"
+                                        top
+                                        right
+                                        v-on="on"
+                                        @click.stop="editSimulate()"
+                                      >
+                                        <v-icon v-if="calificacion_edit">mdi-check</v-icon>
+                                        <v-icon v-else>mdi-pencil</v-icon>
+                                      </v-btn>
+                                    </template>
+                                    <div>
+                                      <span v-if="calificacion_edit">Guardar Montos</span>
+                                      <span v-else>Editar</span>
+                                    </div>
+                                  </v-tooltip>
+                                  </div>
                                   </v-col>
-                                  <v-col cols="12" md="4">
+                                  <v-progress-linear></v-progress-linear>
+                                  <v-col cols="12" md="4" v-show="!calificacion_edit" class="pb-0">
                                     <p><b>MONTO SOLICITADO:</b>{{' '+loan.amount_approved}} Bs.</p>
                                   </v-col>
-                                  <v-col cols="12" md="4">
+                                  <v-col cols="12" md="4" v-show="calificacion_edit" class="pb-0" >
+                                    <v-text-field
+                                      dense
+                                      label="MONTO SOLICITADO"
+                                      v-model="loan.amount_approved"
+                                      v-on:keyup.enter="simuladores()"
+                                      :outlined="true"
+                                    ></v-text-field>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="pb-0">
                                     <p><b>PROMEDIO LIQUIDO PAGABLE</b>{{' '+loan.lenders[0].pivot.payable_liquid_calculated}} Bs.</p>
                                   </v-col>
-                                  <v-col cols="12" md="4">
-                                    <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated}}</p>
-                                  </v-col>
-                                  <v-col cols="12" md="4">
+                                  <v-col cols="12" md="4" class="pb-0" >
                                     <p><b>LIQUIDO PARA CALIFICACION:</b>{{' '+loan.liquid_qualification_calculated}} Bs.</p>
                                   </v-col>
-                                   <v-col cols="12" md="4">
+                                  <v-col cols="12" md="4" v-show="!calificacion_edit" class="py-0">
+                                    <p><b>PLAZO EN MESES:</b>{{' '+loan.loan_term}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4" v-show="calificacion_edit" class="py-0" >
+                                    <v-text-field
+                                      dense
+                                      label="PLAZO EN MESES"
+                                      v-model="loan.loan_term"
+                                      v-on:keyup.enter="simuladores()"
+                                      :outlined="true"
+                                    ></v-text-field>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-0">
+                                    <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated}}</p>
+                                  </v-col>
+                                   <v-col cols="12" md="4" class="py-0">
                                     <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+loan.indebtedness_calculated}} </p>
                                   </v-col>
-                                  <v-col cols="12" md="4">
+                                  <v-col cols="12" md="4" v-show="calificacion_edit" class="py-0">
+                                    <center>
+                                      <v-btn
+                                        class="py-0 text-right"
+                                        color="info"
+                                        rounded
+                                        x-small
+                                        @click="simuladores()">Calcular
+                                      </v-btn>
+                                    </center>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-0">
                                     <p><b>CALCULO DE CUOTA:</b>{{' '+loan.estimated_quota}} Bs.</p>
                                   </v-col>
+                                  <!--v-col cols="12" md="4" class="py-0">
+                                    {{loan}}
+                                  </!--v-col-->
                                   <v-col cols="12" md="12" >
                                     <div v-for="procedure_type in procedure_types" :key="procedure_type.id">
                                       <div v-if="procedure_type.name === 'Préstamo hipotecario'">
@@ -98,6 +176,129 @@
                                           </div>
                                         </div>
                                       </div>
+                                    </div>
+                                  </v-col>
+                                  <v-progress-linear></v-progress-linear>
+                                  <v-col cols="12" md="12" class="pb-0" >
+                                    <p style="color:teal"><b>DATOS DEL CONTRATO</b></p>
+                                  </v-col>
+                                  <v-progress-linear></v-progress-linear>
+                                    <v-col cols="12" md="3">
+                                      <v-text-field
+                                        dense
+                                        v-model="loan.delivery_contract_date"
+                                        label="FECHA ENTREGA DE CONTRATO"
+                                        hint="Día/Mes/Año"
+                                        type="date"
+                                        :outlined="edit_delivery_date"
+                                        :readonly="!edit_delivery_date"
+                                      ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="1"  v-if="!permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                    </v-col>
+                                    <v-col cols="12" md="3"  v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                      <div>
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="'error'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 45px;"
+                                            @click.stop="resetForm()"
+                                            v-show="edit_delivery_date"
+                                          >
+                                            <v-icon>mdi-close</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span>Cancelar</span>
+                                        </div>
+                                      </v-tooltip>
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="edit_delivery_date ? 'danger' : 'success'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 10px;"
+                                            @click.stop="editDateDelivery()"
+                                          >
+                                            <v-icon v-if="edit_delivery_date">mdi-check</v-icon>
+                                            <v-icon v-else>mdi-pencil</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span v-if="edit_delivery_date">Guardar Fecha Entrega</span>
+                                          <span v-else>Editar Fecha Entrega</span>
+                                        </div>
+                                      </v-tooltip>
+                                    </div>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                      <v-text-field
+                                        dense
+                                        v-model="loan.return_contract_date"
+                                        label="FECHA RECEPCION DE CONTRATO"
+                                        hint="Día/Mes/Año"
+                                        type="date"
+                                        :outlined="edit_return_date"
+                                        :readonly="!edit_return_date"
+                                      ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3" v-show="loan.delivery_contract_date != null"  v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                      <div >
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="'error'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 45px;"
+                                            @click.stop="resetForm()"
+                                            v-show="edit_return_date"
+                                          >
+                                            <v-icon>mdi-close</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span>Cancelar</span>
+                                        </div>
+                                      </v-tooltip>
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="edit_return_date ? 'danger' : 'success'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 10px;"
+                                            @click.stop="editDateReturn()"
+                                          >
+                                            <v-icon v-if="edit_return_date">mdi-check</v-icon>
+                                            <v-icon v-else>mdi-pencil</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span v-if="edit_return_date">Guardar Fecha Recepcion</span>
+                                          <span v-else>Editar Fecha Recepcion</span>
+                                        </div>
+                                      </v-tooltip>
                                     </div>
                                   </v-col>
                               </v-row>
@@ -116,11 +317,11 @@
                                     <ul style="list-style: none" class="pa-0" v-if="procedure_type.name == 'Préstamo a largo plazo' || procedure_type.name == 'Préstamo a corto plazo'">
                                       <li v-for="guarantor in loan.guarantors" :key="guarantor.id">
                                         <v-col cols="12" md="12" class="pa-0">
-                                          <v-row class="pa-0">
-                                            <v-progress-linear></v-progress-linear><br>
+                                          <v-row class="pa-2">
                                             <v-col cols="12" md="12" class="py-0">
                                               <p style="color:teal"><b>GARANTE </b></p>
                                             </v-col>
+                                            <v-progress-linear></v-progress-linear><br>
                                             <v-col cols="12" md="3">
                                               <p><b>NOMBRE:</b> {{$options.filters.fullName(guarantor, true)}}</p>
                                             </v-col>
@@ -175,7 +376,7 @@
                                           <span>Cancelar</span>
                                         </div>
                                       </v-tooltip>
-                                      <v-tooltip top  v-if="$store.getters.permissions.includes('update-loan')">
+                                      <v-tooltip top  v-if="permissionSimpleSelecteds.includes('update-loan')">
                                         <template v-slot:activator="{ on }">
                                           <v-btn
                                             fab
@@ -386,7 +587,7 @@
                                       </v-card>
                                     </v-dialog>
                                 </template>
-                                <template v-slot:item.actions="{ item }" v-if="$store.getters.permissions.includes('update-loan')">
+                                <template v-slot:[`item.actions`]="{ item }" v-if="permissionSimpleSelected.includes('update-loan')">
                                   <v-icon
                                     small
                                     class="mr-2"
@@ -533,7 +734,7 @@
                                       </v-card>
                                     </v-dialog>
                                 </template>
-                                <template v-slot:item.actions="{ item }" v-if="$store.getters.permissions.includes('update-loan')">
+                                <template v-slot:[`item.actions`]="{ item }" v-if="permissionSimpleSelected.includes('update-loan')">
                                   <v-icon
                                     small
                                     class="mr-2"
@@ -691,6 +892,9 @@ export default {
     ],
       dialog: false,
       dialog1: false,
+      calificacion_edit:false,
+      edit_return_date : false,
+      edit_delivery_date : false,
       editedIndex: -1,
       editedItem: {},
       defaultItem: {},
@@ -730,6 +934,10 @@ export default {
     this.getEntity()
   },
   computed: {
+      //Metodo para obtener Permisos por rol
+      permissionSimpleSelected () {
+        return this.$store.getters.permissionSimpleSelected
+      },
       cuenta() {
        for (this.i = 0; this.i< this.entity.length; this.i++) {
         if(this.loan.lenders[0].financial_entity_id==this.entity[this.i].id)
@@ -867,10 +1075,86 @@ export default {
     resetForm() {
       this.editable1 = false
       this.editable = false
+      this.calificacion_edit = false
+      this.edit_return_date = false
+      this.edit_delivery_date = false
       this.reload = true
       this.$nextTick(() => {
       this.reload = false
       })
+    },
+     async simuladores() {
+      try {
+        if(this.loan.amount_approved_before >= this.loan.amount_approved)
+        {
+          let res = await axios.post(`simulator`, {
+            procedure_modality_id:this.loan.procedure_modality_id,
+            amount_requested: this.loan.amount_approved,
+            months_term:  this.loan.loan_term,
+            guarantor: false,
+            liquid_qualification_calculated_lender: 0,
+            liquid_calculated:[
+              {
+                affiliate_id: this.loan.lenders[0].id,
+                liquid_qualification_calculated: this.loan.lenders[0].pivot.liquid_qualification_calculated
+              }
+            ]
+        })
+            this.loan.amount_approved = res.data.amount_requested
+            this.loan.loan_term = res.data.months_term
+            this.loan.indebtedness_calculated = res.data.indebtedness_calculated_total
+            this.loan.estimated_quota = res.data.quota_calculated_estimated_total
+        }
+        else{
+          this.loan.amount_approved = this.loan.amount_approved_before
+          this.loan.loan_term = this.loan.loan_term_before
+          this.toastr.error("El Monto Solicitado sobrepasa al monto anterior")
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+      async editDateDelivery(){
+      try {
+        if (!this.edit_delivery_date) {
+          this.edit_delivery_date = true
+          console.log('entro al grabar por verdadero :)')
+        } else {
+          console.log('entro al grabar por falso :)')
+          //Edit data delivery
+            let res = await axios.patch(`loan/${this.loan.id}`, {
+            delivery_contract_date:this.loan.delivery_contract_date,
+           })
+            this.toastr.success('Se registró correctamente.')
+            this.edit_delivery_date = false
+         }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+      async editDateReturn(){
+      try {
+        if (!this.edit_return_date) {
+          this.edit_return_date = true
+          console.log('entro al grabar por verdadero :)')
+        } else {
+          console.log('entro al grabar por falso :)')
+          //Edit data return
+            let res = await axios.patch(`loan/${this.loan.id}`, {
+              return_contract_date: this.loan.return_contract_date
+          })
+            this.toastr.success('Se registró correctamente.')
+            this.edit_return_date = false
+         }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
     },
     async editLoan(){
       try {
@@ -894,6 +1178,27 @@ export default {
              }else{
                this.validate.valid_disbursement = false
              }*/
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+       async editSimulate(){
+      try {
+        if (!this.calificacion_edit) {
+          this.calificacion_edit = true
+          console.log('entro al grabar por verdadero :)')
+        } else {
+          console.log('entro al grabar por falso :)')
+         //Edit monto y plazo
+            let res = await axios.patch(`edit_loan/${this.loan.id}/qualification`, {
+            amount_approved: this.loan.amount_approved,
+            loan_term: this.loan.loan_term
+          })
+            this.toastr.success('Se registró correctamente.')
+            this.calificacion_edit = false
         }
       } catch (e) {
         console.log(e)

@@ -20,7 +20,11 @@ class LoanModalityParameter extends Model
         'max_guarantor_category',
         'min_lender_category',
         'max_lender_category',
-        'personal_reference'
+        'personal_reference',
+        'maximum_amount_modality',
+        'minimum_amount_modality',
+        'maximum_term_modality',
+        'minimum_term_modality'
     ];
 
     public function getDecimalIndexAttribute()

@@ -26,7 +26,9 @@ class LoanIntervalTerm implements Rule
      */
     public function passes($attribute, $value)
     {
-        return ($value >= $this->procedure_modality->procedure_type->interval->minimum_term && $value <= $this->procedure_modality->procedure_type->interval->maximum_term);
+         if($value >= $this->procedure_modality->loan_modality_parameter->minimum_term_modality && $value <= $this->procedure_modality->loan_modality_parameter->maximum_term_modality){
+            return true;
+         }
     }
 
     /**
@@ -36,6 +38,6 @@ class LoanIntervalTerm implements Rule
      */
     public function message()
     {
-        return 'El plazo no corresponde con la modalidad';
+        return 'El plazo no corresponde con la modalidad'.' '.$this->procedure_modality->name;
     }
 }

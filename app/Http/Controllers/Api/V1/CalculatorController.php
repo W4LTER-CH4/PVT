@@ -143,7 +143,7 @@ class CalculatorController extends Controller
                 $amount_requested = $amount_maximum_suggested;
             }
             $maximum_suggested_valid = false;
-            if($modality->procedure_type->interval->minimum_amount<=$amount_maximum_suggested && $amount_maximum_suggested<=$modality->procedure_type->interval->maximum_amount) $maximum_suggested_valid = true;
+            if($modality->loan_modality_parameter->minimum_amount<=$amount_maximum_suggested && $amount_maximum_suggested<=$modality->loan_modality_parameter->maximum_amount_modality) $maximum_suggested_valid = true;
             $indebtedness_calculated_total=round((($quota_calculated_total/$liquid_qualification_calculated_lender)*100),2);
             $evaluate = false;
             if ($indebtedness_calculated_total<=$debt_index) $evaluate=true;
@@ -198,7 +198,7 @@ class CalculatorController extends Controller
                         $amount_requested = $amount_maximum_suggested;
                     }
                     $maximum_suggested_valid = false;
-                    if($modality->procedure_type->interval->minimum_amount<=$amount_maximum_suggested && $amount_maximum_suggested<=$modality->procedure_type->interval->maximum_amount) $maximum_suggested_valid = true;
+                    if($modality->loan_modality_parameter->minimum_amount_modality<=$amount_maximum_suggested && $amount_maximum_suggested<=$modality->loan_modality_parameter->maximum_amount_modality) $maximum_suggested_valid = true;
                     $indebtedness_calculated = $quota_calculated/$liquid['liquid_qualification_calculated']*100;
                     $livelihood_amount = 0; $valuate = false;
                     $livelihood_amount = $liquid['liquid_qualification_calculated'] - $quota_calculated; // liquido para calificacion menos la cuota estimada debe ser menor igual al monto de subsistencia
@@ -222,137 +222,42 @@ class CalculatorController extends Controller
         }
         return $response;
     }
-    // funcion para sacar la cuota estimada con la calculadora
-    private function quota_calculator($procedure_modality, $months_term, $amount_requested){
+    // funcion para sacar la cuota estimada con la calculadora---
+    public static function quota_calculator($procedure_modality, $months_term, $amount_requested){
         $interest_rate = $procedure_modality->current_interest->monthly_current_interest;
         return ((($interest_rate)/(1-(1/pow((1+$interest_rate),$months_term))))*$amount_requested);
     }
     // liquido para calificacion
     private function liquid_qualification($payable_liquid_average, $total_bonuses, $affiliate, $parent_quota=null){
-        $active_guarantees = $affiliate->active_guarantees(); $sum_quota_guarantor = 0;
-        foreach($active_guarantees as $res){
-            $sum_quota_guarantor+= ($res->estimated_quota*$res->pivot->payment_percentage)/100; // descuento en caso de tener garantias activas
-        }
-        $liquid_qualification_calculated = $payable_liquid_average - $total_bonuses - $sum_quota_guarantor + $parent_quota;
+        $active_guarantees = $affiliate->active_guarantees(); $sum_quota = 0;
+        foreach($active_guarantees as $res)
+            $sum_quota+= ($res->estimated_quota*$res->pivot->payment_percentage)/100; // descuento en caso de tener garantias activas
+        $active_guarantees_sismu = $affiliate->active_guarantees_sismu();
+        foreach($active_guarantees_sismu as $res)
+            $sum_quota+= $res->PresCuotaMensual/$res->quantity_guarantors; // descuento en caso de tener garantias activas del sismu
+        /*$active_loans = $affiliate->active_loans();
+        foreach($active_loans as $res)
+            $sum_quota+= ($res->estimated_quota*$res->pivot->payment_percentage)/100; // descuento en caso de tener prestamos activos
+        $active_loans_sismu = $affiliate->active_loans_sismu();
+        foreach($active_loans_sismu as $res)
+            $sum_quota+= $res->PresCuotaMensual; // descuento en caso de tener prestamos activas del sismu*/
+        $process_loans_sismu = $affiliate->process_loans_sismu();
+        foreach($process_loans_sismu as $res)
+            $sum_quota+= $res->PresCuotaMensual; // descuento en caso de tener prestamos en proceso del sismu
+        $process_guarantees_sismu = $affiliate->process_guarantees_sismu();
+        foreach($process_guarantees_sismu as $res)
+            $sum_quota+= $res->PresCuotaMensual/$res->quantity_guarantors; // descuento en caso de tener garantias en proceso del sismu
+        $liquid_qualification_calculated = $payable_liquid_average - $total_bonuses - $sum_quota + $parent_quota;
         return $liquid_qualification_calculated;
     }
-    // monto maximo
-    private function maximum_amount($procedure_modality,$months_term,$liquid_qualification_calculated){
+    // monto maximo---
+    public static function maximum_amount($procedure_modality,$months_term,$liquid_qualification_calculated){
         $interest_rate = $procedure_modality->current_interest->monthly_current_interest;
-        $loan_interval = $procedure_modality->procedure_type->interval;
+        $loan_interval = $procedure_modality->loan_modality_parameter;
         $debt_index = $procedure_modality->loan_modality_parameter->decimal_index;
         $maximum_qualified_amount = intval((1-(1/pow((1+$interest_rate),$months_term)))*($debt_index*$liquid_qualification_calculated)/$interest_rate);
-        if ($maximum_qualified_amount > ($loan_interval->maximum_amount)){
-            $maximum_qualified_amount = $loan_interval->maximum_amount;
-        } else {
-            $maximum_qualified_amount = $maximum_qualified_amount;
-        }
-        return $maximum_qualified_amount;
-        //return intval(round(floor($maximum_qualified_amount))/100)*100;
-    }
-    //toda la información de abajo se debe borrar hasta que el front arregle
-    /**
-    * Calculadora
-    * @bodyParam procedure_modality_id integer required ID de modalidad. Example: 34
-    * @bodyParam amount_requested integer required monto solicitado. Example: 5000
-    * @bodyParam months_term integer required plazo. Example: 5
-    * @bodyParam affiliate_id integer required ID del afiliado. Example: 1
-    * @bodyParam parent_loan_id integer ID de Préstamo Padre.. Example: 1
-    * @bodyParam guarantor boolean Afiliado evaluado como garante. Example: false
-    * @bodyParam contributions[0].payable_liquid integer required Líquido pagable. Example: 2000
-    * @bodyParam contributions[0].position_bonus integer required Bono Cargo . Example: 0.00
-    * @bodyParam contributions[0].border_bonus integer required Bono Frontera . Example: 0.00
-    * @bodyParam contributions[0].public_security_bonus integer required Bono Seguridad Ciudadana . Example: 0.00
-    * @bodyParam contributions[0].east_bonus integer required Bono Oriente. Example: 0.00
-    * @bodyParam contributions[1].payable_liquid integer Líquido pagable. Example: 2270
-    * @bodyParam contributions[1].position_bonus integer Bono Cargo . Example: 0.00
-    * @bodyParam contributions[1].border_bonus integer Bono Frontera . Example: 0.00
-    * @bodyParam contributions[1].public_security_bonus integer Bono Seguridad Ciudadana . Example: 0.00
-    * @bodyParam contributions[1].east_bonus integer Bono Oriente. Example: 0.00
-    * @bodyParam contributions[2].payable_liquid integer Líquido pagable. Example: 1563
-    * @bodyParam contributions[2].position_bonus integer Bono Cargo . Example: 0.00
-    * @bodyParam contributions[2].border_bonus integer Bono Frontera . Example: 0.00
-    * @bodyParam contributions[2].public_security_bonus integer Bono Seguridad Ciudadana . Example: 0.00
-    * @bodyParam contributions[2].east_bonus integer Bono Oriente. Example: 0.00
-    * @authenticated
-    * @responseFile responses/calculator/store.200.json
-    */
-    public function calculator(Request $request)
-    {
-        $procedure_modality = ProcedureModality::findOrFail($request->procedure_modality_id);
-        $amount_requested = $request->amount_requested;
-        $affiliate = Affiliate::findOrFail($request->affiliate_id);
-        if ($request->has('parent_loan_id')) {
-            $parent_loan = Loan::with(['lenders'=> function($q) use ($affiliate) {
-                $q->where('affiliate_id', $affiliate->id);
-            }])->whereId($request->parent_loan_id)->first();
-            if (!$parent_loan) abort(404);
-            $parent_quota = $parent_loan->next_payment()->estimated_quota * $parent_loan->lenders[0]->pivot->payment_percentage/100;
-        } else {
-            $parent_quota = 0;
-        }
-        $contributions = collect($request->contributions);
-        $payable_liquid_average = $contributions->avg('payable_liquid');
-        $contribution_first = $contributions->first();// se obtiene los bonos de la ultima boleta
-        $total_bonuses = $contribution_first['position_bonus']+$contribution_first['border_bonus']+$contribution_first['public_security_bonus']+$contribution_first['east_bonus'];
-        $liquid_qualification_calculated = $this->liquid_qualification_borrar($payable_liquid_average, $total_bonuses, $affiliate, $parent_quota, $request->guarantor);
-        $quota_calculated = $this->quota_calculator_borrar($procedure_modality, $request->months_term, $amount_requested);
-
-        $amount_maximum_suggested = $this->maximum_amount_borrar($procedure_modality,$request->months_term,$liquid_qualification_calculated);
-       
-       
-        //return $amount_maximum_suggested;
-        if($amount_requested>$amount_maximum_suggested){
-            $quota_calculated = $this->quota_calculator_borrar($procedure_modality, $request->months_term, $amount_maximum_suggested);
-            $amount_requested = $amount_maximum_suggested;
-        }
-        if($payable_liquid_average!=0){
-            $indebtedness_calculated =$quota_calculated/($liquid_qualification_calculated)*100 ;
-        }else{
-            $indebtedness_calculated = 0;
-        }
-        return response()->json([
-            'payable_liquid_calculated' => round($payable_liquid_average),
-            'bonus_calculated' => $total_bonuses,
-            'liquid_qualification_calculated' => round($liquid_qualification_calculated),
-            'quota_calculated' => Util::money_format($quota_calculated),
-            'indebtedness_calculated' => intval($indebtedness_calculated),
-            'amount_requested' => $amount_requested,
-            'amount_maximum_suggested' => $amount_maximum_suggested,
-            'is_valid' => ($indebtedness_calculated) <= ($procedure_modality->loan_modality_parameter->decimal_index)*100
-        ]);
-    }
-     // funcion para sacar la cuota estimada con la calculadora
-    private function quota_calculator_borrar($procedure_modality, $months_term, $amount_requested){
-        $interest_rate = $procedure_modality->current_interest->monthly_current_interest;
-        return ((($interest_rate)/(1-(1/pow((1+$interest_rate),$months_term))))*$amount_requested);
-    }
-    // funcion para sacar el liquido para calificacion
-    private function liquid_qualification_borrar($payable_liquid_average, $total_bonuses, $affiliate, $parent_quota, $guarantor){
-        $active_guarantees = $affiliate->active_guarantees(); $sum_quota_guarantor = 0;
-        foreach($active_guarantees as $res){
-            $sum_quota_guarantor+= ($res->estimated_quota*$res->pivot->payment_percentage)/100; // en caso de tener garantias
-        }
-        if($guarantor){
-            $active_loans = $affiliate->active_loans(); $sum_quota_lender = 0;
-            foreach($active_loans as $res){
-                $sum_quota_lender+= ($res->estimated_quota*$res->pivot->payment_percentage)/100; // en caso de ser garante y tener prestamos propios
-            }
-            $liquid_qualification_calculated = $payable_liquid_average - $total_bonuses - $sum_quota_guarantor - $sum_quota_lender;
-        }else{
-            // arreglar cuando hay padre y los demas que son tramites ajenos
-            $liquid_qualification_calculated  = $payable_liquid_average - $total_bonuses - $sum_quota_guarantor + $parent_quota;
-        }
-        return $liquid_qualification_calculated;
-    }
-    // monto maximo
-    private function maximum_amount_borrar($procedure_modality,$months_term,$liquid_qualification_calculated){
-        $interest_rate = $procedure_modality->current_interest->monthly_current_interest;
-        $loan_interval = $procedure_modality->procedure_type->interval;
-        $debt_index = $procedure_modality->loan_modality_parameter->decimal_index;
-        $maximum_qualified_amount = intval((1-(1/pow((1+$interest_rate),$months_term)))*($debt_index*$liquid_qualification_calculated)/$interest_rate);
-        if ($maximum_qualified_amount > ($loan_interval->maximum_amount)){
-            $maximum_qualified_amount = $loan_interval->maximum_amount;
+        if ($maximum_qualified_amount > ($loan_interval->maximum_amount_modality)){
+            $maximum_qualified_amount = $loan_interval->maximum_amount_modality;
         } else {
             $maximum_qualified_amount = $maximum_qualified_amount;
         }
@@ -381,7 +286,7 @@ class CalculatorController extends Controller
             $ms = $amount_maximum_suggested;
         }
         $maximum_suggested_valid = false;
-        if($procedure_modality->procedure_type->interval->minimum_amount <= $ms && $ms <= $procedure_modality->procedure_type->interval->maximum_amount)
+        if($procedure_modality->loan_modality_parameter->minimum_amount <= $ms && $ms <= $procedure_modality->loan_modality_parameter->maximum_amount_modality)
             $maximum_suggested_valid = true;
         /** end m */
         $ie = ($ce/$liquid_qualification_calculated)*100;

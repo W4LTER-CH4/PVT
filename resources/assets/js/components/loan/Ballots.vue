@@ -42,7 +42,7 @@
                           {{plazo}}
                         </v-col>
                         <v-col cols="12" :md="window_size" class="py-0 my-0" v-if="see_field">
-                          <ValidationProvider v-slot="{ errors }" name="VNR" :rules="'required|min_value:'+intervalos.minimun_amoun"  mode="aggressive">
+                          <ValidationProvider v-slot="{ errors }" name="VNR" :rules="'required|min_value:'+modalidad.minimun_amoun"  mode="aggressive">
                           <v-text-field
                             :error-messages="errors"
                             dense
@@ -59,12 +59,12 @@
                 </v-row>
               </v-container>
               <v-container cols="12" md="12" class="py-0 my-0">
-                <v-row class="py-0 my-0">              
+                <v-row class="py-0 my-0">
                   <v-col cols="12" md="2" class="py-0 my-0">
                     <v-text-field
                       dense
                       v-model="number_diff_month"
-                      label="Número de meses"                    
+                      label="Número de meses"
                       color="info"
                       append-icon="mdi-plus-box"
                       prepend-icon="mdi-minus-box"
@@ -72,10 +72,10 @@
                       @click:prepend="prependIconCallback"
                       readonly
                     ></v-text-field>
-                  </v-col>           
+                  </v-col>
                 </v-row>
                 <!--boleta 1--->
-                <v-row v-for="(contrib,i) in contribution" :key="i" class="py-0 my-0">               
+                <v-row v-for="(contrib,i) in contribution" :key="i" class="py-0 my-0">
                   <v-col cols="12" md="7" class="py-0 my-0">
                     <v-row>
                       <v-col cols="12" md="12" class="py-0 my-0 pb-1 uppercase"> BOLETAS DE PAGO <b>{{contribution[i].month}}</b></v-col>
@@ -134,7 +134,7 @@
                               label="Descripción ajuste"
                             :outlined = "!(contribution[i].payable_liquid == 0 && lender_contribution.state_affiliate != 'Comisión')? true : false"
                             :disabled = "!(contribution[i].payable_liquid == 0 && lender_contribution.state_affiliate != 'Comisión')? false : true"
-                              rows="1"                              
+                              rows="1"
                             ></v-textarea>
                           </ValidationProvider>
                         </v-col>
@@ -284,7 +284,7 @@
                 </template>
               </v-container>
               <BallotsHipotecary
-                v-show="hipotecario"
+                v-show="hipotecario && (loan_detail.not_exist_modality == false)"
                 :contrib_codebtor="contrib_codebtor"
                 :modalidad.sync="modalidad"
                 :affiliate.sync="affiliate"
@@ -293,7 +293,7 @@
              </ValidationObserver>
           </v-card>
         </v-col>
-      </v-row>       
+      </v-row>
     </v-form>
   </v-flex>
 </template>
@@ -475,14 +475,14 @@ export default {
             this.window_size=4
             this.see_field=false
           }
-          this.monto= this.interval[i].minimum_amount+' - '+this.interval[i].maximum_amount,
+          /*this.monto= this.interval[i].minimum_amount+' - '+this.interval[i].maximum_amount,
           this.plazo= this.interval[i].minimum_term+' - '+this.interval[i].maximum_term
           //intervalos es el monto, plazo y modalidad y id de una modalidad
           this.intervalos.maximun_amoun=this.interval[i].maximum_amount
           this.intervalos.maximum_term= this.interval[i].maximum_term
           this.intervalos.minimun_amoun=this.interval[i].minimum_amount
           this.intervalos.minimum_term= this.interval[i].minimum_term
-          this.intervalos.procedure_type_id= this.loanTypeSelected.id
+          this.intervalos.procedure_type_id= this.loanTypeSelected.id*/
 
           this.getLoanModality(this.$route.query.affiliate_id)
         } /*else{
@@ -501,10 +501,23 @@ export default {
           //reprogramming: this.reprogramming || this.remake
         })
         if(resp.data ==''){
+
           this.loan_detail.not_exist_modality = true
           this.toastr.error("El afiliado no puede ser evaluado en esta modalidad")
         }else{
+
+          this.loan_detail.not_exist_modality = false
           this.loan_modality = resp.data
+
+          this.monto= this.loan_modality.loan_modality_parameter.minimum_amount_modality+' - '+this.loan_modality.loan_modality_parameter.maximum_amount_modality
+          this.plazo= this.loan_modality.loan_modality_parameter.minimum_term_modality+' - '+this.loan_modality.loan_modality_parameter.maximum_term_modality
+          //intervalos es el monto, plazo y modalidad y id de una modalidad
+          this.modalidad.maximun_amoun=this.loan_modality.loan_modality_parameter.maximum_amount_modality
+          this.modalidad.maximum_term= this.loan_modality.loan_modality_parameter.maximum_term_modality
+          this.modalidad.minimun_amoun=this.loan_modality.loan_modality_parameter.minimum_amount_modality
+          this.modalidad.minimum_term= this.loan_modality.loan_modality_parameter.minimum_term_modality
+          this.intervalos.procedure_type_id= this.loanTypeSelected.id
+
           this.modalidad.id = this.loan_modality.id
           this.modalidad.procedure_type_id = this.loan_modality.procedure_type_id
           this.modalidad.procedure_type_name = this.loan_modality.procedure_type.name
@@ -582,14 +595,24 @@ export default {
               this.contribution[i].public_security_bonus = 0
               this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('YYYY-MM-DD')
               this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('MMMM')
+              
           } else if(this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Pasivo'){
               this.enabled = true
               this.editar = true
-              this.contribution[i].contributionable_id = this.data_ballots[i].id
-              this.contribution[i].payable_liquid = this.data_ballots[i].rent != null ? this.data_ballots[i].rent : 0
-              this.contribution[i].dignity_rent = this.data_ballots[i].dignity_rent != null ? this.data_ballots[i].dignity_rent : 0
-              this.contribution[i].period = this.$moment(this.data_ballots[i].month_year).format('YYYY-MM-DD')
-              this.contribution[i].month = this.$moment(this.data_ballots[i].month_year).format('MMMM')
+              if(this.data_ballots[i]){
+                this.contribution[i].contributionable_id = this.data_ballots[i].id
+                this.contribution[i].payable_liquid = this.data_ballots[i].rent != null ? this.data_ballots[i].rent : 0
+                this.contribution[i].dignity_rent = this.data_ballots[i].dignity_rent != null ? this.data_ballots[i].dignity_rent : 0
+                this.contribution[i].period = this.$moment(this.data_ballots[i].month_year).format('YYYY-MM-DD')
+                this.contribution[i].month = this.$moment(this.data_ballots[i].month_year).format('MMMM')
+              }else{
+                this.contribution[i].contributionable_id = 0
+                this.contribution[i].payable_liquid = 0
+                this.contribution[i].dignity_rent = 0
+                this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('YYYY-MM-DD')
+                this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('MMMM')
+                }
+
           }
           else if(!this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Pasivo'){
               this.enabled = true

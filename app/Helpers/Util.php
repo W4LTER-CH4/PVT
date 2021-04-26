@@ -162,6 +162,38 @@ class Util
         }
         return $query->paginate($request->per_page ?? 10);
     }
+    //
+    public static function search_sort_contribution($model, $request, $filter = [],$filterAffiliate=[])
+    {
+        $query = $model::query();
+        
+        foreach ($filterAffiliate as $column => $constraint) {
+            if (!is_array($constraint)) $constraint = ['=', $constraint];
+
+            if (!is_string(reset($constraint))) {
+                $query = $query->whereIn($column, $constraint);
+            } else {
+                $query = $query->where($column, $constraint[0], $constraint[1]);
+            }
+        }
+        foreach ($filter as $column => $constraint) {
+            if (!is_array($constraint)) $constraint = ['>=', $constraint];
+
+            if (!is_string(reset($constraint))) {
+                $query = $query->whereIn($column, $constraint);
+            } else {
+                $query = $query->where($column, $constraint[0], $constraint[1]);
+            }
+        }
+       if ($request->has('search') || $request->has('sortBy')) {
+            $columns = Schema::getColumnListing($model::getTableName());
+        }
+        $query = $query->orderBy('month_year','asc');
+        if ($request->has('trashed')) {
+            if ($request->boolean('trashed') && in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses($model))) $query = $query->onlyTrashed();
+        }
+        return $query->paginate($request->per_page ?? 10);
+    }
 
     public static function pivot_action($relationName, $pivotIds, $message)
     {

@@ -133,6 +133,27 @@
           :href="`#tab-5`"
         >
         <v-tooltip bottom>
+<<<<<<< HEAD
+        <template v-slot:activator="{ on, attrs }">
+=======
+        <template v-slot:activator="{ on, attrs}">
+>>>>>>> 51d6ec52461a17f4711574590558ea56e8d09de9
+          <v-icon
+          v-if="icons"
+          v-bind="attrs"
+          v-on="on">
+          mdi-account-cash
+          </v-icon>
+        </template>
+        <span><b>CONTRIBUCIONES</b></span>
+        </v-tooltip>
+        </v-tab>
+
+        <v-tab
+          v-show="!isNew"
+          :href="`#tab-6`"
+        >
+        <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-icon
           v-if="icons"
@@ -142,14 +163,7 @@
           </v-icon>
           </template>
         <span><b>INFORMACION DEL BIOMETRICO</b></span>
-      </v-tooltip>
-        </v-tab>
-
-        <v-tab
-          v-show="!isNew"
-          :href="`#tab-6`"
-        >
-          <v-icon v-if="icons">mdi-file</v-icon>
+        </v-tooltip>
         </v-tab>
 
         <v-tab-item
@@ -228,8 +242,26 @@
             </v-card-text>
           </v-card>
         </v-tab-item>
+
         <v-tab-item
           :value="'tab-5'"
+        >
+          <v-card flat tile >
+          <v-card-text>
+            <Contributions
+              :affiliate.sync="affiliate"
+            />
+            <!-- <Document
+              :permission="permission"
+              :affiliate.sync="affiliate"
+              :editable.sync="editable"
+            /> -->
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item
+          :value="'tab-6'"
         >
           <v-card flat tile >
           <v-card-text>
@@ -240,23 +272,9 @@
             /></v-card-text>
           </v-card>
         </v-tab-item>
-        <v-tab-item
-          :value="'tab-6'"
-        >
-          <v-card flat tile >
-          <v-card-text>
-            <Document
-              :permission="permission"
-              :affiliate.sync="affiliate"
-              :editable.sync="editable"
-            /></v-card-text>
-          </v-card>
-        </v-tab-item>
+
       </v-tabs>
     </v-card-text>
-    <!--<div>{{Object.entries(this.spouse).length === 0}}</div>
-    {{this.spouse}}<br/>
-    {{this.spouse.id}}-->
   </v-card>
 </template>
 <script>
@@ -265,9 +283,10 @@ import Profile from '@/components/affiliate/Profile'
 //import PoliceData from '@/components/affiliate/PoliceData'
 import Spouse from '@/components/affiliate/Spouse'
 import Fingerprint from '@/components/affiliate/Fingerprint'
-import Document from '@/components/affiliate/Document'
+//import Document from '@/components/affiliate/Document'
 import Dashboard from '@/components/affiliate/Dashboard'
 import AdditionalInformation from '@/components/affiliate/AdditionalInformation'
+import Contributions from '@/components/affiliate/Contributions'
 
 export default {
   name: "affiliate-index",
@@ -277,9 +296,10 @@ export default {
     //PoliceData,
     Spouse,
     Fingerprint,
-    Document,
+    //Document,
     Dashboard,
-    AdditionalInformation
+    AdditionalInformation,
+    Contributions
   },
   data: () => ({
     addresses:[],
@@ -301,25 +321,25 @@ export default {
       affiliate_state_id: null
     },
     spouse: {
-    affiliate_id: null,
-    first_name: null,
-    second_name:null,
-    last_name: null,
-    mothers_last_name:null,
-    identity_card:null,
-    birth_date:null,
-    date_death:null,
-    reason_death:null,
-    phone_number:null,
-    cell_phone_number:null,
-    city_identity_card_id:null,
-    death_certificate_number:null,
-    city_birth_id:null,
-    civil_status:null,
-    official:null,
-    book:null,
-    departure:null,
-    marriage_date:null
+      affiliate_id: null,
+      first_name: null,
+      second_name:null,
+      last_name: null,
+      mothers_last_name:null,
+      identity_card:null,
+      birth_date:null,
+      date_death:null,
+      reason_death:null,
+      phone_number:null,
+      cell_phone_number:null,
+      city_identity_card_id:null,
+      death_certificate_number:null,
+      city_birth_id:null,
+      civil_status:null,
+      official:null,
+      book:null,
+      departure:null,
+      marriage_date:null
     },
     icons: true,
     vertical: true,
@@ -332,6 +352,11 @@ export default {
     id_street: 0
   }),
   computed: {
+    //permisos del selector global por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },
+
     isNew() {
       return this.$route.params.id == 'new'
           },
@@ -343,16 +368,16 @@ export default {
     },
     secondaryPermission() {
       if (this.affiliate.id) {
-        return this.$store.getters.permissions.includes('update-affiliate-secondary')
+        return this.permissionSimpleSelected.includes('update-affiliate-secondary')
       } else {
-        return this.$store.getters.permissions.includes('create-affiliate')
+        return this.permissionSimpleSelected.includes('create-affiliate')
     }
   },
   primaryPermission() {
       if (this.affiliate.id) {
-        return this.$store.getters.permissions.includes('update-affiliate-primary')
+        return this.permissionSimpleSelected.includes('update-affiliate-primary')
       } else {
-        return this.$store.getters.permissions.includes('create-affiliate')
+        return this.permissionSimpleSelected.includes('create-affiliate')
       }
     }
   },

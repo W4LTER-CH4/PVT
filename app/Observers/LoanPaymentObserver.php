@@ -31,11 +31,10 @@ class LoanPaymentObserver
     }*/
     public function updating(LoanPayment $object)
     {
-        /*$loans = $object->loan;
-        echo $loans->balance;
-        if($loans->balance == Util::round(0))
-            $loans->state_id = 6;
-        $loans->save();*/
+        if($object->loan->balance == 0)
+            //$object->loan->state_id = 6;
+            $object->loan->merge(['state_id'=>6]);
+            $object->loan->save();
         Util::save_record($object, 'datos-de-un-tramite', Util::concat_action($object));
     }
 

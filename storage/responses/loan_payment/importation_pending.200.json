@@ -1,0 +1,33 @@
+{
+    "payments_automatic": [
+        {
+            "id": 444,
+            "loan_id": 8,
+            "code": "PAY000444-2021",
+            "procedure_modality_id": 60,
+            "estimated_date": "2022-04-30",
+            "quota_number": 11,
+            "estimated_quota": "1065.74",
+            "penal_remaining": "0",
+            "penal_payment": "0",
+            "interest_remaining": "0",
+            "interest_payment": "229.73",
+            "capital_payment": "836.01",
+            "interest_accumulated": "0",
+            "penal_accumulated": "0",
+            "state_id": 6,
+            "voucher": "uuuu",
+            "paid_by": "T",
+            "role_id": 91,
+            "affiliate_id": 46585,
+            "amortization_type_id": 3,
+            "validated": true,
+            "description": "rrrrr",
+            "user_id": 95,
+            "created_at": "2021-04-19T19:33:15.000000Z",
+            "updated_at": "2021-04-21T21:46:43.000000Z",
+            "deleted_at": null
+        }
+    ],
+    "payments_no_automatic": []
+}

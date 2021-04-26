@@ -1,0 +1,12 @@
+{
+    "id": 1,
+    "code": "po1444423",
+    "amount_approved": "900",
+    "loan_term": 20,
+    "balance": "1500",
+    "estimated_quota": "1500",
+    "loan_id": 3,
+    "created_at": "2021-04-23T21:28:24.000000Z",
+    "updated_at": "2021-04-23T21:48:50.000000Z",
+    "deleted_at": null
+}

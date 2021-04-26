@@ -122,7 +122,7 @@
             </tr>
             <tr>
             @if($loan->paymentsKardex->first() != null)
-                <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_accounting_voucher}}</td>
+                <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_budget_certification}}</td>
                 <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_accounting_voucher}}</td>
                 <td class="w-25">{{ $loan->paymentsKardex->first()->interest_accumulated}}</td>
                 <td colspan="2">{{ $loan->paymentsKardex->first()->penal_accumulated}}</td>
@@ -145,8 +145,8 @@
                 @php ($sum_capital_payment = 0)
                 @php ($sum_interest_payment = 0)
                 @php ($sum_penal_payment = 0)
-                <!--@php ($sum_interest_remaining = 0)
-                @php ($sum_penal_remaining = 0)-->
+                @php ($sum_interest_remaining = 0)
+                @php ($sum_penal_remaining = 0)
                 @php ($sum_estimated_quota = 0)
                 @php ($res_saldo_capital = 0)
                 @php ($sum_capital_payment = 0)
@@ -160,8 +160,8 @@
                     <th class="w-8"><div>Amortización</div><div>capital</div></td>
                     <th class="w-8"><div>Interés</div><div>corriente</div></td>
                     <th class="w-8"><div>Interes</div><div>Penal</div></td>
-                    <!--<th class="w-8"><div>Interes Corriente</div><div>Pendiente</div></td>
-                    <th class="w-8"><div>Interés Penal</div><div>Pendiente</div></td>-->
+                    <th class="w-8"><div>Interes Corriente</div><div>Pendiente</div></td>
+                    <th class="w-8"><div>Interés Penal</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
                     <th class="w-8"><div>Cpte</div> </th>        
@@ -179,8 +179,8 @@
                     <td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->capital_payment) }}</td> {{-- capital --}}
                     <td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->interest_payment) }}</td>{{-- interes corriente --}}
                     <td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->penal_payment) }}</td>{{-- interes penal --}}
-                    <!--<td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->interest_remaining) }}</td>{{-- Interes acumulados --}}
-                    <td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->penal_remaining) }}</td>{{-- Penal verificar --}}-->
+                    <td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->interest_remaining) }}</td>{{-- Interes acumulados --}}
+                    <td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->penal_remaining) }}</td>{{-- Penal verificar --}}
                     <td class="w-10 text-right">{{ Util::money_format($parent_loan_payment->estimated_quota) }}</td> {{-- total pagado--}}
                     <td class="w-10 text-right">{{ Util::money_format($res_saldo_capital) }}</td>
                     <td class="w-10 text-right">{{ $parent_loan_payment->voucher }}</td>
@@ -190,8 +190,8 @@
                 @php ($sum_capital_payment += $parent_loan_payment->capital_payment)
                 @php ($sum_interest_payment += $parent_loan_payment->interest_payment)
                 @php ($sum_penal_payment += $parent_loan_payment->penal_payment)
-                <!--@php ($sum_interest_remaining += $parent_loan_payment->interest_remaining )
-                @php ($sum_penal_remaining += $parent_loan_payment->penal_remaining)    -->
+                @php ($sum_interest_remaining += $parent_loan_payment->interest_remaining )
+                @php ($sum_penal_remaining += $parent_loan_payment->penal_remaining)
                 @endforeach
                 @endif
                 <thead>
@@ -202,8 +202,8 @@
                     <th class="w-8"><div>Amortización</div><div>capital</div></td>
                     <th class="w-8"><div>Interés</div><div>corriente</div></td>
                     <th class="w-8"><div>Interes</div><div>Penal</div></td>
-                    <!--<th class="w-8"><div>Interes Corriente</div><div>Pendiente</div></td>
-                    <th class="w-8"><div>Interés Penal</div><div>Pendiente</div></td>-->
+                    <th class="w-8"><div>Interes Corriente</div><div>Pendiente</div></td>
+                    <th class="w-8"><div>Interés Penal</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
                     <th class="w-8"><div>Cpte</div> </th>        
@@ -221,8 +221,8 @@
                     <td class="w-10 text-right">{{ Util::money_format($payment->capital_payment) }}</td> {{-- capital --}}
                     <td class="w-10 text-right">{{ Util::money_format($payment->interest_payment) }}</td>{{-- interes corriente --}}
                     <td class="w-10 text-right">{{ Util::money_format($payment->penal_payment) }}</td>{{-- interes penal --}}
-                    <!--<td class="w-10 text-right">{{ Util::money_format($payment->interest_remaining) }}</td>{{-- Dias acumulados --}}
-                    <td class="w-10 text-right">{{ Util::money_format($payment->penal_remaining) }}</td>{{-- dias verificar --}}-->
+                    <td class="w-10 text-right">{{ Util::money_format($payment->interest_remaining) }}</td>{{-- Dias acumulados --}}
+                    <td class="w-10 text-right">{{ Util::money_format($payment->penal_remaining) }}</td>{{-- dias verificar --}}
                     <td class="w-10 text-right">{{ Util::money_format($payment->estimated_quota) }}</td> {{-- total pagado--}}
                     <td class="w-10 text-right">{{ Util::money_format($res_saldo_capital) }}</td>
                     <td class="w-10 text-right">{{ $payment->voucher }}</td>
@@ -231,8 +231,8 @@
                 @php ($sum_capital_payment += $payment->capital_payment)
                 @php ($sum_interest_payment += $payment->interest_payment)
                 @php ($sum_penal_payment += $payment->penal_payment)
-                <!--@php ($sum_interest_remaining += $payment->interest_remaining )
-                @php ($sum_penal_remaining += $payment->penal_remaining)-->
+                @php ($sum_interest_remaining += $payment->interest_remaining )
+                @php ($sum_penal_remaining += $payment->penal_remaining)
                 @php ($sum_estimated_quota += $payment->estimated_quota)
                 @php ($capital = $res_saldo_capital)
                 @endforeach
@@ -241,8 +241,8 @@
                     <td class="w-10 text-right">{{ Util::money_format($sum_capital_payment) }}</td>
                     <td class="w-10 text-right">{{ Util::money_format($sum_interest_payment) }}</td>
                     <td class="w-10 text-right">{{ Util::money_format($sum_penal_payment) }}</td>
-                    <!--<td class="w-10 text-right">{{ Util::money_format($sum_interest_remaining) }}</td>
-                    <td class="w-10 text-right">{{ Util::money_format($sum_penal_remaining) }}</td>-->
+                    <td class="w-10 text-right">{{ Util::money_format($sum_interest_remaining) }}</td>
+                    <td class="w-10 text-right">{{ Util::money_format($sum_penal_remaining) }}</td>
                     <td class="w-10 text-right">{{ Util::money_format($sum_estimated_quota) }}</td>
                     <td class="w-10 text-right">{{ Util::money_format($res_saldo_capital) }}</td>
                     <td colspan="2"></td>

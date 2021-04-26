@@ -107,6 +107,10 @@
                                     color="primary"
                                     @click.stop="importationPaymentsBatch()"
                                   >Importar Información</v-btn>
+                                  <v-btn
+                                    color="primary"
+                                    @click.stop="importationPendingCommandSenasir()"
+                                  >Importar Pendientes por Confirmar</v-btn>
                                   <br /><br />
                                     <template v-if="visible == true">
                                     <p
@@ -204,6 +208,7 @@ export default {
           this.import_payments.no_automatic =
             response.data.payments_no_automatic.length;
           this.visible = true;
+          clearInputs()
         })
         .catch(error => {
           console.log(error);
@@ -213,6 +218,39 @@ export default {
       //this.loadingButton = false;
       //this.refresh = false;
     },
+    //importar pendiente por confirmar 
+      async importationPendingCommandSenasir() {
+      //this.showResults = false;
+      //this.override = false;
+      //const fileInput = document.querySelector("#impExp);
+      const formData = new FormData();
+      formData.append("file", this.import_export.file);
+      formData.append("state", this.import_export.state_affiliate);
+      formData.append("estimated_date", this.import_export.cutoff_date);
+      formData.append("voucher_payment", this.import_export.code_voucher);
+      //formData.append("override", this.override);
+      //formData.append("refresh", this.refresh);
+      //this.loadingButton = true;
+      await axios
+        .post("loan_payment/importation_command_senasir", formData)
+        .then(response => {
+          console.log(response.data);
+          this.import_payments.automatic =
+            response.data.payments_automatic.length;
+          this.import_payments.no_automatic =
+            response.data.payments_no_automatic.length;
+          this.visible = true;
+          clearInputs()
+        })
+        .catch(error => {
+          console.log(error);
+          this.visible = true;
+        });
+      //this.showResults = true;
+      //this.loadingButton = false;
+      //this.refresh = false;
+    },
+
     //REPORTES
     async excel() {
       await axios({

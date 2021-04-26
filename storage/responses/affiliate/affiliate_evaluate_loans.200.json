@@ -23,23 +23,11 @@
                     "min_lender_category": null,
                     "max_lender_category": null,
                     "max_cosigner": 0,
-                    "personal_reference": false
-                },
-                "procedure_type": {
-                    "id": 9,
-                    "module_id": 6,
-                    "name": "Préstamo Anticipo",
-                    "created_at": "2021-03-22T18:03:59.000000Z",
-                    "updated_at": "2021-03-22T18:03:59.000000Z",
-                    "second_name": "Anticipo",
-                    "interval": {
-                        "id": 1,
-                        "maximum_amount": 2000,
-                        "minimum_amount": 200,
-                        "maximum_term": 2,
-                        "minimum_term": 1,
-                        "procedure_type_id": 9
-                    }
+                    "personal_reference": false,
+                    "maximum_amount_modality": 2000,
+                    "minimum_amount_modality": 200,
+                    "maximum_term_modality": 2,
+                    "minimum_term_modality": 1
                 }
             },
             "amount_max": 817,
@@ -50,8 +38,8 @@
                 "procedure_modality_id": 32,
                 "annual_interest": "36.00",
                 "penal_interest": "6.00",
-                "created_at": "2021-03-22T18:03:59.000000Z",
-                "updated_at": "2021-03-22T18:03:59.000000Z"
+                "created_at": "2021-04-21T12:43:27.000000Z",
+                "updated_at": "2021-04-21T12:43:27.000000Z"
             }
         },
         {
@@ -73,23 +61,11 @@
                     "min_lender_category": null,
                     "max_lender_category": null,
                     "max_cosigner": 0,
-                    "personal_reference": true
-                },
-                "procedure_type": {
-                    "id": 10,
-                    "module_id": 6,
-                    "name": "Préstamo a corto plazo",
-                    "created_at": "2021-03-22T18:03:59.000000Z",
-                    "updated_at": "2021-03-22T18:03:59.000000Z",
-                    "second_name": "Corto plazo",
-                    "interval": {
-                        "id": 2,
-                        "maximum_amount": 25000,
-                        "minimum_amount": 2001,
-                        "maximum_term": 30,
-                        "minimum_term": 3,
-                        "procedure_type_id": 10
-                    }
+                    "personal_reference": true,
+                    "maximum_amount_modality": 25000,
+                    "minimum_amount_modality": 2001,
+                    "maximum_term_modality": 30,
+                    "minimum_term_modality": 3
                 }
             },
             "amount_max": 5836,
@@ -100,8 +76,8 @@
                 "procedure_modality_id": 35,
                 "annual_interest": "20.00",
                 "penal_interest": "6.00",
-                "created_at": "2021-03-22T18:03:59.000000Z",
-                "updated_at": "2021-03-22T18:03:59.000000Z"
+                "created_at": "2021-04-21T12:43:27.000000Z",
+                "updated_at": "2021-04-21T12:43:27.000000Z"
             }
         },
         {

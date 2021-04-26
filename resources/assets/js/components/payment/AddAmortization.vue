@@ -7,8 +7,8 @@
                 <v-container class="py-0">
                   <v-col cols="12" md="12">
                   <v-layout row wrap>
-                    <v-flex xs12 class="px-2">
-                      <fieldset class="pa-3">
+                    <v-flex xs12 class="px-2" >
+                      <fieldset class="pa-2">
                     <ValidationObserver ref="observer">
                     <v-form>
                       <center>
@@ -17,27 +17,48 @@
                       <v-progress-linear></v-progress-linear>
                       <template>
                       <v-row>
-                        <v-col cols="2" class="ma-0  pr-1">
-                          <label class="caption">Tipo de Tramite: </label>
+                         <v-col cols="9" v-if="permissionSimpleSelected.includes('create-payment-loan')"
+                          :disabled="ver || editable">
                         </v-col>
-                        <v-col cols="2" class="ma-0  pr-1" v-show="!isNew">
-                          <label class="caption">AMORTIZACIONES PRESTAMOS </label>
+                        <!--v-col cols="4" class="ma-0 py-0" v-if="$store.getters.permissions.includes('create-payment-loan')"-->
+                        <v-col cols="2" class="ma-0 py-4"  v-if="permissionSimpleSelected.includes('create-payment-loan')">
+                         <label>
+                           <h3 style="color:teal">Refinanciamiento</h3>
+                         </label>
                         </v-col>
-                        <v-col cols="3" class="ma-0 pb-0"  v-show="isNew">
+                        <v-col cols="1" class="ma-0 py-0" v-if="permissionSimpleSelected.includes('create-payment-loan')" >
+                          <v-checkbox class="ma-0 py-3"
+                            :outlined="isNew"
+                            :readonly="!isNew"
+                            :disabled="ver || editable"
+                            v-model="data_payment.refinanciamiento"
+                          ></v-checkbox>
+                        </v-col>
+                         <v-col cols="3" class="ma-0 py-0" v-show="permissionSimpleSelected.includes('create-payment-loan') && this.data_payment.validar" v-if="editable">
+                          <v-checkbox class="ma-0 py-3"
+                            :outlined="editable"
+                            :readonly="!editable"
+                            :disabled="ver "
+                            v-model="data_payment.validated"
+                            label="Validar Pago"
+                          ></v-checkbox>
+                        </v-col>
+                        <v-col cols="5" class="ma-0 pb-0"  >
                           <v-select
                             dense
                             class="caption"
                             style="font-size: 10px;"
                             @change="Onchange()"
                             v-model="data_payment.procedure_id"
-                            :outlined="!editable"
-                            :readonly="editable"
+                            :outlined="isNew"
+                            :readonly="!isNew"
                             :items="tipo_tramite"
                             item-text="name"
                             item-value="id"
+                            label='Tipo de tramite'
+                            :disabled="ver || editable"
                           ></v-select>
                         </v-col>
-                       
                         <v-col cols="4" class="ma-0 pb-0" v-show="isNew">
                           <v-select
                             dense
@@ -71,10 +92,7 @@
                             persistent-hint
                           ></v-select>
                         </v-col-->
-                          <v-col cols="1" class="ma-0 pb-0" >
-                          <label class="caption">Pago del :</label>
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0">
+                        <v-col cols="3" class="ma-0 pb-0">
                           <v-select
                             dense
                             class="caption"
@@ -86,6 +104,7 @@
                             :items="tipo_afiliado"
                             item-text="name"
                             item-value="id"
+                            label="Pago del "
                             persistent-hint
                             :disabled="ver || editable"
                           ></v-select>
@@ -113,52 +132,67 @@
                                </li>
                             </ul>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="!editable">
-                          <label>Codigo de Comprobante:</label>
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="!editable">
+                        <v-col cols="4" class="ma-0 pb-0" v-show="!editable">
                           <v-text-field
                             dense
                             v-model="data_payment.voucher"
+                            label="Codigo de Comprobante"
                             :outlined="isNew  || editable"
                             :disabled="ver"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0">
-                          <label > Fecha de Calculo:</label>
+                        <v-col cols="4" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan')" v-if="!isNew">
+                           <v-text-field
+                             v-model="data_payment.code"
+                             :readonly="true"
+                            :disabled="true"
+                            dense
+                            label="Codigo"
+                          ></v-text-field>
                         </v-col>
-                        <v-col cols="2">
+                        <v-col cols="4" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan')" v-if="!isNew" >
+                           <v-text-field
+                            v-model="data_payment.estimated_quota"
+                            :readonly="true"
+                            :disabled="true"
+                            dense
+                            label="Nro.Cuota"
+                          ></v-text-field>
+                        </v-col>
+                           <v-col cols="4" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan')" v-if="!isNew">
+                           <v-text-field
+                            v-model="data_payment.estimated_quota"
+                            :disabled="true"
+                            :readonly="true"
+                            dense
+                            label="Monto Pagado"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="4">
                           <v-text-field
                             dense
                             v-model="data_payment.payment_date"
                             hint="Día/Mes/Año"
                             class="purple-input"
                             type="date"
+                            label="Fecha de Calculo"
                             :clearable="editable"
                             :outlined="isNew"
                             :readonly="!isNew"
                             :disabled="ver || editable"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="view" v-if="regular">
-                          <label>TOTAL PAGADO:</label>
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="view" v-if="regular">
+                        <v-col cols="4" class="ma-0 pb-0" v-show="view" v-if="regular">
                           <v-text-field
                             dense
                             v-model="data_payment.pago_total"
-                            :outlined="isNew || $store.getters.permissions.includes('create-payment') "
+                            label="Total Pagado"
+                            :outlined="isNew || permissionSimpleSelected.includes('create-payment') "
                             :readonly="!isNew "
                             :disabled="ver"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="!isNew" >
-                           <label  >TIPO DE COBRO:</label>
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="isNew">
-                          <label >TIPO DE COBRO:</label>
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0">
+                        <v-col cols="4" class="ma-0 pb-0">
                           <v-select
                              class="caption"
                             style="font-size: 10px;"
@@ -169,14 +203,12 @@
                             :items="payment_types"
                             item-text="name"
                             item-value="id"
+                            label="Tipo de Cobro"
                             persistent-hint
                             :disabled="ver || editable"
                           ></v-select>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')">
-                          <label >TIPO DE PAGO:</label>
-                        </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')">
+                        <v-col cols="4" class="ma-0 pb-0" v-show="editable" v-if="permissionSimpleSelected.includes('create-payment')">
                           <v-select
                             class="caption"
                             style="font-size: 10px;"
@@ -187,31 +219,30 @@
                             :items="payment_type_treasury"
                             item-text="name"
                             item-value="id"
+                            label="Tipo de Pago"
                             persistent-hint
                           ></v-select>
                         </v-col>
-                        <v-col cols="2" class="ma-0 pb-0" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')">
-                          <label  >NRO DE COMPROBANTE:</label>
-                        </v-col>
-                        <v-col cols="2" v-show="editable" v-if="$store.getters.permissions.includes('create-payment')" >
+                        <v-col cols="4" v-show="editable" v-if="permissionSimpleSelected.includes('create-payment')" >
                           <v-text-field
                             v-model="data_payment.comprobante"
                             :outlined="editable"
                             :readonly="!editable"
+                            label="Nro. de Comprobante"
                             dense
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" class="ma-0 pb-0" v-show="$store.getters.permissions.includes('create-payment')">
+                        <v-col cols="12" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment')">
                           <v-text-field
                             v-if="!ver"
-                            v-model="data_payment.glosa"
+                            v-model="data_payment.glosa_voucher"
                             :outlined="editable"
                             :readonly="!editable"
                             dense
                             label="Glosa"
                           ></v-text-field>
                         </v-col>
-                         <v-col cols="5" class="ma-0 pb-0" v-show="$store.getters.permissions.includes('create-payment-loan')">
+                         <v-col cols="5" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan')">
                           <v-text-field
                             v-show="isNew || editable" v-if="!ver"
                             v-model="data_payment.glosa"
@@ -221,30 +252,7 @@
                             label="Glosa"
                           ></v-text-field>
                         </v-col>
-                         <v-col cols="3" class="ma-0 py-0" v-show="$store.getters.permissions.includes('create-payment-loan') && this.data_payment.validar" v-if="editable">
-                          <v-checkbox class="ma-0 py-3"
-                            :outlined="editable"
-                            :readonly="!editable"
-                            :disabled="ver "
-                            v-model="data_payment.validated"
-                            label="Validar Pago"
-                          ></v-checkbox>
-                        </v-col>
-                         <v-col cols="8" v-if="$store.getters.permissions.includes('create-payment-loan')"
-                          v-show="!isNew"
-                          :disabled="ver || editable">
-                        </v-col>
-                        <!--v-col cols="4" class="ma-0 py-0" v-if="$store.getters.permissions.includes('create-payment-loan')"-->
-                        <v-col cols="4" class="ma-0 py-0" >
-                          <v-checkbox class="ma-0 py-3"
-                            :outlined="isNew"
-                            :readonly="!isNew"
-                            :disabled="ver || editable"
-                            v-model="data_payment.refinanciamiento"
-                            label="Pendiente por Refinanciamiento"
-                          ></v-checkbox>
-                        </v-col>
-                          <v-col cols="8" v-show="$store.getters.permissions.includes('create-payment-loan')">
+                          <v-col cols="8" v-show="permissionSimpleSelected.includes('create-payment-loan')">
                         </v-col>
                       </v-row>
                     </template>
@@ -309,6 +317,11 @@ export default {
     },
   }),
    computed: {
+  //Metodo para obtener Permisos por rol
+  permissionSimpleSelected () {
+    return this.$store.getters.permissionSimpleSelected
+  },   
+
     isNew() {
       return  this.$route.params.hash == 'new'
     },
@@ -471,8 +484,22 @@ export default {
         this.data_payment.validated =this.loan_payment.validated
         this.data_payment.glosa =this.loan_payment.description
         this.data_payment.procedure_modality_name =this.loan_payment.modality.procedure_type.name
-        this.data_payment.procedure_id= this.loan_payment.procedure_modality_id
+        this.data_payment.procedure_id= this.loan_payment.modality.procedure_type_id
         this.data_payment.amortization=2
+        this.data_payment.quota_number=this.loan_payment.quota_number
+         this.data_payment.estimated_quota=this.loan_payment.estimated_quota
+          this.data_payment.code=this.loan_payment.code
+           this.data_payment.quota_number=this.loan_payment.quota_number
+            this.data_payment.quota_number=this.loan_payment.quota_number
+             this.data_payment.quota_number=this.loan_payment.quota_number
+
+
+
+//quota_number
+//estimated_quota.
+
+
+
         if(this.data_payment.procedure_modality_name == 'Amortización Complemento Económico' ||
             this.data_payment.procedure_modality_name == 'Amortización Fondo de Retiro' ||
             this.data_payment.procedure_modality_name == 'Amortización por Ajuste' ||
@@ -485,6 +512,15 @@ export default {
               this.data_payment.validar =false
             }
           }
+           this.tipo_afiliado.push(
+              {
+                name:"Titular",
+                id:"T"
+              },
+              {
+                name:"Garante",
+                id:"G"
+              })
       } catch (e) {
         console.log(e)
       } finally {
