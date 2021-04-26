@@ -133,11 +133,7 @@
           :href="`#tab-5`"
         >
         <v-tooltip bottom>
-<<<<<<< HEAD
-        <template v-slot:activator="{ on, attrs }">
-=======
         <template v-slot:activator="{ on, attrs}">
->>>>>>> 51d6ec52461a17f4711574590558ea56e8d09de9
           <v-icon
           v-if="icons"
           v-bind="attrs"
