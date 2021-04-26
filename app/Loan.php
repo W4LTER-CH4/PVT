@@ -46,6 +46,7 @@ class Loan extends Model
         'indebtedness_calculated',
         'liquid_qualification_calculated',
         'loan_term',
+        'refinancing_balance',
         'guarantor_amortizing',
         'payment_type_id',
         'number_payment_type',

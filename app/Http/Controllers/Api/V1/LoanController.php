@@ -176,6 +176,7 @@ class LoanController extends Controller
     * @bodyParam amount_requested integer required monto solicitado. Example: 26000
     * @bodyParam city_id integer required ID de la ciudad. Example: 4
     * @bodyParam loan_term integer required plazo. Example: 40
+    * @bodyParam refinancing_balance numeric  Monto saldo de refinanciamiento. Example: 1052.26
     * @bodyParam guarantor_amortizing boolean true si es de amortizacion garante. Example: false
     * @bodyParam payment_type_id integer required Tipo de desembolso. Example: 1
     * @bodyParam financial_entity_id integer ID de entidad financiera. Example: 1
@@ -331,6 +332,7 @@ class LoanController extends Controller
     * @bodyParam amount_requested integer monto solicitado. Example: 2000
     * @bodyParam city_id integer ID de la ciudad. Example: 6
     * @bodyParam loan_term integer plazo. Example: 2
+    * @bodyParam refinancing_balance numeric  Monto saldo de refinanciamiento. Example: 1052.26
     * @bodyParam guarantor_amortizing boolean true si es de amortizacion garante. Example: false
     * @bodyParam payment_type_id integer Tipo de desembolso. Example: 1
     * @bodyParam liquid_qualification_calculated numeric Total de bono calculado. Example: 2000
