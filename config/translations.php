@@ -68,6 +68,7 @@ return [
     'guarantors'=>'Garante',
     'destiny_id'=>'Destino',
     'validated' => 'Validado',
+    'refinancing_balance'=>'monto de desembolso por refinanciamiento',
     //'parent_loan_id'=>'',
     'parent_reason'=>'',
     'interest_id'=>'Interés',

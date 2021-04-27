@@ -24,6 +24,7 @@ class Sismu extends Model
         'loan_term',
         'balance',
         'estimated_quota',
+        'date_cut_refinancing',
         'loan_id',
     ];
 }

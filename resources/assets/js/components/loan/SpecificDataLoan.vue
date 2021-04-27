@@ -2,60 +2,15 @@
   <v-container fluid class="py-0 px-0">
     <ValidationObserver ref="observer">
       <v-form>
-        <!--v-card-->
-        <div>
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                fab
-                dark
-                x-small
-                :color="'error'"
-                top
-                right
-                absolute
-                v-on="on"
-                style="margin-right: 45px;"
-                @click.stop="resetForm()"
-                v-show="editable"
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </template>
-            <div>
-              <span>Cancelar</span>
-            </div>
-          </v-tooltip>
-          <v-tooltip top v-if="permissionSimpleSelected.includes('disbursement-loan')">
-            <template v-slot:activator="{ on }">
-              <v-btn
-                fab
-                dark
-                x-small
-                :color="editable ? 'danger' : 'success'"
-                top
-                right
-                absolute
-                v-on="on"
-                style="margin-right: -9px;"
-                @click.stop="editLoan()"
-              >
-                <v-icon v-if="editable">mdi-check</v-icon>
-                <v-icon v-else>mdi-pencil</v-icon>
-              </v-btn>
-            </template>
-            <div>
-              <span v-if="editable">Guardar</span>
-              <span v-else>Editar</span>
-            </div>
-          </v-tooltip>
-        </div>
+        <!--BOTONES CUANDO SE REALICE LA EDICIÓN-->
+
         <v-row justify="center" >
             <v-col cols="12" class="py-0 px-0">
               <v-container fluid class="py-0 px-6  ">
                 <v-row class="py-0">
                   <v-col cols="12" class="py-0">
                     <v-tabs dark active-class="secondary">
+
                       <v-tab>DATOS DEL PRESTAMO</v-tab>
                         <v-tab-item>
                           <v-card flat tile class="py-0">
@@ -145,7 +100,7 @@
                                     <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated}}</p>
                                   </v-col>
                                    <v-col cols="12" md="4" class="py-0">
-                                    <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+loan.indebtedness_calculated}} </p>
+                                    <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+ loan.indebtedness_calculated }} </p>
                                   </v-col>
                                   <v-col cols="12" md="4" v-show="calificacion_edit" class="py-0">
                                     <center>
@@ -305,9 +260,10 @@
                             </v-col>
                           </v-card-text>
                         </v-card>
-                      </v-tab-item>
-                    <v-tab>GARANTIA</v-tab>
-                      <v-tab-item >
+                        </v-tab-item>
+
+                      <v-tab>GARANTIA</v-tab>
+                        <v-tab-item >
                         <v-card flat tile>
                           <v-card-text class="pa-0 py-0">
                             <v-col cols="12" class="mb-0 py-0">
@@ -493,7 +449,8 @@
                           </v-col>
                           </v-card-text>
                         </v-card>
-                      </v-tab-item>
+                        </v-tab-item>
+
                       <v-tab>DATOS PERSONA DE REFERENCIA</v-tab>
                         <v-tab-item >
                           <v-card flat tile>
@@ -601,8 +558,9 @@
                             </v-card-text>
                           </v-card>
                         </v-tab-item>
-                        <v-tab>DATOS CODEUDOR</v-tab>
-                          <v-tab-item >
+
+                      <v-tab>DATOS CODEUDOR</v-tab>
+                        <v-tab-item >
                             <v-card flat tile>
                               <v-card-text>
                               <p style="color:teal" v-if="loan.cosigners.length>0"><b>CODEUDOR NO AFILIADO</b></p>
@@ -747,13 +705,61 @@
                              <p v-if="loan.cosigners.length==0" style="color:teal"> <b>NO TIENE CODEUDORES</b></p>
                             </v-card-text>
                             </v-card>
-                          </v-tab-item>
-                          <v-tab>DESEMBOLSO</v-tab>
-                            <v-tab-item >
+                        </v-tab-item>
+
+                      <v-tab>DESEMBOLSO</v-tab>
+                        <v-tab-item >
                               <v-card flat tile>
                                 <v-card-text>
                                   <v-col cols="12" class="mb-0">
                                     <p style="color:teal"> <b>DATOS DE DESEMBOLSO</b></p>
+                                      <div v-if="permissionSimpleSelected.includes('disbursement-loan') || permissionSimpleSelected.includes('update-num-accounting-voucher')">
+                                        <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                fab
+                dark
+                x-small
+                :color="'error'"
+                top
+                right
+                absolute
+                v-on="on"
+                style="margin-right: 45px;"
+                @click.stop="resetForm()"
+                v-show="editable"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </template>
+            <div>
+              <span>Cancelar</span>
+            </div>
+                                        </v-tooltip>
+                                        <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                fab
+                dark
+                x-small
+                :color="editable ? 'danger' : 'success'"
+                top
+                right
+                absolute
+                v-on="on"
+                style="margin-right: -9px;"
+                @click.stop="editLoan()"
+              >
+                <v-icon v-if="editable">mdi-check</v-icon>
+                <v-icon v-else>mdi-pencil</v-icon>
+              </v-btn>
+            </template>
+            <div>
+              <span v-if="editable">Guardar</span>
+              <span v-else>Editar</span>
+            </div>
+                                        </v-tooltip>
+                                      </div>
                                     <v-row>
                                       <v-progress-linear></v-progress-linear><br>
                                       <v-col cols="12" md="4">
@@ -772,19 +778,20 @@
                                           label="FECHA DE DESEMBOLSO"
                                           hint="Día/Mes/Año"
                                           type="date"
-                                          :outlined="editable"
-                                          :readonly="!editable"
+                                          :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
+                                          :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
                                         ></v-text-field>
                                       </v-col>
                                       <v-col cols="12" md="4">
                                         <v-select
                                           dense
-                                          :outlined="editable"
-                                          :readonly="!editable"
+                                          :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
+                                          :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
                                           :items="payment_types"
                                           item-text="name"
                                           item-value="id"
                                           label="TIPO"
+                                          @change="desembolso()"
                                           v-model="loan.payment_type_id"
                                         ></v-select>
                                       </v-col>
@@ -792,25 +799,23 @@
                                         <div v-if="loan.payment_type_id=='1'"  class="py-0">
                                           <v-text-field
                                             dense
-                                            :outlined="editable"
-                                            :readonly="!editable"
+                                          :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
+                                          :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
                                             :label="'NRO DE DEPOSITO'"
-                                            @click="desembolso()"
                                             v-model="loan.number_payment_type"
                                           ></v-text-field>
                                         </div>
                                         <div v-if="loan.payment_type_id!='1'">
                                           <v-text-field
                                             dense
-                                            :outlined="editable"
-                                            :readonly="!editable"
-                                            @click="desembolso()"
+                                          :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
+                                          :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
                                             :label="loan.payment_type_id=='2'? 'NRO DE CHEQUE':loan.payment_type_id=='3'?'NRO DE RECIBO':'OTRO'"
                                             v-model="loan.number_payment_type"
                                           ></v-text-field>
                                         </div>
                                       </v-col>
-                                      <v-col cols="12" md="4">
+                                      <!--<v-col cols="12" md="4">
                                         <div class="py-0">
                                           <v-text-field
                                             dense
@@ -820,14 +825,14 @@
                                              v-model="loan.num_budget_certification"
                                           ></v-text-field>
                                         </div>
-                                      </v-col>
+                                      </v-col>-->
                                        <v-col cols="12" md="4">
                                         <div class="py-0">
                                           <v-text-field
                                             dense
-                                            :outlined="editable"
-                                            :readonly="!editable"
-                                            :label="'CÓDIGO DE COMPROBANTE CONTABLE'"
+                                            :outlined="permissionSimpleSelected.includes('update-num-accounting-voucher') ? editable : false"
+                                            :readonly="permissionSimpleSelected.includes('update-num-accounting-voucher') ? !editable : true"
+                                            :label="'CERTIFICACIÓN PRESUPUESTARIA CONTABLE'"
                                              v-model="loan.num_accounting_voucher"
                                           ></v-text-field>
                                         </div>
@@ -836,13 +841,13 @@
                                   </v-col>
                                 </v-card-text>
                               </v-card>
-                            </v-tab-item>
-                          </v-tabs>
-                        </v-col>
+                        </v-tab-item>
+                    </v-tabs>
+                  </v-col>
                 </v-row>
               </v-container>
             </v-col>
-          </v-row>
+        </v-row>
         <!--/v-card-->
       </v-form>
     </ValidationObserver>

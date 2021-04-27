@@ -26,7 +26,7 @@ class LoanStructureSeeder extends Seeder
                 ['name'=>'Anticipo sector activo','shortened'=>'ANT-SA','requirements'=>[
                   ['name' => 'Cédula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1],
                   ['name' => 'Última Boleta de Pago (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
-                  ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>3],
+                  ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>3],
                   ['name' => 'Formulario SIGEP.','number'=>4],
                   //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
                   //['name' => 'Formulario de Calificación y Aprobación de Préstamos FORM/CAYAP/PTMO/UIP/004.','number'=>4],
@@ -48,7 +48,8 @@ class LoanStructureSeeder extends Seeder
                     'maximum_amount_modality' => 2000,
                     'minimum_amount_modality' => 1,
                     'maximum_term_modality' => 2,
-                    'minimum_term_modality' => 1
+                    'minimum_term_modality' => 1,
+                    'print_contract_platform' =>true
                 ],
                 'interest' => ['annual_interest' => 36,'penal_interest' => 6]
             ],
@@ -56,7 +57,7 @@ class LoanStructureSeeder extends Seeder
                 ['name'=>'Anticipo sector pasivo','shortened'=>'ANT-SP','requirements'=>[
                   ['name' => 'Cédula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1], 
                   ['name' => 'Última Boleta de Pago (Original y Fotocopia) y/o  Certificado de haberes.','number'=>2], 
-                  ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>3], // Nuevo
+                  ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>3], // Nuevo
                   ['name' => 'Formulario SIGEP.','number'=>4],
                   ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>5],
                   //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
@@ -80,7 +81,8 @@ class LoanStructureSeeder extends Seeder
                     'maximum_amount_modality' => 2000,
                     'minimum_amount_modality' => 1,
                     'maximum_term_modality' => 2,
-                    'minimum_term_modality' => 1
+                    'minimum_term_modality' => 1,
+                    'print_contract_platform' =>true
                 ],
                 'interest' => ['annual_interest' => 36,'penal_interest' => 6]
             ],
@@ -96,7 +98,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Cédula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1],
                 ['name' => 'Tres últimas boletas (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                // ['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>3],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>3],
                 ['name' =>'Formulario SIGEP.','number'=>4],  
                 //['name' => 'Formulario de Calificación y Aprobación de Préstamos FORM/CAYAP/PTMO/UIP/004.','number'=>4],
                 /*Estos documentos son solicitados por MUSERPOL en caso de ser requeridos*/
@@ -118,7 +120,8 @@ class LoanStructureSeeder extends Seeder
                   'maximum_amount_modality' => 25000,
                   'minimum_amount_modality' => 1,
                   'maximum_term_modality' => 30,
-                  'minimum_term_modality' => 1
+                  'minimum_term_modality' => 1,
+                  'print_contract_platform' =>true
               ],
               'interest' => ['annual_interest' => 20,'penal_interest' => 6]
             ],
@@ -128,7 +131,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Tres últimas boletas (Original y Fotocopia) y/o Certificado de haberes.','number'=>2], //( 3 boletas)
                 ['name' => 'Memorándum de asignación de la Letra (Original y Fotocopia).','number'=>3],
                 ['name' => 'Certificado de años de servicio.','number'=>4],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
             	  //['name' => 'Memorándum de destino a disponibilidad a la letra "A" en copia simple.','number'=>3], // Nuevo
@@ -154,7 +157,8 @@ class LoanStructureSeeder extends Seeder
                 'maximum_amount_modality' => 25000,
                 'minimum_amount_modality' => 1,
                 'maximum_term_modality' => 30,
-                'minimum_term_modality' => 1
+                'minimum_term_modality' => 1,
+                'print_contract_platform' =>true
               ],
               'interest' => ['annual_interest' => 20,'penal_interest' => 6]
             ],
@@ -167,7 +171,7 @@ class LoanStructureSeeder extends Seeder
                 //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
                 //['name' => 'Tres últimas boletas de pago del garante en copia simple.','number'=>3], //garante solidario
                 //['name' => 'Certificado de aportes para el Auxilio Mortuorio de los 3 últimos meses de la unidad de Fondo de Retiro.','number'=>4], // para solicitantes AFPś
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>7],
                 ['name' => 'Certificado de Aportes de la Unidad Fondo de Retiro.','number'=>8],
@@ -192,7 +196,8 @@ class LoanStructureSeeder extends Seeder
                 'maximum_amount_modality' => 25000,
                 'minimum_amount_modality' => 1,
                 'maximum_term_modality' => 12,
-                'minimum_term_modality' => 1
+                'minimum_term_modality' => 1,
+                'print_contract_platform' =>true
               ],
               'interest' => ['annual_interest' => 20,'penal_interest' => 6]
             ],
@@ -201,7 +206,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Cédula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1],
                 ['name' => 'Tres últimas boletas (Original y Fotocopia) y/o Certificado de haberes.','number'=>2], //Nuevo *caso pasivo con renta de SENASIR, quien solicita el préstamo
                 //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>3],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>3],
                 ['name' => 'Formulario SIGEP.','number'=>4],
                 ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>5],
                   /*Estos documentos son solicitados por MUSERPOL en caso de ser requeridos*/
@@ -222,7 +227,8 @@ class LoanStructureSeeder extends Seeder
                 'maximum_amount_modality' => 25000,
                 'minimum_amount_modality' => 1,
                 'maximum_term_modality' => 12,
-                'minimum_term_modality' => 1
+                'minimum_term_modality' => 1,
+                'print_contract_platform' =>true
               ],
               'interest' => ['annual_interest' => 20,'penal_interest' => 6]
             ],
@@ -240,7 +246,7 @@ class LoanStructureSeeder extends Seeder
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple.','number'=>1],
                 //['name' => 'Tres últimas Boletas de pago en copia simple.','number'=>2],
                 //['name' => 'Certificado de haberes considerando el último mes percibido.','number'=>2],  // En caso de no contar con la boleta de pago
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>3],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>3],
                 ['name' => 'Formulario SIGEP.','number'=>4],
                 //['name' => 'Formulario de Calificación y Aprobación de Préstamos FORM/CAYAP/PTMO/UIP/004.','number'=>4],
                 /*Estos documentos son solicitados por MUSERPOL en caso de ser requeridos*/
@@ -272,7 +278,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Tres últimas boletas (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                 ['name' => 'Cédula de Identidad - Garante (Original y Fotocopia).','number'=>3],
                 ['name' => 'Última Boleta de Pago - Garante (Original y Fotocopia).','number'=>4],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>7],
                 ['name' => 'Certificado de Aportes de la Unidad Fondo de Retiro.','number'=>8],
@@ -311,7 +317,7 @@ class LoanStructureSeeder extends Seeder
               'requirements'=>[
                 ['name' => 'Cédula de Identidad  del(la) Titular (Original y Fotocopia).','number'=>1],
                 ['name' => 'Tres últimas boletas (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>3],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>3],
                 ['name' => 'Formulario SIGEP.','number'=>4],
                 ['name' => ' Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>5],
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple.','number'=>1],
@@ -352,7 +358,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                 ['name' => 'Cédula de Identidad - 2 Garantes (Original y Fotocopia).','number'=>3],
                 ['name' => 'Última Boleta de Pago - 2 Garantes (Original y Fotocopia).','number'=>4],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
                 //['name' => 'Última Boleta de pago en copia simple.','number'=>2], // Tambien de los 2 garantes
@@ -395,7 +401,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                 ['name' => 'Cédula de Identidad - Garante (Original y Fotocopia).','number'=>3],
                 ['name' => 'Última Boleta de Pago - Garante (Original y Fotocopia).','number'=>4],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>7],
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple.','number'=>1],// del solicitante y los garantes
@@ -435,7 +441,7 @@ class LoanStructureSeeder extends Seeder
                   ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                   ['name' => 'Cédula de Identidad – 1 Garante (Original y Fotocopia).','number'=>3],
                   ['name' => 'Última Boleta de Pago – 1 Garante (Original y Fotocopia).','number'=>4],
-                  ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                  ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                   ['name' => 'Formulario SIGEP.','number'=>6],
                   ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>7],
                   ['name' => 'Certificado de Aportes Voluntarios del Área Fondo de Retiro (Afiliados AFP).','number'=>8],
@@ -479,7 +485,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                 ['name' => 'Cédula de Identidad - 1 Garante (Original y Fotocopia).','number'=>3],
                 ['name' => 'Última Boleta de Pago - 1 Garante (Original y Fotocopia).','number'=>4],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 //['name' => 'Última Boleta de pago en copia simple.','number'=>2]
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
@@ -529,7 +535,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                 ['name' => 'Cédula de Identidad - 1 Garante (Original y Fotocopia).','number'=>3],
                 ['name' => 'Última Boleta de Pago - 1 Garante (Original y Fotocopia).','number'=>4],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
                 //['name' => 'Última Boleta de pago en copia simple.','number'=>2], // Tambien de los 2 garantes
@@ -575,7 +581,7 @@ class LoanStructureSeeder extends Seeder
                   ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                   ['name' => 'Cédula de Identidad -  Garante (Original y Fotocopia).','number'=>3],
                   ['name' => 'Última Boleta de Pago - Garante (Original y Fotocopia).','number'=>4],
-                  ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                  ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                   ['name' => 'Formulario SIGEP.','number'=>6],
                   ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>7],
                  // ['name' => 'Cédula de Identidad del (la) titular en copia simple.','number'=>1],// del solicitante y los garantes
@@ -615,7 +621,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                 ['name' => 'Cédula de Identidad –  Garante (Original y Fotocopia).','number'=>3],
                 ['name' => 'Última Boleta de Pago – Garante (Original y Fotocopia).','number'=>4],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                 ['name' => 'Formulario SIGEP.','number'=>6],
                 ['name' => 'Memorándum de agradecimiento o cualquier otro documento que avale el grado del titular.','number'=>7],
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
@@ -659,7 +665,7 @@ class LoanStructureSeeder extends Seeder
                   ['name' => 'Última Boleta de Pago del(la) Titular (Original y Fotocopia) y/o Certificado de haberes.','number'=>2],
                   ['name' => 'Cédula de Identidad - 2 Garantes (Original y Fotocopia).','number'=>3],
                   ['name' => 'Última Boleta de Pago - 2 Garantes (Original y Fotocopia).','number'=>4],
-                  ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>5],
+                  ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>5],
                   ['name' => 'Formulario SIGEP.','number'=>6],
                   //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
                   //['name' => 'Última Boleta de pago en copia simple.','number'=>2], // Tambien de los 2 garantes
@@ -716,7 +722,7 @@ class LoanStructureSeeder extends Seeder
               ['name' => 'Fotocopia del Plano del Lote.','number'=>10],
               ['name' => 'Fotocopia del Catastro.','number'=>11],
               ['name' => 'Certificado de Estado Civil o Soltería de todos los participantes del Préstamo (Original).','number'=>12],
-              ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>13],
+              ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>13],
               ['name' => 'Formulario SIGEP.','number'=>14],
               ['name' => 'En caso que el cónyuge sea policía debe cumplir con los mismos requisitos que el solicitante, excepto  la documentación de la garantía.','number'=>15],
               /*['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
@@ -773,7 +779,7 @@ class LoanStructureSeeder extends Seeder
                 ['name' => 'Fotocopia del Plano del Lote.','number'=>10],
                 ['name' => 'Fotocopia del Catastro.','number'=>11],
                 ['name' => 'Certificado de Estado Civil o Soltería de todos los participantes del Préstamo (Original).','number'=>12],
-                ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>13],
+                ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>13],
                 ['name' => 'Formulario SIGEP.','number'=>14],
                 ['name' => 'En caso que el cónyuge sea policía debe cumplir con los mismos requisitos que el solicitante, excepto  la documentación de la garantía..','number'=>15],
                 //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
@@ -836,7 +842,7 @@ class LoanStructureSeeder extends Seeder
               ['name' => 'Fotocopia del Plano del Lote.','number'=>10],
               ['name' => 'Fotocopia del Catastro.','number'=>11],
               ['name' => 'Certificado de Estado Civil o Soltería de todos los participantes del Préstamo (Original).','number'=>12],
-              ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>13],
+              ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>13],
               ['name' => 'Formulario SIGEP.','number'=>14],
               ['name' => 'En caso que el cónyuge sea policía debe cumplir con los mismos requisitos que el solicitante, excepto  la documentación de la garantía..','number'=>15],
               //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],
@@ -893,7 +899,7 @@ class LoanStructureSeeder extends Seeder
               ['name' => 'Fotocopia del Plano del Lote.','number'=>10],
               ['name' => 'Fotocopia del Catastro.','number'=>11],
               ['name' => 'Certificado de Estado Civil o Soltería de todos los participantes del Préstamo (Original).','number'=>12],
-              ['name' => 'Estado de cuenta original, vigente y emitido por el Banco Unión S.A.','number'=>13],
+              ['name' => 'Estado de cuenta original, vigente y emitido por la Entidad financiera.','number'=>13],
               ['name' => 'Formulario SIGEP.','number'=>14],
               ['name' => 'En caso que el cónyuge sea policía debe cumplir con los mismos requisitos que el solicitante, excepto  la documentación de la garantía..','number'=>15],
               //['name' => 'Cédula de Identidad del (la) titular en copia simple','number'=>1],

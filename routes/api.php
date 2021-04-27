@@ -92,6 +92,7 @@ Route::group([
             Route::patch('affiliate/{affiliate}/observation','Api\V1\AffiliateController@update_observation');
             Route::delete('affiliate/{affiliate}/observation','Api\V1\AffiliateController@unset_observation');
             Route::post('affiliate_guarantor', 'Api\V1\AffiliateController@test_guarantor');
+            Route::post('affiliate_spouse_guarantor', 'Api\V1\AffiliateController@test_spouse_guarantor');
             Route::get('affiliate_existence','Api\V1\AffiliateController@get_existence');
             Route::get('affiliate/{affiliate}/maximum_loans','Api\V1\AffiliateController@evaluate_maximum_loans');
             Route::get('affiliate_record', 'Api\V1\AffiliateController@affiliate_record');
@@ -177,6 +178,11 @@ Route::group([
             'middleware' => 'permission:delete-loan'
         ], function () {
             Route::apiResource('loan', 'Api\V1\LoanController')->only('destroy');
+        });
+        Route::group([
+            'middleware' => 'permission:update-refinancing-balance'
+        ], function () {
+            Route::patch('loan/{loan}/update_refinancing_balance','Api\V1\LoanController@update_balance_refinancing');
         });
         // payments
         Route::group([

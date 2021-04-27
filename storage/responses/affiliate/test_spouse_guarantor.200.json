@@ -44,7 +44,6 @@
         "account_number": null,
         "financial_entity_id": null,
         "sigep_status": null,
-        "unit_police_description": null,
         "full_name": "ILDA PEREIRA HURTADO",
         "civil_status_gender": "soltera",
         "dead": true,
@@ -121,7 +120,6 @@
     "guarantor": false,
     "active_guarantees_quantity": 0,
     "guarantor_information": false,
-    "double_perception": false,
-    "loans_sismu": [],
-    "guarantees_sismu": []
+    "double_perception": true,
+    "id": 18656
 }

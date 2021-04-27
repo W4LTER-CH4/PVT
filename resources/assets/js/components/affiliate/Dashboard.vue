@@ -10,7 +10,7 @@
               <ul style="list-style: none;" class="pa-0">
                 <li v-for="(item,index) in loan" :key="item.id" class="pb-2">
                   <div v-if="index < 3">
-                    <!--{{item.procedure_modality_id}}-->
+                    
                     <strong>Cód.:</strong>
                     {{ item.code }} |
                     <strong>Desembolso:</strong>
@@ -21,7 +21,7 @@
                     {{ item.modality.procedure_type.second_name  }}
                     <span>
                       <v-tooltip
-                        left              
+                        left
                       >
                         <template v-slot:activator="{ on }">
                           <v-btn
@@ -30,19 +30,19 @@
                             small
                             color="warning"
                             bottom
-                            right                        
+                            right
                             v-on="on" 
-                            :to="{ name: 'flowAdd', params: { id: item.id, workTray: 'received' }}" 
+                            :to="{ name: 'flowAdd', params: { id: item.id}}" 
                           >
                             <v-icon>mdi-eye</v-icon>
                           </v-btn>
                         </template>
                         <span>Ver préstamo</span>
-                      </v-tooltip>            
+                      </v-tooltip>
                     </span>
                     <span v-if="item.state_id != 3">
                       <v-tooltip
-                        left              
+                        left
                       >
                         <template v-slot:activator="{ on }">
                           <v-btn
@@ -51,7 +51,7 @@
                             small
                             color="error"
                             bottom
-                            right                        
+                            right
                             v-on="on" 
                             @click.stop="validateRemakeLoan(affiliate.id, item.id)"
                           >
@@ -59,9 +59,9 @@
                           </v-btn>
                         </template>
                         <span>Rehacer préstamo</span>
-                      </v-tooltip>            
+                      </v-tooltip>
                     </span>
-                    
+
                     <span v-if="item.state_id == 3">
                     <v-tooltip
                     left  
@@ -74,7 +74,7 @@
                         small
                         color="success"
                         bottom
-                        right                        
+                        right
                         v-on="on" 
                         @click.stop="validateRefinancingLoan(affiliate.id, item.id)"
                       >
@@ -82,7 +82,7 @@
                       </v-btn>
                     </template>
                     <span>Refinanciamiento</span>
-                    </v-tooltip>            
+                    </v-tooltip>
                     </span>
 
                     <span v-if="item.state_id == 3">
@@ -105,7 +105,7 @@
                         </v-btn>
                       </template>
                       <span>Reprogramacion</span>
-                    </v-tooltip>            
+                    </v-tooltip>
                     </span>
 
 
@@ -117,7 +117,7 @@
                     >
                       <strong>Porcentaje pagado: {{ (((item.amount_approved-item.balance)*100)/item.amount_approved).toFixed(2) }}%</strong>
                     </v-progress-linear>
-                  
+
                   </div>
 
                 </li>
@@ -397,52 +397,6 @@ export default {
         console.log(e)
       }
     },
-
-
-/* validateAffiliate(id, type_procedure) {
-      this.verifyLoans(id)
-      if(this.state_name_type != 'Baja'  && this.state_name != ''){
-        if((Object.entries(this.spouse).length === 0 && this.state_name_status != 'Fallecido') || (Object.entries(this.spouse).length !== 0 && this.state_name_status == 'Fallecido')) {
-          if(this.affiliate.identity_card != null && this.affiliate.city_identity_card_id != null){
-            if(this.affiliate.civil_status != null){
-              if(this.affiliate.financial_entity_id != null && this.affiliate.account_number != null && this.affiliate.sigep_status != null){
-                if(this.affiliate.birth_date != null && this.affiliate.city_birth_id != null){
-                  if(this.loan_affiliate.process_loans < this.global_parameters.max_loans_process){
-                    if(this.loan_affiliate.disbursement_loans < this.global_parameters.max_loans_active){
-                      if(type_procedure == "is_new"){
-                        this.$router.push({ name: 'loanAdd',  params: { hash: 'new'},  query: { affiliate_id: id}})
-                      } if(type_procedure == "is_refinancing"){
-                        this.$router.push({ name: 'loanAdd', params: { hash: 'refinancing'}, query: { affiliate_id: id, type_sismu: true}})
-                      } if(type_procedure == "is_reprogramming"){
-                        this.$router.push({ name: 'loanAdd', params: { hash: 'reprogramming'}, query: { affiliate_id: id, type_sismu: true}})
-                      }
-                    }else{
-                      this.toastr.error("El afiliado no puede tener más de "+ this.global_parameters.max_loans_active +" préstamos desembolsados. Actualemnte ya tiene "+ this.loan_affiliate.disbursement_loans+ " préstamos desembolsados.")
-                    }
-                  }else{
-                    this.toastr.error("El afiliado no puede tener más de "+ this.global_parameters.max_loans_process +" trámite en proceso. Actualmente ya tiene "+ this.loan_affiliate.process_loans+ " préstamos en proceso.")
-                  }
-                }else{
-                this.toastr.error("El afiliado no tiene registrado su fecha de nacimiento ó ciudad de nacimiento.")
-                }
-              }else{
-              this.toastr.error("El afiliado no tiene registrado la entidad financiera")
-              }         
-            }else{
-              this.toastr.error("El afiliado no tiene registrado su estado civil.")
-            }          
-          }else{
-          this.toastr.error("El afiliado no tiene registrado su CI ó ciudad de expedición del CI.")
-        }
-        }else{
-          this.toastr.error("El afiliado no puede acceder a un préstamo por estar fallecido ó estar fallecido y no tener registrado a un(a) conyugue.")
-        }
-      }else{
-        this.toastr.error("El afiliado no puede acceder a un préstamo por estar dado de baja ó no tener registrado su estado.")
-      }
-      
-    },*/
-
     async validateRefinancingLoan(a_id, l_id){
       //this.$router.push({ name: 'loanAdd',  params: { hash: 'refinancing'}, query:{ affiliate_id: a_id, loan_id: l_id } })
       try {

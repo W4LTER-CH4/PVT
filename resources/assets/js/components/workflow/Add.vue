@@ -69,22 +69,6 @@
           <v-icon x-small color="orange">mdi-folder-information</v-icon>{{role_name}} <br>
           <v-icon x-small color="blue" v-if="user_name != null">mdi-file-account</v-icon> {{user_name}}</h6>
         </template>
-        <!--<v-divider
-            class="mx-2"
-            inset
-            vertical
-          ></v-divider>
-          <v-flex xs3>
-            <v-text-field
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="Buscar"
-              class="mr-5 pr-5"
-              single-line
-              hide-details
-              clearable
-            ></v-text-field>
-        </v-flex>-->
       </v-toolbar>
     </v-card-title>
     <v-card-text>
@@ -199,7 +183,7 @@
               </v-tooltip>
               <!--FORMULARIO PARA CALIFICACION-->
             </v-card-title>
-            <v-card-title v-if="$store.getters.userRoles.includes('PRE-calificacion')">
+            <v-card-title v-if="permissionSimpleSelected.includes('print-qualification-form')">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -211,7 +195,7 @@
                     absolute
                     v-on="on"
                     style="margin-right: -9px;margin-top: 78px;"
-                    @click="calificacionprint($route.params.id)"
+                    @click="printQualificationForm($route.params.id)"
                   >
                     <v-icon>mdi-printer-check</v-icon>
                   </v-btn>
@@ -566,7 +550,7 @@ export default {
         console.log(e)
       }
     },
-    async calificacionprint(item) {
+    async printQualificationForm(item) {
       try {
         let res = await axios.get(`loan/${item}/print/qualification`)
         console.log("plan " + item)

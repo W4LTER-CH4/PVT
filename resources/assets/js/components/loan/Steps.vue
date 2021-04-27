@@ -139,6 +139,7 @@
             :modalidad_guarantors.sync="modalidad.guarantors"
             :modalidad.sync="modalidad"
             :loan_detail.sync="loan_detail"
+            :data_loan_parent_aux.sync="data_loan_parent_aux"
             :guarantors.sync="guarantors"
             :affiliate.sync="affiliate"
             :modalidad_id.sync="modalidad.id"/>
@@ -760,6 +761,8 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
         this.loading = true
         let res = await axios.get(`loan/${id}`)
         this.data_loan = res.data
+
+         this.data_loan_parent_aux.guarantors=res.data.guarantors
 
          this.data_loan_parent_aux.parent_loan_id = res.data.parent_loan_id
          this.data_loan_parent_aux.parent_reason = res.data.parent_reason

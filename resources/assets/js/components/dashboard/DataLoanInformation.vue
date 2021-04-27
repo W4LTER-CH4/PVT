@@ -17,8 +17,9 @@
                       dense
                       :headers="headers_loans"
                       :items="loans_lender.loans"
-                      :items-per-page="4"
-                      hide-default-footer
+                      :loading="loading"
+                      :items-per-page="10"
+                      :footer-props="{ itemsPerPageOptions: [10, 15, 30] }"
                     >
                       <template v-slot:[`item.shortened`]="{ item }">
                         <v-tooltip top>
@@ -89,8 +90,9 @@
                       dense
                       :headers="headers_loans"
                       :items="loans_lender.guarantees"
-                      :items-per-page="4"
-                      hide-default-footer
+                      :loading="loading"
+                      :items-per-page="10"
+                      :footer-props="{ itemsPerPageOptions: [10, 15, 30] }"
                     >
                       <template v-slot:[`item.shortened`]="{ item }">
                         <v-tooltip top>
@@ -163,8 +165,9 @@
                       dense
                       :headers="headers_loans"
                       :items="loans_spouse.loans"
-                      :items-per-page="4"
-                      hide-default-footer
+                      :loading="loading"
+                      :items-per-page="10"
+                      :footer-props="{ itemsPerPageOptions: [10, 15, 30] }"
                     >
                       <template v-slot:[`item.shortened`]="{ item }">
                         <v-tooltip top>
@@ -236,8 +239,9 @@
                       dense
                       :headers="headers_loans"
                       :items="loans_spouse.guarantees"
-                      :items-per-page="4"
-                      hide-default-footer
+                      :loading="loading"
+                      :items-per-page="10"
+                      :footer-props="{ itemsPerPageOptions: [10, 15, 30] }"
                     >
                       <template v-slot:[`item.shortened`]="{ item }">
                         <v-tooltip top>
@@ -318,7 +322,10 @@ export default {
       type: Object,
       required: true
     },
-
+    loading: {
+      type: Boolean,
+      required: true
+    },
     ver: {
       type: Boolean,
       required: true
@@ -332,6 +339,7 @@ export default {
         align: "left",
         value: "code",
         width: "15%",
+        sortable: true
       },
       {
         text: "Modalidad",
@@ -339,6 +347,7 @@ export default {
         align: "left",
         value: "shortened",
         width: "5%",
+        sortable: false
       },
       {
         text: "Fecha Solicitud",
@@ -346,6 +355,7 @@ export default {
         align: "left",
         value: "request_date",
         width: "10%",
+        sortable: true
       },
       {
         text: "Fecha Desembolso",
@@ -353,6 +363,7 @@ export default {
         align: "left",
         value: "disbursement_date",
         width: "10%",
+        sortable: true
       },
       {
         text: "Monto solicitado",
@@ -360,6 +371,7 @@ export default {
         align: "left",
         value: "amount",
         width: "10%",
+        sortable: false
       },
 
       {
@@ -368,6 +380,7 @@ export default {
         align: "left",
         value: "loan_term",
         width: "10%",
+        sortable: false
       },
       {
         text: "Cuota",
@@ -375,6 +388,7 @@ export default {
         align: "left",
         value: "estimated_quota",
         width: "10%",
+        sortable: false
       },
       {
         text: "Saldo",
@@ -382,6 +396,7 @@ export default {
         align: "left",
         value: "balance",
         width: "10%",
+        sortable: false
       },
       {
         text: "Tipo Trámite",
@@ -389,6 +404,7 @@ export default {
         align: "left",
         value: "origin",
         width: "10%",
+        sortable: false
       },
       {
         text: "Estado",
@@ -396,6 +412,7 @@ export default {
         align: "left",
         value: "state",
         width: "15%",
+        sortable: true
       },
       {
         text: "Acciones",
@@ -420,6 +437,7 @@ export default {
         align: "left",
         value: "PresNumero",
         width: "15%",
+        sortable: true
       },
       {
         text: "Modalidad",
@@ -462,6 +480,7 @@ export default {
         align: "left",
         value: "PresEstDsc",
         width: "15%",
+        sortable: true
       },
       {
         text: "Acciones",

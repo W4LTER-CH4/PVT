@@ -164,7 +164,7 @@
                     <th class="w-8"><div>Interés Penal</div><div>Pendiente</div></td>-->
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
-                    <th class="w-8"><div>Cpte</div> </th>        
+                    <th class="w-8"><div>CBTE</div> </th>
                     <th class="w-8"><div>Obs</div> </th>        
                 </tr>
             </thead>

@@ -86,8 +86,11 @@ class LoanPermissionSeeder extends Seeder
                 'name' => 'release-loan-user',
                 'display_name' => 'Liberar usuario de préstamo'
             ], [
-                'name' => 'update-accounting-loan',
-                'display_name' => 'Editar tramite en contabilidad'
+                'name' => 'update-accounting-voucher',
+                'display_name' => 'Editar certificación presupuestaria contable'
+            ],  [
+                'name' => 'update-refinancing-balance',
+                'display_name' => 'Actualizar saldo de refinanciamiento'
             ], [
                 'name' => 'registration-delivery-return-contracts',
                 'display_name' => 'Registro entrega/retorno de Contrato'
@@ -97,6 +100,12 @@ class LoanPermissionSeeder extends Seeder
             ],[
                 'name' => 'update-loan-calculations',
                 'display_name' => 'Actualizar los calculos del préstamo'
+            ],[
+                'name' => 'print-qualification-form',
+                'display_name' => 'Imprimir formulario de calificación'
+            ],[
+                'name' => 'show-history-loan',
+                'display_name' => 'Ver historial préstamos'
             ]
         ];
         foreach ($permissions as $permission) {

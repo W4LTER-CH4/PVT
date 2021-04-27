@@ -204,6 +204,14 @@ class Loan extends Model
     {
         return $this->hasMany(LoanPayment::class)->orderBy('quota_number', 'desc')->orderBy('created_at');
     }
+    public function payments_pendings_confirmations()
+    {
+        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [7])->orderBy('quota_number', 'desc')->orderBy('created_at');
+    }
+    public function payment_pending_confirmation()//pago de pendiente por confirmacion para refin
+    {
+        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [7])->orderBy('quota_number', 'desc')->orderBy('created_at')->first();
+    }
     public function paymentsKardex()
     {
         return $this->hasMany(LoanPayment::class)->whereIn('state_id', [6,7])->orderBy('quota_number', 'desc')->orderBy('created_at');
@@ -862,5 +870,31 @@ class Loan extends Model
             $modality=[];
             return $modality;
         }
+    }
+    //Saldo del padre a refinanciar 
+    public function balance_parent_refi(){
+        $balance_parent = 0;
+       if($this->data_loan){
+        $balance_parent=$this->data_loan->balance;
+       }else{
+           if($this->parent_loan && $this->parent_loan->payment_pending_confirmation() != null){
+            $balance_parent = $this->parent_loan->payment_pending_confirmation()->estimated_quota;
+           }
+       }
+       return  $balance_parent;
+
+    }
+    //fecha de corte para refi
+     public function date_cut_refinancing(){
+         $date_cut_refinancing= null;
+       if($this->data_loan){
+         $date_cut_refinancing=$this->data_loan->date_cut_refinancing;
+       }else{
+           if($this->parent_loan && $this->parent_loan->payment_pending_confirmation() != null){
+            $date_cut_refinancing = $this->parent_loan->payment_pending_confirmation()->estimated_date;
+           }
+       }
+       return  $date_cut_refinancing;
+
     }
 }

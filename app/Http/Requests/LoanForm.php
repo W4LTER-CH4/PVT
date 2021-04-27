@@ -121,6 +121,7 @@ class LoanForm extends FormRequest
             'data_loan.*.loan_term'=>['required','integer'],
             'data_loan.*.balance'=>['required','numeric'],
             'data_loan.*.estimated_quota'=>['required','numeric'],
+            'data_loan.*.date_cut_refinancing'=>['nullable', 'date_format:"Y-m-d"'],
             'cosigners' => ['array',new LoanIntervalMaxCosigner($procedure_modality),'exists:personal_references,id'],
             'documents.*' => ['exists:procedure_documents,id'],
             'disbursable_id' => ['integer'],

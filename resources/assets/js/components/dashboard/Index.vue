@@ -47,6 +47,7 @@
                               x-small
                               v-on="on"
                               color="info"
+                              :loading="loading"
                               @click.stop="validar()"
                             >
                               <v-icon>mdi-magnify</v-icon>
@@ -216,8 +217,8 @@
                       dense
                       :headers="headers_observables"
                       :items="history_observables.exactos"
-                      :items-per-page="4"
-                      hide-default-footer
+                      :items-per-page="10"
+                      :footer-props="{ itemsPerPageOptions: [10, 15, 30] }"
                     >
                       <template v-slot:[`item.PadFechaRegistro`]="{ item }">
                         {{ item.PadFechaRegistro | date }}
@@ -236,8 +237,8 @@
                       dense
                       :headers="headers_observables"
                       :items="history_observables.aproximaciones"
-                      :items-per-page="4"
-                      hide-default-footer
+                      :items-per-page="10"
+                      :footer-props="{ itemsPerPageOptions: [10, 15, 30] }"
                     >
                       <template v-slot:[`item.PadFechaRegistro`]="{ item }">
                         {{ item.PadFechaRegistro | date }}
@@ -261,7 +262,8 @@
                           <DataLoanInformation
                             :loans_lender.sync="loans_lender"
                             :loans_spouse.sync="loans_spouse"
-                            :ver.sync="ver"/>
+                            :ver.sync="ver"
+                            :loading.sync="loading"/>
                         </v-tab-item>
                       <v-tab>EVALUACIÓN PREVIA</v-tab>
                         <v-tab-item >
@@ -338,43 +340,6 @@ export default {
     corto_plazo: {},
     anticipo: {},
     evaluacion: false,
-
-    /* //no son utilizadas en ninguna parte
-      dialog: false,
-      dialog1: false,
-      editedIndex: -1,
-      editedItem: {},
-      defaultItem: {},
-      editedItem1: {},
-      defaultItem1: {},
-      headers: [
-        {
-          text: 'PRIMER NOMBRE',
-          align: 'start',
-          sortable: false,
-          value: 'first_name',
-        },
-        { text: 'SEGUNDO NOMBRE',  value: 'second_name' },
-        { text: 'PRIMER APELLIDO ', value: 'last_name' },
-        { text: 'SEGUNDO APELLIDO ', value: 'mothers_last_name' },
-        { text: 'TELEFONO', value: 'phone_number' },
-        { text: 'CELULAR', value: 'cell_phone_number' },
-        { text: 'DIRECCION ', value: 'address' },
-        {
-      text: "Actions",
-      value: "actions",
-      sortable: false
-    }
-      ],
-
-    editable1: false,
-    editable: false,
-    reload: false,
-    payment_types:[],
-    city: [],
-    entity: [],
-    entities:null,*/
-
     history_affiliate: {},
     history_spouse: {},
     history_observables: {},
@@ -439,6 +404,7 @@ export default {
   watch: {
     affiliate_ci() {
       this.ver = false;
+      this.loading = false
       this.history_affiliate = {},
       this.history_spouse = {},
       this.history_observables = {},
@@ -451,16 +417,15 @@ export default {
 
     async validar() {
       if (await this.$refs.observer.validate()) {
-         
+
         this.getHistoryAffiliate()
 
       }
   },
     //obtener los afiliados u observables
     async getHistoryAffiliate() {
-       
-      this.getCalculator();
-      try {
+          this.getCalculator();
+          try {
         this.loading = true;
         let res = await axios.get(`affiliate_record`, {
           params: {
@@ -470,30 +435,28 @@ export default {
         this.history_affiliate = res.data.affiliate;
         this.history_spouse = res.data.spouse;
         this.history_observables = res.data.observables;
-        
-        
-          if (this.history_affiliate != null){   
-            
+
+          if (this.history_affiliate != null){
             let res2 = await axios.post(`affiliate_loans_guarantees`, { 
                 affiliate_id: this.history_affiliate.id,
                 type: true
             });
             this.loans_lender = res2.data
             this.ver = true
-          
+
             if (this.history_spouse != null){
               if (this.history_spouse.origin == "affiliate") {
-                
+
                 let res3 = await axios.post(`affiliate_loans_guarantees`, {        
                     affiliate_id: this.history_spouse.id,
                     type: true      
-                });            
+                });
                 this.loans_spouse = res3.data
                 this.ver = true
                 console.log("Afiliada conyugue")
               } 
               else if(this.history_spouse.origin == "spouse") {         
-                   
+
                 let res3 = await axios.post(`affiliate_loans_guarantees`, {
                     affiliate_id: this.history_spouse.id,
                     type: false
@@ -505,9 +468,7 @@ export default {
                 console.log("No tiene conyugue")
               }
             }  
-          }
-     
-        
+          }       
       } catch (e) {
         this.$refs.observer.setErrors(e)
       } finally {
@@ -516,7 +477,7 @@ export default {
     
     },
 
-    async getLoansHistory() {
+    /*async getLoansHistory() {
       try {
         this.getCalculator();
         this.loading = true;
@@ -544,7 +505,7 @@ export default {
       } finally {
         this.loading = false;
       }
-    },
+    },*/
     async getCalculator() {
       try {
         this.loading = false;
@@ -552,12 +513,10 @@ export default {
         let res = await axios.post(`search_loan`, {
           identity_card: this.affiliate_ci,
         });
-        debugger
         this.loans1 = res.data;
         this.cont = this.loans1.modalities.length;
         for (let i = 0; i < this.loans1.modalities.length; i++) {
           if (this.loans1.modalities[i].name_procedure_modality == "Préstamo Anticipo") {
-            debugger
             this.anticipo.name = this.loans1.modalities[i].name_procedure_modality;
             this.anticipo.amount_max = this.loans1.modalities[i].amount_max;
             this.anticipo.maximum_term = this.loans1.modalities[i].modality_affiliate.loan_modality_parameter.maximum_term_modality;
@@ -584,7 +543,7 @@ export default {
         }
 
         this.evaluacion = res.data.evaluate;
-        this.$forceUpdate();
+        //this.$forceUpdate();
       } catch (e) {
         console.log(e);
       } finally {

@@ -30,6 +30,7 @@ class CreateLoanModalityParametersTable extends Migration
             $table->unsignedInteger('minimum_amount_modality')->nullable();//monto minimo de la modalidad
             $table->unsignedSmallInteger('maximum_term_modality')->nullable();//plazo maximo en meses de la modalidad
             $table->unsignedTinyInteger('minimum_term_modality')->nullable();//plazo minimo en meses de la modalidad
+            $table->boolean('print_contract_platform')->default(false);//imprimir contrato en plataforma
         });
     }
 
