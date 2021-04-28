@@ -71,6 +71,11 @@
                         </v-icon>
                       </template>
                     </v-treeview>
+                      <ul style="list-style: none" class="pa-0">
+                      <li v-for="(permission,i) in rolePermissionSelected.permissions" :key="i">
+                        <strong>{{i+1}} {{permission.display_name}}</strong> - {{permission.name}} 
+                     </li>
+                    </ul>
                   </v-col>
                 </v-row>
               </v-col>
@@ -106,6 +111,15 @@ export default {
   beforeMount() {
     this.getUser()
     this.getModules()
+  },
+  computed: {
+    //permisos del selector global por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },
+    rolePermissionSelected () {
+      return this.$store.getters.rolePermissionSelected
+    }
   },
   methods: {
     async getUser() {

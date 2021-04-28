@@ -21,6 +21,7 @@ use App\Unit;
 use App\Loan;
 use App\LoanGlobalParameter;
 use App\ProcedureType;
+use App\ProcedureModality;
 use App\Http\Requests\AffiliateForm;
 use App\Http\Requests\AffiliateFingerprintForm;
 use App\Http\Requests\ObservationForm;
@@ -632,6 +633,7 @@ class AffiliateController extends Controller
         $spouse = null;
         $affiliate = null;
         $sw = false;
+        $validation =false;
         if(Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first()){//caso de que el afiliado exista
             $affiliate = Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first();
         }
@@ -641,32 +643,46 @@ class AffiliateController extends Controller
                 $sw = true;
             $affiliate = $spouse->affiliate;
         }
-        if($affiliate){
-            if(!$sw){
-                if($affiliate->affiliate_state == null){
-                    return $message['validate'] = "Debe actualizar el estado del afiliado";
-                }
-                else{
-                    if($spouse && $affiliate->affiliate_state->name != "Fallecido"){
-                        $message['validate'] = "debe registrar el estado del afiliado";
+        $modality_names = ProcedureModality::where('name','like', '%pasivo%')->where('name','like', '%largo Plazo%')->orWhere('name','like','%pasivo%')->where('name','like','Largo Plazo%')->get();
+        foreach($modality_names as $modality)
+            if($modality->id == $request->procedure_modality_id || $sw == true)
+                $validation = true;
+        if($spouse != null && $validation || $spouse == null){
+            if($affiliate){
+                if(!$sw){
+                    if($affiliate->affiliate_state == null){
+                        return $message['validate'] = "Debe actualizar el estado del afiliado";
                     }
                     else{
-                        return $affiliate->test_guarantor($request->procedure_modality_id, $sw);
+                        if($spouse && $affiliate->affiliate_state->name != "Fallecido"){
+                            $message['validate'] = "debe registrar el estado del afiliado";
+                        }
+                        else{
+                            return $affiliate->test_guarantor($request->procedure_modality_id, $sw);
+                        }
                     }
+                }
+                else
+                {
+                    $affiliate->spouse = $affiliate->spouse;
+                    return array(
+                        "double_perception" => $sw,
+                        "affiliate" => $affiliate,
+                        "own_affiliate" => Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first(),
+                        "guarantor" => false,
+                        "active_guarantees_quantity"=> 0,
+                        "guarantor_information"=> false,
+                        "loans_sismu" => 0,
+                        "guarantees_sismu"=> 0
+
+                    );
                 }
             }
             else
-            {
-                $affiliate->spouse = $affiliate->spouse;
-                return array([
-                    "double_perception" => $sw,
-                    "affiliate" => $affiliate,
-                    "own_affiliate" => Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first()
-                ]);
-            }
+                $message['validate'] = "No se encontraron coincidencias";
         }
         else
-            $message['validate'] = "No se encontraron coincidencias";
+            $message['validate'] = "No corresponde con la modalidad";
        return $message;
     }
 

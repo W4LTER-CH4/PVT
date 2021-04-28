@@ -67,11 +67,9 @@
             </tr>
             <tr class="bg-grey-darker text-xxs text-white">
                 <td>Certificacion Presupuestaria</td>
-                <td>N° Comprobante Contable</td>
             </tr>
             <tr>
                 <td>{{$loan->num_accounting_voucher ? $loan->num_accounting_voucher: 0}}</td>
-                <td>{{$loan->num_accounting_voucher ? $loan->num_accounting_voucher : 0}}</td>
             </tr>
         </table>
     </div>

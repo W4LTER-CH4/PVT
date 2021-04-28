@@ -33,10 +33,10 @@
                 <td class="data-row py-5">{{ $lender->title }} {{ $lender->full_name }}</td>
                 <td class="data-row py-5">{{ $lender->identity_card_ext }}</td>
                 <td class="data-row py-5">{{ $lender->registration }}</td>
-                @if($loan->affiliate_state)
+                @if($loan->affiliate_state != null)
                     <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
                 @else
-                    <td class="data-row py-5"></td>
+                    <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
                 @endif
             </tr>
         </table>
@@ -115,21 +115,18 @@
                 @endif
             </tr>
             <tr class="bg-grey-darker text-xxs text-white">
-                <td class="w-25">Certificacion Presupuestaria</td>
-                <td class="w-25">N° Comprobante Contable</td>
-                <td class="w-25">Intereses Corrientes Pendientes</td> 
+                <td class="w-25">Certificacion Presupuestaria Contable</td>
+                <td colspan="2">Intereses Corrientes Pendientes</td> 
                 <td colspan="2">Intereses Penales Pendientes</td>       
             </tr>
             <tr>
             @if($loan->paymentsKardex->first() != null)
                 <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_accounting_voucher}}</td>
-                <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_accounting_voucher}}</td>
-                <td class="w-25">{{ $loan->paymentsKardex->first()->interest_accumulated}}</td>
+                <td colspan="2">{{ $loan->paymentsKardex->first()->interest_accumulated}}</td>
                 <td colspan="2">{{ $loan->paymentsKardex->first()->penal_accumulated}}</td>
                 @else
                 <td class="data-row py-5 m-b-10 text-xs">0</td>
-                <td class="data-row py-5 m-b-10 text-xs">0</td>
-                <td class="w-25">0</td>
+                <td colspan="2">0</td>
                 <td colspan="2">0</td>
             @endif
             </tr>
@@ -164,7 +161,7 @@
                     <th class="w-8"><div>Interés Penal</div><div>Pendiente</div></td>-->
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
-                    <th class="w-8"><div>CBTE</div> </th>
+                    <th class="w-8"><div>Cbte</div> </th>
                     <th class="w-8"><div>Obs</div> </th>        
                 </tr>
             </thead>

@@ -20,10 +20,10 @@
       <v-simple-checkbox color="success" :value="isSelected" @input="select($event)"></v-simple-checkbox>
     </template>
     <template v-slot:[`item.lenders[0].identity_card`]="{ item }">
-      {{ item.lenders[0].identity_card }}
+      {{ item.lenders[0] ? item.lenders[0].identity_card  : ''}}
     </template>
     <template v-slot:[`item.lenders`]="{ item }">
-      {{ $options.filters.fullName(item.lenders[0], true) }}
+      {{ item.lenders[0] ? $options.filters.fullName(item.lenders[0], true) : '' }}
     </template>
     <template v-slot:[`item.role_id`]="{ item }">
       {{ $store.getters.roles.find(o => o.id == item.role_id).display_name }}
@@ -159,7 +159,7 @@ export default {
       type: Array,
       required: true
     },
-    procedureTypeSelected:{
+    procedureTypeSelected1:{
       type:Number,
       required: true,
       default: 0

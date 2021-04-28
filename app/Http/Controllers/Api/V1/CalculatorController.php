@@ -97,14 +97,49 @@ class CalculatorController extends Controller
             $loan_global_parameter = LoanGlobalParameter::latest()->first();
             $livelihood_amount = false;
             if($liquid_qualification_calculated>$loan_global_parameter->livelihood_amount) $livelihood_amount=true;
-
+            $guarantees_sismu = $affiliate->active_guarantees_sismu();
+            $guarantees_collect = collect([]);
+            foreach($guarantees_sismu as $guarantees){
+                $quota = $guarantees->PresCuotaMensual/$guarantees->quantity_guarantors;
+                $guarantees_collect->push([
+                    'id' => $guarantees->IdPrestamo,
+                    'code' => $guarantees->PresNumero,
+                    'quota' => $quota,
+                    'state' => 'Vigente',
+                    'origin' => 'sismu'
+                ]);
+            }
+            $guarantees_sismu = $affiliate->process_guarantees_sismu();
+            foreach($guarantees_sismu as $guarantees){
+                $quota = $guarantees->PresCuotaMensual/$guarantees->quantity_guarantors;
+                $guarantees_collect->push([
+                    'id' => $guarantees->IdPrestamo,
+                    'code' => $guarantees->PresNumero,
+                    'loan_quota' => $guarantees->PresCuotaMensual,
+                    'quota' => $quota,
+                    'state' => 'En Proceso',
+                    'origin' => 'sismu'
+                ]);
+            }
+            $guarantees_pvt = $affiliate->active_guarantees();
+            foreach($guarantees_pvt as $guarantees){
+                $guarantees_collect->push([
+                    'loan_id' => $guarantees->id,
+                    'code' => $guarantees->code,
+                    'loan_quota' => $guarantees->estimated_quota,
+                    'quota' => ($guarantees->pivot->payment_percentage/100)*$guarantees->estimated_quota,
+                    'state' => $guarantees->state->name,
+                    'origin' => 'PVT'
+                ]);
+            }
             $liquid_calificated->push([
                 'affiliate_id' => $affiliate->id,
                 'payable_liquid_calculated' => round($payable_liquid_average,2),
                 'bonus_calculated' => round($total_bonuses,2),
                 'liquid_qualification_calculated' => round($liquid_qualification_calculated,2),
                 'quota_previous' => round($parent_quota,2),
-                'livelihood_amount' => $livelihood_amount
+                'livelihood_amount' => $livelihood_amount,
+                'guarantees' => $guarantees_collect
             ]);
         }
         return $liquid_calificated;

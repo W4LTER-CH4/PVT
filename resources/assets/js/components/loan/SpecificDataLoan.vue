@@ -116,9 +116,6 @@
                                   <v-col cols="12" md="4" class="py-0">
                                     <p><b>CALCULO DE CUOTA:</b>{{' '+loan.estimated_quota}} Bs.</p>
                                   </v-col>
-                                  <!--v-col cols="12" md="4" class="py-0">
-                                    {{loan}}
-                                  </!--v-col-->
                                   <v-col cols="12" md="12" >
                                     <div v-for="procedure_type in procedure_types" :key="procedure_type.id">
                                       <div v-if="procedure_type.name === 'Préstamo hipotecario'">
@@ -133,6 +130,103 @@
                                       </div>
                                     </div>
                                   </v-col>
+                                  <v-progress-linear v-show="loan_refinancing.refinancing"></v-progress-linear>
+                                    <v-col cols="12" md="4" class="pb-0" v-show="loan_refinancing.refinancing">
+                                    <p style="color:teal"><b>DATOS DEL PRESTAMO A REFINANCIAR</b></p>
+                                  </v-col>
+                                <v-col cols="12" md="8" class="py-0" v-show="loan_refinancing.refinancing">
+                                <div  v-if="permissionSimpleSelected.includes('update-refinancing-balance')">
+                                  <v-tooltip top >
+                                    <template v-slot:activator="{ on }">
+                                      <v-btn
+                                        fab
+                                        dark
+                                        x-small
+                                        :color="'error'"
+                                        top
+                                        right
+                                        v-on="on"
+                                        @click.stop="resetForm()"
+                                        v-show="cobranzas_edit"
+                                      >
+                                        <v-icon>mdi-close</v-icon>
+                                      </v-btn>
+                                    </template>
+                                    <div>
+                                      <span>Cancelar</span>
+                                    </div>
+                                  </v-tooltip>
+                                  <v-tooltip top >
+                                    <template v-slot:activator="{ on }">
+                                      <v-btn
+                                        fab
+                                        dark
+                                        x-small
+                                        :color="cobranzas_edit ? 'danger' : 'success'"
+                                        top
+                                        right
+                                        v-on="on"
+                                        @click.stop="editRefinanciamiento()"
+                                      >
+                                        <v-icon v-if="cobranzas_edit">mdi-check</v-icon>
+                                        <v-icon v-else>mdi-calculator</v-icon>
+                                      </v-btn>
+                                    </template>
+                                    <div>
+                                      <span v-if="cobranzas_edit">Actualizar el Saldo</span>
+                                      <span v-else>Editar Saldo Refinanciamiento</span>
+                                    </div>
+                                  </v-tooltip>
+                                  </div>
+                                  </v-col>
+                                  <v-progress-linear v-show="loan_refinancing.refinancing"></v-progress-linear  >
+                                  <v-row v-show="loan_refinancing.refinancing">
+                                  <v-col cols="12" md="4" class="py-2">
+                                    <p><b>Codigo de Prestamo a Padre:</b>{{' '+loan_refinancing.code}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-2" >
+                                    <p><b>Monto de Prestamo Padre:</b>{{' '+loan_refinancing.amount_approved}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-2">
+                                    <p><b>Plazo de Prestamo Padre:</b>{{' '+loan_refinancing.loan_term}}</p>
+                                  </v-col>
+                                   <v-col cols="12" md="4" class="py-0">
+                                    <p><b>Cuota de Prestamo Padre:</b>{{' '+loan_refinancing.estimated_quota}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-0"  v-show="!cobranzas_edit_sismu">
+                                    <p><b>Fecha de Corte :</b>{{' '+loan_refinancing.date_cut_refinancing}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4"  v-show="cobranzas_edit_sismu "  class="py-0">
+                                    <v-text-field
+                                      dense
+                                      v-model="loan_refinancing.date_cut_refinancing"
+                                      label="Fecha de Corte"
+                                      hint="Día/Mes/Año"
+                                      type="date"
+                                      :outlined="true"
+                                   ></v-text-field>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-0" v-show="!cobranzas_edit_sismu">
+                                    <p><b>Saldo de Prestamo a Refinanciar:</b>{{' '+loan_refinancing.balance}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4" v-show="cobranzas_edit_sismu " class="py-0" >
+                                    <v-text-field
+                                      dense
+                                      label="Saldo de Prestamo a Refinanciar"
+                                      v-model="loan_refinancing.balance"
+                                     :outlined="true"
+                                    ></v-text-field>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-0" >
+                                    <p class="success--text"><b>Monto Solicitado del Prestamo Nuevo:</b>{{' '+loan_refinancing.amount_approved}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-0" >
+                                    <p class="success--text"><b>Saldo Anterior de la Deuda:</b>{{' '+loan_refinancing.balance_parent_loan_refinancing}}</p>
+                                  </v-col>
+                                  <v-col cols="12" md="4" class="py-0" >
+                                    <p class="success--text"><b>Monto del Refinanciamiento:</b>{{' '+loan_refinancing.refinancing_balance}}</p>
+                                  </v-col>
+                                  </v-row>
                                   <v-progress-linear></v-progress-linear>
                                   <v-col cols="12" md="12" class="pb-0" >
                                     <p style="color:teal"><b>DATOS DEL CONTRATO</b></p>
@@ -260,10 +354,10 @@
                             </v-col>
                           </v-card-text>
                         </v-card>
-                        </v-tab-item>
+                      </v-tab-item>
 
-                      <v-tab>GARANTIA</v-tab>
-                        <v-tab-item >
+                    <v-tab>GARANTIA</v-tab>
+                      <v-tab-item >
                         <v-card flat tile>
                           <v-card-text class="pa-0 py-0">
                             <v-col cols="12" class="mb-0 py-0">
@@ -344,7 +438,7 @@
                                             absolute
                                             v-on="on"
                                             style="margin-right: -9px;"
-                                            @click.stop="editLoanPrueba()"
+                                            @click.stop="editLoanHipotecaryProperti()"
                                           >
                                             <v-icon v-if="editable1">mdi-check</v-icon>
                                             <v-icon v-else>mdi-pencil</v-icon>
@@ -449,7 +543,7 @@
                           </v-col>
                           </v-card-text>
                         </v-card>
-                        </v-tab-item>
+                      </v-tab-item>
 
                       <v-tab>DATOS PERSONA DE REFERENCIA</v-tab>
                         <v-tab-item >
@@ -559,8 +653,8 @@
                           </v-card>
                         </v-tab-item>
 
-                      <v-tab>DATOS CODEUDOR</v-tab>
-                        <v-tab-item >
+                        <v-tab>DATOS CODEUDOR</v-tab>
+                          <v-tab-item >
                             <v-card flat tile>
                               <v-card-text>
                               <p style="color:teal" v-if="loan.cosigners.length>0"><b>CODEUDOR NO AFILIADO</b></p>
@@ -705,59 +799,59 @@
                              <p v-if="loan.cosigners.length==0" style="color:teal"> <b>NO TIENE CODEUDORES</b></p>
                             </v-card-text>
                             </v-card>
-                        </v-tab-item>
+                          </v-tab-item>
 
-                      <v-tab>DESEMBOLSO</v-tab>
-                        <v-tab-item >
+                          <v-tab>DESEMBOLSO</v-tab>
+                            <v-tab-item >
                               <v-card flat tile>
                                 <v-card-text>
                                   <v-col cols="12" class="mb-0">
                                     <p style="color:teal"> <b>DATOS DE DESEMBOLSO</b></p>
-                                      <div v-if="permissionSimpleSelected.includes('disbursement-loan') || permissionSimpleSelected.includes('update-num-accounting-voucher')">
+                                     <div v-if="permissionSimpleSelected.includes('disbursement-loan') || permissionSimpleSelected.includes('update-num-accounting-voucher')">
                                         <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                fab
-                dark
-                x-small
-                :color="'error'"
-                top
-                right
-                absolute
-                v-on="on"
-                style="margin-right: 45px;"
-                @click.stop="resetForm()"
-                v-show="editable"
-              >
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </template>
-            <div>
-              <span>Cancelar</span>
-            </div>
+                                          <template v-slot:activator="{ on }">
+                                            <v-btn
+                                              fab
+                                              dark
+                                              x-small
+                                              :color="'error'"
+                                              top
+                                              right
+                                              absolute
+                                              v-on="on"
+                                              style="margin-right: 45px;"
+                                              @click.stop="resetForm()"
+                                              v-show="editable"
+                                            >
+                                              <v-icon>mdi-close</v-icon>
+                                            </v-btn>
+                                          </template>
+                                          <div>
+                                            <span>Cancelar</span>
+                                          </div>
                                         </v-tooltip>
                                         <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                fab
-                dark
-                x-small
-                :color="editable ? 'danger' : 'success'"
-                top
-                right
-                absolute
-                v-on="on"
-                style="margin-right: -9px;"
-                @click.stop="editLoan()"
-              >
-                <v-icon v-if="editable">mdi-check</v-icon>
-                <v-icon v-else>mdi-pencil</v-icon>
-              </v-btn>
-            </template>
-            <div>
-              <span v-if="editable">Guardar</span>
-              <span v-else>Editar</span>
-            </div>
+                                          <template v-slot:activator="{ on }">
+                                            <v-btn
+                                              fab
+                                              dark
+                                              x-small
+                                              :color="editable ? 'danger' : 'success'"
+                                              top
+                                              right
+                                              absolute
+                                              v-on="on"
+                                              style="margin-right: -9px;"
+                                              @click.stop="editLoan()"
+                                            >
+                                              <v-icon v-if="editable">mdi-check</v-icon>
+                                              <v-icon v-else>mdi-pencil</v-icon>
+                                            </v-btn>
+                                          </template>
+                                          <div>
+                                            <span v-if="editable">Guardar</span>
+                                            <span v-else>Editar</span>
+                                          </div>
                                         </v-tooltip>
                                       </div>
                                     <v-row>
@@ -799,8 +893,8 @@
                                         <div v-if="loan.payment_type_id=='1'"  class="py-0">
                                           <v-text-field
                                             dense
-                                          :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
-                                          :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
+                                            :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
+                                            :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
                                             :label="'NRO DE DEPOSITO'"
                                             v-model="loan.number_payment_type"
                                           ></v-text-field>
@@ -808,8 +902,8 @@
                                         <div v-if="loan.payment_type_id!='1'">
                                           <v-text-field
                                             dense
-                                          :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
-                                          :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
+                                            :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
+                                            :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
                                             :label="loan.payment_type_id=='2'? 'NRO DE CHEQUE':loan.payment_type_id=='3'?'NRO DE RECIBO':'OTRO'"
                                             v-model="loan.number_payment_type"
                                           ></v-text-field>
@@ -841,13 +935,13 @@
                                   </v-col>
                                 </v-card-text>
                               </v-card>
-                        </v-tab-item>
-                    </v-tabs>
-                  </v-col>
+                            </v-tab-item>
+                          </v-tabs>
+                        </v-col>
                 </v-row>
               </v-container>
             </v-col>
-        </v-row>
+          </v-row>
         <!--/v-card-->
       </v-form>
     </ValidationObserver>
@@ -857,6 +951,10 @@
 export default {
   name: "specific-data-loan",
   props: {
+    loan_refinancing: {
+      type: Object,
+      required: true
+    },
     loan: {
       type: Object,
       required: true
@@ -898,6 +996,8 @@ export default {
       dialog: false,
       dialog1: false,
       calificacion_edit:false,
+      cobranzas_edit:false,
+      cobranzas_edit_sismu:false,
       edit_return_date : false,
       edit_delivery_date : false,
       editedIndex: -1,
@@ -1067,23 +1167,21 @@ export default {
         return ''
       }
     },
-    /*identityCardExt(id){
-      let ext
-      if(id != null){
-      ext = this.city.find(o => o.id == id).first_shortened
-      console.log( ext)
-      return ext
-      }else{
-        return ''
-      }
-    },*/
     resetForm() {
       this.editable1 = false
       this.editable = false
       this.calificacion_edit = false
+      this.cobranzas_edit=false
+      this.cobranzas_edit_sismu=false
       this.edit_return_date = false
       this.edit_delivery_date = false
       this.reload = true
+      if(this.loan_refinancing.type_sismu==true){
+        this.loan_refinancing.balance= this.loan.balance_parent_loan_refinancing
+      }else{
+        this.loan_refinancing.balance= this.loan.balance_parent_loan_refinancing
+      }
+      this.loan_refinancing.date_cut_refinancing= this.loan.date_cut_refinancing
       this.$nextTick(() => {
       this.reload = false
       })
@@ -1178,17 +1276,47 @@ export default {
           })
             this.toastr.success('Se registró correctamente.')
             this.editable = false
-            /* if((this.loan.disbursement_date != '' && this.loan.number_payment_type != '') && (this.loan.disbursement_date != null && this.loan.number_payment_type != null)){
-               this.validate.valid_disbursement = true
-             }else{
-               this.validate.valid_disbursement = false
-             }*/
+         }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+    async editRefinanciamiento(){
+      try {
+        if (!this.cobranzas_edit) {
+          this.cobranzas_edit = true
+          if(this.loan_refinancing.type_sismu){
+            this.cobranzas_edit_sismu= true
+          }else{
+            this.cobranzas_edit_sismu= false
+          }
+        } else {
+         //Edit refinancing
+            if(this.loan_refinancing.type_sismu==true){
+                 let res = await axios.patch(`loan/${this.loan.id}/sismu`, {
+                 data_loan:[{
+                    date_cut_refinancing: this.loan_refinancing.date_cut_refinancing,
+                    balance : this.loan_refinancing.balance
+                  }
+                 ]
+               })
+                let res1 = await axios.patch(`loan/${this.loan.id}/update_refinancing_balance`)
+            }else{
+               this.cobranzas_edit_sismu=false
+              let res = await axios.patch(`loan/${this.loan.id}/update_refinancing_balance`)
+            }
+            this.toastr.success('Se Actualizó Correctamente.')
+            this.cobranzas_edit = false
+            this.cobranzas_edit_sismu= false
         }
       } catch (e) {
         console.log(e)
       } finally {
         this.loading = false
       }
+
     },
        async editSimulate(){
       try {
@@ -1211,15 +1339,12 @@ export default {
         this.loading = false
       }
     },
-      async editLoanPrueba(){
+      async editLoanHipotecaryProperti(){
       try {
         if (!this.editable1) {
           this.editable1 = true
-          console.log('entro al grabar por verdadero :)')
-        } else {
-          console.log('entro al grabar por falso :)')
-
-          //Edit desembolso
+         } else {
+           //Edita propiedad hipotecaria
           let res = await axios.patch(`loan_property/${this.loan_properties.id}`, {
             location:this.loan_properties.location,
             land_lot_number:this.loan_properties.land_lot_number,
@@ -1229,24 +1354,9 @@ export default {
             cadastral_code:this.loan_properties.cadastral_code,
             registration_number:this.loan_properties.registration_number,
             real_folio_number:this.loan_properties.real_folio_number,
-
           })
-           /* let res = await axios.patch(`personal_reference/${this.personal_references.id}`, {
-            first_name:this.personal_references.first_name,
-            second_name:this.personal_references.second_name,
-            last_name:this.personal_references.last_name,
-            mothers_last_name:this.personal_references.mothers_last_name,
-            phone_number:this.personal_references.phone_number,
-            cell_phone_number:this.personal_references.cell_phone_number,
-            address:this.personal_references.address
-          })*/
             this.toastr.success('Se registró correctamente.')
             this.editable1 = false
-            /* if((this.loan.disbursement_date != '' && this.loan.number_payment_type != '') && (this.loan.disbursement_date != null && this.loan.number_payment_type != null)){
-               this.validate.valid_disbursement = true
-             }else{
-               this.validate.valid_disbursement = false
-             }*/
         }
       } catch (e) {
         console.log(e)

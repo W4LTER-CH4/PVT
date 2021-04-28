@@ -76,7 +76,7 @@ export default {
     checkPermission(item) {
       let hasPermission = true
       if(this.$store.getters.userRoles[0] != 'TE-admin'){
-        console.log(this.$store.getters.userRoles[0] == 'TE-admin')
+        //console.log(this.$store.getters.userRoles[0] == 'TE-admin')
         if (item.hasOwnProperty('permission')) hasPermission &= (item.permission == null || this.permissionSimpleSelected.includes(item.permission))
         if (item.hasOwnProperty('role')) hasPermission &= this.$store.getters.userRoles.includes(item.role)
       }else{

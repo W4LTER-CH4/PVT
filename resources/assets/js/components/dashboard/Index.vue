@@ -1,15 +1,15 @@
 <template>
-  <v-card flat>
+  <v-card flat >
     <v-card-title>
       <v-toolbar dense color="tertiary">
         <v-toolbar-title>Préstamos</v-toolbar-title>
       </v-toolbar>
     </v-card-title>
-    <v-card-text>
+    <v-card-text v-if="permissionSimpleSelected.includes('show-history-loan')">
       <v-container class="py-0 px-0">
         <ValidationObserver ref="observer">
           <v-form>
-            <!--v-card-->            
+            <!--v-card-->
             <v-row justify="center">
               <v-col cols="12" md="4">
                 <v-card>
@@ -412,7 +412,12 @@ export default {
       this.loans_spouse= {}
     },
   },
-
+  computed:{
+    //permisos del selector global por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    }
+  },
   methods: {
 
     async validar() {

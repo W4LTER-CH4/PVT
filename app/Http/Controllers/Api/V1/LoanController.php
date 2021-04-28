@@ -1005,20 +1005,12 @@ class LoanController extends Controller
         $parent_loan_id=$loan->parent_loan_id;
         $estimated=LoanPayment::where('loan_id',$parent_loan_id)->get();
         $estimated=$estimated->last(); 
-        $Loan_type_title=" ";      
-    if($parent_loan_id==null && !$parent_reason==null){
-        if($procedure_modality->name=="REFINANCIAMIENTO"){
-           $Loan_type_title="SISMU"." ".$loan->parent_reason;
-        }else{
-            $Loan_type_title="SISMU"." ".$loan->parent_reason;
-        }
+        $loan_type_title=" ";    
+    if($parent_loan_id == null && !$parent_reason == null){
+        $loan_type_title = $loan->parent_reason== "REFINANCIAMIENTO" ? "SISMU"." ".$loan->parent_reason:"SISMU REFINANCIAMIENTO";
     }
-    if(!$parent_loan_id==null && !$parent_reason==null){
-        if($procedure_modality->name=="REFINANCIAMIENTO"){
-             $Loan_type_title="REFINANCIAMIENTO";
-        }else{
-             $Loan_type_title="REPROGRAMACIÓN";
-        }
+    if(!$parent_loan_id == null && !$parent_reason == null){
+        $loan_type_title = $loan->parent_reason== "REFINANCIAMIENTO" ? "REFINANCIAMIENTO":"REPROGRAMACIÓN";
     }
         $lenders = [];     
         foreach ($loan->lenders as $lender) {
@@ -1039,7 +1031,7 @@ class LoanController extends Controller
            ],
            'loan' => $loan,
            'lenders' => collect($lenders), 
-           'Loan_type_title'=>$Loan_type_title, 
+           'Loan_type_title'=>$loan_type_title, 
            'ballots'=>$ballots->ballot,
            'adjusts'=>$ballots->adjusts,
            'estimated'=>$estimated

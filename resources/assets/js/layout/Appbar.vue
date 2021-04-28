@@ -102,6 +102,12 @@ export default {
   watch: {
     'rolePermissionSelected.display_name'(val) {
       this.$store.commit('setRolePermissionSelected', this.rolePermissionSelected)
+      //volver a la ruta de inicio
+      if(this.$route.name != 'dashboardIndex'){
+        this.$router.push("dashboardIndex")
+      }else{
+        console.log("Esta en dashboardIndex")
+      }
     }
   }
 }

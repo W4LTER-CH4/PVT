@@ -55,27 +55,27 @@
             </tr>
         </table>
     </div>
-    @if($Loan_type_title=="REFINANCIAMIENTO")
+    @if($Loan_type_title == "REFINANCIAMIENTO" || $Loan_type_title == "SISMU REFINANCIAMIENTO")
     <table class="table-info w-100 text-center uppercase my-20">
             <tr class="bg-grey-darker text-sm-1 text-white">
                 <td colspan="2" >REFINANCIAMIENTO DE PRÉSTAMO</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">FECHA DE SALDO DEUDOR </td>
-            <td class="w-50 text-left px-10">{{$estimated->estimated_date}}
+            <td class="w-50 text-left px-10">{{Carbon::parse($loan->date_cut_refinancing())->format('d/m/y')}}
             </td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">SALDO DEUDOR EN Bs. </td>
-            <td class="w-50 text-left px-10">{{$estimated->estimated_quota}}</td>
+            <td class="w-50 text-left px-10">{{Util::money_format($loan->balance_parent_refi())}}</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">MONTO REFINANCIAMIENTO (CHEQUE) EN Bs.</td>
-            <td class="w-50 text-left px-10">{{ $loan->amount_approved-$estimated->estimated_quota }}</td>
+            <td class="w-50 text-left px-10">{{Util::money_format($loan->amount_approved-$loan->balance_parent_refi())}}</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">TOTAL NUEVO MONTO DE PRÉSTAMO</td>
-            <td class="w-50 text-left px-10">{{ $loan->amount_approved }}</td>
+            <td class="w-50 text-left px-10">{{Util::money_format($loan->amount_approved)}}</td>
             </tr> 
         </table>
         @endif

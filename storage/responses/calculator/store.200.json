@@ -5,6 +5,16 @@
         "bonus_calculated": 1217.47,
         "liquid_qualification_calculated": 1449.2,
         "quota_previous": 500,
-        "livelihood_amount": true
+        "livelihood_amount": true,
+        "guarantees":[{
+            "loan_id":4,
+            "code":"PTMO000004-2021",
+            "loan_quota":685.67,
+            "quota":342.835,
+            "state":"En Proceso",
+            "origin":"PVT"
+            },
+            {}
+        ]
     }, {}
 ]
