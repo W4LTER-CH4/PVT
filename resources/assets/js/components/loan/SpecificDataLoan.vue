@@ -763,7 +763,7 @@
                                     <v-row>
                                       <v-progress-linear></v-progress-linear><br>
                                       <v-col cols="12" md="4">
-                                        <p><b>ENTIDAD FINANCIERA:</b>{{' '+cuenta}}</p>
+                                        <p><b>ENTIDAD FINANCIERA:</b>{{' '+cuenta!=null?cuenta:"Dato no registrado"}}</p>
                                       </v-col>
                                       <v-col cols="12" md="4">
                                         <p><b>NUMERO DE CUENTA:</b>{{' '+loan.lenders[0].account_number}}</p>
@@ -1060,7 +1060,7 @@ export default {
         for(let i=0; i<this.city.length;i++){
           if(this.city[i].id == id){
             ext = this.city[i].first_shortened
-          }  
+          }
         }
       return ext
       }else{
@@ -1218,7 +1218,7 @@ export default {
           console.log('entro al grabar por verdadero :)')
         } else {
           console.log('entro al grabar por falso :)')
-        
+
           //Edit desembolso
           let res = await axios.patch(`loan_property/${this.loan_properties.id}`, {
             location:this.loan_properties.location,

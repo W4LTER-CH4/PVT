@@ -420,24 +420,22 @@ export default {
           } else {
             //console.log("editar")
 
-
             //===Validacion de  la fecha de vencimieto
-            console.log(this.affiliate)
-            if(this.affiliate.due_date!=null){
-              let year=new Date(this.affiliate.due_date).getFullYear();
+              if(this.affiliate.due_date!=null){
 
-              if(year<year+10){
-                return
+                const due_date=new Date(this.affiliate.due_date);
+                const fecha_actual = new Date();
+
+                // Si la fecha es de apartir de hoy => true
+                if (due_date < fecha_actual) {
+                  console.error("CI VENCIDO");
+                  this.toastr.error("CI VENCIDO");
+                }
+                else {
+                  console.log("CI Valido :)");
+                }
               }
-
-
-              //const nf= new Date(this.affiliate.due_date);
-              //console.log(nf.getFullYear());
-              //dv.add(10,'y')
-              //console.log(dv)
-            }
-
-            //====
+            //===================================
 
 
             // Edit affiliate

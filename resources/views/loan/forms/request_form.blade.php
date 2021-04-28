@@ -155,7 +155,7 @@
                 <td class="data-row py-5">{{ $guarantor->affiliate_state->affiliate_state_type->name }}</td>
             </tr>
             <tr class="bg-grey-darker text-sm-1 text-white">
-                <td>Domilicio actual</td>
+                <td>Domicilio actual</td>
                 <td colspan="2">Teléfono(s)</td>
             </tr>
             <tr>
