@@ -403,7 +403,7 @@ class LoanController extends Controller
     */
     public function update(LoanForm $request, Loan $loan)
     {
-        if($request->has('disbursement_date'))
+        if($request->has('disbursement_date') && $request->disbursement_date != NULL)
         {
             $state_id = LoanState::whereName('Desembolsado')->first()->id;
             $request['state_id'] = $state_id;

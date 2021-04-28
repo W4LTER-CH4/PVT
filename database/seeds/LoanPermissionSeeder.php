@@ -106,6 +106,9 @@ class LoanPermissionSeeder extends Seeder
             ],[
                 'name' => 'show-history-loan',
                 'display_name' => 'Ver historial préstamos'
+            ],[
+                'name' => 'update-reference-cosigner',
+                'display_name' => 'Actualizar p. referencias y codeudores'
             ]
         ];
         foreach ($permissions as $permission) {

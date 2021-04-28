@@ -120,7 +120,7 @@ class AdvanceRoleSeeder extends Seeder
                     $role->syncPermissions(array_merge($treasury_permissions));
                 }elseif (in_array($role['display_name'], ['Revisión Legal','Aprobación Legal'])) {
                     $role->syncPermissions(array_merge($sequence_permissions,$legal_permissions));
-                }elseif (in_array($role['display_name'], ['Calificación','Aprobación Calificación'])) {
+                }elseif (in_array($role['display_name'], ['Calificación'])) {
                     $role->syncPermissions(array_merge($sequence_permissions,$calification_permissions));
                 }
                 else {
