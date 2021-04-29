@@ -340,7 +340,7 @@ export default {
       required: true,
       default: false
     },
-    intervalos: {
+    procedureLoan: {
       type: Object,
       required: true
     },
@@ -491,7 +491,7 @@ export default {
     async getLoanDestiny() {
       try {
         this.loading = true
-        let res = await axios.get(`procedure_type/${this.intervalos.procedure_type_id}/loan_destiny`)
+        let res = await axios.get(`procedure_type/${this.procedureLoan.procedure_id}/loan_destiny`)
         this.destino = res.data
         console.log(this.destino+'estos son los destinos');
       } catch (e) {

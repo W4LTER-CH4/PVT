@@ -31,6 +31,8 @@ class CreateLoanPaymentsTable extends Migration
             $table->float('capital_payment',10,2)->default(0); // pago de capital
             $table->float('interest_accumulated',10,2)->default(0); // pago de interes corriente
             $table->float('penal_accumulated',10,2)->default(0); // pago de interes corriente*/
+            $table->float('previous_balance',10,2)->default(0); // Saldo anterior al pago
+            $table->date('previous_payment_date'); // fecha de pago anterior
             $table->unsignedBigInteger('state_id')->nullable(false); //id estado del tramite
             $table->text('voucher')->nullable(); // Comprobante del pago
             $table->enum('paid_by', ['T', 'G']);// Pago realizado por Titular o Garante

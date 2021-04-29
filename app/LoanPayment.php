@@ -31,6 +31,8 @@ class LoanPayment extends Model
         'capital_payment',
         'interest_accumulated',
         'penal_accumulated',
+        'previous_balance',
+        'previous_payment_date',
         'state_id',
         'voucher',
         'paid_by',

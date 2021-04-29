@@ -41,7 +41,8 @@ class AppServiceProvider extends ServiceProvider
             'loan_payments' => 'App\LoanPayment',
             'vouchers' => 'App\Voucher',
             'aid_contributions' => 'App\AidContribution',
-            'loan_contribution_adjusts'=>'App\LoanContributionAdjust'    
+            'loan_contribution_adjusts'=>'App\LoanContributionAdjust',
+            'sismus' => 'App\Sismu'   
         ]);
 
         // DATABASE eloquent logs

@@ -21,6 +21,8 @@ class LoanProperty extends Model
         'real_folio_number',
         'public_deed_date',
         'net_realizable_value',
+        'commercial_value',
+        'rescue_value',
         'real_city_id',
         'measurement'
     ];

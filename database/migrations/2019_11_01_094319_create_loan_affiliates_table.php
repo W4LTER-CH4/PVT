@@ -23,6 +23,7 @@ class CreateLoanAffiliatesTable extends Migration
             $table->float('payable_liquid_calculated',10,2); //promedio liquido pagable calculado individual
             $table->float('bonus_calculated',5,2); //total bonos calculado
             $table->float('quota_previous',5,2); //cuota de refinanciamiento o reprogramación individual
+            $table->float('quota_treat',5,2)->nullable(); //cuota pactada del afiliado
             $table->float('indebtedness_calculated',5,2)->nullable(); //indice de endeudamiento calculado individual
             $table->float('liquid_qualification_calculated',10,2); //liquido para calificación calculado individual
             $table->json('contributionable_ids')->nullable(); // ids de las contribuciones si es requerido se definira

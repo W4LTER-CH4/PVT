@@ -50,7 +50,7 @@
             <Ballots
               ref="ballotsComponent"
               :modalities.sync="modalities"
-              :intervalos.sync="intervalos"
+              :procedureLoan.sync="procedureLoan"
               :modalidad.sync="modalidad"
               :affiliate.sync="affiliate"
               :contrib_codebtor="contrib_codebtor"
@@ -190,7 +190,7 @@
             :affiliate.sync="affiliate"
             :loan_detail.sync="loan_detail"
             :modalidad_personal_reference.sync="modalidad.personal_reference"
-            :intervalos.sync="intervalos"
+            :procedureLoan.sync="procedureLoan"
             :destino.sync="destino"
             :bus="bus"
             :personal_codebtor="personal_codebtor"
@@ -299,7 +299,7 @@ export default {
     data_loan_parent_aux:{},
     data_loan_parent:[],
     modalidad:{},
-    intervalos:{},
+    procedureLoan:{},
     //payable_liquid:[0,0,0],
     //bonos:[0,0,0,0],
     //period:[],
@@ -833,7 +833,7 @@ this.datos_calculadora_hipotecario[this.i].affiliate_name=this.affiliates.full_n
       //this.contributions = []
       let continuar = false
       //llama al a funcion getContributions del componente Ballots
-      this.contributions = this.$refs.ballotsComponent.getLoanModality(this.$route.query.affiliate_id)
+      this.contributions = this.$refs.ballotsComponent.getLoanModalityAffiliate(this.$route.query.affiliate_id)
       if(this.$refs.ballotsComponent) {
         this.contributions = this.$refs.ballotsComponent.getContributions()
       }

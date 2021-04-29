@@ -208,6 +208,7 @@ class LoanController extends Controller
     * @bodyParam lenders[0].payable_liquid_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam lenders[0].bonus_calculated integer required ID del afiliado. Example: 300
     * @bodyParam lenders[0].quota_previous numeric required ID del afiliado. Example: 514.6
+    * @bodyParam lenders[0].quota_treat numeric required cuota del afiliado. Example: 514.6
     * @bodyParam lenders[0].indebtedness_calculated numeric required ID del afiliado. Example: 34
     * @bodyParam lenders[0].liquid_qualification_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam lenders[0].contributionable_ids array required  Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
@@ -218,6 +219,7 @@ class LoanController extends Controller
     * @bodyParam lenders[1].payable_liquid_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam lenders[1].bonus_calculated integer required ID del afiliado. Example: 300
     * @bodyParam lenders[1].quota_previous numeric required ID del afiliado. Example: 514.6
+    * @bodyParam lenders[1].quota_treat numeric required cuota del afiliado. Example: 514.6
     * @bodyParam lenders[1].indebtedness_calculated numeric required ID del afiliado. Example: 34
     * @bodyParam lenders[1].liquid_qualification_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam lenders[1].contributionable_ids array required Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
@@ -229,6 +231,7 @@ class LoanController extends Controller
     * @bodyParam guarantors[0].payable_liquid_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam guarantors[0].bonus_calculated integer required ID del afiliado. Example: 300
     * @bodyParam guarantors[0].indebtedness_calculated numeric required ID del afiliado. Example: 34
+    * @bodyParam guarantors[0].quota_treat numeric required cuota del afiliado garante. Example: 514.6
     * @bodyParam guarantors[0].liquid_qualification_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam guarantors[0].contributionable_ids array required Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
     * @bodyParam guarantors[0].contributionable_type enum required  Nombre de la tabla de contribuciones. Example: contributions
@@ -373,6 +376,7 @@ class LoanController extends Controller
     * @bodyParam lenders[0].payable_liquid_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam lenders[0].bonus_calculated integer ID del afiliado. Example: 300
     * @bodyParam lenders[0].quota_previous numeric ID del afiliado. Example: 514.6
+    * @bodyParam lenders[0].quota_treat numeric required cuota del afiliado. Example: 514.6
     * @bodyParam lenders[0].indebtedness_calculated numeric ID del afiliado. Example: 34
     * @bodyParam lenders[0].liquid_qualification_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam lenders[0].contributionable_ids array  Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
@@ -383,6 +387,7 @@ class LoanController extends Controller
     * @bodyParam lenders[1].payable_liquid_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam lenders[1].bonus_calculated integer ID del afiliado. Example: 300
     * @bodyParam lenders[1].quota_previous numeric ID del afiliado. Example: 514.6
+    * @bodyParam lenders[1].quota_treat numeric required cuota del afiliado. Example: 514.6
     * @bodyParam lenders[1].indebtedness_calculated numeric ID del afiliado. Example: 34
     * @bodyParam lenders[1].liquid_qualification_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam lenders[1].contributionable_ids array  Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
@@ -393,6 +398,7 @@ class LoanController extends Controller
     * @bodyParam guarantors[0].payment_percentage integer ID del afiliado. Example: 50
     * @bodyParam guarantors[0].payable_liquid_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam guarantors[0].bonus_calculated integer ID del afiliado. Example: 300
+    * @bodyParam guarantors[0].quota_treat numeric  cuota del afiliado garante. Example: 514.6
     * @bodyParam guarantors[0].indebtedness_calculated numeric ID del afiliado. Example: 34
     * @bodyParam guarantors[0].liquid_qualification_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam guarantors[0].contributionable_ids array  Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
@@ -407,11 +413,12 @@ class LoanController extends Controller
         {
             $state_id = LoanState::whereName('Desembolsado')->first()->id;
             $request['state_id'] = $state_id;
-        //si es refinanciamiento o reprogramacion colocar la etiqueta correspondiente al padre del préstamo
-            $user = User::whereUsername('admin')->first();
-            $refinancing_tag = Tag::whereSlug('refinanciamiento')->first();
-            $reprogramming_tag = Tag::whereSlug('reprogramacion')->first();
-            $parent_loan  = Loan::find($loan->parent_loan_id);
+        //si es refinanciamiento o reprogramacion colocar la etiqueta correspondiente al padre del préstamo   
+            if($loan->parent_loan_id != null){
+                $user = User::whereUsername('admin')->first();
+                $refinancing_tag = Tag::whereSlug('refinanciamiento')->first();
+                $reprogramming_tag = Tag::whereSlug('reprogramacion')->first();
+                $parent_loan  = Loan::find($loan->parent_loan_id);
                 if($loan->parent_reason == 'REFINANCIAMIENTO'){
                         $parent_loan ->tags()->detach($refinancing_tag);
                         $parent_loan ->tags()->attach([$refinancing_tag->id => [
@@ -428,6 +435,7 @@ class LoanController extends Controller
                         ]]);
                     Util::save_record($parent_loan, 'datos-de-un-tramite', Util::concat_action($parent_loan,'etiquetado: Préstamo reprogramado'));
                 }
+            }
         }
         $saved = $this->save_loan($request, $loan);
         return $saved->loan;
@@ -1693,8 +1701,9 @@ class LoanController extends Controller
                                     'payment_percentage' => $lender->pivot->payment_percentage,
                                     'payable_liquid_calculated' =>(float)$lender->pivot->payable_liquid_calculated,
                                     'bonus_calculated' => (float)$lender->pivot->bonus_calculated,
-                                    'quota_previous' => Util::round($quota_estimated),
-                                    'indebtedness_calculated' => Util::round($new_indebtedness_calculated),
+                                    'quota_previous' => (float)$lender->pivot->quota_previous,
+                                    'quota_treat' => $quota_estimated,
+                                    'indebtedness_calculated' => $new_indebtedness_calculated,
                                     'liquid_qualification_calculated' => (float)$lender->pivot->liquid_qualification_calculated,
                                     'guarantor' => false,
                                     'contributionable_type' => $lender->pivot->contributionable_type,
@@ -1712,8 +1721,9 @@ class LoanController extends Controller
                                     'payment_percentage' => $guarantor->pivot->payment_percentage,
                                     'payable_liquid_calculated' =>(float)$guarantor->pivot->payable_liquid_calculated,
                                     'bonus_calculated' => (float)$guarantor->pivot->bonus_calculated,
-                                    'quota_previous' => Util::round($new_quota_estimated),
-                                    'indebtedness_calculated' => Util::round($new_indebtedness_calculated),
+                                    'quota_previous' => (float)$guarantor->pivot->quota_previous,
+                                    'quota_treat' => $new_quota_estimated,
+                                    'indebtedness_calculated' => $new_indebtedness_calculated,
                                     'liquid_qualification_calculated' => (float)$guarantor->pivot->liquid_qualification_calculated,
                                     'guarantor' => true,
                                     'contributionable_type' => $guarantor->pivot->contributionable_type,
@@ -1739,8 +1749,9 @@ class LoanController extends Controller
                                 'payment_percentage' => $lender->pivot->payment_percentage,
                                 'payable_liquid_calculated' =>(float)$lender->pivot->payable_liquid_calculated,
                                 'bonus_calculated' => (float)$lender->pivot->bonus_calculated,
-                                'quota_previous' => Util::round($quota_estimated),
-                                'indebtedness_calculated' => Util::round($new_indebtedness_calculated),
+                                'quota_previous' => (float)$lender->pivot->quota_previous,
+                                'quota_treat' => $quota_estimated,
+                                'indebtedness_calculated' => $new_indebtedness_calculated,
                                 'liquid_qualification_calculated' => (float)$lender->pivot->liquid_qualification_calculated,
                                 'guarantor' => false,
                                 'contributionable_type' => $lender->pivot->contributionable_type,

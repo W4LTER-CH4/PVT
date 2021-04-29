@@ -71,7 +71,7 @@
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">MONTO REFINANCIAMIENTO (CHEQUE) EN Bs.</td>
-            <td class="w-50 text-left px-10">{{Util::money_format($loan->amount_approved-$loan->balance_parent_refi())}}</td>
+            <td class="w-50 text-left px-10">{{Util::money_format($loan->refinancing_balance)}}</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">TOTAL NUEVO MONTO DE PRÉSTAMO</td>
@@ -95,8 +95,7 @@
                 <td class="bg-grey-darker text-sm-1 text-white">Bono Frontera</td>
                 <td class="bg-grey-darker text-sm-1 text-white">Bono Cargo</td>
                 <td class="bg-grey-darker text-sm-1 text-white">Bono Oriente</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Bono Seguridad Ciudadana</td>
-                
+                <td class="bg-grey-darker text-sm-1 text-white">Bono Seguridad Ciudadana</td>       
            </tr>        
             @php ($sum_border_bonus = 0)
             @php ($sum_position_bonus = 0)

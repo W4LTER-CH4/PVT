@@ -54,6 +54,9 @@ class Record extends Model
                 case 'App\LoanContributionAdjust':
                     $action .= $this->recordable->id;
                     break;
+                case 'App\Sismu':
+                    $action .= $this->recordable->id;
+                    break;
 
             }
         }

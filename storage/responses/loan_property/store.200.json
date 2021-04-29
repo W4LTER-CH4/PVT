@@ -11,6 +11,8 @@
     "real_folio_number": "A2",
     "public_deed_date": "2020-09-23",
     "net_realizable_value": 600000,
+    "commercial_value": 600000,
+    "rescue_value": 600000,
     "measurement": "MTS",
     "​​real_right_city_id": 1,
     "updated_at": "2020-09-24T13:17:51.000000Z",

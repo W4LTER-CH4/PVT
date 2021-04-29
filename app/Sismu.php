@@ -9,6 +9,8 @@ use Laratrust\Traits\LaratrustUserTrait;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Util;
+use Illuminate\Support\Facades\DB;
+use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
 
 class Sismu extends Model
 {
@@ -27,4 +29,10 @@ class Sismu extends Model
         'date_cut_refinancing',
         'loan_id',
     ];
+    // add records
+
+    public function records()
+    {
+      return $this->morphMany(Record::class, 'recordable');
+    }
 }

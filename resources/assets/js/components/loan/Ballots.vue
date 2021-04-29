@@ -308,7 +308,7 @@ export default {
     editar:true,
     monto:null,
     plazo:null,
-    interval:[],
+    //interval:[],
     //loanTypeSelected:null,
     visible:false,
     hipotecario:false,
@@ -347,7 +347,7 @@ export default {
       type: Array,
       required: true
     },
-    intervalos: {
+    procedureLoan: {
       type: Object,
       required: true
     },
@@ -393,7 +393,7 @@ export default {
     BallotsHipotecary,
   },
   mounted() {
-    this.getLoanIntervals()
+    //this.getLoanIntervals()
     this.getModalityLoan()
   },
   watch: {
@@ -438,7 +438,7 @@ export default {
   },
   methods: {
     //Intervalos de Plazo y Meses de una modalidad
-    async getLoanIntervals() {
+    /*async getLoanIntervals() {
       try {
         let res = await axios.get(`loan_interval`)
         this.interval = res.data
@@ -449,12 +449,15 @@ export default {
        }catch (e) {
         console.log(e)
       }
-    },
+    },*/
     async getModalityLoan() {
       try {
         let res = await axios.get(`module/6/modality_loan`)
         this.modality_loan = res.data
         console.log(this.modality_loan)
+        if(this.reprogramming){
+          this.Onchange()
+        }
        }catch (e) {
         console.log(e)
       }
@@ -463,8 +466,8 @@ export default {
     async Onchange(){
       this.choose_diff_month = false
       this.number_diff_month = 1
-      for (let i = 0; i< this.interval.length; i++) {
-        if(this.loanTypeSelected.id==this.interval[i].procedure_type_id){
+      for (let i = 0; i< this.modality_loan.length; i++) {
+        if(this.loanTypeSelected.id==this.modality_loan[i].id){
           //if($store.getters.modalityLoan.find(item => item.id == loanTypeSelected.id).name == 12){
           if(this.modalitySelected.name == 'Préstamo hipotecario' || this.modalitySelected.name == 'Refinanciamiento Préstamo hipotecario'){
             this.hipotecario=true
@@ -484,15 +487,15 @@ export default {
           this.intervalos.minimum_term= this.interval[i].minimum_term
           this.intervalos.procedure_type_id= this.loanTypeSelected.id*/
 
-          this.getLoanModality(this.$route.query.affiliate_id)
+          this.getLoanModalityAffiliate(this.$route.query.affiliate_id)
         } /*else{
         console.log('NO ES IGUAL A MODALIDAD INTERVALS'+this.interval[i].procedure_type_id +"=="+this.loanTypeSelected.id )
         }*/
       }
     },
 
-    //Obtiene los parametros de la modalidad
-    async getLoanModality(id) {
+    //Obtiene los parametros de la modalidad por afiliado
+    async getLoanModalityAffiliate(id) {
       try {
         let resp = await axios.post(`affiliate/${id}/loan_modality?procedure_type_id=${this.loanTypeSelected.id}`,{
           type_sismu: this.data_sismu.type_sismu,
@@ -516,7 +519,7 @@ export default {
           this.modalidad.maximum_term= this.loan_modality.loan_modality_parameter.maximum_term_modality
           this.modalidad.minimun_amoun=this.loan_modality.loan_modality_parameter.minimum_amount_modality
           this.modalidad.minimum_term= this.loan_modality.loan_modality_parameter.minimum_term_modality
-          this.intervalos.procedure_type_id= this.loanTypeSelected.id
+          this.procedureLoan.procedure_id= this.loanTypeSelected.id
 
           this.modalidad.id = this.loan_modality.id
           this.modalidad.procedure_type_id = this.loan_modality.procedure_type_id

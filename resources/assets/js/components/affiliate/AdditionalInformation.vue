@@ -186,14 +186,14 @@
                       :error-messages="errors"
                       dense
                       v-model="affiliate.account_number"
-                      label="Numero de Cuenta"
+                      label="Número de Cuenta SIGEP activa"
                       :readonly="!editable || !permission.secondary"
                       :outlined="editable && permission.secondary"
                       :disabled="editable && !permission.secondary"
                     ></v-text-field>
                   </ValidationProvider>
                 </v-col>
-                <v-col cols="12" md="6">
+                <!--<v-col cols="12" md="6">
                   <ValidationProvider
                     v-slot="{ errors }"
                     name="Cuenta de Segip"
@@ -213,7 +213,7 @@
                       :disabled="editable && !permission.secondary"
                     ></v-select>
                   </ValidationProvider>
-                </v-col>
+                </v-col>-->
               </v-row>
             </v-container>
           </v-col>

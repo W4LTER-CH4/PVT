@@ -33,6 +33,7 @@ class Loan extends Model
         'disbursable_type',
         'procedure_modality_id',
         'disbursement_date',
+        'disbursement_time',
         //'num_budget_certification',
         'num_accounting_voucher',
         'parent_loan_id',
@@ -153,12 +154,12 @@ class Loan extends Model
 
     public function guarantors()
     {
-        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous', 'indebtedness_calculated','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(true);
+        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous','quota_treat','indebtedness_calculated','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(true);
     }
 
     public function lenders()
     {
-        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous', 'indebtedness_calculated','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(false);
+        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous','quota_treat', 'indebtedness_calculated','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(false);
     }
 
     public function loan_affiliates()

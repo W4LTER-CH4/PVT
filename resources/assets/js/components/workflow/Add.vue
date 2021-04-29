@@ -461,6 +461,7 @@ export default {
             this.loan_refinancing.balance  = this.loan.parent_loan.balance
             this.loan_refinancing.estimated_quota = this.loan.parent_loan.estimated_quota
             this.loan_refinancing.type_sismu = false
+            this.loan_refinancing.description= 'PRESTAMO DEL PVT'
           }else{
             this.loan_refinancing.code = this.loan.data_loan.code
             this.loan_refinancing.amount_approved  = this.loan.data_loan.amount_approved
@@ -468,6 +469,7 @@ export default {
             this.loan_refinancing.balance  = this.loan.data_loan.balance
             this.loan_refinancing.type_sismu = true
             this.loan_refinancing.estimated_quota = this.loan.data_loan.estimated_quota
+            this.loan_refinancing.description= 'PRESTAMO DEL SISMU'
            }
         }else{
            this.loan_refinancing.refinancing = false

@@ -110,7 +110,7 @@
                     </v-flex>
                   </v-layout>
                 </v-col>
-                <v-col cols="12" md="4" v-show="data_sismu.livelihood_amount">
+                <v-col cols="12" md="4" v-show="data_sismu.livelihood_amount"  class="pb-0">
                   <v-card-text class="py-0">
                     <v-layout row wrap>
                       <v-flex xs12 class="px-2">
@@ -121,6 +121,7 @@
                               <p>TOTAL BONOS: {{ liquid.bonus_calculated }}</p>
                               <p>LIQUIDO PARA CALIFICACION: {{ liquid.liquid_qualification_calculated}}</p>
                               <p v-show="type_sismu">CUOTA DE REFINANCIAMIENTO SISMU: {{ data_sismu.quota_sismu}}</p>
+                              <p v-show="liquid_calificated[0].guarantees.length==0">DESCUENTO DE CUOTAS POR GARANTIAS: {{liquid_calificated[0].guarantees.length}}</p>
                               </li>
                             </ul>
                         </fieldset>
@@ -128,7 +129,7 @@
                     </v-layout>
                   </v-card-text>
                 </v-col>
-                <v-col cols="12" md="4" v-show="data_sismu.livelihood_amount">
+                <v-col cols="12" md="4" v-show="data_sismu.livelihood_amount"  class="pb-0">
                   <v-card-text class="py-0">
                     <v-layout row wrap>
                       <v-flex xs12 class="px-2">
@@ -143,7 +144,36 @@
                     </v-layout>
                   </v-card-text>
                 </v-col>
-                <v-col cols="12" md="1" class="ma-0 pa-0"></v-col>
+                <v-col cols="12" md="3" class="ma-0 py-0" v-show="data_sismu.livelihood_amount" v-if="liquid_calificated[0].guarantees.length > 0" ></v-col>
+                  <v-col cols="12" md="8" v-show="data_sismu.livelihood_amount"  class="pa-0"  v-if="liquid_calificated[0].guarantees.length > 0">
+                  <v-card-text class="py-0">
+                    <v-layout row wrap>
+                      <v-flex xs12 class="px-2">
+                        <fieldset class="py-0">
+                              <p class="mb-1"><b class="red--text caption mb-0" >DESCUENTO DE CUOTAS POR GARANTIAS: {{liquid_calificated[0].guarantees.length}} </b></p>
+                               <ul style="list-style: none" class="py-0 ps-0 ">
+                                <li v-for="(guarantees,j) in liquid_calificated[0].guarantees" :key="j" >
+                                  <v-row>
+                                    <v-col  cols="12" md="3" class='py-0 mb-0'>
+                                      <p class="caption" >CODIGO:{{ guarantees.code}}</p>
+                                    </v-col>
+                                    <v-col  cols="12" md="3" class='py-0 mb-0'>
+                                      <p class="caption" >CUOTA: {{ guarantees.quota }}</p>
+                                    </v-col>
+                                    <v-col  cols="12" md="3" class='py-0 mb-0'>
+                                      <p class="caption" >SISTEMA: {{ guarantees.origin}}</p>
+                                    </v-col>
+                                    <v-col  cols="12" md="3" class='py-0 mb-0'>
+                                      <p class="caption" >ESTADO: {{ guarantees.state}}</p>
+                                    </v-col>
+                                  </v-row>
+                                  </li>
+                                </ul>
+                        </fieldset>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-text>
+                </v-col>
               </v-row>
             </v-container>
           </v-col>

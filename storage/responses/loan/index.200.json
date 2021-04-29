@@ -86,6 +86,7 @@
                         "payable_liquid_calculated": "4000",
                         "bonus_calculated": "300",
                         "quota_previous": "0",
+                        "quota_treat": "514.6",
                         "indebtedness_calculated": "0",
                         "liquid_qualification_calculated": "3700"
                     }
@@ -142,6 +143,7 @@
                         "payable_liquid_calculated": "3000",
                         "bonus_calculated": "0",
                         "quota_previous": "0",
+                        "quota_treat": "514.6",
                         "indebtedness_calculated": "0",
                         "liquid_qualification_calculated": "3000"
                     }
