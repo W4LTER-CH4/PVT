@@ -20,8 +20,7 @@ class CreateLoansTable extends Migration
             $table->enum('disbursable_type',['affiliates', 'spouses']); // a quien se hara del desembolso//afiliado, conyugue
             $table->unsignedBigInteger('procedure_modality_id'); // id modalidad
             $table->foreign('procedure_modality_id')->references('id')->on('procedure_modalities');
-            $table->date('disbursement_date')->nullable(); //fecha de desembolso
-            $table->time('disbursement_time')->nullable(); //hora de desembolso
+            $table->dateTime('disbursement_date')->nullable(); //fecha y hora de desembolso
             //$table->string('num_budget_certification')->nullable();//codigo de certificacion presupuestaria
             $table->string('num_accounting_voucher')->nullable();//codigo de comprobante contable
             $table->unsignedBigInteger('parent_loan_id')->nullable();  // id padre , loan padre

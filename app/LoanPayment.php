@@ -174,6 +174,7 @@ class LoanPayment extends Model
             $quota = $latest_quota->quota_number + 1;
         }
         return (object)[
+            'previous_payment_date' => $latest_quota ? $latest_quota->estimated_date : $loan->disbursement_date,
             'date' => $estimated_date->toDateString(),
             'quota' => $quota
         ];

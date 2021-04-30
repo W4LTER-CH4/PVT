@@ -126,7 +126,7 @@ class LoanStructureSeeder extends Seeder
             ]
           ],
           'corto' => [
-            'type' => ['module_id' => $module->id,'name'=>'Préstamo a Corto Plazo','second_name'=>'Corto plazo'],
+            'type' => ['module_id' => $module->id,'name'=>'Préstamo a Corto Plazo','second_name'=>'Corto Plazo'],
             'modalities' => [
               // CORTO PLAZO SECTOR ACTIVO
               ['name'=>'Corto Plazo Sector Activo','shortened'=>'COR-ACT','requirements'=>[
@@ -255,7 +255,7 @@ class LoanStructureSeeder extends Seeder
             ]
           ],
           'refinanciamiento corto' => [
-            'type' => ['module_id' => $module->id,'name'=>'Refinanciamiento Préstamo a corto plazo','second_name'=>'Ref. Corto plazo'],
+            'type' => ['module_id' => $module->id,'name'=>'Refinanciamiento Préstamo a Corto Plazo','second_name'=>'Ref. Corto Plazo'],
             'modalities' => [
               // REFINANCIAMIENTO CORTO PLAZO ACTIVO
               ['name'=>'Refinanciamiento de Préstamo a Corto Plazo Sector Activo','shortened'=>'REF-COR-ACT','requirements'=>[
@@ -321,7 +321,7 @@ class LoanStructureSeeder extends Seeder
                 'interest' => ['annual_interest' => 20,'penal_interest' => 6]
               ],
               // REFINANCIAMIENTO PASIVOS SENASIR
-              ['name'=>'Refinanciamiento de Préstamo a Corto Plazo sector Pasivo SENASIR','shortened'=>'REF-COR-SEN','requirements'=>[
+              ['name'=>'Refinanciamiento de Préstamo a Corto Plazo Sector Pasivo SENASIR','shortened'=>'REF-COR-SEN','requirements'=>[
                   ['name' => 'Cédula de identidad en copia simple.','number'=>1],
                   ['name' => 'Tres últimas boletas de pago en copia simple.','number'=>2],
                   ['name' => 'Certificado de Renta de jubilación.','number'=>2],
@@ -337,8 +337,7 @@ class LoanStructureSeeder extends Seeder
                 'parameters' => [
                   'debt_index' => 50,
                   'quantity_ballots' => 3,
-                  '
-                  ' => 0,
+                  'guarantors' => 0,
                   'personal_reference' => true,
                   'max_lenders' => 1,
                   'max_cosigner'=>0,
@@ -352,7 +351,7 @@ class LoanStructureSeeder extends Seeder
             ]
           ],
           'largo' => [
-            'type' => ['module_id' => $module->id,'name'=>'Préstamo a largo plazo','second_name'=>'Largo plazo'],
+            'type' => ['module_id' => $module->id,'name'=>'Préstamo a Largo Plazo','second_name'=>'Largo Plazo'],
             'modalities' => [
               // LARGO PLAZO SECTOR ACTIVO
               ['name'=>'Largo Plazo con Garantía Personal Sector Activo','shortened'=>'LAR-ACT','requirements'=>[
@@ -495,7 +494,7 @@ class LoanStructureSeeder extends Seeder
             ]
           ],
           'refinanciamiento largo' => [
-            'type' => ['module_id' => $module->id,'name'=>'Refinanciamiento Préstamo a largo plazo','second_name'=>'Ref. Largo plazo'],
+            'type' => ['module_id' => $module->id,'name'=>'Refinanciamiento Préstamo a Largo Plazo','second_name'=>'Ref. Largo Plazo'],
             'modalities' => [
               //REFINANCIAMIENTO LARGO PLAZO SECTOR ACTIVO
               ['name'=>'Refinanciamiento de Préstamo a Largo Plazo Sector Activo','shortened'=>'REF-LAR-ACT','requirements'=>[
@@ -638,7 +637,7 @@ class LoanStructureSeeder extends Seeder
             ]
           ],
           'hipotecario' => [
-            'type' => ['module_id' => $module->id,'name'=>'Préstamo hipotecario','second_name'=>'Hipotecario'],
+            'type' => ['module_id' => $module->id,'name'=>'Préstamo Hipotecario','second_name'=>'Hipotecario'],
             'modalities' => [
               // GARANTÍA HIPOTECARIA ACTIVOS
               ['name'=>'Préstamo con Garantía Hipotecaria de Bien Inmueble Sector Activo','shortened'=>'HIP-ACT','requirements'=>[
@@ -673,7 +672,7 @@ class LoanStructureSeeder extends Seeder
                   'max_lenders' => 2,
                   'max_cosigner'=>2,
                   'maximum_amount_modality' => 700000,
-                  'minimum_amount_modality' => 10000,
+                  'minimum_amount_modality' => 100000,
                   'maximum_term_modality' => 180,
                   'minimum_term_modality' => 1
                 ],
@@ -721,7 +720,7 @@ class LoanStructureSeeder extends Seeder
             ]
           ],
           'refinanciamiento hipotecario' => [
-            'type' => ['module_id' => $module->id,'name'=>'Refinanciamiento Préstamo hipotecario','second_name'=>'Ref. Hipotecario'],
+            'type' => ['module_id' => $module->id,'name'=>'Refinanciamiento Préstamo Hipotecario','second_name'=>'Ref. Hipotecario'],
             'modalities' => [
               //REFINANCIAMIENTO DE PRÉSTAMOS A LARGO PLAZO GARANTÍA HIPOTECARIA PARA EL SECTOR ACTIVO //Eliminar en caso de que no proceda
               ['name'=>'Refinanciamiento de Préstamo con Garantía Hipotecaria de Bien Inmueble Sector Activo','shortened'=>'REF-HIP-ACT','requirements'=>[

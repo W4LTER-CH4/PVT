@@ -328,6 +328,8 @@ class Loan extends Model
             } else {
                 $quota->estimated_date = Carbon::parse($estimated_date)->toDateString();
             }
+            $quota->previous_balance = $this->balance;
+            $quota->previous_payment_date = $next_payment->previous_payment_date;
             $quota->quota_number = $this->balance > 0 ? $next_payment->quota : null;
             $interest = $this->interest;
             $quota->estimated_days = LoanPayment::days_interest2($this, $quota->estimated_date);
@@ -620,143 +622,124 @@ class Loan extends Model
             $affiliate_state_type = $affiliate->affiliate_state->affiliate_state_type->name;
         switch($modality_name){
             case 'Préstamo Anticipo':
-                if($affiliate_state_type == "Activo")
-                {
-                    $modality=ProcedureModality::whereShortened("ANT-SA")->first();
-                }
-                else{
-                    if($affiliate_state_type == "Pasivo"){
-                        $modality=ProcedureModality::whereShortened("ANT-SP")->first();
-                    }
-                }
-            break;
-            case 'Préstamo a corto plazo':
                 if($affiliate_state_type == "Activo"){
                     if($affiliate_state == "Servicio" || $affiliate_state == "Comisión" )
                     {
-                        $modality=ProcedureModality::whereShortened("PCP-SA")->first(); //corto plazo activo
+                        $modality=ProcedureModality::whereShortened("ANT-ACT")->first(); //Anticipo activo
                     }else{
-                        $modality=ProcedureModality::whereShortened("PCP-DLA")->first(); // corto plazo activo letra A, no le corresponde refinanciamiento segun Art 76 del reglamento
+                        $modality=ProcedureModality::whereShortened("ANT-DIS")->first(); // Anicipo dismponibilidad
                     }
                 }
                 if($affiliate_state_type == "Pasivo"){
                     if($affiliate->pension_entity->name != 'SENASIR')
                     {
-                    $modality=ProcedureModality::whereShortened("PCP-SP-AFP")->first(); //  Prestamo a corto plazo sector pasivo afp caso SISMU
+                    $modality=ProcedureModality::whereShortened("ANT-AFP")->first(); //  Prestamo a anticipo afp
                     }else{
-                        $modality=ProcedureModality::whereShortened("PCP-SP-SEN")->first(); // Prestamo a corto plazo senarir caso SISMU
+                        $modality=ProcedureModality::whereShortened("ANT-SEN")->first(); // Prestamo a anticipo senasir
                     }
                 }
             break;
-            case 'Refinanciamiento Préstamo a corto plazo':
+            case 'Préstamo a Corto Plazo':
+                if($affiliate_state_type == "Activo"){
+                    if($affiliate_state == "Servicio" || $affiliate_state == "Comisión" )
+                    {
+                        $modality=ProcedureModality::whereShortened("COR-ACT")->first(); //corto plazo activo
+                    }else{
+                        $modality=ProcedureModality::whereShortened("COR-DIS")->first(); // corto plazo activo letra A, no le corresponde refinanciamiento segun Art 76 del reglamento
+                    }
+                }
+                if($affiliate_state_type == "Pasivo"){
+                    if($affiliate->pension_entity->name != 'SENASIR')
+                    {
+                    $modality=ProcedureModality::whereShortened("COR-AFP")->first(); //  Prestamo a corto plazo sector pasivo afp caso SISMU
+                    }else{
+                        $modality=ProcedureModality::whereShortened("COR-SEN")->first(); // Prestamo a corto plazo senarir caso SISMU
+                    }
+                }
+            break;
+            case 'Refinanciamiento Préstamo a Corto Plazo':
                 if($affiliate_state_type == "Activo" && $affiliate_state !== "Disponibilidad") //affiliados con estado en disponibilidad no realizaran refinanciamientos 
                 {
-                    $modality = ProcedureModality::whereShortened("PCP-R-SA")->first();//Refinanciamiento corto plazo activo                           
+                    $modality = ProcedureModality::whereShortened("REF-COR-ACT")->first();//Refinanciamiento corto plazo activo                           
                 }else{
                     if($affiliate_state_type == "Pasivo"){
                     
                         if($affiliate->pension_entity->name != 'SENASIR')
                         {
-                        $modality=ProcedureModality::whereShortened("PCP-R-SP-AFP")->first();// refi afp pasivo sismu
+                        $modality=ProcedureModality::whereShortened("REF-COR-AFP")->first();// refi afp pasivo sismu
                         }else{
-                            $modality=ProcedureModality::whereShortened("PCP-R-SP-SEN")->first();// refi senasir pasivo sismu
+                            $modality=ProcedureModality::whereShortened("REF-COR-SEN")->first();// refi senasir pasivo sismu
                         }
                     }
                 }
             break;
-            case 'Préstamo a largo plazo':
+            case 'Préstamo a Largo Plazo':
                 if($affiliate_state_type == "Activo")
                 {
                     if($affiliate_state !== "Disponibilidad" ) // disponibilidad letra A o C no puede acceder a prestamos a largo plazo
                     {
-                        if($cpop_sismu  && $type_sismu) $modality=ProcedureModality::whereShortened("PLP-CPOP")->first(); // Largo plazo activo cpop repro sismu
-                        if(!$cpop_sismu && $type_sismu) $modality=ProcedureModality::whereShortened("PLP-GP-SAYADM")->first(); //Largo plazo activo  y adm con garantia personal repro sismu
-                        if(!$cpop_sismu || !$type_sismu){
-                            if($cpop_affiliate){
-                                $modality=ProcedureModality::whereShortened("PLP-CPOP")->first();
-                            }else{
-                                $modality=ProcedureModality::whereShortened("PLP-GP-SAYADM")->first();
-                            }
+                        if($cpop_affiliate || $cpop_sismu){
+                            $modality=ProcedureModality::whereShortened("LAR-CPOP")->first();
+                        }else{
+                            $modality=ProcedureModality::whereShortened("LAR-ACT")->first();
                         }
                     }
                 }
                 if($affiliate_state_type == "Pasivo")
                 {
-                   // if($cpop_sismu  && $type_sismu) $modality=ProcedureModality::whereShortened("PLP-SP-CPOP")->first(); // reprogramacion largo plazo pasivo con 1 garante sismu
-                    if(!$cpop_sismu  && $type_sismu) $modality=ProcedureModality::whereShortened("PLP-GP-SP")->first(); // reprogramacion largo plazo pasivo con 1 garante sismu
-                
-                    if(!$cpop_sismu || !$type_sismu){
-                        if($cpop_affiliate){
-                            //$modality=ProcedureModality::whereShortened("PLP-CPOP")->first();//NO aplica la modalidad cpop sector pasivo 
+                    if($affiliate->pension_entity->name != 'SENASIR')
+                    {
+                        $modality=ProcedureModality::whereShortened("LAR-AFP")->first();// Largo plazo Sector PAsivo
                     }else{
-                            $modality=ProcedureModality::whereShortened("PLP-GP-SP")->first(); //Largo plazo Sector PAsivo
-                    }
+                        $modality=ProcedureModality::whereShortened("LAR-SEN")->first();// Largo plazo Sector PAsivo
                     }
                 }
             break;  
-            case 'Refinanciamiento Préstamo a largo plazo':
+            case 'Refinanciamiento Préstamo a Largo Plazo':
                 if($affiliate_state_type == "Activo")
                 {
                     if($affiliate_state !== "Disponibilidad" ) //disponibilidad letra A o C no tiene prestamos
                     {
-                        if($cpop_sismu  && $type_sismu) $modality=ProcedureModality::whereShortened("PLP-R-SA-CPOP")->first();// Refi largo plazo activo 1 solo garante sismu
-                        if($type_sismu && !$cpop_sismu) $modality=ProcedureModality::whereShortened("PLP-R-GP-SAYADM")->first();// Refinanciamiento Largo plazo activo  y adm con garantia personal sismu
-                    
-                        if(!$cpop_sismu || !$type_sismu){
-                            if($cpop_affiliate){
-                                $modality=ProcedureModality::whereShortened("PLP-R-SA-CPOP")->first();
-                            }else{
-                                $modality=ProcedureModality::whereShortened("PLP-R-GP-SAYADM")->first();
-                            }
+                        if($cpop_affiliate || $cpop_sismu){
+                            $modality=ProcedureModality::whereShortened("REF-ACT-CPOP")->first(); //refi largo plazo activo  cpop
+                        }else{
+                            $modality=ProcedureModality::whereShortened("REF-LAR-ACT")->first(); //refi largo plazo activo
                         }
                     }
                 }
                 else{
                     if($affiliate_state_type == "Pasivo"){
-                    
-                       // if($cpop_sismu && $type_sismu) $modality=ProcedureModality::whereShortened("PLP-R-SP-CPOP")->first(); // Refi largo plazo pasivo 1 solo garante
-                        if(!$cpop_sismu && $type_sismu) $modality=ProcedureModality::whereShortened("PLP-R-GP-SP")->first(); // Refi largo plazo pasivo 2 garantes
-                    
-                        if(!$cpop_sismu || !$type_sismu){
-                            if($cpop_affiliate){
-                               // $modality=ProcedureModality::whereShortened("PLP-R-SP-CPOP")->first(); // Refi largo plazo pasivo 1 garante
-                            }else{
-                                $modality=ProcedureModality::whereShortened("PLP-R-GP-SP")->first(); // Refi largo plazo pasivo 2 garantes
-                            }
+
+                        if($affiliate->pension_entity->name != 'SENASIR')
+                        {
+                            $modality=ProcedureModality::whereShortened("REF-LAR-AFP")->first();// ref Largo plazo Sector Pasivo
+                        }else{
+                            $modality=ProcedureModality::whereShortened("REF-LAR-SEN")->first();// ref Largo plazo Sector Pasivo
                         }
                     }
                 }
             break;
-            case 'Préstamo hipotecario':
+            case 'Préstamo Hipotecario':
                 if($affiliate_state_type == "Activo")
                 {
                     if($affiliate_state_type !== "Comisión"){
-                        if($type_sismu && $cpop_sismu) $modality=ProcedureModality::whereShortened("PLP-GH-CPOP")->first(); // Prestamo hipotecario CPOP
-                        if($type_sismu && !$cpop_sismu) $modality=ProcedureModality::whereShortened("PLP-GH-SA")->first(); // Prestamo hipotecario Sector Activo
-
-                        if(!$cpop_sismu || !$type_sismu){
-                            if($cpop_affiliate){
-                                $modality=ProcedureModality::whereShortened("PLP-GH-CPOP")->first(); //hipotecario CPOP
-                            }else{
-                                $modality=ProcedureModality::whereShortened("PLP-GH-SA")->first(); //hipotecario Sector Activo
-                            }
+                        
+                        if($cpop_affiliate || $cpop_sismu){
+                            $modality=ProcedureModality::whereShortened("HIP-ACT-CPOP")->first(); //hipotecario CPOP
+                        }else{
+                            $modality=ProcedureModality::whereShortened("HIP-ACT")->first(); //hipotecario Sector Activo
                         }
                     }
                 }
             break;
-            case 'Refinanciamiento Préstamo hipotecario':
+            case 'Refinanciamiento Préstamo Hipotecario':
                 if($affiliate_state_type == "Activo")
                 {
                     if($affiliate_state_type !== "Comisión" && $affiliate_state !== "Disponibilidad"){//affiliados con estado en disponibilidad no realizaran refinanciamientos 
-                        if($type_sismu && $cpop_sismu) $modality=ProcedureModality::whereShortened("PLP-R-GH-CPOP")->first(); // Refinanciamiento hipotecario CPOP
-                        if($type_sismu && !$cpop_sismu) $modality=ProcedureModality::whereShortened("PLP-R-GH-SA")->first(); // Refinanciamiento hipotecario Sector Activo
-                
-                        if(!$cpop_sismu || !$type_sismu){
-                            if($cpop_affiliate){
-                                $modality=ProcedureModality::whereShortened("PLP-R-GH-CPOP")->first(); // Refinanciamiento hipotecario CPOP
-                            }else{
-                                $modality=ProcedureModality::whereShortened("PLP-R-GH-SA")->first(); // Refinanciamiento hipotecario Sector Activo
-                            }
+                        if($cpop_affiliate || $cpop_sismu){
+                            $modality=ProcedureModality::whereShortened("REF-HIP-ACT-CPOP")->first(); // Refinanciamiento hipotecario CPOP
+                        }else{
+                            $modality=ProcedureModality::whereShortened("REF-HIP-ACT")->first(); // Refinanciamiento hipotecario Sector Activo
                         }
                     }                   
                 }
@@ -826,40 +809,40 @@ class Loan extends Model
             $affiliate_state_type = $affiliate->affiliate_state->affiliate_state_type->name;
         switch($modality_name){
             case 'Préstamo Anticipo':
-                if($affiliate_state_type == "Activo")
-                {
-                    $modality=ProcedureModality::whereShortened("ANT-SA")->first();
-                }
-                else{
-                    if($affiliate_state_type == "Pasivo"){
-                        $modality=ProcedureModality::whereShortened("ANT-SP")->first();
+                if($affiliate_state_type == "Activo"){
+                    if($affiliate_state == "Servicio" || $affiliate_state == "Comisión" )
+                    {
+                        $modality=ProcedureModality::whereShortened("ANT-ACT")->first(); //Anticipo activo
+                    }else{
+                        $modality=ProcedureModality::whereShortened("ANT-DIS")->first(); // Anicipo dismponibilidad
                     }
                 }
             break;
-            case 'Préstamo a corto plazo':
+            case 'Préstamo a Corto Plazo':
                 if($affiliate_state_type == "Activo"){
-                   
                     if($affiliate_state == "Servicio" || $affiliate_state == "Comisión" )
                     {
-                        $modality=ProcedureModality::whereShortened("PCP-SA")->first(); //corto plazo activo
+                        $modality=ProcedureModality::whereShortened("COR-ACT")->first(); //corto plazo activo
                     }else{
-                        $modality=ProcedureModality::whereShortened("PCP-DLA")->first(); // corto plazo activo letra A, no le corresponde refinanciamiento segun Art 76 del reglamento
-                    }                  
-                }
-                break;
-            case 'Préstamo a largo plazo':
-                if($affiliate_state_type == "Activo")
-                {
-                    if($affiliate_state !== "Disponibilidad" ) //cpop no pueden estar en disponibilidad letra A o C
-                    {
-                         $modality=ProcedureModality::whereShortened("PLP-GP-SAYADM")->first(); //Largo plazo activo  y adm con garantia personal
+                        $modality=ProcedureModality::whereShortened("COR-DIS")->first(); // corto plazo activo letra A, no le corresponde refinanciamiento segun Art 76 del reglamento
                     }
                 }
-                break;
-            case 'Préstamo hipotecario':
+            break;
+            case 'Préstamo a Largo Plazo':
                 if($affiliate_state_type == "Activo")
                 {
-                    $modality=ProcedureModality::whereShortened("PLP-GH-SA")->first(); //hipotecario Sector Activo
+                    if($affiliate_state !== "Disponibilidad" ) // disponibilidad letra A o C no puede acceder a prestamos a largo plazo
+                    {
+                        $modality=ProcedureModality::whereShortened("LAR-ACT")->first();
+                    }
+                }
+            break; 
+            case 'Préstamo Hipotecario':
+                if($affiliate_state_type == "Activo")
+                {
+                    if($affiliate_state_type !== "Comisión"){
+                        $modality=ProcedureModality::whereShortened("HIP-ACT")->first(); //hipotecario Sector Activo
+                    }
                 }
             break;
             }

@@ -40,6 +40,7 @@ use Carbon;
 use App\Helpers\Util;
 use App\Http\Controllers\Api\V1\LoanPaymentController;
 use Carbon\CarbonImmutable;
+use Maatwebsite\Excel\Facades\Excel;
 
 /** @group Préstamos
 * Datos de los trámites de préstamos y sus relaciones
@@ -382,6 +383,7 @@ class LoanController extends Controller
     * @bodyParam lenders[0].contributionable_ids array  Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
     * @bodyParam lenders[0].contributionable_type enum Nombre de la tabla de contribuciones . Example: contributions
     * @bodyParam lenders[0].loan_contributions_adjust_ids array Ids de los ajustes de la(s) contribución(s). Example: [1,2]
+    * @bodyParam lenders[0].quota_treat cuota del titular. Example: 2315.86
     * @bodyParam lenders[1].affiliate_id integer ID del afiliado. Example: 22773
     * @bodyParam lenders[1].payment_percentage integer ID del afiliado. Example: 50
     * @bodyParam lenders[1].payable_liquid_calculated numeric ID del afiliado. Example: 2000
@@ -393,6 +395,7 @@ class LoanController extends Controller
     * @bodyParam lenders[1].contributionable_ids array  Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
     * @bodyParam lenders[1].contributionable_type enum Nombre de la tabla de contribuciones . Example: contributions
     * @bodyParam lenders[1].loan_contributions_adjust_ids array Ids de los ajustes de la(s) contribución(s). Example: [3]
+    * @bodyParam lenders[1].quota_treat cuota del titular. Example: 2315.86
     * @bodyParam guarantors array Lista de afiliados Garante(es) del préstamo.
     * @bodyParam guarantors[0].affiliate_id integer ID del afiliado. Example: 51925
     * @bodyParam guarantors[0].payment_percentage integer ID del afiliado. Example: 50
@@ -404,6 +407,7 @@ class LoanController extends Controller
     * @bodyParam guarantors[0].contributionable_ids array  Ids de las contribuciones asocidas al prestamo por afiliado. Example: [1,2,3]
     * @bodyParam guarantors[0].contributionable_type enum Nombre de la tabla de contribuciones . Example: contributions
     * @bodyParam guarantors[0].loan_contributions_adjust_ids array Ids de los ajustes de la(s) contribución(s). Example: []
+    * @bodyParam guarantors[0].quota_treat cuota del garante. Example: 2315.86
     * @authenticated
     * @responseFile responses/loan/update.200.json
     */
@@ -555,11 +559,12 @@ class LoanController extends Controller
                     'payable_liquid_calculated' => $affiliate['payable_liquid_calculated'],
                     'bonus_calculated' => $affiliate['bonus_calculated'],
                     'quota_previous' => $quota_previous,
+                    'quota_treat' => $affiliate['quota_treat'],
                     'indebtedness_calculated' => $indebtedness,
                     'liquid_qualification_calculated' => $affiliate['liquid_qualification_calculated'],
                     'guarantor' => false,
                     'contributionable_type' => $affiliate['contributionable_type'],
-                    'contributionable_ids' => json_encode($affiliate['contributionable_ids'])
+                    'contributionable_ids' => json_encode($affiliate['contributionable_ids']),
                 ];
                 if(array_key_exists('loan_contributions_adjust_ids', $affiliate)){
                     $idsajust=$affiliate['loan_contributions_adjust_ids'];
@@ -581,11 +586,12 @@ class LoanController extends Controller
                         'payable_liquid_calculated' => $affiliate['payable_liquid_calculated'],
                         'bonus_calculated' => $affiliate['bonus_calculated'],
                         'quota_previous' => $previous,
+                        'quota_treat' => $affiliate['quota_treat'],
                         'indebtedness_calculated' => $affiliate['indebtedness_calculated'],
                         'liquid_qualification_calculated' => $affiliate['liquid_qualification_calculated'],
                         'guarantor' => true,
                         'contributionable_type'=>$affiliate['contributionable_type'],
-                        'contributionable_ids'=>json_encode($affiliate['contributionable_ids'])
+                        'contributionable_ids'=>json_encode($affiliate['contributionable_ids']),
                     ];
                     if(array_key_exists('loan_contributions_adjust_ids', $affiliate)){
                         $idsajust=$affiliate['loan_contributions_adjust_ids'];
@@ -822,22 +828,22 @@ class LoanController extends Controller
             case 'Préstamo Anticipo':
 				$view_type = 'advance';
             	break;
-            case 'Préstamo a corto plazo':
+            case 'Préstamo a Corto Plazo':
 				$view_type = 'short';
             	break;
-            case 'Refinanciamiento Préstamo a corto plazo':
+            case 'Refinanciamiento Préstamo a Corto Plazo':
 				$view_type = 'short';
             	break;
-            case 'Préstamo a largo plazo':
+            case 'Préstamo a Largo Plazo':
 				$view_type = 'long';
             	break;
-            case 'Refinanciamiento Préstamo a largo plazo':
+            case 'Refinanciamiento Préstamo a Largo Plazo':
 				$view_type = 'long';
             	break;
-            case 'Préstamo hipotecario':
+            case 'Préstamo Hipotecario':
 				$view_type = 'hypothecary';
             	break;
-            case 'Refinanciamiento Préstamo hipotecario':
+            case 'Refinanciamiento Préstamo Hipotecario':
 				$view_type = 'hypothecary';
             	break;
         }
@@ -1643,14 +1649,14 @@ class LoanController extends Controller
         $procedure=$loan->modality->procedure_type;
         $procedure_ref=[];
     
-        if($procedure->name=='Préstamo a corto plazo' || $procedure->name=='Refinanciamiento Préstamo a corto plazo'){
-            $procedure_ref = ProcedureType::where('name','=','Refinanciamiento Préstamo a corto plazo')->first();
+        if($procedure->name=='Préstamo a Corto Plazo' || $procedure->name=='Refinanciamiento Préstamo a Corto Plazo'){
+            $procedure_ref = ProcedureType::where('name','=','Refinanciamiento Préstamo a Corto Plazo')->first();
         }else{
-            if($procedure->name=='Préstamo a largo plazo' || $procedure->name=='Refinanciamiento Préstamo a largo plazo'){
-                $procedure_ref = ProcedureType::where('name','=','Refinanciamiento Préstamo a largo plazo')->first();
+            if($procedure->name=='Préstamo a Largo Plazo' || $procedure->name=='Refinanciamiento Préstamo a Largo Plazo'){
+                $procedure_ref = ProcedureType::where('name','=','Refinanciamiento Préstamo a Largo Plazo')->first();
             }else{
-                if($procedure->name=='Préstamo hipotecario' || $procedure->name=='Refinanciamiento Préstamo hipotecario'){
-                    $procedure_ref = ProcedureType::where('name','=','Refinanciamiento Préstamo hipotecario')->first();
+                if($procedure->name=='Préstamo Hipotecario' || $procedure->name=='Refinanciamiento Préstamo Hipotecario'){
+                    $procedure_ref = ProcedureType::where('name','=','Refinanciamiento Préstamo Hipotecario')->first();
                 }
             }
         }
@@ -1800,5 +1806,184 @@ class LoanController extends Controller
 
         return $loan_res;
    }
+
+   /** 
+   * Listar prestamos generando reportes
+   * Lista todos los prestamos con opcion a busquedas
+   * @queryParam sortDesc Vector de orden descendente(0) o ascendente(1). Example: 0
+   * @queryParam per_page Número de datos por página. Example: 8
+   * @queryParam page Número de página. Example: 1
+   * @queryParam excel Valor booleano para descargar  el docExcel. Example: true
+   * @queryParam id_loan Buscar ID del Préstamo. Example: 1
+   * @queryParam code_loan  Buscar código del Préstamo. Example: PTMO000012-2021
+   * @queryParam id_affiliate  Buscar por ID del affiliado. Example: 33121
+   * @queryParam identity_card_affiliate  Buscar por nro de CI del afiliado. Example: 10069775
+   * @queryParam registration_affiliate  Buscar por Matricula del afiliado. Example: 100697MDF
+   * @queryParam last_name_affiliate Buscar por primer apellido del afiliado. Example: RIVERA
+   * @queryParam mothers_last_name_affiliate Buscar por segundo apellido del afiliado. Example: ARTEAG
+   * @queryParam first_name_affiliate Buscar por primer Nombre del afiliado. Example: ABAD
+   * @queryParam second_name_affiliate Buscar por segundo Nombre del afiliado. Example: FAUST
+   * @queryParam surname_husband_affiliate Buscar por Apellido de casada Nombre del afiliado. Example: De LA CRUZ
+   * @queryParam sub_modality_loan Buscar por sub modalidad del préstamo. Example: Corto plazo sector activo
+   * @queryParam modality_loan Buscar por Modalidad del prestamo. Example: Préstamo a corto plazo
+   * @queryParam amount_approved_loan Buscar monto aprobado del afiliado. Example: 25000
+   * @queryParam state_type_affiliate Buscar por tipo de estado del afiliado. Example: Activo
+   * @queryParam state_affiliate Buscar por estado del affiliado. Example: Servicio
+   * @queryParam quota_loan Buscar por la quota del prestamo. Example: 1500
+   * @queryParam state_loan Buscar por el estado del prestamo. Example: En proceso
+   * @queryParam guarantor_loan_affiliate Buscar los garantes del préstamo. Example: false
+   * @queryParam pension_entity_affiliate Buscar por la La pension entidad del afiliado. Example: SENASIR
+   * @authenticated
+   * @responseFile responses/loan/list_loans_generate.200.json
+   */
+
+   public function list_loan_generate(Request $request){
+   // aumenta el tiempo máximo de ejecución de este script a 150 min:
+   ini_set('max_execution_time', 9000);
+   // aumentar el tamaño de memoria permitido de este script:
+   ini_set('memory_limit', '960M');
+
+   $excel = request('excel') ?? '';
+   $order = request('sortDesc') ?? '';
+   if($order != ''){
+       if($order) $order_loan = 'Asc';
+       if(!$order) $order_loan = 'Desc';
+
+   }else{
+    $order_loan = 'Desc';
+   }
+   $pagination_rows = request('per_page') ?? 10;
+   $conditions = [];
+   //filtros
+   $id_loan = request('id_loan') ?? '';
+   $code_loan = request('code_loan') ?? '';
+   $id_affiliate = request('id_affiliate') ?? '';
+   $identity_card_affiliate = request('identity_card_affiliate') ?? '';
+   $registration_affiliate = request('registration_affiliate') ?? '';
+
+   $last_name_affiliate = request('last_name_affiliate') ?? '';
+   $mothers_last_name_affiliate = request('mothers_last_name_affiliate') ?? '';
+   $first_name_affiliate = request('first_name_affiliate') ?? '';
+   $second_name_affiliate = request('second_name_affiliate') ?? '';
+   $surname_husband_affiliate = request('surname_husband_affiliate') ?? '';
+
+   $sub_modality_loan = request('sub_modality_loan') ?? '';
+   $modality_loan = request('modality_loan') ?? '';
+   $amount_approved_loan = request('amount_approved_loan') ?? '';
+   $state_type_affiliate = request('state_type_affiliate') ?? '';
+   $state_affiliate = request('state_affiliate') ?? '';
+   $state_loan = request('state_loan') ?? '';
+
+   $quota_loan = request('quota_loan') ?? '';
+   $guarantor_loan_affiliate = request('guarantor_loan_affiliate') ?? '';
+   $pension_entity_affiliate = request('pension_entity_affiliate') ?? '';
+
+
+   $amount_approved_loan = request('amount_approved_loan') ?? '';
+
+      if ($id_loan != '') {
+       array_push($conditions, array('loans.id', 'like', "%{$id_loan}%"));
+     }
+
+     if ($code_loan != '') {
+       array_push($conditions, array('loans.code', 'like', "%{$code_loan}%"));
+     }
+ 
+     if ($id_affiliate != '') {
+       array_push($conditions, array('affiliates.id', 'like', "%{$id_affiliate}%"));
+     }
+     if ($identity_card_affiliate != '') {
+       array_push($conditions, array('affiliates.identity_card', 'like', "%{$identity_card_affiliate}%"));
+     }
+     if ($registration_affiliate != '') {
+       array_push($conditions, array('affiliates.registration', 'like', "%{$registration_affiliate}%"));
+     }
+ 
+     if ($last_name_affiliate != '') {
+       array_push($conditions, array('affiliates.last_name', 'like', "%{$last_name_affiliate}%"));
+     }
+     if ($mothers_last_name_affiliate != '') {
+       array_push($conditions, array('affiliates.mothers_last_name', 'like', "%{$mothers_last_name_affiliate}%"));
+     }
+
+     if ($first_name_affiliate != '') {
+       array_push($conditions, array('affiliates.first_name', 'like', "%{$first_name_affiliate}%"));//
+     }
+     if ($second_name_affiliate != '') {
+       array_push($conditions, array('affiliates.second_name', 'like', "%{$second_name_affiliate}%"));
+     }
+     if ($surname_husband_affiliate != '') {
+       array_push($conditions, array('affiliates.surname_husband', 'like', "%{$surname_husband_affiliate}%"));
+     }
+ 
+     if ($sub_modality_loan != '') {
+       array_push($conditions, array('procedure_modalities.name', 'like', "%{$sub_modality_loan}%"));
+     }
+     if ($modality_loan != '') {
+       array_push($conditions, array('procedure_types.name', 'like', "%{$modality_loan}%"));
+     }
+
+     if ($amount_approved_loan != '') {
+       array_push($conditions, array('loans.amount_approved', 'like', "%{$amount_approved_loan}%"));
+     }
+     if ($state_type_affiliate != '') {
+       array_push($conditions, array('affiliate_state_types.name', 'like', "%{$state_type_affiliate}%"));
+     }
+     if ($state_affiliate != '') {
+       array_push($conditions, array('affiliate_states.name', 'like', "%{$state_affiliate}%"));
+     }
+ 
+     if ($quota_loan != '') {
+       array_push($conditions, array('loan_affiliates.quota_treat', 'like', "%{$quota_loan}%"));
+     }
+     if ($state_loan != '') {
+       array_push($conditions, array('loan_states.name', 'like', "%{$state_loan}%"));
+     }
+     if ($guarantor_loan_affiliate != '') {
+       array_push($conditions, array('loan_affiliates.guarantor', 'like', "%{$guarantor_loan_affiliate}%"));
+     }
+     if ($pension_entity_affiliate != '') {
+       array_push($conditions, array('pension_entities.name', 'like', "%{$pension_entity_affiliate}%"));
+     }
+
+     global $rows_exacta;
+     $rows_exacta = array();
+     //cabezera
+     array_push($rows_exacta, array(
+       'Nro Prestamo', 'Fecha de Solicitud', 'Fecha Desembolso', 'Monto Desembolsado', 'Saldo Actual', 'Nro Comprobante', 'Ampliacion',
+       'Producto',
+       'Tipo', 'Matricula', 'Matricula Titular', ' CI', 'Extension', '1er Nombre', '2do Nombre', 'Paterno', 'Materno', 'Apellido de Casada'
+     ));
+   
+   $list_loan = DB::table('loans')
+           ->join('procedure_modalities','loans.procedure_modality_id', '=', 'procedure_modalities.id')
+           ->join('procedure_types','procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
+           ->join('loan_states','loans.state_id', '=', 'loan_states.id')
+           ->join('cities','loans.city_id', '=', 'cities.id')
+           ->join('loan_affiliates','loans.id', '=', 'loan_affiliates.loan_id')
+           ->join('affiliates','loan_affiliates.affiliate_id', '=', 'affiliates.id')
+           ->join('affiliate_states','affiliates.affiliate_state_id', '=', 'affiliate_states.id')
+           ->join('affiliate_state_types','affiliate_states.affiliate_state_type_id', '=', 'affiliate_state_types.id')
+           ->leftjoin('pension_entities','affiliates.pension_entity_id', '=', 'pension_entities.id')
+           ->where($conditions)
+           
+           //->select('*')
+           ->select('loans.id as id_loan','loans.code as code_loan','affiliates.id as id_affiliate','affiliates.identity_card as identity_card_affiliate',
+           'affiliates.registration as registration_affiliate','affiliates.last_name as last_name_affiliate','affiliates.mothers_last_name as mothers_last_name_affiliate',
+           'affiliates.first_name as first_name_affiliate','affiliates.second_name as second_name_affiliate','affiliates.surname_husband as surname_husband_affiliate',
+           'procedure_modalities.name as sub_modality_loan','procedure_types.name as modality_loan','loans.amount_approved as amount_approved_loan',
+           'affiliate_state_types.name as state_type_affiliate','affiliate_states.name as state_affiliate','loan_affiliates.quota_treat as quota_loan','loan_states.name as state_loan',
+           'loan_affiliates.guarantor as guarantor_loan_affiliate','pension_entities.name as pension_entity_affiliate')
+           //->where('affiliates.identity_card','LIKE'.'%'.$request->identity_card.'%')
+           ->orderBy('loans.code', $order_loan)
+           ->paginate($pagination_rows);
+          
+           $File="PrestamosEnMora";
+
+           //Excel::download($list_loan, $File.'.xlsx'); 
+
+       //return Excel::download($list_loan, $File.'.xlsx'); 
+       return $list_loan;
+  }
 
 }

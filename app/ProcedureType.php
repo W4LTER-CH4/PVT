@@ -19,10 +19,6 @@ class ProcedureType extends Model
         return $this->hasMany(ProcedureModality::class);
     }
 
-    public function interval()
-    {
-        return $this->hasOne(LoanInterval::class);
-    }
 
     public function loan_destinies()
     {

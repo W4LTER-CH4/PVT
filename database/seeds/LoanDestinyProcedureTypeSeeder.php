@@ -18,10 +18,9 @@ class LoanDestinyProcedureTypeSeeder extends Seeder
                 ['LIBRE DISPONIBILIDAD'],
                 ['SALUD'],           
             ],
-        ];$this->create($destinies);
-
+        ];$this->create($destinies); 
         $destinies = [   
-            'Préstamo a corto plazo' => [
+            'Préstamo a Corto Plazo' => [
                 ['CONSUMO'],
                 ['SALUD'],  
             ],
@@ -29,7 +28,7 @@ class LoanDestinyProcedureTypeSeeder extends Seeder
         $this->create($destinies);
 
         $destinies = [   
-            'Refinanciamiento Préstamo a corto plazo' => [
+            'Refinanciamiento Préstamo a Corto Plazo' => [
                 ['CONSUMO'],
                 ['SALUD'],  
             ],
@@ -37,7 +36,7 @@ class LoanDestinyProcedureTypeSeeder extends Seeder
         $this->create($destinies);
 
         $destinies = [    
-            'Préstamo a largo plazo' => [
+            'Préstamo a Largo Plazo' => [
                 ['AMPLIACIÓN DE VIVIENDA'],
                 ['REFACCIÓN DE VIVIENDA'],
                 ['REMODELACIÓN DE VIVIENDA'],  
@@ -51,7 +50,7 @@ class LoanDestinyProcedureTypeSeeder extends Seeder
         $this->create($destinies);
 
         $destinies = [    
-            'Refinanciamiento Préstamo a largo plazo' => [
+            'Refinanciamiento Préstamo a Largo Plazo' => [
                 ['AMPLIACIÓN DE VIVIENDA'],
                 ['REFACCIÓN DE VIVIENDA'],
                 ['REMODELACIÓN DE VIVIENDA'],  
@@ -65,7 +64,7 @@ class LoanDestinyProcedureTypeSeeder extends Seeder
         $this->create($destinies);
 
         $destinies = [ 
-            'Préstamo hipotecario' => [
+            'Préstamo Hipotecario' => [
                 ['INVERSIÓN'],
                 ['REFACCIÓN Y REMODELACIÓN DE VIVIENDA'],     
             ]
@@ -73,7 +72,7 @@ class LoanDestinyProcedureTypeSeeder extends Seeder
         $this->create($destinies);    
         
         $destinies = [ 
-            'Refinanciamiento Préstamo hipotecario' => [
+            'Refinanciamiento Préstamo Hipotecario' => [
                 ['INVERSIÓN'],
                 ['REFACCIÓN Y REMODELACIÓN DE VIVIENDA'],     
             ]

@@ -26,13 +26,13 @@ class RoleSequenceSeeder extends Seeder
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
                 ['PRE-tesoreria'],
-                ['PRE-cobranzas'],   
+                ['PRE-archivo'],   
             ]
         ];
         $this->create($sequences);
         //Flujo de Préstamo a corto plazo Refinanciamiento
         $sequences = [
-            'Refinanciamiento Préstamo a corto plazo' => [
+            'Refinanciamiento Préstamo a Corto Plazo' => [
                 ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
                 ['PRE-recepcion'],
                 ['PRE-calificacion'],
@@ -43,13 +43,13 @@ class RoleSequenceSeeder extends Seeder
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
                 ['PRE-tesoreria'],
-                ['PRE-cobranzas'],     
+                ['PRE-archivo'],     
             ]
         ];
         $this->create($sequences);
     //Flujo de Préstamo a corto plazo 
       $sequences = [
-            'Préstamo a corto plazo' => [
+            'Préstamo a Corto Plazo' => [
                 ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
                 ['PRE-recepcion'],
                 ['PRE-calificacion'],
@@ -59,13 +59,13 @@ class RoleSequenceSeeder extends Seeder
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
                 ['PRE-tesoreria'],
-                ['PRE-cobranzas'],    
+                ['PRE-archivo'],    
             ]
         ];
         $this->create($sequences);
          //Flujo de Préstamo a largo plazo
          $sequences = [
-            'Préstamo a largo plazo' => [
+            'Préstamo a Largo Plazo' => [
                 ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
                 ['PRE-recepcion'],
                 ['PRE-calificacion'],
@@ -75,13 +75,13 @@ class RoleSequenceSeeder extends Seeder
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
                 ['PRE-tesoreria'],
-                ['PRE-cobranzas'], 
+                ['PRE-archivo'], 
             ]
         ];
         $this->create($sequences);
             //Flujo de Préstamo a largo plazo Refinanciamiento
             $sequences = [
-                'Refinanciamiento Préstamo a largo plazo' => [
+                'Refinanciamiento Préstamo a Largo Plazo' => [
                     ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
                     ['PRE-recepcion'],
                     ['PRE-calificacion'],
@@ -92,13 +92,13 @@ class RoleSequenceSeeder extends Seeder
                     ['PRE-presupuesto'],
                     ['PRE-contabilidad'],
                     ['PRE-tesoreria'],
-                    ['PRE-cobranzas'], 
+                    ['PRE-archivo'], 
                 ]
             ];
             $this->create($sequences);
         //Flujo de Préstamo hipotecario
         $sequences = [
-            'Préstamo hipotecario' => [
+            'Préstamo Hipotecario' => [
                 ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
                 ['PRE-recepcion'],
                 ['PRE-calificacion'],
@@ -110,13 +110,13 @@ class RoleSequenceSeeder extends Seeder
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
                 ['PRE-tesoreria'],
-                ['PRE-cobranzas'],   
+                ['PRE-archivo'],   
             ]
         ];
         $this->create($sequences);
         //Flujo de Préstamo hipotecario refinanciamiento
         $sequences = [
-            'Refinanciamiento Préstamo hipotecario' => [
+            'Refinanciamiento Préstamo Hipotecario' => [
                 ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
                 ['PRE-recepcion'],
                 ['PRE-calificacion'],
@@ -130,7 +130,7 @@ class RoleSequenceSeeder extends Seeder
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
                 ['PRE-tesoreria'],
-                ['PRE-cobranzas'],   
+                ['PRE-archivo'],   
             ]
         ];
         $this->create($sequences);

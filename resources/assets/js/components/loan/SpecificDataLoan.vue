@@ -118,7 +118,7 @@
                                   </v-col>
                                   <v-col cols="12" md="12" >
                                     <div v-for="procedure_type in procedure_types" :key="procedure_type.id">
-                                      <div v-if="procedure_type.name === 'Préstamo hipotecario'">
+                                      <div v-if="procedure_type.name === 'Préstamo Hipotecario'">
                                         <v-progress-linear></v-progress-linear><br>
                                           <p style="color:teal"><b>CODEUDOR</b></p>
                                           <div v-for="(lenders,i) in loan.lenders" :key="i">
@@ -364,7 +364,7 @@
                               <v-col cols="12" md="12" class="mb-0 py-0">
                                 <v-card-text class="pa-0 mb-0">
                                   <div v-for="procedure_type in procedure_types" :key="procedure_type.id" class="pa-0 py-0" >
-                                    <ul style="list-style: none" class="pa-0" v-if="procedure_type.name == 'Préstamo a largo plazo' || procedure_type.name == 'Préstamo a corto plazo'">
+                                    <ul style="list-style: none" class="pa-0" v-if="procedure_type.name == 'Préstamo a Largo Plazo' || procedure_type.name == 'Préstamo a Corto Plazo'">
                                       <li v-for="guarantor in loan.guarantors" :key="guarantor.id">
                                         <v-col cols="12" md="12" class="pa-0">
                                           <v-row class="pa-2">
@@ -402,7 +402,7 @@
                                       <br>
                                       <p v-if="loan.guarantors.length==0" style="color:teal"><b> NO TIENE GARANTES </b></p>
                                     </ul>
-                                    <v-col cols="12" md="12" v-if="procedure_type.name == 'Préstamo hipotecario'">
+                                    <v-col cols="12" md="12" v-if="procedure_type.name == 'Préstamo Hipotecario'">
                                       <p style="color:teal"><b>GARANTIA HIPOTECARIA </b></p>
                                       <v-tooltip >
                                         <template v-slot:activator="{ on }">
@@ -807,7 +807,7 @@
                                 <v-card-text>
                                   <v-col cols="12" class="mb-0">
                                     <p style="color:teal"> <b>DATOS DE DESEMBOLSO</b></p>
-                                     <div v-if="permissionSimpleSelected.includes('disbursement-loan') || permissionSimpleSelected.includes('update-num-accounting-voucher')">
+                                     <div v-if="permissionSimpleSelected.includes('disbursement-loan') || permissionSimpleSelected.includes('update-accounting-voucher')">
                                         <v-tooltip top>
                                           <template v-slot:activator="{ on }">
                                             <v-btn
@@ -924,8 +924,8 @@
                                         <div class="py-0">
                                           <v-text-field
                                             dense
-                                            :outlined="permissionSimpleSelected.includes('update-num-accounting-voucher') ? editable : false"
-                                            :readonly="permissionSimpleSelected.includes('update-num-accounting-voucher') ? !editable : true"
+                                            :outlined="permissionSimpleSelected.includes('update-accounting-voucher') ? editable : false"
+                                            :readonly="permissionSimpleSelected.includes('update-accounting-voucher') ? !editable : true"
                                             :label="'CERTIFICACIÓN PRESUPUESTARIA CONTABLE'"
                                              v-model="loan.num_accounting_voucher"
                                           ></v-text-field>

@@ -292,6 +292,7 @@ export default {
 
           this.lenders[this.i].payment_percentage=this.simulator.affiliates[this.i].payment_percentage
           this.lenders[this.i].indebtedness_calculated=this.simulator.affiliates[this.i].indebtedness_calculated
+          this.lenders[this.i].quota_treat=this.calculator_result.affiliates[this.i].quota_calculated
           this.calculator_result.affiliates[this.i].quota_calculated_estimated=this.simulator.affiliates[this.i].quota_calculated_estimated
         }
 
