@@ -346,6 +346,7 @@ class LoanController extends Controller
     * Actualizar préstamo
     * Actualizar datos principales de préstamo
     * @urlParam loan required ID del préstamo. Example: 1
+    * @bodyParam date_signal boolean true si no se envia fecha  y false da señal de que se enviara fecha en el campo disbursement_dateExample: true
     * @bodyParam procedure_modality_id integer ID de modalidad. Example: 41
     * @bodyParam amount_requested integer monto solicitado. Example: 2000
     * @bodyParam city_id integer ID de la ciudad. Example: 6
@@ -412,11 +413,19 @@ class LoanController extends Controller
     * @responseFile responses/loan/update.200.json
     */
     public function update(LoanForm $request, Loan $loan)
-    {
-        if($request->has('disbursement_date') && $request->disbursement_date != NULL)
-        {
+    {    
+         if($request->date_signal == true || ($request->date_signal == false && $request->has('disbursement_date') && $request->disbursement_date != NULL)){
             $state_id = LoanState::whereName('Desembolsado')->first()->id;
             $request['state_id'] = $state_id;
+            $hour = Carbon::now()->hour;
+            $minute = Carbon::now()->minute;
+            $second = Carbon::now()->second;
+            $date = Carbon::parse($request['disbursement_date']);
+            $date->addHours($hour);
+            $date->addMinutes($minute);
+            $date->addSeconds($second);
+            $date = Carbon::parse($date);
+            $request['disbursement_date'] = $date;
         //si es refinanciamiento o reprogramacion colocar la etiqueta correspondiente al padre del préstamo   
             if($loan->parent_loan_id != null){
                 $user = User::whereUsername('admin')->first();
@@ -441,8 +450,23 @@ class LoanController extends Controller
                 }
             }
         }
+        if($request->date_signal == true){
+            $loan['disbursement_date'] = Carbon::now();
+            $state_id = LoanState::whereName('Desembolsado')->first()->id;
+            $loan['state_id'] = $state_id;
+            $loan->save();
+        }else{
+        if($request->has('disbursement_date') && $request->disbursement_date != NULL){
+            if(Auth::user()->can('change-disbursement-date')) {
+            $loan['disbursement_date'] = $request->disbursement_date;
+            $state_id = LoanState::whereName('Desembolsado')->first()->id;
+            $loan['state_id'] = $state_id;
+            $loan->save();
+            }  else return $message['validate'] = "El usuario no tiene los permisos necesarios para realizar el registro" ;
+        } else return $message['validate'] = "El campo fecha de desembolso es requerido para realizar el registro"; 
+        }   
         $saved = $this->save_loan($request, $loan);
-        return $saved->loan;
+        return $saved->loan;   
     }
 
     /**
@@ -1114,7 +1138,7 @@ class LoanController extends Controller
     * @bodyParam estimated_quota float Monto para el cálculo. Example: 650
     * @bodyParam adjust refinanciamiento con antecedente(1) o sin antecedente(0). Example: 1
     * @authenticated
-    * @responseFile responses/loan/get_next_payment.200.json
+    * @responseFile responses/loan/get_next_payment.200.json}
     */
     public function get_next_payment(LoanPaymentForm $request, Loan $loan)
     {

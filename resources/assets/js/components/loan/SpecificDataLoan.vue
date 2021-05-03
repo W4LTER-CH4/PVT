@@ -863,7 +863,7 @@
                                         <p><b>NUMERO DE CUENTA:</b>{{' '+loan.lenders[0].account_number}}</p>
                                       </v-col>
                                       <v-col cols="12" md="4">
-                                        <p><b>CUENTA SIGEP:</b> {{' '+loan.lenders[0].sigep_status}}</p>
+                                        <p><b>CUENTA SIGEP:</b> {{' '+loan.lenders[0].sigep_status}}</p>{{loan.disbursement_date}}
                                       </v-col>
                                       <v-col cols="12" md="4">
                                         <v-text-field
@@ -872,6 +872,7 @@
                                           label="FECHA DE DESEMBOLSO"
                                           hint="Día/Mes/Año"
                                           type="date"
+                                          :value="loan.disbursement_date"
                                           :outlined="permissionSimpleSelected.includes('disbursement-loan') ? editable : false"
                                           :readonly="permissionSimpleSelected.includes('disbursement-loan') ? !editable : true"
                                         ></v-text-field>

@@ -115,6 +115,9 @@ class LoanPermissionSeeder extends Seeder
             ],[
                 'name' => 'update-values-commercial-rescue',
                 'display_name' => 'Actualizar valor comercial/rescate hipoteca'
+            ],[
+                'name' => 'change-disbursement-date',
+                'display_name' => 'Cambiar la fecha de desembolso'
             ]
         ];
         foreach ($permissions as $permission) {

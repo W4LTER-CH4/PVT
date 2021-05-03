@@ -105,7 +105,7 @@
             <td class="text-xs-left">{{ props.item.modality_loan }}</td>
             <td class="text-xs-left">{{ props.item.sub_modality_loan }}</td>
             <td class="text-xs-left">{{ props.item.amount_approved_loan }}</td>
-            <td class="text-xs-left">{{ props.item.amount_approved_loan }}</td>
+            <!--<td class="text-xs-left">{{ props.item.amount_approved_loan }}</td>-->
             <td class="text-xs-left">{{ props.item.quota_loan }}</td>
             <td class="text-xs-left">{{ props.item.state_type_affiliate}}</td>
             <td class="text-xs-left">{{ props.item.guarantor_loan_affiliate? 'SI':'NO' }}</td>
@@ -221,7 +221,7 @@ export default {
             { text: 'Modalidad',value:'modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Submodalidad',value:'sub_modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Monto Desembolsado',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
-            { text: 'Saldo Capital',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
+            //{ text: 'Saldo Capital',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},            
             { text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Garante?',value:'guarantor_loan_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},

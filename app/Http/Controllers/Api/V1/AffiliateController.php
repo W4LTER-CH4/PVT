@@ -656,10 +656,15 @@ class AffiliateController extends Controller
                 else
                 {
                     $affiliate->spouse = $affiliate->spouse;
+                    $affiliate->category = $affiliate->category;
+                    $affiliate->affiliate_state = $affiliate->affiliate_state;
+                    $own_affiliate = Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first();
+                    $own_affiliate->category = $own_affiliate->category;
+                    $own_affiliate->affiliate_state = $own_affiliate->affiliate_state;
                     return array(
                         "double_perception" => $sw,
                         "affiliate" => $affiliate,
-                        "own_affiliate" => Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first(),
+                        "own_affiliate" => $own_affiliate,
                         "guarantor" => false,
                         "active_guarantees_quantity"=> 0,
                         "guarantor_information"=> false,

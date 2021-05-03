@@ -221,6 +221,21 @@
           </template>
           <span>Editar amortización</span>
         </v-tooltip>-->
+          <v-tooltip bottom v-if="permissionSimpleSelected.includes('create-payment-loan')">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              small
+              v-on="on"
+              v-if="item.state.name!='Pagado'"
+              color="success"
+              :to="{ name: 'paymentAdd',  params: { hash: 'edit'},  query: { loan_payment: item.id}}"
+            >
+              <v-icon>mdi-file-document-edit-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>Validar pago</span>
+        </v-tooltip>
 
           <v-tooltip
             bottom
