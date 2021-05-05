@@ -154,30 +154,35 @@ class LoanPaymentController extends Controller
                 {
                     //$loanPayment->loan = $loan/
                     $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
+                    $loanPayment->modality;
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 62 && $loanPayment->state_id == 5 || $loanPayment->procedure_modality_id == 62 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 63 && $loanPayment->state_id == 5 || $loanPayment->procedure_modality_id == 63 && $loanPayment->state_id == 6)//amortizacion automatica
                 {
                     //$loanPayment->loan = $loan;
                     $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
+                    $loanPayment->modality;
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 64 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 64 && $loanPayment->state_id == 7)// amortizacion por ajuste
                 {
                     //$loanPayment->loan = $loan;
                     $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
+                    $loanPayment->modality;
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 60 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 60 && $loanPayment->state_id == 7 || $loanPayment->procedure_modality_id == 61 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 61 && $loanPayment->state_id == 7)//amortizacion por fondo
                 {
                     //$loanPayment->loan = $loan;
                     $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
+                    $loanPayment->modality;
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 58 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 58 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 59 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 59 && $loanPayment->state_id == 7)//amortizacion por complemento
                 {
                     //$loanPayment->loan = $loan;
                     $loanPayment->state = LoanState::whereId($loanPayment->state_id);
+                    $loanPayment->modality;
                     $payments->push($loanPayment);
                 }
             }
