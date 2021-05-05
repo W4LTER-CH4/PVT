@@ -56,7 +56,9 @@
             absolute
             v-on="on"
             style="margin-left: 100px; margin-top: 20px"
-            :to="{ name: 'paymentAdd', params: { hash: 'new' }, query: { loan_id: $route.params.id }}">
+            :disabled="loan.state.name == 'Liquidado' ? true : false"
+            @click="createPayment()"
+          >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </template>
@@ -74,13 +76,14 @@
             <strong>Cuotas: </strong> {{ payments.length ? payments.length : ""}}<br />
           </v-col>
           <v-col md="4" class="ma-0 pa-0">
-            <strong> Desembolso: </strong>{{ loan.disbursement_date | date }}<br />
+            <strong>Desembolso: </strong>{{ loan.disbursement_date | date }}<br />
             <strong>Nro de comprobante contable: </strong>{{ loan.num_accounting_voucher }}<br />
             <strong>Tasa anual: </strong> {{ loan.intereses.annual_interest }}<br />
             <strong>Cuota fija mensual: </strong> {{ loan.estimated_quota }}<br />
           </v-col>
           <v-col md="4" class="ma-0 pa-0">
             <strong>Monto desembolsado: </strong>{{ loan.amount_approved | moneyString }}<br />
+            <strong>Saldo Capital: </strong>{{ loan.balance | moneyString }}<br />
             <strong>Intereses Corrientes Pendientes: </strong>{{(payments[payments.length - 1] ? payments[payments.length - 1].interest_accumulated : 0) | moneyString }}<br />
             <strong>Intereses Penales Pendientes: </strong>{{ payments[payments.length - 1] ? payments[payments.length - 1].penal_accumulated : 0 | moneyString }}
            </v-col>
@@ -378,7 +381,6 @@ export default {
 
   },
   mounted() {
-
     this.getPayments();
     this.docsLoans();
     this.getAmortizationType();
@@ -400,6 +402,18 @@ export default {
         console.log(e);
       } finally {
         this.loading = false;
+      }
+    },
+    createPayment(){
+      if(this.loan.state.name != 'Liquidado'){
+        if(this.loan.balance > 0){
+          this.$router.push({ name: 'paymentAdd', params: { hash: 'new' }, query: { loan_id: this.$route.params.id } })
+        }else{
+          this.toastr.error("El saldo es 0, no puede realizar mas pagos.")
+        }        
+      }
+      else {
+        this.toastr.error("El trámite tiene estado LIQUIDADO, no puede realizar mas pagos.")
       }
     },
     /*async deletePayment(id) {
