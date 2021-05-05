@@ -656,8 +656,8 @@ export default {
                 this.lenders_aux[i] =res4.data.full_name
                 //obtener las contribuciones para hipotecario de contrib_codebtor, i=0 es lender de ballots
                 this.lenders[i].payment_percentage=this.calculator_result.affiliates[i].payment_percentage
-                this.lenders[i].indebtedness_calculated=this.calculator_result.affiliates[i].indebtedness_calculated
-                this.lenders[i].quota_treat=this.calculator_result.affiliates[i].quota_calculated
+                this.lenders[i].indebtedness_calculated=this.calculator_result.affiliates[i].indebtnes_calculated
+                this.lenders[i].quota_treat=this.calculator_result.affiliates[i].quota_calculated_estimated
                 if(i == 0){
                 this.lenders[i].contributionable_type= this.contributionable_type
                 this.lenders[i].loan_contributions_adjust_ids=this.loan_contributions_adjust_ids

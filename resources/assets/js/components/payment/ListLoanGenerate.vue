@@ -8,207 +8,363 @@
               <v-toolbar-title>Préstamos</v-toolbar-title>
             </v-toolbar>
           </v-card-title>
-            <v-data-table
-                :headers="headers"
-                :items="loans"
-     
+        <v-btn icon  @click="excel()">
+            <v-icon color="green">
+                mdi-file-excel
+            </v-icon>
+        </v-btn>
+        <v-data-table
+          :headers="headers"
+          :items="loans"
+          :items-per-page="5"
+          class="elevation-1"
         >
-               <template v-slot:headers="props">
-           <tr>
-                <th v-for="(header,index) in props.headers" :key="index" class="text-xs-left">
-                    
-                        <v-flex >
-                            <v-tooltip bottom>
-                                <span slot="activator">{{header.text}}</span>
-                                <span >{{header.input}}</span>
-                            </v-tooltip>
-                            <v-menu  v-model="header.menu"
-                                    :close-on-content-click="false"
-                                    >
-                                    <v-btn
-                                        slot="activator"
-                                        icon
-                                        v-if="header.sortable!=false"
-                                    >
-                                    <v-icon  small :color="header.input!=''?'blue':'black'">fa-filter</v-icon>
-                                    </v-btn>
-                                    <v-card  v-if="header.type=='text'">
-                                        <v-text-field
-                                            outline
-                                            hide-details
-                                            v-model="header.input"
-                                            append-icon="search"
-                                            :label="`Buscar ${header.text}...`"
-                                            @keydown.enter="search()"
-                                     
-                                            @keyup.esc="header.menu=false"
-                                        ></v-text-field>
-                                    
-                                    </v-card>
-                                    <v-card  v-if="header.type=='date'">
-                                        
-                                        <v-list>
-                                            <v-list-tile avatar>
-                                                <v-list-tile-content>
-                                                    <v-menu
-                                                        
-                                                        :close-on-content-click="false"
-                                                        v-model="menu_date"
-                                                        :nudge-right="40"
-                                                        lazy
-                                                        transition="scale-transition"
-                                                        offset-y
-                                                        full-width
-                                                        max-width="290px"
-                                                        min-width="290px"
-                                                    >
-                                                    
-                                                    <v-text-field
-                                                        hide-details
-                                                        slot="activator"
-                                                        v-model="header.input"
-                                                        :label="`Buscar ${header.text}...`"
-                                                        readonly
-                                                    ></v-text-field>
-                                                    <v-date-picker v-model="header.input" no-title @input="menu_date = false"></v-date-picker>
-                                                
-                                                    </v-menu>
-                                                </v-list-tile-content>
-
-                                                <v-list-tile-avatar>
-                                            
-                                                <v-icon @click="search()">search</v-icon>
-                                                </v-list-tile-avatar>
-
-                                            </v-list-tile>
-                                            </v-list>
-
-                                    </v-card>
-                            </v-menu>
-                            <!-- <v-icon small @click="toggleOrder(header.value)" v-if="header.value == filterName ">{{pagination.descending==false?'arrow_upward':'arrow_downward'}}</v-icon> -->
-                        </v-flex>
-                </th>
-            </tr>
-        </template>
-       <template v-slot:item="props">
-            
-            <tr>
-            
-            <td class="text-xs-left">{{ props.item.code_loan }}</td>
-            <td class="text-xs-left">{{ props.item.identity_card_affiliate }}</td>
-            <td class="text-xs-left">{{ props.item.registration_affiliate }}</td>
-            <td class="text-xs-left">{{ props.item.first_name_affiliate }}</td>
-            <td class="text-xs-left">{{ props.item.second_name_affiliate }}</td>
-            <td class="text-xs-left">{{ props.item.last_name_affiliate }}</td>
-            <td class="text-xs-left">{{ props.item.mothers_last_name_affiliate }}</td>
-            <td class="text-xs-left">{{ props.item.surname_husband_affiliate }}</td>
-            <td class="text-xs-left">{{ props.item.modality_loan }}</td>
-            <td class="text-xs-left">{{ props.item.sub_modality_loan }}</td>
-            <td class="text-xs-left">{{ props.item.amount_approved_loan }}</td>
-            <!--<td class="text-xs-left">{{ props.item.amount_approved_loan }}</td>-->
-            <td class="text-xs-left">{{ props.item.quota_loan }}</td>
-            <td class="text-xs-left">{{ props.item.state_type_affiliate}}</td>
-            <td class="text-xs-left">{{ props.item.guarantor_loan_affiliate? 'SI':'NO' }}</td>
-            <td class="text-xs-left">{{ props.item.state_loan }}</td>
-            <td>
-       
-               <!-- <v-edit-dialog
-                    :return-value.sync="props.item.PresMeses"
-                    large
-                    cancel-text="Cancelar"
-                    save-text="Guardar"
-                    @save="updateLoan(props.item.IdPrestamo, {'PresMeses': props.item.PresMeses})"
-                    @cancel="cancelPrueba(props.item.IdPrestamo)"
-                > {{ props.item.PresMeses }}
-                    <v-text-field
-                        slot="input"
-                        v-model="props.item.PresMeses"
-                        single-line
-                        autofocus
-                    ></v-text-field>
-                </v-edit-dialog>
-            </td>
-            <td class="text-xs-left"> <a  v-bind:href="generate_link(props.item.IdPrestamo)"><v-icon>assignment</v-icon></a>
-                <v-btn icon @click="makePDF(props.item.IdPrestamo)"><v-icon color="info">insert_drive_file</v-icon></v-btn>-->
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  small
-                  v-on="on"
-                  color="warning"
-                  :to="{ name: 'flowAdd', params: { id: props.item.id_loan }}"
-                ><v-icon>mdi-eye</v-icon>
+          <template v-slot:[`header.code_loan`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.code_loan !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
                 </v-btn>
               </template>
-              <span>Ver trámite</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  small
-                  v-on="on"
-                  color="teal lighten-3"
-                  :to="{ name: 'flowAdd', params: { id: props.item.id_loan }, query:{ redirectTab: 6 }}"
-                ><v-icon>mdi-folder-multiple</v-icon>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.code_loan"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+            
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                    <template v-slot:[`header.identity_card_affiliate`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.identity_card_affiliate !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
                 </v-btn>
               </template>
-              <span>Kardex</span>
-            </v-tooltip>
-            <v-menu
-                offset-y
-                close-on-content-click
-                v-if="permissionSimpleSelected.includes('print-contract-loan') || permissionSimpleSelected.includes('print-payment-plan') || permissionSimpleSelected.includes('print-payment-kardex-loan') "
-              >
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    icon
-                    color="primary"
-                    dark
-                    v-on="on"
-                  ><v-icon>mdi-printer</v-icon>
-                  </v-btn>
-                </template>
-                <v-list dense class="py-0">
-                  <v-list-item
-                    v-for="doc in printDocs"
-                    :key="doc.id"
-                    @click="imprimir(doc.id, props.item.id_loan )"
-                  >
-                    <v-list-item-icon class="ma-0 py-0 pt-2">
-                      <v-icon 
-                        class="ma-0 py-0"
-                        small
-                        v-text="doc.icon"
-                        color="light-blue accent-4"
-                      ></v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title 
-                      class="ma-0 py-0 mt-n2">
-                      {{ doc.title }}
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>        
-            </td>
-        </tr>
-                 
-        </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.identity_card_affiliate"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                    <template v-slot:[`header.registration_affiliateF`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.registration_affiliateF !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.registration_affiliateF"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                    <template v-slot:[`header.last_name_affiliate`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.last_name_affiliate !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.last_name_affiliate"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                    <template v-slot:[`header.mothers_last_name_affiliate`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.mothers_last_name_affiliate !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.mothers_last_name_affiliate"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+  
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                    <template v-slot:[`header.first_name_affiliate`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.first_name_affiliate !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.first_name_affiliate"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                              <template v-slot:[`header.second_name_affiliate`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.second_name_affiliate !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.second_name_affiliate"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                              <template v-slot:[`header.surname_husband_affiliate`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.surname_husband_affiliate !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.surname_husband_affiliate"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                              <template v-slot:[`header.sub_modality_loan`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.sub_modality_loan !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.sub_modality_loan"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+                              <template v-slot:[`header.modality_loan`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.modality_loan !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.modality_loan"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+
+                 <template v-slot:[`header.state_type_affiliate`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.state_type_affiliate !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.state_type_affiliate"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+
+                     <template v-slot:[`header.state_loan`]="{ header }">
+            {{ header.text }}
+            <v-menu offset-y :close-on-content-click="false">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on">
+                  <v-icon small :color="searching.state_loan !='' ? 'red' : 'black'">
+                    mdi-filter
+                  </v-icon>
+                </v-btn>
+              </template>
+              <div>
+                <v-text-field
+                  dense
+                  v-model="searching.state_loan"
+                  type="text"
+                  :label="'Buscar ' + header.text"
+                  
+
+                  @keydown.enter="search()"
+                  hide-details
+                  single-line
+                ></v-text-field>
+
+              </div>
+            </v-menu>
+          </template>
+
         </v-data-table>
-
         </v-card>
       </v-form>
     </ValidationObserver>
   </v-container>
 </template>
 
-
 <script>
-export default {
-  name: "list-loans-generate",
-  data: () => ({
-      loans: [],
+  // Table info.
+  //import tableData from './sampleDataTable';
+  export default {
+data () {
+      return {
+        searching:{
+          code_loan: '',
+          identity_card_affiliate: '',
+          registration_affiliate: '',
+          last_name_affiliate: '',
+          mothers_last_name_affiliate: '',
+          first_name_affiliate: '',
+          second_name_affiliate: '',
+          surname_husband_affiliate: '',
+          sub_modality_loan: '',
+          modality_loan: '',
+          amount_approved_loan: '',
+          state_type_affiliate: '',
+          quota_loan: '',
+          state_loan: '',
+          guarantor_loan_affiliate: '',
+        },
+
               headers: [
             { text: 'Cód. Préstamo', value: 'code_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'CI', value: 'identity_card_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text']},
@@ -221,100 +377,108 @@ export default {
             { text: 'Modalidad',value:'modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Submodalidad',value:'sub_modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Monto Desembolsado',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
-            //{ text: 'Saldo Capital',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
+            { text: 'Saldo Capital',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},            
             { text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Garante?',value:'guarantor_loan_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Estado',value:'state_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Accion',value:'actions',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
         ],
-        amortizations: [],
-        loading: true,
-        last_page:1,
-        total:0,
-        from:0,
-        to:0,
-        page:1,
-        paginationRows: 10,
-        pagination_select:[10,20,30],
-        printDocs: []
-  }),
-    mounted()
-    {this.docsLoans()
+        loans: [],
+      }
+    },
+   computed: {
+
+  },
+      mounted()
+    {//this.docsLoans()
         this.search();
     },
-      computed:{
-      //permisos del selector global por rol
-    permissionSimpleSelected () {
-      return this.$store.getters.permissionSimpleSelected
-    }
-  },
-  methods: {
-
-        async search(){
-            try {
-                let res = await axios.get(`list_loan_generate` )
-                this.loans = res.data.data
-            } catch (e) {
-                console.log(e)
-            }
-        },
-        getParams(){
-            this.params={};
-            this.headers.forEach(element => {
-                params[element.value] = element.input.toUpperCase();
-            });
-            // params['sorted']=this.filterName;
-            // params['order']=this.pagination.descending==true?'asc':'desc';
-            params['page']=this.page;
-            params['pagination_rows']=this.paginationRows;
-            return params;
-        },
-    async imprimir(id, item)
-    {
-      try {
-        let res
-        if(id==1){
-          res = await axios.get(`loan/${item}/print/contract`)
-        }else if(id==2){
-          res = await axios.get(`loan/${item}/print/form`)
-        }else if(id==3) {
-          res = await axios.get(`loan/${item}/print/plan`)
-        }else {
-          res = await axios.get(`loan/${item}/print/kardex`)
-        } 
-        printJS({
-            printable: res.data.content,
-            type: res.data.type,
-            documentTitle: res.data.file_name,
-            base64: true
-        })  
-      } catch (e) {
-        this.toastr.error("Ocurrió un error en la impresión.")
-        console.log(e)
-      }      
+   methods: {
+    async search(){
+        try {
+            let res = await axios.get(`list_loan_generate`,{
+              params:{
+                code_loan: this.searching.code_loan,
+                identity_card_affiliate: this.searching.identity_card_affiliate,
+                registration_affiliate: this.searching.registration_affiliateF,
+                last_name_affiliate: this.searching.last_name_affiliate,
+                mothers_last_name_affiliate: this.searching.mothers_last_name_affiliate,
+                first_name_affiliate: this.searching.first_name_affiliate,
+                second_name_affiliate: this.searching.second_name_affiliate,
+                surname_husband_affiliate: this.searching.surname_husband_affiliate,
+                sub_modality_loan: this.searching.sub_modality_loan,
+                modality_loan: this.searching.modality_loan,
+                amount_approved_loan: this.searching.amount_approved_loan,
+                state_type_affiliate: this.searching.state_type_affiliate,
+                quota_loan: this.searching.quota_loan,
+                state_loan: this.searching.state_loan,
+                guarantor_loan_affiliate: this.searching.guarantor_loan_affiliate,
+                excel:false
+              }
+            } )
+            this.loans = res.data.data
+        } catch (e) {
+            console.log(e)
+        }
     },
-    docsLoans(){
-        let docs =[]    
-        if(this.permissionSimpleSelected.includes('print-contract-loan')){
-          docs.push(
-            { id: 1, title: 'Contrato', icon: 'mdi-file-document'},
-            { id: 2, title: 'Solicitud', icon: 'mdi-file'})
-        }
-        if(this.permissionSimpleSelected.includes('print-payment-plan')){
-          docs.push(
-            { id: 3, title: 'Plan de pagos', icon: 'mdi-cash'})
-        }    
-        if(this.permissionSimpleSelected.includes('print-payment-kardex-loan')){
-          docs.push(
-            { id: 4, title: 'Kardex', icon: 'mdi-view-list'})
-        }else{
-          console.log("Se ha producido un error durante la generación de la impresión")
-        }
-        this.printDocs=docs
-        console.log(this.printDocs)
-      },
 
+    async excel() {
+      await axios({
+        url: "/list_loan_generate",
+        method: "GET",
+        responseType: "blob", // important
+        headers: { Accept: "application/vnd.ms-excel" },
+        data: this.datos,
+        params:{
+          code_loan: this.searching.code_loan,
+          identity_card_affiliate: this.searching.identity_card_affiliate,
+          registration_affiliate: this.searching.registration_affiliateF,
+          last_name_affiliate: this.searching.last_name_affiliate,
+          mothers_last_name_affiliate: this.searching.mothers_last_name_affiliate,
+          first_name_affiliate: this.searching.first_name_affiliate,
+          second_name_affiliate: this.searching.second_name_affiliate,
+          surname_husband_affiliate: this.searching.surname_husband_affiliate,
+          sub_modality_loan: this.searching.sub_modality_loan,
+          modality_loan: this.searching.modality_loan,
+          amount_approved_loan: this.searching.amount_approved_loan,
+          state_type_affiliate: this.searching.state_type_affiliate,
+          quota_loan: this.searching.quota_loan,
+          state_loan: this.searching.state_loan,
+          guarantor_loan_affiliate: this.searching.guarantor_loan_affiliate,
+          excel:true
+        }
+      })
+        .then(response => {
+          console.log(response);
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "ReportePrestamo.xlsx");
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    deleteSearchC(){
+      this.searching.code_loan = ''
+        if(this.searching.code_loan == '')
+          this.search()
+    },
+
+
+   }
   }
-};
 </script>
+<style scoped>
+.v-text-field{
+  background-color: white;
+  width: 200px;
+  padding:5px;
+  margin: 0px;
+  font-size: 0.8em;
+}
+</style>

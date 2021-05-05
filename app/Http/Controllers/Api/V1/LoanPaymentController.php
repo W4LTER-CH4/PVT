@@ -153,31 +153,31 @@ class LoanPaymentController extends Controller
                 if($loanPayment->procedure_modality_id == 55 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 56 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 57 && $loanPayment->state_id == 6)//amortizacion directa
                 {
                     //$loanPayment->loan = $loan/
-                    $loanPayment->state = LoanState::findOrFail($loanPayment->state_id)->first();
+                    $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 62 && $loanPayment->state_id == 5 || $loanPayment->procedure_modality_id == 62 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 63 && $loanPayment->state_id == 5 || $loanPayment->procedure_modality_id == 63 && $loanPayment->state_id == 6)//amortizacion automatica
                 {
                     //$loanPayment->loan = $loan;
-                    $loanPayment->state = LoanState::findOrFail($loanPayment->state_id)->first();
+                    $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 64 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 64 && $loanPayment->state_id == 7)// amortizacion por ajuste
                 {
                     //$loanPayment->loan = $loan;
-                    $loanPayment->state = LoanState::findOrFail($loanPayment->state_id)->first();
+                    $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 60 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 60 && $loanPayment->state_id == 7 || $loanPayment->procedure_modality_id == 61 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 61 && $loanPayment->state_id == 7)//amortizacion por fondo
                 {
                     //$loanPayment->loan = $loan;
-                    $loanPayment->state = LoanState::findOrFail($loanPayment->state_id)->first();
+                    $loanPayment->state = LoanState::whereId($loanPayment->state_id)->first();
                     $payments->push($loanPayment);
                 }
                 if($loanPayment->procedure_modality_id == 58 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 58 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 59 && $loanPayment->state_id == 6 || $loanPayment->procedure_modality_id == 59 && $loanPayment->state_id == 7)//amortizacion por complemento
                 {
                     //$loanPayment->loan = $loan;
-                    $loanPayment->state = LoanState::findOrFail($loanPayment->state_id);
+                    $loanPayment->state = LoanState::whereId($loanPayment->state_id);
                     $payments->push($loanPayment);
                 }
             }

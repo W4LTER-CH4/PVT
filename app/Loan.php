@@ -143,6 +143,15 @@ class Loan extends Model
     {
         return $this->belongsToMany(ProcedureDocument::class, 'loan_submitted_documents', 'loan_id')->withPivot('reception_date', 'comment', 'is_valid');
     }
+    public function documents_modality()
+    {     
+        $ids= $this->submitted_documents->pluck('id');
+        $documents=collect();
+        foreach($ids as $id){
+           $documents->push(ProcedureDocument::where('procedure_documents.id',$id)->leftJoin('procedure_requirements as req','req.procedure_document_id','=','procedure_documents.id')->select('procedure_documents.name','req.number')->first());
+        }  
+         return (object)$documents->sortBy('number');
+    }
 
     public function getSubmittedDocumentsListAttribute()
     {
@@ -259,8 +268,10 @@ class Loan extends Model
     public function getBalanceAttribute()
     {
         $balance = $this->amount_approved;
+        $loan_states = LoanState::where('name', 'Pagado')->orWhere('name', 'Pendiente por confirmar')->get();
         if ($this->payments()->count() > 0) {
-            $balance -= $this->payments()->whereIn('state_id', [6,7])->sum('capital_payment');
+            $balance -= $this->payments()->where('state_id', $loan_states->first()->id)->sum('capital_payment');
+            $balance -= $this->payments()->where('state_id', $loan_states->last()->id)->sum('capital_payment');
         }
         return Util::round($balance);
     }
@@ -272,7 +283,8 @@ class Loan extends Model
 
     public function getLastPaymentValidatedAttribute()
     {
-        return $this->payments()->where('state_id', 6)->orWhere('state_id',7)->latest()->first();
+        $loan_states = LoanState::where('name', 'Pagado')->orWhere('name', 'Pendiente por confirmar')->get();
+        return $this->payments()->where('state_id', $loan_states->first()->id)->orWhere('state_id',$loan_states->last()->id)->latest()->first();
     }
 
     public function getObservedAttribute()
@@ -328,7 +340,7 @@ class Loan extends Model
             } else {
                 $quota->estimated_date = Carbon::parse($estimated_date)->toDateString();
             }
-            $quota->previous_balance = $this->balance;
+            $quota->previous_balance = Util::round($this->balance);
             $quota->previous_payment_date = $next_payment->previous_payment_date;
             $quota->quota_number = $this->balance > 0 ? $next_payment->quota : null;
             $interest = $this->interest;
@@ -345,8 +357,16 @@ class Loan extends Model
             //calculo en caso de primera cuota
 
             $date_ini = CarbonImmutable::parse($this->disbursement_date);
+            if($date_ini->day >= LoanGlobalParameter::latest()->first()->offset_interest_day)
+                $date_pay = $date_ini->endOfMonth()->format('Y-m-d');
+            else
+                $date_pay = $date_ini->addMonth()->endOfMonth()->format('Y-m-d');
             $date_compare = CarbonImmutable::parse($date_ini->addMonth()->endOfMonth())->format('Y-m-d');
-            if($date_compare >= $quota->estimated_date && $date_ini->format('d') > LoanGlobalParameter::latest()->first()->offset_interest_day && ProcedureModality::where('id', $procedure_modality_id)->where('name', ' not like', '%Introducir%')->first()){
+            if(!$this->last_payment_validated && $estimated_date = $date_pay){
+                $quota->paid_days->current +=1;
+                $quota->estimated_days->current +=1;
+                $quota->paid_days->current_generated = Util::round(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
+                $quota->estimated_days->current_generated = Util::round(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
                 $date_fin = CarbonImmutable::parse($date_ini->endOfMonth());
                 $rest_days_of_month = $date_fin->diffInDays($date_ini);
                 $partial_amount = ($quota->balance * $interest->daily_current_interest * $rest_days_of_month);
@@ -395,7 +415,6 @@ class Loan extends Model
 
         if($quota->estimated_days->penal >= $grace_period){
             $quota->penal_payment = Util::round($quota->balance * $interest->daily_penal_interest * $quota->paid_days->penal);
-
             if($quota->penal_payment >= 0){
                 if($amount >= $quota->penal_payment){
                     $amount = $amount - $quota->penal_payment;
@@ -433,13 +452,24 @@ class Loan extends Model
             $quota->capital_payment = $quota->balance;
         }
         else{
-            if($amount >= $this->balance){
+            if($this->regular_payment() && $this->payments->count()+1 == $this->loan_term){
                 $quota->capital_payment = Util::round($this->balance);
             }
-            else
-                $quota->capital_payment = Util::round($amount);
+            else{
+                if($amount >= $this->balance){
+                    $quota->capital_payment = Util::round($this->balance);
+                }
+                else
+                    $quota->capital_payment = Util::round($amount);
+            }
         }
-             
+                //calculo de la ultima cuota, solo si fue regular en los pagos
+
+        /*if($this->regular_payment() && $this->payments->count()+1 == $this->loan_term){
+            $amount = $this->balance + $quota->estimated_days;
+            $quota->est += $quota->next_balance;
+            $quota->next_balance = 0;
+        }*/
         // Calcular monto total de la cuota
 
         if ($quota->balance == $quota->capital_payment) {
@@ -465,10 +495,10 @@ class Loan extends Model
 
         //validacion pago excesivo
         
-        if($total_amount == 0)
+        /*if($total_amount == 0)
             $quota->excesive_payment = 0;
         else
-            $quota->excesive_payment = Util::round($total_amount - $quota->estimated_quota);
+            $quota->excesive_payment = Util::round($total_amount - $quota->estimated_quota);*/
 
         //$total_amount = $quota->penal_accumulated + $quota->interest_accumulated + $loan->balance + $quota->interest_remaining + $quota->penal_remaining;
 
@@ -879,6 +909,25 @@ class Loan extends Model
            }
        }
        return  $date_cut_refinancing;
+    }
 
+    //Verifica si los pagos realizados fueron regulares y sin mora
+    public function regular_payment()
+    {
+        $loan_payments = $this->payments;
+        $quota_number = 1;
+        $sw = false;
+        foreach($loan_payments as $payments){
+            if($quota_number == 1 && $payments->estimated_quota >= $this->estimated_quota)
+                $sw = true;
+            else{
+                if($payments->estimated_quota == $this->estimated_quota)
+                    $sw = true;
+                else
+                    break;
+            }
+            $quota_number++;
+        }
+        return $sw;
     }
 }
