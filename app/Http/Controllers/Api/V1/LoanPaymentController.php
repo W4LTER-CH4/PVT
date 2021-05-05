@@ -300,6 +300,11 @@ class LoanPaymentController extends Controller
                 $payment->voucher_number = $request->input('voucher_number', null);
                 $voucher = $loanPayment->voucher_treasury()->create($payment->toArray());
                 $loanPayment->update(['state_id' => $Pagado,'user_id' => $payment->user_id]);
+                if($loanPayment->loan->verify_balance() == 0)
+                {
+                    $loan = Loan::whereId($loanPayment->loan_id);
+                    $loan->update(['state_id' => $Pagado]);
+                }
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollback();
@@ -581,7 +586,9 @@ class LoanPaymentController extends Controller
     */
     public function get_voucher(LoanPayment $loan_payment)
     {
-        if ($loan_payment->voucher_treasury) return $loan_payment->voucher_treasury;
+        if ($loan_payment->voucher_treasury){
+            return $loan_payment->voucher_treasury;
+        }
         abort(403, 'No existe el registro de pago');
     }
 

@@ -41,7 +41,7 @@
                 <td>Matricula</td>
             </tr>
             <tr>
-                <td class="data-row py-5">{{ Carbon::parse($loan->disbursement_date)->format('d/m/y')}}</td>
+                <td class="data-row py-5">{{ Carbon::parse($loan->disbursement_date)->toDateTimeString()}}</td>
                 <td class="data-row py-5">{{ $lender->title }} {{ $lender->full_name }}  {{ $is_dead?  '' : $lender->affiliate_state->affiliate_state_type->name}} </td>
                 <td class="data-row py-5">{{ $lender->identity_card_ext }}</td>
                 <td class="data-row py-5">{{ $lender->registration }}</td>      

@@ -208,7 +208,7 @@ class LoanController extends Controller
     * @bodyParam return_contract_date string Fecha de devolución del contrato del afiliado. Example: 2021-04-07
     * @bodyParam lenders array required Lista de afiliados Titular(es) del préstamo.
     * @bodyParam lenders[0].affiliate_id integer required ID del afiliado. Example: 47461
-    * @bodyParam lenders[0].payment_percentage integer required ID del afiliado. Example: 50
+    * @bodyParam lenders[0].payment_percentage numeric required porcentage de pago del afiliado. Example: 50.6
     * @bodyParam lenders[0].payable_liquid_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam lenders[0].bonus_calculated integer required ID del afiliado. Example: 300
     * @bodyParam lenders[0].quota_previous numeric required ID del afiliado. Example: 514.6
@@ -219,7 +219,7 @@ class LoanController extends Controller
     * @bodyParam lenders[0].contributionable_type enum required  Nombre de la tabla de contribuciones . Example: contributions
     * @bodyParam lenders[0].loan_contributions_adjust_ids array required Ids de los ajustes de la(s) contribución(s). Example: [1,2]
     * @bodyParam lenders[1].affiliate_id integer required ID del afiliado. Example: 22773
-    * @bodyParam lenders[1].payment_percentage integer required ID del afiliado. Example: 50
+    * @bodyParam lenders[1].payment_percentage numeric required porcentage de pago del afiliado. Example: 50.6
     * @bodyParam lenders[1].payable_liquid_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam lenders[1].bonus_calculated integer required ID del afiliado. Example: 300
     * @bodyParam lenders[1].quota_previous numeric required ID del afiliado. Example: 514.6
@@ -231,7 +231,7 @@ class LoanController extends Controller
     * @bodyParam lenders[1].loan_contributions_adjust_ids array required Ids de los ajustes de la(s) contribución(s). Example: [3]
     * @bodyParam guarantors array Lista de afiliados Garante(es) del préstamo.
     * @bodyParam guarantors[0].affiliate_id integer required ID del afiliado. Example: 51925
-    * @bodyParam guarantors[0].payment_percentage integer required ID del afiliado. Example: 50
+    * @bodyParam guarantors[0].payment_percentage numeric required porcentage de pago del afiliado. Example: 50.6
     * @bodyParam guarantors[0].payable_liquid_calculated numeric required ID del afiliado. Example: 2000
     * @bodyParam guarantors[0].bonus_calculated integer required ID del afiliado. Example: 300
     * @bodyParam guarantors[0].indebtedness_calculated numeric required ID del afiliado. Example: 34
@@ -377,7 +377,7 @@ class LoanController extends Controller
     * @bodyParam return_contract_date string Fecha de devolución del contrato del afiliado. Example: 2021-04-07
     * @bodyParam lenders array Lista de afiliados Titular(es) del préstamo.
     * @bodyParam lenders[0].affiliate_id integer ID del afiliado.Example: 47461
-    * @bodyParam lenders[0].payment_percentage integer ID del afiliado. Example: 50
+    * @bodyParam lenders[0].payment_percentage numeric porcentage de pago del afiliado. Example: 50.6
     * @bodyParam lenders[0].payable_liquid_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam lenders[0].bonus_calculated integer ID del afiliado. Example: 300
     * @bodyParam lenders[0].quota_previous numeric ID del afiliado. Example: 514.6
@@ -389,7 +389,7 @@ class LoanController extends Controller
     * @bodyParam lenders[0].loan_contributions_adjust_ids array Ids de los ajustes de la(s) contribución(s). Example: [1,2]
     * @bodyParam lenders[0].quota_treat cuota del titular. Example: 2315.86
     * @bodyParam lenders[1].affiliate_id integer ID del afiliado. Example: 22773
-    * @bodyParam lenders[1].payment_percentage integer ID del afiliado. Example: 50
+    * @bodyParam lenders[1].payment_percentage numeric porcentage de pago del afiliado. Example: 50.6
     * @bodyParam lenders[1].payable_liquid_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam lenders[1].bonus_calculated integer ID del afiliado. Example: 300
     * @bodyParam lenders[1].quota_previous numeric ID del afiliado. Example: 514.6
@@ -402,7 +402,7 @@ class LoanController extends Controller
     * @bodyParam lenders[1].quota_treat cuota del titular. Example: 2315.86
     * @bodyParam guarantors array Lista de afiliados Garante(es) del préstamo.
     * @bodyParam guarantors[0].affiliate_id integer ID del afiliado. Example: 51925
-    * @bodyParam guarantors[0].payment_percentage integer ID del afiliado. Example: 50
+    * @bodyParam guarantors[0].payment_percentage numeric porcentage de pago del afiliado. Example: 50.6
     * @bodyParam guarantors[0].payable_liquid_calculated numeric ID del afiliado. Example: 2000
     * @bodyParam guarantors[0].bonus_calculated integer ID del afiliado. Example: 300
     * @bodyParam guarantors[0].quota_treat numeric  cuota del afiliado garante. Example: 514.6
@@ -420,7 +420,7 @@ class LoanController extends Controller
          if($request->date_signal == true || ($request->date_signal == false && $request->has('disbursement_date') && $request->disbursement_date != NULL)){
             $state_id = LoanState::whereName('Desembolsado')->first()->id;
             $request['state_id'] = $state_id;
-            $hour = Carbon::now()->hour;
+            /*$hour = Carbon::now()->hour;
             $minute = Carbon::now()->minute;
             $second = Carbon::now()->second;
             $date = Carbon::parse($request['disbursement_date']);
@@ -428,7 +428,7 @@ class LoanController extends Controller
             $date->addMinutes($minute);
             $date->addSeconds($second);
             $date = Carbon::parse($date);
-            $request['disbursement_date'] = $date;
+            $request['disbursement_date'] = $date;*/
         //si es refinanciamiento o reprogramacion colocar la etiqueta correspondiente al padre del préstamo   
             if($loan->parent_loan_id != null){
                 $user = User::whereUsername('admin')->first();
@@ -453,23 +453,25 @@ class LoanController extends Controller
                 }
             }
         }
-      if(Auth::user()->can('disbursement-loan')) {
+    if(Auth::user()->can('disbursement-loan')) {
         if($request->date_signal == true){
             $loan['disbursement_date'] = Carbon::now();
             $state_id = LoanState::whereName('Desembolsado')->first()->id;
             $loan['state_id'] = $state_id;
             $loan->save();
         }else{
-        if($request->has('disbursement_date') && $request->disbursement_date != NULL){
-            if(Auth::user()->can('change-disbursement-date')) {
-            $loan['disbursement_date'] = $request->disbursement_date;
-            $state_id = LoanState::whereName('Desembolsado')->first()->id;
-            $loan['state_id'] = $state_id;
-            $loan->save();
-            }  else return $message['validate'] = "El usuario no tiene los permisos necesarios para realizar el registro" ;
-        } else return $message['validate'] = "El campo fecha de desembolso es requerido para realizar el registro"; 
-        }   
+            if($request->date_signal == false){
+                if($request->has('disbursement_date') && $request->disbursement_date != NULL){
+                    if(Auth::user()->can('change-disbursement-date')) {
+                    $loan['disbursement_date'] = $request->disbursement_date;
+                    $state_id = LoanState::whereName('Desembolsado')->first()->id;
+                    $loan['state_id'] = $state_id;
+                    $loan->save();
+                    }  else return $message['validate'] = "El usuario no tiene los permisos necesarios para realizar el registro" ;
+                } 
+            }    
        } 
+    }
         $saved = $this->save_loan($request, $loan);
         return $saved->loan;   
     }
@@ -1059,9 +1061,6 @@ class LoanController extends Controller
         foreach ($loan->lenders as $lender) {
             $lenders[] = self::verify_spouse_disbursable($lender);         
         }
-        $ballots = collect();
-        $ballots->push($this->show_ballot_loan($loan->id));
-        $ballots = (object)$ballots->first();
         $data = [
            'header' => [
                'direction' => 'DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES',
@@ -1075,8 +1074,6 @@ class LoanController extends Controller
            'loan' => $loan,
            'lenders' => collect($lenders), 
            'Loan_type_title'=>$loan_type_title, 
-           'ballots'=>$ballots->ballot,
-           'adjusts'=>$ballots->adjusts,
            'estimated'=>$estimated
        ];
        $information_loan= $this->get_information_loan($loan);
