@@ -216,15 +216,20 @@ class Loan extends Model
     }
     public function payments_pendings_confirmations()
     {
-        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [7])->orderBy('quota_number', 'desc')->orderBy('created_at');
+        $state_id = LoanState::whereName('Pendiente por confirmar')->first()->id;
+        return $this->hasMany(LoanPayment::class)->whereIn('state_id', $state_id)->orderBy('quota_number', 'desc')->orderBy('created_at');
     }
     public function payment_pending_confirmation()//pago de pendiente por confirmacion para refin
     {
-        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [7])->orderBy('quota_number', 'desc')->orderBy('created_at')->first();
+        $state_id = LoanState::whereName('Pendiente por confirmar')->first()->id;
+        return $this->hasMany(LoanPayment::class)->whereIn('state_id', $state_id)->orderBy('quota_number', 'desc')->orderBy('created_at')->first();
     }
     public function paymentsKardex()
     {
-        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [5,6,7])->orderBy('quota_number', 'desc')->orderBy('created_at');
+        $id = LoanState::whereName('Pagado')->orWhere('name', 'Pendiente por confirmar')->get('id');
+        $ids = LoanState::whereName('Pendiente de Pago')->first()->id;
+        $modality = ProcedureModality::where('name', 'like', 'A.AUT.%')->get('id');
+        return $this->hasMany(LoanPayment::class)->whereIn('state_id', $id)->orWhere('state_id', $ids)->whereIn('procedure_modality_id', $modality)->orderBy('quota_number', 'desc')->orderBy('created_at');
     }
     //relacion uno a muchos
     public function loan_contribution_adjusts()
@@ -717,11 +722,13 @@ class Loan extends Model
                 }
                 if($affiliate_state_type == "Pasivo")
                 {
-                    if($affiliate->pension_entity->name != 'SENASIR')
-                    {
-                        $modality=ProcedureModality::whereShortened("LAR-AFP")->first();// Largo plazo Sector PAsivo
-                    }else{
-                        $modality=ProcedureModality::whereShortened("LAR-SEN")->first();// Largo plazo Sector PAsivo
+                    if((!$cpop_affiliate && !$cpop_sismu)){
+                        if($affiliate->pension_entity->name != 'SENASIR')
+                        {
+                            $modality=ProcedureModality::whereShortened("LAR-AFP")->first();// Largo plazo Sector PAsivo
+                        }else{
+                            $modality=ProcedureModality::whereShortened("LAR-SEN")->first();// Largo plazo Sector PAsivo
+                        }
                     }
                 }
             break;  
@@ -739,12 +746,13 @@ class Loan extends Model
                 }
                 else{
                     if($affiliate_state_type == "Pasivo"){
-
-                        if($affiliate->pension_entity->name != 'SENASIR')
-                        {
-                            $modality=ProcedureModality::whereShortened("REF-LAR-AFP")->first();// ref Largo plazo Sector Pasivo
-                        }else{
-                            $modality=ProcedureModality::whereShortened("REF-LAR-SEN")->first();// ref Largo plazo Sector Pasivo
+                        if((!$cpop_affiliate && !$cpop_sismu)){
+                            if($affiliate->pension_entity->name != 'SENASIR')
+                            {
+                                $modality=ProcedureModality::whereShortened("REF-LAR-AFP")->first();// ref Largo plazo Sector Pasivo
+                            }else{
+                                $modality=ProcedureModality::whereShortened("REF-LAR-SEN")->first();// ref Largo plazo Sector Pasivo
+                            }
                         }
                     }
                 }

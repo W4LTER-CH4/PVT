@@ -495,6 +495,8 @@
         category:{},
         affiliate_state:{}
       },
+      guarantees_sismu:[],
+      loans_sismu:[]
     },
     affiliate_id:null,
     spouse:{},
@@ -686,6 +688,7 @@ ver()
           this.guarantors[this.j].payment_percentage=this.simulator_guarantors.affiliates[this.j].payment_percentage
           this.guarantors[this.j].indebtedness_calculated=this.simulator_guarantors.affiliates[this.j].indebtedness_calculated
           this.guarantors[this.j].liquid_qualification_calculated=this.simulator_guarantors.affiliates[this.j].liquid_qualification_calculated
+          this.guarantors[this.j].quota_treat=this.simulator_guarantors.affiliates[this.j].quota_calculated
         }
       this.loan_detail.simulador=true
       } catch (e) {
@@ -756,13 +759,14 @@ ver()
               this.data_ballots_name=res.data.name_table_contribution
               this.data_ballots_state_affiliate=res.data.state_affiliate
               this.periodo=this.$moment(res.data.current_tiket).format('YYYY-MM-DD')
-              this.periodo_boletas=this.$moment(this.data_ballots[0].month_year).format('MMMM')
               this.valido=res.data.valid
               if(res.data.name_table_contribution=='contributions')
               {
               // this.toastr.error("afiliado que pertenece a contribution")
                 if(res.data.valid)
                 {
+                 this.periodo_boletas=this.$moment(this.data_ballots[0].month_year).format('MMMM')
+
                   this.editar=false
                   this.contribusion=true
                   this.comision=false
@@ -775,6 +779,9 @@ ver()
                   this.bonos[2] = this.data_ballots[0].position_bonus,
                   this.bonos[3] = this.data_ballots[0].public_security_bonus
                 } else{
+
+                  this.periodo_boletas=this.$moment(res.data.current_tiket).format('MMMM')
+
                   this.editar=false
                   this.contribusion=true
                   this.comision=false
@@ -798,6 +805,7 @@ ver()
 
                 if(res.data.valid)
                 {
+                  this.periodo_boletas=this.$moment(this.data_ballots[0].month_year).format('MMMM')
                   if(this.data_ballots[0].rent==0 && this.data_ballots[0].dignity_rent==0){
                     this.editar=true
                     this.editarPasivo= true
@@ -822,6 +830,7 @@ ver()
                     }
                   }
                 } else{
+                  this.periodo_boletas=this.$moment(res.data.current_tiket).format('MMMM')
                   this.editar=true
                   this.show_ajuste=true
               //  this.payable_liquid[0] = this.data_ballots[0].rent
@@ -835,6 +844,7 @@ ver()
             else{
               if(res.data.name_table_contribution==null)
               {
+                this.periodo_boletas=this.$moment(res.data.current_tiket).format('MMMM')
                 this.comision=true
                 this.contribusion=false
                 this.pasivo=false
@@ -1044,10 +1054,10 @@ ver()
           }
           })
           this.data_ballots=res.data.data
-          this.periodo_boletas = this.$moment(this.data_ballots[0].month_year).format('MMMM')
-          this.toastr.error(this.$moment(this.data_ballots[0].month_year).format('MMMM'))
-          if(res.data.valid)
+           if(res.data.valid)
             {
+              this.periodo_boletas = this.$moment(this.data_ballots[0].month_year).format('MMMM')
+         //     this.toastr.error(this.$moment(this.data_ballots[0].month_year).format('MMMM'))
               this.editar=false
               this.payable_liquid[0] = this.data_ballots[0].payable_liquid,
               this.bonos[0] = this.data_ballots[0].border_bonus,
@@ -1055,6 +1065,8 @@ ver()
               this.bonos[2] = this.data_ballots[0].position_bonus,
               this.bonos[3] = this.data_ballots[0].public_security_bonus
             } else{
+              this.periodo_boletas = this.$moment(this.data_ballots.current_tiket).format('MMMM')
+             // this.toastr.error(this.$moment(this.data_ballots[0].current_tiket).format('MMMM'))
               this.editar=false
               this.retroceder_meses=true
               this.payable_liquid[0] = 0

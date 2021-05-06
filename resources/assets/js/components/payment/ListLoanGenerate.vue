@@ -333,6 +333,84 @@
               </div>
             </v-menu>
           </template>
+          
+
+    <template v-slot:[`item.modality_loan`]="{ item }">
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <span v-on="on">{{ item.modality_loan }}</span>
+        </template>
+        <span>{{ item.sub_modality_loan }}</span>
+      </v-tooltip>
+    </template>
+    <template v-slot:[`item.guarantor_loan_affiliate`]="{ item }">
+      {{ item.guarantor_loan_affiliate? 'SI':'NO'}}
+    </template>
+
+          <template v-slot:[`item.actions`]="{ item }">
+                        <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  small
+                  v-on="on"
+                  color="warning"
+                  :to="{ name: 'flowAdd', params: { id: item.id_loan }}"
+                ><v-icon>mdi-eye</v-icon>
+                </v-btn>
+              </template>
+              <span>Ver trámite</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  small
+                  v-on="on"
+                  color="teal lighten-3"
+                  :to="{ name: 'flowAdd', params: { id: item.id_loan }, query:{ redirectTab: 6 }}"
+                ><v-icon>mdi-folder-multiple</v-icon>
+                </v-btn>
+              </template>
+              <span>Kardex</span>
+            </v-tooltip>
+            <v-menu
+                offset-y
+                close-on-content-click
+                v-if="permissionSimpleSelected.includes('print-contract-loan') || permissionSimpleSelected.includes('print-payment-plan') || permissionSimpleSelected.includes('print-payment-kardex-loan') "
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    color="primary"
+                    dark
+                    v-on="on"
+                  ><v-icon>mdi-printer</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense class="py-0">
+                  <v-list-item
+                    v-for="doc in printDocs"
+                    :key="doc.id"
+                    @click="imprimir(doc.id, item.id_loan )"
+                  >
+                    <v-list-item-icon class="ma-0 py-0 pt-2">
+                      <v-icon 
+                        class="ma-0 py-0"
+                        small
+                        v-text="doc.icon"
+                        color="light-blue accent-4"
+                      ></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title 
+                      class="ma-0 py-0 mt-n2">
+                      {{ doc.title }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>        
+           
+          </template>
 
         </v-data-table>
         </v-card>
@@ -375,20 +453,24 @@ data () {
             { text: 'Ap. Materno',value:'mothers_last_name_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Ap. Casada',value:'surname_husband_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Modalidad',value:'modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
-            { text: 'Submodalidad',value:'sub_modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
+            //{ text: 'Submodalidad',value:'sub_modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Monto Desembolsado',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Saldo Capital',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
-            { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},            
+            { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Garante?',value:'guarantor_loan_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Estado',value:'state_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
             { text: 'Accion',value:'actions',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
         ],
         loans: [],
+         printDocs: []
       }
     },
    computed: {
-
+           //permisos del selector global por rol
+    permissionSimpleSelected () {
+      return this.$store.getters.permissionSimpleSelected
+    },
   },
       mounted()
     {//this.docsLoans()
@@ -468,7 +550,51 @@ data () {
         if(this.searching.code_loan == '')
           this.search()
     },
-
+    
+      async imprimir(id, item)
+    {
+      try {
+        let res
+        if(id==1){
+          res = await axios.get(`loan/${item}/print/contract`)
+        }else if(id==2){
+          res = await axios.get(`loan/${item}/print/form`)
+        }else if(id==3) {
+          res = await axios.get(`loan/${item}/print/plan`)
+        }else {
+          res = await axios.get(`loan/${item}/print/kardex`)
+        } 
+        printJS({
+            printable: res.data.content,
+            type: res.data.type,
+            documentTitle: res.data.file_name,
+            base64: true
+        })  
+      } catch (e) {
+        this.toastr.error("Ocurrió un error en la impresión.")
+        console.log(e)
+      }      
+    },
+    docsLoans(){
+        let docs =[]    
+        if(this.permissionSimpleSelected.includes('print-contract-loan')){
+          docs.push(
+            { id: 1, title: 'Contrato', icon: 'mdi-file-document'},
+            { id: 2, title: 'Solicitud', icon: 'mdi-file'})
+        }
+        if(this.permissionSimpleSelected.includes('print-payment-plan')){
+          docs.push(
+            { id: 3, title: 'Plan de pagos', icon: 'mdi-cash'})
+        }    
+        if(this.permissionSimpleSelected.includes('print-payment-kardex-loan')){
+          docs.push(
+            { id: 4, title: 'Kardex', icon: 'mdi-view-list'})
+        }else{
+          console.log("Se ha producido un error durante la generación de la impresión")
+        }
+        this.printDocs=docs
+        console.log(this.printDocs)
+      },
 
    }
   }

@@ -107,6 +107,14 @@
         <template v-slot:[`item.estimated_quota`]="{ item }">
           {{ item.estimated_quota | moneyString }}
         </template>
+        <template v-slot:[`item.voucher`]="{ item }">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <span v-on="on"> {{item.voucher}}</span>
+            </template>
+            <span>{{item.modality.shortened}}</span>
+          </v-tooltip>
+        </template>
         <template v-slot:[`item.amortization_type_id`]="{ item }">
           {{ searchAmortizationType(item.amortization_type_id) }}
         </template>

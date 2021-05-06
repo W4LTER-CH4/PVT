@@ -20,7 +20,8 @@
             "quota_loan": "0",
             "state_loan": "En Proceso",
             "guarantor_loan_affiliate": false,
-            "pension_entity_affiliate": null
+            "pension_entity_affiliate": null,
+            "balance_loan": 22143
         },
         {
             "id_loan": 10,
@@ -41,7 +42,8 @@
             "quota_loan": "0",
             "state_loan": "En Proceso",
             "guarantor_loan_affiliate": false,
-            "pension_entity_affiliate": null
+            "pension_entity_affiliate": null,
+            "balance_loan": 22123
         }
     ],
     "first_page_url": "http://192.168.2.242/api/v1/list_loan_generate?page=1",
