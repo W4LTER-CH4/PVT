@@ -21,6 +21,7 @@
             "state_loan": "En Proceso",
             "guarantor_loan_affiliate": false,
             "pension_entity_affiliate": null,
+            "disbursement_date_loan": "2021-05-06 11:51:47",
             "balance_loan": 22143
         },
         {
@@ -43,6 +44,7 @@
             "state_loan": "En Proceso",
             "guarantor_loan_affiliate": false,
             "pension_entity_affiliate": null,
+            "disbursement_date_loan": "2021-05-06 11:51:47",
             "balance_loan": 22123
         }
     ],

@@ -63,6 +63,17 @@ class AffiliateController extends Controller
         return $affiliate;
     }
 
+    public static function append_data_list_affiliate(Affiliate $affiliate, $with_category = false)
+    {
+        $affiliate->full_name = $affiliate->full_name;
+        $affiliate->civil_status_gender = $affiliate->civil_status_gender;
+        if($affiliate->affiliate_state !=null) $affiliate->dead = $affiliate->dead;
+        $affiliate->identity_card_ext = $affiliate->identity_card_ext;
+        if($affiliate->affiliate_state !=null) $affiliate->affiliate_state;
+        if ($with_category) $affiliate->category = $affiliate->category;
+        return $affiliate;
+    }
+
     /**
     * Lista de afiliados
     * Devuelve el listado con los datos paginados
@@ -78,7 +89,7 @@ class AffiliateController extends Controller
     {
         $data = Util::search_sort(new Affiliate(), $request);
         $data->getCollection()->transform(function ($affiliate) {
-            return self::append_data($affiliate, true);
+            return self::append_data_list_affiliate($affiliate, true);
         });
         return $data;
     }
@@ -699,7 +710,7 @@ class AffiliateController extends Controller
                 $validation = true;
         if($affiliate->spouse){
             if($validation){
-                if($affiliate->pension_entity->name == null){
+                if($affiliate->pension_entity != null && $affiliate->pension_entity->name != null){
                     if($affiliate->pension_entity->name == "SENASIR")
                     {
                             if($affiliate->affiliate_state != null)
@@ -707,10 +718,10 @@ class AffiliateController extends Controller
                                 if($affiliate->affiliate_state->name == "Fallecido")
                                 {
                                     if($affiliate->spouse->city_birth && $affiliate->spouse->city_identity_card && $affiliate->spouse->birth_date){
-                                        if($affiliate->spouse->address)
+                                       // if($affiliate->spouse->address)
                                             return $affiliate->test_guarantor($request->procedure_modality_id, $request->type);
-                                        else
-                                            $message['validate'] = "debe actualizar la dirección del afiliado";
+                                        //else
+                                          // $message['validate'] = "Debe actualizar la los datos del afiliado postulante a ser garante";
                                     }
                                     else{
                                         $message['validate'] = "Actualizar datos de la viuda";
@@ -725,7 +736,7 @@ class AffiliateController extends Controller
                             }
                     }
                     else{
-                        $message['validate'] = "No puede ser garante por el ente gestor";
+                        $message['validate'] = "No puede ser garante por el Ente Gestor ser: ".$affiliate->pension_entity->name;
                     }
                 }else{
                     $message['validate'] = "Actualize los datos de su Ente Gestor";

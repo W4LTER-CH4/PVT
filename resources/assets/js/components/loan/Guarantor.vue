@@ -21,7 +21,7 @@
                   <v-progress-linear></v-progress-linear>
                     <v-row>
                     <v-col cols="12" md="5" class="py-0">
-                      Nombre del Afiliado: {{options.filters.fullName(garantes_detalle_loan, true)}}
+                      Nombre del Afiliado: {{garantes_detalle_loan.first_name +' '+ garantes_detalle_loan.last_name }}
                     </v-col>
                     <v-col cols="12" md="2" class="py-0">
                       C.I.: {{garantes_detalle_loan.identity_card}}

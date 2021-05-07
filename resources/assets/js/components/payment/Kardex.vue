@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
-    <v-toolbar-title class="pb-2 ma-0 pa-0">KARDEX </v-toolbar-title>
-    <template v-if="loan.disbursement_date != null">
+    <v-toolbar-title class="pb-2 ma-0 pa-0">KARDEX</v-toolbar-title>
+    <template v-if="loan.disbursement_date != 'Fecha invalida'">
       <v-tooltip top v-if="permissionSimpleSelected.includes('print-payment-kardex-loan')">
         <template v-slot:activator="{ on }">
           <v-btn
@@ -76,7 +76,7 @@
             <strong>Cuotas: </strong> {{ payments.length ? payments.length : ""}}<br />
           </v-col>
           <v-col md="4" class="ma-0 pa-0">
-            <strong>Desembolso: </strong>{{ loan.disbursement_date | date }}<br />
+            <strong>Desembolso: </strong>{{ loan.disbursement_date }}<br />
             <strong>Nro de comprobante contable: </strong>{{ loan.num_accounting_voucher }}<br />
             <strong>Tasa anual: </strong> {{ loan.intereses.annual_interest }}<br />
             <strong>Cuota fija mensual: </strong> {{ loan.estimated_quota }}<br />
@@ -103,6 +103,21 @@
         </template>
         <template v-slot:[`item.created_at`]="{ item }">
           {{ item.created_at | date }}
+        </template>
+                <template v-slot:[`item.capital_payment`]="{ item }">
+          {{ item.capital_payment | moneyString }}
+        </template>
+                <template v-slot:[`item.interest_payment`]="{ item }">
+          {{ item.interest_payment | moneyString }}
+        </template>
+                <template v-slot:[`item.interest_remaining`]="{ item }">
+          {{ item.interest_remaining | moneyString }}
+        </template>
+                <template v-slot:[`item.penal_payment`]="{ item }">
+          {{ item.penal_payment | moneyString }}
+        </template>
+                <template v-slot:[`item.penal_remaining`]="{ item }">
+          {{ item.penal_remaining | moneyString }}
         </template>
         <template v-slot:[`item.estimated_quota`]="{ item }">
           {{ item.estimated_quota | moneyString }}
