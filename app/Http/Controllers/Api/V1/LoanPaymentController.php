@@ -635,7 +635,7 @@ class LoanPaymentController extends Controller
         //$payment_type = AmortizationType::get();
         $payment_type_desc = $payment_type->where('name', 'LIKE', 'Descuento automático')->first();
         $description = $request->description? $request->description : 'Por descuento automatico';
-        $procedure_modality = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();
+        $procedure_modality = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();//revisar
         $mestimated_date = $estimated_date->month;
         $yestimated_date = $estimated_date->year;
         $voucher = $request->voucher? $request->voucher : "AUT".'-'.'0'.$mestimated_date.'/'.$yestimated_date;
@@ -718,8 +718,8 @@ class LoanPaymentController extends Controller
         $pendientePago = LoanPaymentState::whereName('Pendiente de Pago')->first()->id;
         $pendienteConfirmation = LoanPaymentState::whereName('Pendiente por confirmar')->first()->id;
         $pagado = LoanPaymentState::whereName('Pagado')->first()->id;
-        $procedure_modality_automatic = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();
-        $procedure_modality_parcial = ProcedureModality::whereName('A.AUT. Parcial')->first();
+        $procedure_modality_automatic = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();//revisar
+        $procedure_modality_parcial = ProcedureModality::whereName('A.AUT. Parcial')->first();//revisar
         $estimated_date_importation = $request->estimated_date? Carbon::parse($request->estimated_date) : Carbon::now()->endOfMonth();
        // $payment_type = AmortizationType::get();
         //$payment_type_desc = $payment_type->where('name', 'LIKE', 'Descuento automático')->first();
@@ -808,8 +808,8 @@ class LoanPaymentController extends Controller
         $array = Excel::toArray(new LoanPaymentImport, $file);
         $pendientePago = LoanPaymentState::whereName('Pendiente de Pago')->first()->id;
         $pagado = LoanPaymentState::whereName('Pagado')->first()->id;
-        $procedure_modality_automatic = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();
-        $procedure_modality_parcial = ProcedureModality::whereName('A.AUT. Parcial')->first();
+        $procedure_modality_automatic = ProcedureModality::whereName('A.AUT. Cuota pactada')->first();//revisar
+        $procedure_modality_parcial = ProcedureModality::whereName('A.AUT. Parcial')->first();//revisar
         $estimated_date_importation = $request->estimated_date? Carbon::parse($request->estimated_date) : Carbon::now()->endOfMonth();
         $mestimated_date = $estimated_date_importation->month;
         $yestimated_date = $estimated_date_importation->year;
@@ -1229,7 +1229,7 @@ class LoanPaymentController extends Controller
         $list_loan = DB::table('loan_payments')
                 ->join('procedure_modalities','loan_payments.procedure_modality_id', '=', 'procedure_modalities.id')
                 ->join('procedure_types','procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
-                ->join('loan_states','loan_payments.state_id', '=', 'loan_states.id')
+                ->join('loan_payment_states','loan_payments.state_id', '=', 'loan_payment_states.id')
                 ->join('affiliates','loan_payments.affiliate_id', '=', 'affiliates.id')
                 ->join('affiliate_states','affiliates.affiliate_state_id', '=', 'affiliate_states.id')
                 ->join('affiliate_state_types','affiliate_states.affiliate_state_type_id', '=', 'affiliate_state_types.id')
@@ -1241,7 +1241,7 @@ class LoanPaymentController extends Controller
                 ->select('loans.id as id_loan','loans.code as code_loan','loans.disbursement_date as disbursement_date_loan','affiliate_state_types.name as state_type_affiliate','affiliate_states.name as state_affiliate',
                 'affiliates.id as id_affiliate','affiliates.identity_card as identity_card_affiliate','affiliates.registration as registration_affiliate','affiliates.last_name as last_name_affiliate','affiliates.mothers_last_name as mothers_last_name_affiliate',
                 'affiliates.first_name as first_name_affiliate','affiliates.second_name as second_name_affiliate','affiliates.surname_husband as surname_husband_affiliate','pension_entities.name as pension_entity_affiliate','loan_payments.code as code_payment','loan_payments.estimated_date as estimated_date_payment','loan_payments.estimated_quota as estimated_quota_payment','loan_payments.voucher as voucher_payment',
-                'procedure_modalities.name as sub_modality_payment','procedure_types.name as modality_payment','loan_states.name as state_payment')
+                'procedure_modalities.name as sub_modality_payment','procedure_types.name as modality_payment','loan_payment_states.name as state_payment')
                 ->orderBy('loan_payments.code', $order_loan)
                 ->get();
       
@@ -1283,7 +1283,7 @@ class LoanPaymentController extends Controller
         $list_loan = DB::table('loan_payments')
                 ->join('procedure_modalities','loan_payments.procedure_modality_id', '=', 'procedure_modalities.id')
                 ->join('procedure_types','procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
-                ->join('loan_states','loan_payments.state_id', '=', 'loan_states.id')
+                ->join('loan_payment_states','loan_payments.state_id', '=', 'loan_payment_states.id')
                 ->join('affiliates','loan_payments.affiliate_id', '=', 'affiliates.id')
                 ->join('affiliate_states','affiliates.affiliate_state_id', '=', 'affiliate_states.id')
                 ->join('affiliate_state_types','affiliate_states.affiliate_state_type_id', '=', 'affiliate_state_types.id')
@@ -1295,7 +1295,7 @@ class LoanPaymentController extends Controller
                 ->select('loans.id as id_loan','loans.code as code_loan','loans.disbursement_date as disbursement_date_loan','affiliate_state_types.name as state_type_affiliate','affiliate_states.name as state_affiliate',
                 'affiliates.id as id_affiliate','affiliates.identity_card as identity_card_affiliate','affiliates.registration as registration_affiliate','affiliates.last_name as last_name_affiliate','affiliates.mothers_last_name as mothers_last_name_affiliate',
                 'affiliates.first_name as first_name_affiliate','affiliates.second_name as second_name_affiliate','affiliates.surname_husband as surname_husband_affiliate','pension_entities.name as pension_entity_affiliate','loan_payments.code as code_payment','loan_payments.estimated_date as estimated_date_payment','loan_payments.estimated_quota as estimated_quota_payment','loan_payments.voucher as voucher_payment',
-                'procedure_modalities.name as sub_modality_payment','procedure_types.name as modality_payment','loan_states.name as state_payment')
+                'procedure_modalities.name as sub_modality_payment','procedure_types.name as modality_payment','loan_payment_states.name as state_payment')
                 ->orderBy('loan_payments.code', $order_loan)
                 ->paginate($pagination_rows);
            return $list_loan;
