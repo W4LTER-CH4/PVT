@@ -38,7 +38,7 @@ class LoanPayment extends Model
         'paid_by',
         'role_id',
         'affiliate_id',
-        'amortization_type_id',
+        //'amortization_type_id',
         'validated',
         'description',
         'user_id'
@@ -61,15 +61,15 @@ class LoanPayment extends Model
         return $this->belongsTo(Loan::class);
     }
 
-    public function payment_type()
+    /*public function payment_type()
     {
         return $this->belongsTo(PaymentType::class);
-    }
+    }*7
 
-    public function amortization_type()
+    /*public function amortization_type()
     {
         return $this->belongsTo(AmortizationType::class);
-    }
+    }*/
 
     
     public function voucher_treasury()
@@ -182,7 +182,7 @@ class LoanPayment extends Model
 
     public function state()
     {
-      return $this->belongsTo(LoanState::class, 'state_id','id');
+      return $this->belongsTo(LoanPaymentState::class, 'state_id','id');
     }
 
     public function records()
@@ -194,11 +194,11 @@ class LoanPayment extends Model
         return $this->belongsTo(Affiliate::class);
     }
 
-    public static function registry_payment(Loan $loan, $estimated_date, $description, $procedure_modality, $voucher, $paid_by, $payment_type, $percentage_quota, $affiliate_id, $state_id = null, $validated_payment = false)
+    public static function registry_payment(Loan $loan, $estimated_date, $description, $procedure_modality, $voucher, $paid_by, $percentage_quota, $affiliate_id, $state_id = null, $validated_payment = false)
     {
         $payment = $loan->next_payment2($affiliate_id, $estimated_date, $paid_by, $procedure_modality, $percentage_quota); //$percentage_quota
         $payment->description = $description;
-        if($state_id == null) $payment->state_id = LoanState::whereName('Pendiente de Pago')->first()->id;
+        if($state_id == null) $payment->state_id = LoanPaymentState::whereName('Pendiente de Pago')->first()->id;
         if($state_id !== null)$payment->state_id = $state_id;
         $payment->role_id = Role::whereName('PRE-cobranzas')->first()->id;
         $payment->procedure_modality_id = $procedure_modality;
@@ -207,7 +207,7 @@ class LoanPayment extends Model
         $payment->affiliate_id = $affiliate_id;
         $payment->voucher = $voucher;
         $payment->paid_by = $paid_by;
-        $payment->amortization_type_id = $payment_type->id;
+        //$payment->amortization_type_id = $payment_type->id;
         $loan_payment = $loan->payments()->create($payment->toArray());
         return $loan_payment;
     }

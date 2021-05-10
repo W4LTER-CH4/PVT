@@ -18,9 +18,6 @@ class LoanStateSeeder extends Seeder
             ['name' => 'Anulado', 'description' => 'Tramite del prestamo Anulado' ],
             ['name' => 'Desembolsado', 'description' => 'Dinero Desembolsado' ],
             ['name' => 'Liquidado', 'description' => 'Pago de la deuda en su totalidad' ],
-            ['name' => 'Pendiente de Pago', 'description' => 'Registro de pago pendiente' ],
-            ['name' => 'Pagado', 'description' => 'Registro de pago finalizado' ],
-            ['name' => 'Pendiente por confirmar', 'description' => 'Registro de pendiente por confirmar' ],
         ];
         foreach ($states as $state) {
             LoanState::firstOrCreate($state);

@@ -15,6 +15,7 @@ use App\User;
 use App\Loan;
 use App\Tag;
 use App\LoanState;
+use App\LoanPaymentState;
 use App\RecordType;
 use App\ProcedureDocument;
 use App\ProcedureModality;
@@ -1155,7 +1156,6 @@ class LoanController extends Controller
 	* @bodyParam estimated_quota float Monto para el cálculo de los días de interés pagados. Example: 600
     * @bodyParam description string Texto de descripción. Example: Penalizacion regularizada
     * @bodyParam voucher string Comprobante de pago GAR-ABV o D-10/20 o CONT-123. Example: CONT-123
-    * @bodyParam amortization_type_id integer required ID del tipo de pago. Example: 1
     * @bodyParam affiliate_id integer required ID del afiliado. Example: 57950
     * @bodyParam paid_by enum required Pago realizado por Titular(T) o Garante(G). Example: T
     * @bodyParam procedure_modality_id integer required ID de la modalidad de amortización. Example: 53
@@ -1170,9 +1170,9 @@ class LoanController extends Controller
             $payment = $loan->next_payment2($request->input('affiliate_id'), $request->input('estimated_date', null), $request->input('paid_by'), $request->input('procedure_modality_id'), $request->input('estimated_quota', null), $request->input('adjust'));
             $payment->description = $request->input('description', null);
             if($request->state)
-                $payment->state_id = LoanState::whereName('Pendiente por confirmar')->first()->id;
+                $payment->state_id = LoanPaymentState::whereName('Pendiente por confirmar')->first()->id;
             else
-                $payment->state_id = LoanState::whereName('Pendiente de Pago')->first()->id;
+                $payment->state_id = LoanPaymentState::whereName('Pendiente de Pago')->first()->id;
             $payment->role_id = Role::whereName('PRE-cobranzas')->first()->id;
             if($request->has('procedure_modality_id')){
                 $modality = ProcedureModality::findOrFail($request->procedure_modality_id)->procedure_type;
@@ -1180,7 +1180,7 @@ class LoanController extends Controller
             }
             $payment->procedure_modality_id = $request->input('procedure_modality_id');
             $payment->voucher = $request->input('voucher', null);
-            $payment->amortization_type_id = $request->input('amortization_type_id');
+            //$payment->amortization_type_id = $request->input('amortization_type_id');
             $payment->affiliate_id = $request->input('affiliate_id');
             $payment->paid_by = $request->input('paid_by');
             if($request->has('user_id')){
