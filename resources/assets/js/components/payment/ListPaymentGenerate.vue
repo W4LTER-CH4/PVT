@@ -556,8 +556,8 @@
                 offset-y
                 close-on-content-click
                 v-if="permissionSimpleSelected.includes('print-contract-loan') || 
-                (permissionSimpleSelected.includes('print-payment-plan') && item.state_loan == 'Desembolsado') || 
-                (permissionSimpleSelected.includes('print-payment-kardex-loan') && item.state_loan == 'Desembolsado')"
+                (permissionSimpleSelected.includes('print-payment-plan') && item.state_loan == 'Vigente') || 
+                (permissionSimpleSelected.includes('print-payment-kardex-loan') && item.state_loan == 'Vigente')"
               >
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -635,7 +635,7 @@ data () {
 
           headers: [
             { text: 'Cód. Préstamo', value: 'code_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-            { text: 'Fecha Desembolsado',value:'disbursement_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+            { text: 'Fecha Desembolso',value:'disbursement_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
              { text: 'Cód. Pago', value: 'code_payment',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
              { text: 'Fecha Pago', value: 'estimated_date_payment',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},

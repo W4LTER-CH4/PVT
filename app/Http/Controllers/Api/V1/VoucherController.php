@@ -67,7 +67,6 @@ class VoucherController extends Controller
     * Editar registro de cobro
     * Edita el Pago realizado.
     * @urlParam voucher required ID del registro de pago. Example: 2
-    * @bodyParam payment_type_id integer required ID de tipo de pago. Example: 2
     * @bodyParam voucher_type_id integer required ID de tipo de voucher. Example: 1
     * @bodyParam voucher_number integer número de voucher. Example: 12354121
 	* @bodyParam description string Texto de descripción. Example: Penalizacion regularizada
@@ -77,7 +76,7 @@ class VoucherController extends Controller
     public function update(VoucherForm $request, Voucher $voucher)
     {
         if (Auth::user()->can('update-payment')) {
-            $update = $request->only('voucher_type_id', 'description', 'voucher_number','payment_type_id');
+            $update = $request->only('voucher_type_id', 'description', 'voucher_number');
         }
         $voucher->fill($update);
         $voucher->save();

@@ -486,7 +486,7 @@
               </template>
               <span>Ver trámite</span>
             </v-tooltip>
-            <v-tooltip bottom v-if="item.state_loan == 'Desembolsado'">
+            <v-tooltip bottom v-if="item.state_loan == 'Vigente'">
               <template v-slot:activator="{ on }">
                 <v-btn
                   icon
@@ -503,8 +503,8 @@
                 offset-y
                 close-on-content-click
                 v-if="permissionSimpleSelected.includes('print-contract-loan') || 
-                (permissionSimpleSelected.includes('print-payment-plan') && item.state_loan == 'Desembolsado') || 
-                (permissionSimpleSelected.includes('print-payment-kardex-loan') && item.state_loan == 'Desembolsado')"
+                (permissionSimpleSelected.includes('print-payment-plan') && item.state_loan == 'Vigente') || 
+                (permissionSimpleSelected.includes('print-payment-kardex-loan') && item.state_loan == 'Vigente')"
               >
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -581,7 +581,7 @@ data () {
             { text: 'Ap. Casada',value:'surname_husband_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Modalidad',value:'modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             //{ text: 'Submodalidad',value:'sub_modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text']},
-            { text: 'Fecha Desembolsado',value:'disbursement_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+            { text: 'Fecha Desembolso',value:'disbursement_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Monto Desembolsado',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Saldo Capital',value:'balance_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},

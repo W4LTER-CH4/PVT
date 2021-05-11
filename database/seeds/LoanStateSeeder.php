@@ -16,7 +16,7 @@ class LoanStateSeeder extends Seeder
         $states = [
             ['name' => 'En Proceso', 'description' => 'Prestamo en tramite' ],
             ['name' => 'Anulado', 'description' => 'Tramite del prestamo Anulado' ],
-            ['name' => 'Desembolsado', 'description' => 'Dinero Desembolsado' ],
+            ['name' => 'Vigente', 'description' => 'Préstamo en vigencia' ],
             ['name' => 'Liquidado', 'description' => 'Pago de la deuda en su totalidad' ],
         ];
         foreach ($states as $state) {

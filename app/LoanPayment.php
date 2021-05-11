@@ -163,9 +163,9 @@ class LoanPayment extends Model
         $estimated_date = Carbon::now()->endOfMonth();
         if (!$latest_quota || $first) {
             $payment_date = $loan->disbursement_date ? $loan->disbursement_date : $loan->request_date;
-            //$payment_date = $loan->disbursement_date;
-            $payment_date = CarbonImmutable::parse($payment_date);
-            if ($estimated_date->lessThan($payment_date) || $first) $estimated_date = $payment_date->endOfMonth();
+            $payment_date = Carbon::parse($payment_date);
+            if ($estimated_date->lessThan($payment_date) || $first)
+                $estimated_date = $payment_date->endOfMonth();
             if ($payment_date->day >= LoanGlobalParameter::latest()->first()->offset_interest_day && $estimated_date->diffInMonths($payment_date) == 0) {
                 $estimated_date = $payment_date->startOfMonth()->addMonth()->endOfMonth();
             }
@@ -198,7 +198,7 @@ class LoanPayment extends Model
     {
         $payment = $loan->next_payment2($affiliate_id, $estimated_date, $paid_by, $procedure_modality, $percentage_quota); //$percentage_quota
         $payment->description = $description;
-        if($state_id == null) $payment->state_id = LoanPaymentState::whereName('Pendiente de Pago')->first()->id;
+        if($state_id == null) $payment->state_id = LoanPaymentState::whereName('Pendiente por confirmar')->first()->id;
         if($state_id !== null)$payment->state_id = $state_id;
         $payment->role_id = Role::whereName('PRE-cobranzas')->first()->id;
         $payment->procedure_modality_id = $procedure_modality;

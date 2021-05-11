@@ -178,7 +178,7 @@
                   </v-btn>
                 </template>
                 <div>
-                  <span>Imprimir plan de pagos</span>
+                  <span>Generar plan de pagos</span>
                 </div>
               </v-tooltip>
               <!--FORMULARIO PARA CALIFICACION-->

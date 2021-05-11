@@ -322,21 +322,15 @@ class Loan extends Model
         return Util::round($monthly_interest * $this->amount_approved / (1 - 1 / pow((1 + $monthly_interest), $this->loan_term)));
     }
 
-    public function next_payment2($affiliate_id, $estimated_date = null, $paid_by, $procedure_modality_id, $estimated_quota, $adjust = false)
+    public function next_payment2($affiliate_id, $estimated_date = null, $paid_by, $procedure_modality_id, $estimated_quota, $liquidate = false)
     {
         $grace_period = LoanGlobalParameter::latest()->first()->grace_period;
             $total_interests = 0;
             $partial_amount = 0;
             $total_amount = Util::round2($estimated_quota);$amount = 0;
-            $liquidate = false;//return ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%pactada')->first();
-            if(ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%pactada')->first())
-                $amount = $this->estimated_quota;
-            if(ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%Liquidar%')->first())
-            {
+            if($liquidate)
                 $amount = $this->balance;
-                $liquidate = true;
-            }
-            if(ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%Introducir%')->first() || ProcedureModality::where('id', $procedure_modality_id)->where('name', 'like', '%Parcial')->first())
+            else
                 $amount = $estimated_quota;
             $quota = new LoanPayment();
             $next_payment = LoanPayment::quota_date($this);
@@ -366,8 +360,7 @@ class Loan extends Model
                 $date_pay = $date_ini->endOfMonth()->format('Y-m-d');
             else
                 $date_pay = $date_ini->addMonth()->endOfMonth()->format('Y-m-d');
-            //$date_compare = CarbonImmutable::parse($date_ini->addMonth()->endOfMonth())->format('Y-m-d');
-            if(!$this->last_payment_validated && $estimated_date <= $date_pay){
+            if(!$this->last_payment_validated && CarbonImmutable::parse($quota->estimated_date)->format('Y-m-d') < CarbonImmutable::parse($date_pay)->format('Y-m-d') && CarbonImmutable::parse($quota->estimated_date) != CarbonImmutable::parse($this->disbursement_date)){
                 $quota->paid_days->current +=1;
                 $quota->estimated_days->current +=1;
                 $quota->paid_days->current_generated = Util::round2(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
