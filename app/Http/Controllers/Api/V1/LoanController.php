@@ -916,6 +916,7 @@ class LoanController extends Controller
     {
         $lenders = [];
         $is_dead = false;
+        $is_spouse = false;
         foreach ($loan->lenders as $lender) {
             array_push($lenders, self::verify_spouse_disbursable($lender)->disbursable);
             if($lender->dead) $is_dead = true;
@@ -959,7 +960,14 @@ class LoanController extends Controller
             ]);
             $lender->loans_balance = $loans;
         }
+        $guarantors = [];
         foreach ($loan->guarantors as $guarantor) {
+            $spouse = $guarantor->spouse;
+            if(isset($spouse)){
+                $guarantor = $spouse;
+                $is_spouse = true;
+                }
+                array_push($guarantors, $guarantor); 
             $persons->push([
                 'id' => $lender->id,
                 'full_name' => implode(' ', [$guarantor->title, $guarantor->full_name]),
@@ -981,7 +989,9 @@ class LoanController extends Controller
             'loan' => $loan,
             'lenders' => collect($lenders),
             'signers' => $persons,
-            'is_dead'=> $is_dead
+            'guarantors'=> collect($guarantors),
+            'is_dead'=> $is_dead,
+            'is_spouse'=> $is_spouse,
         ];
         $information_loan= $this->get_information_loan($loan);
         $file_name = implode('_', ['solicitud', 'prestamo', $loan->code]) . '.pdf';
