@@ -373,12 +373,12 @@
             </v-menu>
           </template>
 
-           <template v-slot:[`header.amortization_type_payment`]="{ header }">
+           <template v-slot:[`header.name_voucher_type`]="{ header }">
             {{ header.text }}<br>
             <v-menu offset-y :close-on-content-click="false">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn icon v-bind="attrs" v-on="on">
-                  <v-icon small :color="searching.amortization_type_payment !='' ? 'red' : 'black'">
+                  <v-icon small :color="searching.name_voucher_type !='' ? 'red' : 'black'">
                     mdi-filter
                   </v-icon>
                 </v-btn>
@@ -386,7 +386,7 @@
               <div>
                 <v-text-field
                   dense
-                  v-model="searching.amortization_type_payment"
+                  v-model="searching.name_voucher_type"
                   type="text"
                   :label="'Buscar ' + header.text"
                   @keydown.enter="search()"
@@ -658,7 +658,7 @@ data () {
           voucher_payment:'',
           modality_payment:'',
           sub_modality_shortened_payment:'',
-          amortization_type_payment:'',
+          name_voucher_type:'',
           state_payment:''
         },
 
@@ -687,7 +687,7 @@ data () {
               { text: 'Comprobante',value:'voucher_payment',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Modalida pago',value:'modality_payment',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Tpo de Amortización',value:'sub_modality_shortened_payment',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-            { text: 'Tipo de pago',value:'amortization_type_payment',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+            { text: 'Tipo de pago',value:'name_voucher_type',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Estado',value:'state_payment',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             //{ text: 'Estado',value:'state_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
             { text: 'Accion',value:'actions',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'], sortable: false,width: '10%'},
@@ -766,7 +766,7 @@ data () {
                 guarantor_loan_affiliate: this.searching.guarantor_loan_affiliate,*/
           voucher_payment:this.searching.voucher_payment,
           modality_payment:this.searching.modality_payment,
-          amortization_type_payment:this.searching.amortization_type_payment,
+          name_voucher_type:this.searching.name_voucher_type,
           state_payment:this.searching.state_payment,
               excel:false,
             page: this.options.page,
@@ -816,7 +816,7 @@ data () {
           voucher_payment:this.searching.voucher_payment,
           modality_payment:this.searching.modality_payment,
           sub_modality_shortened_payment: this.searching.sub_modality_shortened_payment,
-          amortization_type_payment:this.searching.amortization_type_payment,
+          name_voucher_type:this.searching.name_voucher_type,
           state_payment:this.searching.state_payment,
           excel:true
         }
@@ -859,7 +859,7 @@ data () {
       this.searching.voucher_payment='',
       this.searching.modality_payment='',
       this.searching.sub_modality_shortened_payment='',
-      this.searching.amortization_type_payment='',
+      this.searching.name_voucher_type='',
       this.searching.state_payment='',
       this.search()
     },
