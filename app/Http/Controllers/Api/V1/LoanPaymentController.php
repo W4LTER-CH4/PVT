@@ -1050,14 +1050,17 @@ class LoanPaymentController extends Controller
    * @queryParam excel Valor booleano para descargar  el docExcel. Example: true
    * @queryParam id_loan Buscar ID del Préstamo. Example: 1
    * @queryParam code_loan  Buscar código del Préstamo. Example: PTMO000012-2021
-   * @queryParam id_affiliate  Buscar por ID del affiliado. Example: 33121
-   * @queryParam identity_card_affiliate  Buscar por nro de CI del afiliado. Example: 10069775
-   * @queryParam registration_affiliate  Buscar por Matricula del afiliado. Example: 100697MDF
+   * @queryParam disbursement_date_loan  Fecha de desembolso. Example: 2021-01-01
+   * @queryParam state_type_affiliate  Estado del afiliado. Example: Activo
+   * @queryParam id_affiliate ID del afiliado. Example: 1
+   * @queryParam identity_card_affiliate ID del afiliado. Example: 667895
+   * @queryParam registration_affiliate ID del afiliado. Example: 667895MP
    * @queryParam last_name_affiliate Buscar por primer apellido del afiliado. Example: RIVERA
    * @queryParam mothers_last_name_affiliate Buscar por segundo apellido del afiliado. Example: ARTEAG
    * @queryParam first_name_affiliate Buscar por primer Nombre del afiliado. Example: ABAD
    * @queryParam second_name_affiliate Buscar por segundo Nombre del afiliado. Example: FAUST
    * @queryParam surname_husband_affiliate Buscar por Apellido de casada Nombre del afiliado. Example: De LA CRUZ
+   * @queryParam pension_entity_affiliate Buscar por la La pension entidad del afiliado. Example: SENASIR
    * @queryParam sub_modality_loan Buscar por sub modalidad del préstamo. Example: Corto plazo sector activo
    * @queryParam modality_loan Buscar por Modalidad del prestamo. Example: Préstamo a corto plazo
    * @queryParam amount_approved_loan Buscar monto aprobado del afiliado. Example: 25000
@@ -1066,7 +1069,7 @@ class LoanPaymentController extends Controller
    * @queryParam quota_loan Buscar por la quota del prestamo. Example: 1500
    * @queryParam state_loan Buscar por el estado del prestamo. Example: En proceso
    * @queryParam guarantor_loan_affiliate Buscar los garantes del préstamo. Example: false
-   * @queryParam pension_entity_affiliate Buscar por la La pension entidad del afiliado. Example: SENASIR
+   
    * @queryParam disbursement_date_loan Buscar por fecha de desembolso. Example: 2021
    * @authenticated
    * @responseFile responses/loan_payment/list_loan_payment_generate.200.json
@@ -1119,9 +1122,11 @@ class LoanPaymentController extends Controller
     $voucher_payment = request('voucher_payment') ?? '';
 
     $sub_modality_payment = request('sub_modality_payment') ?? '';
+    $sub_modality_shortened_payment = request('sub_modality_shortened_payment') ?? '';
     $modality_payment = request('modality_payment') ?? '';
 
     $state_payment = request('state_payment') ?? '';
+    $name_voucher_type = request('name_voucher_type') ?? '';
 
     //$amortization_type_payment = request('amortization_type_payment') ?? '';
 
@@ -1194,15 +1199,19 @@ class LoanPaymentController extends Controller
       if ($sub_modality_payment != '') {
         array_push($conditions, array('procedure_modalities.name', 'ilike', "%{$sub_modality_payment}%"));
       }
+      if ($sub_modality_shortened_payment != '') {
+        array_push($conditions, array('procedure_modalities.shortened', 'ilike', "%{$sub_modality_shortened_payment}%"));
+      }
       if ($modality_payment != '') {
         array_push($conditions, array('procedure_types.name', 'ilike', "%{$modality_payment}%"));
       }
       if ($state_payment != '') {
         array_push($conditions, array('loan_states.name', 'ilike', "%{$state_payment}%"));
       }
-      /*if ($amortization_type_payment != '') {
-        array_push($conditions, array('amortization_types.name', 'ilike', "%{$amortization_type_payment}%"));
-      }*/
+      //name_voucher_type
+      if ($name_voucher_type != '') {
+        array_push($conditions, array('voucher_types.name', 'ilike', "%{$name_voucher_type}%"));
+      }
  
       if($excel==true){
        
@@ -1215,20 +1224,22 @@ class LoanPaymentController extends Controller
                 ->join('affiliate_state_types','affiliate_states.affiliate_state_type_id', '=', 'affiliate_state_types.id')
                 ->leftjoin('pension_entities','affiliates.pension_entity_id', '=', 'pension_entities.id')
                 ->join('loans','loan_payments.loan_id', '=', 'loans.id')
-                //->join('amortization_types','loan_payments.amortization_type_id', '=', 'amortization_types.id')
+                ->leftJoin('vouchers','loan_payments.id', '=', 'vouchers.payable_id')
+                ->leftJoin('voucher_types','vouchers.voucher_type_id', '=', 'voucher_types.id')
+                //->orWhere('vouchers.payable_type','=',$loan_payments)
                 ->whereNull('loan_payments.deleted_at')
                 ->where($conditions)
                 ->select('loans.id as id_loan','loans.code as code_loan','loans.disbursement_date as disbursement_date_loan','affiliate_state_types.name as state_type_affiliate','affiliate_states.name as state_affiliate',
                 'affiliates.id as id_affiliate','affiliates.identity_card as identity_card_affiliate','affiliates.registration as registration_affiliate','affiliates.last_name as last_name_affiliate','affiliates.mothers_last_name as mothers_last_name_affiliate',
                 'affiliates.first_name as first_name_affiliate','affiliates.second_name as second_name_affiliate','affiliates.surname_husband as surname_husband_affiliate','pension_entities.name as pension_entity_affiliate','loan_payments.code as code_payment','loan_payments.estimated_date as estimated_date_payment','loan_payments.estimated_quota as estimated_quota_payment','loan_payments.voucher as voucher_payment',
-                'procedure_modalities.name as sub_modality_payment','procedure_types.name as modality_payment','loan_payment_states.name as state_payment')
+                'procedure_modalities.name as sub_modality_payment','procedure_modalities.shortened as sub_modality_shortened_payment','procedure_types.name as modality_payment','loan_payment_states.name as state_payment','voucher_types.name as name_voucher_type')
                 ->orderBy('loan_payments.code', $order_loan)
                 ->get();
       
                $File="ListadoAmortizaciones";
                $data=array(
                    array("Id del préstamo", "Codigo préstamo", "Fecha desembolso préstamo","estado del affiliado","Tipo de estado del affiliado","ID afiliado", "Nro de carnet", "Matrícula", "Primer apellido","Segundo apellido","Primer nombre","Segundo nombre","Apellido casada",
-                   "Entidad de pensión del afiliado","Código pago","fecha de pago","Total pagado","Nro comprobante","Modalidad pago","Procedure pago","Estado del pago","Tipo amortización")
+                   "Entidad de pensión del afiliado","Código pago","fecha de pago","Total pagado","Nro comprobante","Modalidad pago","Modalidad pago nombre","Procedure pago","Estado del pago","Tipo de voucher")
                );
                foreach ($list_loan as $row){
                    array_push($data, array(
@@ -1251,15 +1262,16 @@ class LoanPaymentController extends Controller
                        $row->estimated_quota_payment,
                        $row->voucher_payment,
                        $row->sub_modality_payment,
+                       $row->sub_modality_shortened_payment,
                        $row->modality_payment,
                        $row->state_payment,
-                       $row->amortization_type_payment
+                       $row->name_voucher_type
                    ));
                }
                $export = new ArchivoPrimarioExport($data);
                return Excel::download($export, $File.'.xlsx');
       }else{
-      
+      $loan_payments='loan_payments';
         $list_loan = DB::table('loan_payments')
                 ->join('procedure_modalities','loan_payments.procedure_modality_id', '=', 'procedure_modalities.id')
                 ->join('procedure_types','procedure_modalities.procedure_type_id', '=', 'procedure_types.id')
@@ -1269,13 +1281,16 @@ class LoanPaymentController extends Controller
                 ->join('affiliate_state_types','affiliate_states.affiliate_state_type_id', '=', 'affiliate_state_types.id')
                 ->leftjoin('pension_entities','affiliates.pension_entity_id', '=', 'pension_entities.id')
                 ->join('loans','loan_payments.loan_id', '=', 'loans.id')
-               // ->join('amortization_types','loan_payments.amortization_type_id', '=', 'amortization_types.id')
+                ->leftJoin('vouchers','loan_payments.id', '=', 'vouchers.payable_id')
+                ->leftJoin('voucher_types','vouchers.voucher_type_id', '=', 'voucher_types.id')
+                //->orWhere('vouchers.payable_type','=',$loan_payments)
                 ->whereNull('loan_payments.deleted_at')
+                //->where($conditions,'vouchers.payable_type','=',$loan_payments)
                 ->where($conditions)
                 ->select('loans.id as id_loan','loans.code as code_loan','loans.disbursement_date as disbursement_date_loan','affiliate_state_types.name as state_type_affiliate','affiliate_states.name as state_affiliate',
                 'affiliates.id as id_affiliate','affiliates.identity_card as identity_card_affiliate','affiliates.registration as registration_affiliate','affiliates.last_name as last_name_affiliate','affiliates.mothers_last_name as mothers_last_name_affiliate',
                 'affiliates.first_name as first_name_affiliate','affiliates.second_name as second_name_affiliate','affiliates.surname_husband as surname_husband_affiliate','pension_entities.name as pension_entity_affiliate','loan_payments.code as code_payment','loan_payments.estimated_date as estimated_date_payment','loan_payments.estimated_quota as estimated_quota_payment','loan_payments.voucher as voucher_payment',
-                'procedure_modalities.name as sub_modality_payment','procedure_types.name as modality_payment','loan_payment_states.name as state_payment')
+                'procedure_modalities.name as sub_modality_payment','procedure_modalities.shortened as sub_modality_shortened_payment','procedure_types.name as modality_payment','loan_payment_states.name as state_payment','voucher_types.name as name_voucher_type')
                 ->orderBy('loan_payments.code', $order_loan)
                 ->paginate($pagination_rows);
            return $list_loan;
