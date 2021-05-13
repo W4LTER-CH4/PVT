@@ -9,7 +9,7 @@
             </v-toolbar>
           </v-card-title>
         <v-btn 
-          @click="dowload_loans()" 
+          @click="download_loans()" 
           color="success"  
           class="mb-2" 
           small>
@@ -645,7 +645,7 @@ data () {
         }
     },
 
-    async dowload_payments() {
+    async download_loans() {
       await axios({
         url: "/list_loan_generate",
         method: "GET",
