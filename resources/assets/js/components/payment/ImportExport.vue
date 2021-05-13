@@ -163,7 +163,7 @@ export default {
       this.import_export.cutoff_date = null
     },
 
-    async registerPaymentsBatch() {
+    /*async registerPaymentsBatch() {
       try {
         this.loading_rpb = true;
         let res = await axios.post(`command_senasir_save_payment`, {
@@ -175,6 +175,33 @@ export default {
       } catch (e) {
         console.log(e);
       }
+      this.loading_rpb = false;
+    },*/
+
+    async registerPaymentsBatch() {
+      const formData = new FormData();
+      formData.append("estimated_date", this.import_export.cutoff_date);
+      this.loading_rpb = true;
+      await axios({
+        url: "command_senasir_save_payment",
+        method: "POST",
+        responseType: "blob", // important
+        headers: { Accept: "application/vnd.ms-excel" },
+        data: formData,
+      })
+        .then((response) => {
+          console.log(response.data);
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "ReporteDecuento.xlsx");
+          document.body.appendChild(link);
+          link.click();
+          this.clearInputs();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
       this.loading_rpb = false;
     },
 
