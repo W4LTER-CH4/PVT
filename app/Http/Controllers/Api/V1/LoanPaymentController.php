@@ -26,6 +26,7 @@ use DB;
 use App\Helpers\Util;
 use App\Http\Controllers\Api\V1\LoanController;
 use App\Exports\ArchivoPrimarioExport;
+use App\Exports\FileWithMultipleSheets;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Loan;
 use App\Role;
@@ -600,24 +601,61 @@ class LoanPaymentController extends Controller
         }
         else{
             $this->command_senasir_save_payment($request->estimated_date);
-            $data=array(
-                array("Nro", "Codigo", "Cuota Estimada", "Numero de Cuota", "Pago Penal", "Fecha estimada" )
+            $command_sheet=array(
+                array("Fecha de desembolso", "numero", "Tipo", "Matricula Titular", "Matricula Derecho Habiente", "CI", "Extension", "Primer Nombre", "Segundo Nombre", "Paterno", "Materno", "Saldo Actual", "Cuota", "Descuento", "Ciudad", "Interes")
             );
-            $pay = LoanPayment::where('estimated_date',$request->estimated_date)->get();
-            foreach ($pay as $row){
+            $command_id = ProcedureModality::where('shortened', 'DES-COMANDO')->first();
+            $command = LoanPayment::where('estimated_date',$request->estimated_date)->where('procedure_modality_id', $command_id->id)->get();
+            foreach ($command as $row){
                 if($row->loan->state->name == 'Vigente'){
-                    array_push($data, array(
-                        $row->id,
-                        $row->loan_id,
+                    array_push($command_sheet, array(
+                        $row->loan->disbursement_date,
+                        $row->loan->code,
+                        $row->affiliate->affiliate_state->name,
+                        $row->affiliate->registration,
+                        $row->affiliate->registration,//verificar
+                        $row->affiliate->identity_card,
+                        $row->affiliate->city_identity_card->first_shortened,
+                        $row->affiliate->first_name,
+                        $row->affiliate->second_name,
+                        $row->affiliate->last_name,
+                        $row->affiliate->mothers_last_name,
+                        $row->previous_balance,
                         $row->estimated_quota,
-                        $row->quota_number,
-                        $row->penal_payment,
-                        $row->estimated_date,
-                        $row->modality->shortened,
+                        $row->estimated_quota,
+                        $row->loan->city->name,
+                        $row->loan->interest->annual_interest,
                     ));
                 }
             }
-            $export = new ArchivoPrimarioExport($data);
+            $senasir_sheet=array(
+                array("Fecha de desembolso", "numero", "Tipo", "Matricula Titular", "Matricula Derecho Habiente", "CI", "Extension", "Primer Nombre", "Segundo Nombre", "Paterno", "Materno", "Saldo Actual", "Cuota", "Descuento", "Ciudad", "Interes")
+            );
+            $senasir_id = ProcedureModality::where('shortened', 'DES-SENASIR')->first();
+            $senasir = LoanPayment::where('estimated_date',$request->estimated_date)->where('procedure_modality_id', $senasir_id->id)->get();
+            foreach ($senasir as $row){
+                if($row->loan->state->name == 'Vigente'){
+                    array_push($command_sheet, array(
+                        $row->loan->disbursement_date,
+                        $row->loan->code,
+                        $row->affiliate->affiliate_state->name,
+                        $row->affiliate->registration,
+                        $row->affiliate->registration,//verificar
+                        $row->affiliate->identity_card,
+                        $row->affiliate->city_identity_card->first_shortened,
+                        $row->affiliate->first_name,
+                        $row->affiliate->second_name,
+                        $row->affiliate->last_name,
+                        $row->affiliate->mothers_last_name,
+                        $row->previous_balance,
+                        $row->estimated_quota,
+                        $row->estimated_quota,
+                        $row->loan->city->name,
+                        $row->loan->interest->annual_interest,
+                    ));
+                }
+            }
+            $export = new FileWithMultipleSheets($command_sheet, $senasir_sheet, $command_sheet, $senasir_sheet);
             Excel::store($export, $file_name.$extension, 'public');
             return $file = Storage::disk('public')->download($file_name.$extension);
         }
