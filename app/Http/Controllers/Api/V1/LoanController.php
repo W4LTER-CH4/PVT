@@ -43,6 +43,7 @@ use App\Http\Controllers\Api\V1\LoanPaymentController;
 use Carbon\CarbonImmutable;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ArchivoPrimarioExport;
+use App\Exports\FileWithMultipleSheetsReport;
 
 /** @group Préstamos
 * Datos de los trámites de préstamos y sus relaciones
@@ -1345,14 +1346,14 @@ class LoanController extends Controller
         else
             $user_id = $request->user_id;
         $sequence = null;
-        $from_role = null;
+        $from_role = $request->current_role_id;
         $to_role = $request->role_id;
         $loans = Loan::whereIn('id', $request->ids)->where('role_id', '!=', $request->role_id)->orderBy('code');
         $derived = $loans->get();
-        $to_role = Role::find($to_role);
+        $to_role = Role::whereId($to_role)->first();
         if (count(array_unique($loans->pluck('role_id')->toArray()))) $from_role = $derived->first()->role_id;
         if ($from_role) {
-            $from_role = Role::find($from_role);
+            $from_role = Role::whereId($from_role)->first();
             $flow_message = $this->flow_message($derived->first()->modality->procedure_type->id, $from_role, $to_role);
         }
         $derived->map(function ($item, $key) use ($from_role, $to_role, $flow_message) {
@@ -1361,8 +1362,9 @@ class LoanController extends Controller
                 $from_role = Role::find($item['role_id']);
                 $flow_message = $this->flow_message($item->modality->procedure_type->id, $from_role, $to_role);
             }
-            $item['role_id'] = $to_role->id;
+            $item['role_id'] = $from_role->id;
             $item['validated'] = false;
+
             Util::save_record($item, $flow_message['type'], $flow_message['message']);
         });
         $loans->update(array_merge($request->only('role_id'), ['validated' => false], ['user_id' => $user_id]));
@@ -2042,4 +2044,149 @@ class LoanController extends Controller
       }
    }
 
+   /**
+    * generar reporte de nuevos prestamos desembolsados
+    * reporte de los nuevos desembolsados por periodo
+	* @bodyParam date date Fecha para el periodo a consultar. Example: 16-06-2021
+    * @authenticated
+    */
+   public function loan_information(Request $request)
+   {
+       $month = Carbon::parse($request->date)->format('m');
+       $year = Carbon::parse($request->date)->format('Y');
+       $loans = Loan::whereMonth('disbursement_date', $month)->whereYear('disbursement_date', $year)->get();
+       $id_senasir = array();
+       foreach(ProcedureModality::where('name', 'like', '%SENASIR')->get() as $procedure)
+            array_push($id_senasir, $procedure->id);
+       $id_comando = array();
+       foreach(ProcedureModality::where('name', 'like', '%Activo')->orWhere('name', 'like', '%Activo%')->get() as $procedure)
+            array_push($id_comando, $procedure->id);
+
+        $command_sheet_before=array(
+            array("Nro Prestamo", "Fecha de desembolso", "Ciudad", "tipo", "Matricula Titular", "Matricula Derecho Habiente", "CI", "Extension", "Primer Nombre", "Segundo Nombre", "Paterno", "Materno", "Saldo Actual", "Cuota Fija Mensual", "Descuento Programado", "Interes")
+        );
+        $command_sheet_later=array(
+            array("Nro Prestamo", "Fecha de desembolso", "Ciudad", "tipo", "Matricula Titular", "Matricula Derecho Habiente", "CI", "Extension", "Primer Nombre", "Segundo Nombre", "Paterno", "Materno", "Saldo Actual", "Cuota Fija Mensual", "Descuento Programado", "Interes")
+        );
+        $senasir_sheet_before=array(
+            array("Nro Prestamo", "Fecha de desembolso", "Ciudad", "tipo", "Matricula Titular", "Matricula Derecho Habiente", "CI", "Extension", "Primer Nombre", "Segundo Nombre", "Paterno", "Materno", "Saldo Actual", "Cuota Fija Mensual", "Descuento Programado", "Interes")
+        );
+        $senasir_sheet_later=array(
+            array("Nro Prestamo", "Fecha de desembolso", "Ciudad", "tipo", "Matricula Titular", "Matricula Derecho Habiente", "CI", "Extension", "Primer Nombre", "Segundo Nombre", "Paterno", "Materno", "Saldo Actual", "Cuota Fija Mensual", "Descuento Programado", "Interes")
+        );
+        foreach($loans as $loan){
+            if(Carbon::parse($loan->disbursement_date)->day < LoanGlobalParameter::first()->offset_interest_day){
+                if(in_array($loan->procedure_modality_id, $id_comando))
+                {
+                    foreach($loan->lenders as $lender)
+                    {
+                        array_push($command_sheet_before, array(
+                            $loan->code,
+                            $loan->disbursement_date,
+                            $loan->city->name,
+                            $lender->affiliate_state->name,
+                            $lender->registration,
+                            $lender->spouse ? $lender->spouse->registration : 0,
+                            $lender->identity_card,
+                            $lender->city_identity_card->first_shortened,
+                            $lender->first_name,
+                            $lender->second_name,
+                            $lender->last_name,
+                            $lender->mothers_last_name,
+                            $loan->balance,
+                            $loan->estimated_quota,
+                            $lender->pivot->quota_treat,
+                            $loan->interest->annual_interest,
+                        ));
+                    }
+                }
+                else{
+                    if(in_array($loan->procedure_modality_id, $id_senasir))
+                    {
+                        foreach($loan->lenders as $lender)
+                        {
+                            array_push($senasir_sheet_before, array(
+                                $loan->code,
+                                $loan->disbursement_date,
+                                $loan->city->name,
+                                $lender->affiliate_state->name,
+                                $lender->registration,
+                                $lender->spouse ? $lender->spouse->registration : 0,
+                                $lender->identity_card,
+                                $lender->city_identity_card->first_shortened,
+                                $lender->first_name,
+                                $lender->second_name,
+                                $lender->last_name,
+                                $lender->mothers_last_name,
+                                $loan->balance,
+                                $loan->estimated_quota,
+                                $lender->pivot->quota_treat,
+                                $loan->interest->annual_interest,
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+        $sub_month = Carbon::parse($request->date)->subMonth()->format('m');
+        $loans_before = Loan::whereMonth('disbursement_date', $sub_month)->whereYear('disbursement_date', $year)->get();//considerar caso fin de año
+        foreach($loans_before as $loan){
+            if(Carbon::parse($loan->disbursement_date)->day >= LoanGlobalParameter::first()->offset_interest_day){
+                if(in_array($loan->procedure_modality_id, $id_comando))
+                {
+                    foreach($loan->lenders as $lender)
+                    {
+                        array_push($command_sheet_later, array(
+                            $loan->code,
+                            $loan->disbursement_date,
+                            $loan->city->name,
+                            $lender->affiliate_state->name,
+                            $lender->registration,
+                            $lender->spouse ? $lender->spouse->registration : 0,
+                            $lender->identity_card,
+                            $lender->city_identity_card->first_shortened,
+                            $lender->first_name,
+                            $lender->second_name,
+                            $lender->last_name,
+                            $lender->mothers_last_name,
+                            $loan->balance,
+                            $loan->estimated_quota,
+                            $lender->pivot->quota_treat,
+                            $loan->interest->annual_interest,
+                        ));
+                    }
+                }
+                else{
+                    if(in_array($loan->procedure_modality_id, $id_senasir))
+                    {
+                        foreach($loan->lenders as $lender)
+                        {
+                            array_push($senasir_sheet_later, array(
+                                $loan->code,
+                                $loan->disbursement_date,
+                                $loan->city->name,
+                                $lender->affiliate_state->name,
+                                $lender->registration,
+                                $lender->spouse ? $lender->spouse->registration : 0,
+                                $lender->identity_card,
+                                $lender->city_identity_card->first_shortened,
+                                $lender->first_name,
+                                $lender->second_name,
+                                $lender->last_name,
+                                $lender->mothers_last_name,
+                                $loan->balance,
+                                $loan->estimated_quota,
+                                $lender->pivot->quota_treat,
+                                $loan->interest->annual_interest,
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+        $file_name = $month.'-'.$year;
+        $extension = '.xlsx';
+        $export = new FileWithMultipleSheetsReport($command_sheet_later, $command_sheet_before, $senasir_sheet_later, $senasir_sheet_before);
+        return Excel::download($export, $file_name.$extension);
+   }
 }

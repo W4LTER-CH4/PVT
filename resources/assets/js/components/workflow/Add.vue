@@ -284,7 +284,11 @@
         <v-tab-item :value="'tab-7'">
           <v-card flat tile>
             <v-card-text class="pa-0 pl-3 pr-0 py-0">
-              <ObserverFlow :loan.sync="loan" :observations.sync="observations" :bus1="bus1" />
+              <ObserverFlow 
+              :loan.sync="loan" 
+              :observations.sync="observations" 
+              :bus1="bus1" 
+              :affiliate.sync="affiliate" />
             </v-card-text>
           </v-card>
         </v-tab-item>

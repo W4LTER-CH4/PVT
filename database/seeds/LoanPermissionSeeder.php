@@ -124,7 +124,10 @@ class LoanPermissionSeeder extends Seeder
             ],[
                 'name' => 'show-list-payments-generated',
                 'display_name' => 'Ver generador de reporte de cobros'
-            ]
+            ],[
+                'name' => 'delete-voucher-paid',
+                'display_name' => 'Anular comprobante pagado'
+            ] 
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate($permission);

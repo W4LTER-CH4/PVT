@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
-    <v-toolbar-title class="pb-2 ma-0 pa-0">KARDEX</v-toolbar-title>
+    <!--<v-toolbar-title class="pb-2 ma-0 pa-0">KARDEX</v-toolbar-title>-->
     <template v-if="loan.disbursement_date != 'Fecha invalida'">
-      <v-tooltip top v-if="permissionSimpleSelected.includes('print-payment-kardex-loan')">
+      <!--<v-tooltip top v-if="permissionSimpleSelected.includes('print-payment-kardex-loan')">
         <template v-slot:activator="{ on }">
           <v-btn
             fab
@@ -65,7 +65,7 @@
         <div>
           <span>Nuevo registro de cobro</span>
         </div>
-      </v-tooltip>
+      </v-tooltip>-->
 
       <v-card class="ma-0 pa-0 pb-2">
         <v-row class="ma-0 pa-0">
@@ -73,7 +73,8 @@
             <strong>Deudor: </strong> {{ $options.filters.fullName(affiliate, true) }}<br />
             <strong>CI: </strong> {{ affiliate.identity_card }}<br />
             <strong>Matrícula: </strong> {{ affiliate.registration }}<br />
-            <strong>Cuotas: </strong> {{ payments.length ? payments.length : ""}}<br />
+           <!-- <strong>Cuotas: </strong> {{ payments.length ? payments.length : ""}}<br />-->
+           <strong>Monto desembolsado: </strong>{{ loan.amount_approved | moneyString }}<br />
           </v-col>
           <v-col md="4" class="ma-0 pa-0">
             <strong>Desembolso: </strong>{{ loan.disbursement_date }}<br />
@@ -81,12 +82,12 @@
             <strong>Tasa anual: </strong> {{ parseInt(loan.intereses.annual_interest) }}%<br />
             <strong>Cuota fija mensual: </strong> {{ loan.estimated_quota }}<br />
           </v-col>
-          <v-col md="4" class="ma-0 pa-0">
+          <!--<v-col md="4" class="ma-0 pa-0">
             <strong>Monto desembolsado: </strong>{{ loan.amount_approved | moneyString }}<br />
             <strong>Saldo Capital: </strong>{{ loan.balance | moneyString }}<br />
             <strong>Intereses Corrientes Pendientes: </strong>{{(payments[payments.length - 1] ? payments[payments.length - 1].interest_accumulated : 0) | moneyString }}<br />
             <strong>Intereses Penales Pendientes: </strong>{{ payments[payments.length - 1] ? payments[payments.length - 1].penal_accumulated : 0 | moneyString }}
-           </v-col>
+           </v-col>-->
         </v-row>
       </v-card>
   
@@ -124,6 +125,12 @@
             </v-menu>
           </template>
 
+        <template v-slot:[`item.role_display_name`]="{ item }">
+          {{ item.role.display_name }}
+        </template>
+                <template v-slot:[`item.user_username`]="{ item }">
+          {{ item.user.username }}
+        </template>
         <template v-slot:[`item.estimated_date`]="{ item }">
           {{ item.estimated_date | date }}
         </template>
@@ -184,7 +191,7 @@
             <span>Ver registro de cobro</span>
           </v-tooltip>
 
-          <v-tooltip top bottom v-if="permissionSimpleSelected.includes('update-payment-loan')"
+          <!--<v-tooltip top bottom v-if="permissionSimpleSelected.includes('update-payment-loan')"
           >
             <template v-slot:activator="{ on }">
               <v-btn
@@ -219,7 +226,7 @@
               </v-btn>
             </template>
             <span>Anular registro de cobro</span>
-          </v-tooltip>
+          </v-tooltip>-->
 
           <v-menu offset-y close-on-content-click>
             <template v-slot:activator="{ on }">
@@ -300,7 +307,22 @@ export default {
         width: "5%",
         filterable: false,
       },
-      ,
+      {
+        text: "Ubicación área",
+        value: "role_display_name",
+        class: ["normal", "white--text"],
+        align: "center",
+        sortable: true,
+        width: "5%",
+      },
+            {
+        text: "Usuario",
+        value: "user_username",
+        class: ["normal", "white--text"],
+        align: "center",
+        sortable: true,
+        width: "5%",
+      },
       {
         text: "Código",
         value: "code",
@@ -467,7 +489,7 @@ export default {
     async getPayments() {
       try {
         this.loading = true;
-        let res = await axios.get(`kardex_loan_payment`, {
+        let res = await axios.get(`history_loan_payment`, {
           params: {
             loan_id: this.$route.params.id,
           },
