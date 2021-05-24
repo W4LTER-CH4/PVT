@@ -1209,7 +1209,7 @@ class LoanController extends Controller
             $file_name = implode('_', ['pagos', $loan->modality->shortened, $loan->code]) . '.pdf';
             $loanpayment = new LoanPaymentController;
             $payment->attachment = Util::pdf_to_base64([
-                $loanpayment->print_loan_payment(new Request([]), $loan_payment, false)
+                $loanpayment->print_loan_payment(new Request([]), $loan_payment->id, false)
             ], $file_name,$information_loan, 'legal', $request->copies ?? 1);
             return $payment;
         }else{
@@ -1974,6 +1974,7 @@ class LoanController extends Controller
                'affiliate_state_types.name as state_type_affiliate','affiliate_states.name as state_affiliate','loan_affiliates.quota_treat as quota_loan','loan_states.name as state_loan',
                'loan_affiliates.guarantor as guarantor_loan_affiliate','pension_entities.name as pension_entity_affiliate','loans.disbursement_date as disbursement_date_loan')
                //->where('affiliates.identity_card','LIKE'.'%'.$request->identity_card.'%')
+               ->distinct('loans.code')
                ->orderBy('loans.code', $order_loan)
                ->get();
  
@@ -2034,6 +2035,7 @@ class LoanController extends Controller
                'affiliate_state_types.name as state_type_affiliate','affiliate_states.name as state_affiliate','loan_affiliates.quota_treat as quota_loan','loan_states.name as state_loan',
                'loan_affiliates.guarantor as guarantor_loan_affiliate','pension_entities.name as pension_entity_affiliate','loans.disbursement_date as disbursement_date_loan')
                ->orderBy('loans.code', $order_loan)
+               ->distinct('loans.code')
                ->paginate($pagination_rows);
  
                $list_loan->getCollection()->transform(function ($list_loan) {
@@ -2043,5 +2045,33 @@ class LoanController extends Controller
                });
            return $list_loan;
       }
+   }
+
+   public function switch_loans_guarantors()
+   {
+        $loans = Loan::where('state_id', LoanState::where('name', 'Vigente')->first()->id)->get();
+        $c = 0;
+        foreach($loans as $loan)
+        {
+            if($loan->guarantors->count() > 0)
+            {
+                if($loan->last_payment_validated != null)
+                {
+                    if(Carbon::parse($loan->last_payment_validated->estimated_date)->diffInDays(Carbon::now()->format('Y-m-d')) > 60);
+                        $loan->guarantor_amortizing =  true;
+                        $loan->update();
+                        $c++;
+                }
+                else{
+                    if(Carbon::parse($loan->disbursement_date)->diffInDays(Carbon::now()->format('Y-m-d')) > 60);
+                        $loan->guarantor_amortizing =  true;
+                        $loan->update();
+                        $c++;
+                }
+            }
+        }
+        return response()->json([
+            'defaulted' => $c,
+        ]);
    }
 }

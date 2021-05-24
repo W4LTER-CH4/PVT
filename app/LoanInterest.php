@@ -18,12 +18,12 @@ class LoanInterest extends Model
 
     public function getDailyCurrentInterestAttribute()
     {
-        return $this->annual_interest / (100 * 365);
+        return $this->annual_interest / (100 * 360);
     }
 
     public function getDailyPenalInterestAttribute()
     {
-        return $this->penal_interest / (100 * 365);
+        return $this->penal_interest / (100 * 360);
     }
 
     public function getMonthlyCurrentInterestAttribute()

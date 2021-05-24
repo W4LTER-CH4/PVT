@@ -76,10 +76,10 @@
             <strong>Cuotas: </strong> {{ payments.length ? payments.length : ""}}<br />
           </v-col>
           <v-col md="4" class="ma-0 pa-0">
-            <strong>Desembolso: </strong>{{ loan.disbursement_date }}<br />
+            <strong>Desembolso: </strong>{{ loan.disbursement_date | datetimeshorted }}<br />
             <strong>Nro de comprobante contable: </strong>{{ loan.num_accounting_voucher }}<br />
             <strong>Tasa anual: </strong> {{ parseInt(loan.intereses.annual_interest) }}%<br />
-            <strong>Cuota fija mensual: </strong> {{ loan.estimated_quota }}<br />
+            <strong>Cuota fija mensual: </strong> {{ loan.estimated_quota | moneyString}}<br />
           </v-col>
           <v-col md="4" class="ma-0 pa-0">
             <strong>Monto desembolsado: </strong>{{ loan.amount_approved | moneyString }}<br />

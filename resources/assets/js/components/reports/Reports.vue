@@ -57,6 +57,16 @@
                           outlined
                         ></v-text-field>
                       </template>
+                      <template v-if="report_selected.criterios.includes('date')">
+                        <v-text-field
+                          dense
+                          v-model="report_inputs.date"
+                          label="Periódo (seleccione cualquier dia del mes)"
+                          hint="Día/Mes/Año"
+                          type="date"
+                          outlined
+                        ></v-text-field>
+                      </template>
                       <v-btn
                         color="primary"
                         :loading="loading_button"
@@ -90,6 +100,7 @@ export default {
     report_inputs: {
       initial_date: null,
       final_date: null,
+      date: null,
     },
   }),
   created() {
@@ -100,6 +111,10 @@ export default {
       { id: 4, name: 'Reporte de amortizaciones pendientes de confirmacion deacuerdo al comprobante de generacion', tab: 1, criterios: ['initial_date', 'final_date'], service: '/report_amortization_pending_confirmation' },
       { id: 5, name: 'Reporte de amortizaciones por complemento y fondo de retiro', tab: 1, criterios: ['initial_date', 'final_date'], service: '/report_amortization_fondo_complement' },
       { id: 6, name: 'Reporte de prestamos desembolsados', tab: 0, criterios: ['initial_date', 'final_date'], service: '/report_loan_vigent' },
+      { id: 7, name: 'Reporte de prestamos del estado de cartera', tab: 0, criterios: ['initial_date', 'final_date'], service: '/report_loan_state_cartera' },
+      { id: 8, name: 'Reporte de informacion de prestamos para solicitud de descuentos', tab: 0, criterios: ['date'], service: '/loan_information' },
+      { id: 9, name: 'Reporte de mora', tab: 0, criterios: [], service: '/report_loans_mora' },
+      { id: 10, name: 'Prestamos amortizados mensualmente mediante descuentos por garantia', tab: 0, criterios: [], service: '/loan_defaulted_guarantor' },
     ]
   },
   methods: {
@@ -107,10 +122,11 @@ export default {
       this.report_selected = null
       this.report_inputs.initial_date = null
       this.report_inputs.final_date = null
+      this.report_inputs.date = null
     },
     async downloadReport() {
       if(this.report_selected) {
-        let params = ''
+        let params = []
         const formData = new FormData();
         // let validation = true
         this.report_selected.criterios.forEach(criterio => {
@@ -132,17 +148,22 @@ export default {
         await axios({
           url: this.report_selected.service,
           method: "GET",
-          responsetab: "blob", // important
-          //headers: { Accept: "application/vnd.ms-excel" },
-          headers: { Accept: "text/plain" },
+          responseType: "blob", // important
+          headers: { Accept: "application/vnd.ms-excel" },
+          //headers: { Accept: "text/plain" },
           data: formData,
+          params: {                
+            initial_date: this.report_inputs.initial_date,
+            final_date : this.report_inputs.final_date,
+            date: this.report_inputs.date,
+          }          
         })
           .then((response) => {
             console.log(response.data);
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement("a");
             link.href = url;
-            link.setAttribute("download", this.report_selected.name + ".csv");
+            link.setAttribute("download", this.report_selected.name + ".xlsx");
             document.body.appendChild(link);
             link.click();
             this.clearInputs();

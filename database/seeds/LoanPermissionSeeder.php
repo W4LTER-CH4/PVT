@@ -127,6 +127,12 @@ class LoanPermissionSeeder extends Seeder
             ],[
                 'name' => 'delete-voucher-paid',
                 'display_name' => 'Anular comprobante pagado'
+            ],[
+                'name' => 'show-report-payment',
+                'display_name' => 'Ver reporte de cobranza'
+            ] ,[
+                'name' => 'show-list-voucher',
+                'display_name' => 'Ver listado de comprobantes en tesorería'
             ] 
         ];
         foreach ($permissions as $permission) {

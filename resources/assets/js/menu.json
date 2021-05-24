@@ -48,14 +48,14 @@
     "href": "listVouchers",
     "title": "Tesoreria",
     "icon": "mdi-bank",
-    "permission": "show-payment-loan",
+    "permission": "show-list-voucher",
     "params": {}
   },
   {
     "href": "reports",
     "title": "Reportes",
     "icon": "mdi-file-table-outline",
-    "permission": "show-payment-loan",
+    "permission": "show-report-payment",
     "params": {}
   },
   {

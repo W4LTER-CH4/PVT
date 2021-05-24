@@ -107,7 +107,7 @@
                         {{ $loan->payment_type->name}}
                     @endif
                 </td>
-                <td class="data-row py-5 m-b-10 text-xs" >{{Carbon::parse($loan->disbursement_date)->format(d/m/Y H:m:s)}}</td>
+                <td class="data-row py-5 m-b-10 text-xs" >{{Carbon::parse($loan->disbursement_date)->format('d/m/Y H:m:s')}}</td>
                 @if($loan->parent_loan && $loan->parent_reason == "REPROGRAMACIÓN")
                 <td colspan="2">{{ Util::money_format($loan->parent_loan->amount_approved) }} <span class="capitalize">Bs.</span></td>
                 @else
