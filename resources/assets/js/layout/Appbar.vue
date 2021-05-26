@@ -69,7 +69,7 @@ export default {
   methods: {
     async getRolePermissions() {
       try {
-        let res = await axios.get(`user_role/${6}/permission`)
+        let res = await axios.get(`user_role/permission`)
         let aux_rolesPermissionsItems = res.data
         aux_rolesPermissionsItems.forEach(item => {
           //delete item.id

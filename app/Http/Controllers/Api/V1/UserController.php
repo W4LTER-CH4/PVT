@@ -228,11 +228,10 @@ class UserController extends Controller
     /**
     * Obtener roles y permisos de usuario
     * Devuelve un listado de roles y permisos asignados al usuario de la sesion
-    * @urlParam module_id required ID de de Modulo . Example: 6
     * @authenticated
     * @responseFile responses/user/get_roles_permission.200.json
     */
-    public function role_permision(Request $module_id)
+    public function role_permision()
     {
         $user =  Auth::user();
         $roles = $user->roles;

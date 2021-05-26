@@ -256,6 +256,9 @@ class LoanController extends Controller
     */
     public function store(LoanForm $request)
     {
+        DB::beginTransaction();
+
+    try {
         $roles = Auth::user()->roles()->whereHas('module', function($query) {
             return $query->whereName('prestamos');
         })->pluck('id');
@@ -328,7 +331,14 @@ class LoanController extends Controller
                 $this->print_form(new Request([]), $loan, false),
             ], $file_name, 'legal', $request->copies ?? 1);
         }
+        
+        DB::commit();
         return $loan;
+    } catch (\Exception $e) {
+        DB::rollback();
+        throw $e;
+    }
+
     }
 
     /**

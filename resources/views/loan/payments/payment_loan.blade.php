@@ -55,54 +55,55 @@
     <div class="block">
         <table class="table-info w-100 my-20 uppercase">
             <tr class="bg-grey-darker text-center text-xxs text-white">   
-               <td colspan="7">Pago</td>
+               <td colspan="4">Pago</td>
            </tr>
             <tr>
-                <td colspan="3" class="w-20 text-left">Amortizacion a Capital</td>
-                <td class="font-semibold  leading-tight w-10 text-right">{{ Util::money_format($loan_payment->capital_payment) }}</td>
-                <td class="w-25 text-left">Número de cuota</td>
+                <td class="w-40 font-semibold  text-left">Amortizacion a Capital</td>
+                <td class="leading-tight w-10 text-right">{{ Util::money_format($loan_payment->capital_payment) }}</td>
+                <td class="w-40 font-semibold text-left">Número de cuota</td>
                 <td class="w-10 text-right">{{ $loan_payment->quota_number }}</td>
             </tr>
             <tr class="">
-                <td class="w-20">Intereses por</td>
-                <td colspan="2" class="w-20">{{ $estimated_days['current']}} dias a {{ $loan->interest->annual_interest}} % anual</td>
-                <td class="font-semibold  leading-tight w-10 text-right">{{ Util::money_format($loan_payment->interest_payment) }}</td>
-                <td class="w-15">Fecha de Cálculo</td> 
-                <td class="text-right data-row py-5">{{ Carbon::parse($loan_payment->estimated_date)->format('d/m/Y') }}</td>  
+                <td class="w-10 font-semibold ">Intereses por {{ $estimated_days['current']}} dias a ({{ $loan->interest->annual_interest}} % anual)</td>
+                <td class="w-10 text-right">{{ Util::money_format($loan_payment->interest_payment) }}</td>
+                <td class="w-40 font-semibold ">Fecha de Cálculo</td> 
+                <td class="text-right w-10">{{ Carbon::parse($loan_payment->estimated_date)->format('d/m/Y') }}</td>  
                 
             </tr>
             <tr class="">
-                <td class="w-30">Intereses Penales por</td>
-                <td colspan="2" class="w-20">{{ $estimated_days['penal']}} dias a  {{ $loan->interest->penal_interest}} % anual</td>
-                <td class="font-semibold  leading-tight w-10 text-right">{{ Util::money_format($loan_payment->penal_payment) }}</td>
-                <td class="w-15">Fecha de Trans.</td>
-                <td class="text-right data-row py-5">{{$loan_payment->loan_payment_date? Carbon::parse($loan_payment->loan_payment_date)->format('d/m/Y'):Carbon::parse($loan_payment->created_at)->format('d/m/Y')}}</td> 
+                <td class="w-40 font-semibold ">Intereses Penales por {{ $estimated_days['penal']}} dias a ({{ $loan->interest->penal_interest}} % anual)</td>
+                <td class="leading-tight w-10 text-right">{{ Util::money_format($loan_payment->penal_payment) }}</td>
+                <td class="w-40 font-semibold ">Fecha de Trans.</td>
+                <td class="text-right w-10">{{$loan_payment->loan_payment_date? Carbon::parse($loan_payment->loan_payment_date)->format('d/m/Y'):Carbon::parse($loan_payment->created_at)->format('d/m/Y')}}</td> 
             </tr>
             <tr class="">
-                <td colspan="3" class="w-20">Intereses Corrientes Pendientes</td>
-                <td class="font-semibold leading-tight w-10 text-right">{{ Util::money_format($loan_payment->interest_remaining) }}</td>
-                <td class="w-15">Saldo Anterior</td>
+                <td class="w-40 font-semibold ">Intereses Corrientes Pendientes</td>
+                <td class="leading-tight w-10 text-right">{{ Util::money_format($loan_payment->interest_remaining) }}</td>
+                <td class="w-40 font-semibold ">Saldo Anterior</td>
                 <td class="text-right data-row py-5">{{ Util::money_format($loan_payment->previous_balance) }}</td>           
             </tr>
             <tr class="">
-                <td colspan="3" class="w-20">Intereses Penales Pendientes</td>
-                <td class="font-semibold leading-tight w-10 text-right">{{ Util::money_format($loan_payment->penal_remaining) }}</td> 
-                <td class="w-10">Saldo Actual</td> 
+                <td class="w-40 font-semibold">Intereses Penales Pendientes</td>
+                <td class="leading-tight w-10 text-right">{{ Util::money_format($loan_payment->penal_remaining) }}</td> 
+                <td class="w-40 font-semibold ">Saldo Actual</td> 
                 <td class="data-row w-10 text-right">{{ Util::money_format($loan_payment->previous_balance-$loan_payment->capital_payment) }}</td>                         
                 </tr>
             <tr class="">
-                <td colspan="3" class="font-semibold leading-tight text-left p-10"><div>Total a Pagar:</div> </td>
-                <td class="font-semibold leading-tight text-right">{{ Util::money_format($loan_payment->estimated_quota) }}</td>
-                <td class="w-20" >Intereses Corrientes Pendientes Act.</td>
+                <td class="font-semibold leading-tight w-40 text-left p-10"><div>Total a Pagar:</div> </td>
+                <td class="leading-tight w-10 text-right">{{ Util::money_format($loan_payment->estimated_quota) }}</td>
+                <td class="w-40 font-semibold" >Intereses Corrientes Pendientes Act.</td>
                 <td class="text-right">{{ Util::money_format($loan_payment->interest_accumulated) }}</td>
             </tr>
             <tr class="">
-                <td colspan="4" class="font-semibold  leading-tight text-right">Son:(<span class="uppercase font-semibold leading-tight  m-b-10 text-xs">{{ Util::money_format($loan_payment->estimated_quota, true) }} Bolivianos</span> )</td>
-                <td >Intereses Penales Pendientes Act.</td>
+            @php ($literal_amount= Util::money_format($loan_payment->estimated_quota, true))
+            @php ($mil = explode(" ",$literal_amount))
+            @php ($mil = $mil[0] == "mil" ? 'un ':" ")
+                <td colspan="2" class="font-semibold  leading-tight text-right">Son:(<span class="uppercase font-semibold leading-tight  m-b-10 text-xs">{{$mil}}{{$literal_amount}} Bolivianos</span> )</td>
+                <td class="w-40 font-semibold">Intereses Penales Pendientes Act.</td>
                 <td class="text-right">{{ Util::money_format($loan_payment->penal_accumulated) }}</td>              
             </tr>       
             <tr>
-                <td colspan="7" class="text-left p-10"><span class="font-semibold">Glosa:</span> <br>
+                <td colspan="4" class="text-left p-10"><span class="font-semibold">Glosa:</span> <br>
                     {{$loan_payment->description}}
                 </td>
             </tr>

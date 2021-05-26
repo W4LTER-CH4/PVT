@@ -26,7 +26,7 @@ Route::group([
         Route::apiResource('user', 'Api\V1\UserController');//->only('index', 'show', 'update');
         if (!env("LDAP_AUTHENTICATION")) Route::apiResource('user', 'Api\V1\UserController')->only('update');
         Route::get('user/{user}/role', 'Api\V1\UserController@get_roles');
-        Route::get('user_role/{module_id}/permission', 'Api\V1\UserController@role_permision');
+        Route::get('user_role/permission', 'Api\V1\UserController@role_permision');
         Route::apiResource('auth', 'Api\V1\AuthController')->only('index');
         Route::patch('auth', 'Api\V1\AuthController@refresh');
         Route::delete('auth', 'Api\V1\AuthController@logout');
@@ -86,8 +86,13 @@ Route::group([
         Route::get('report_loans_mora', 'Api\V1\LoanReportController@report_loans_mora');//8
         Route::get('loan_information', 'Api\V1\LoanReportController@loan_information');//reporte de nuevos prestamos desembolsados
         Route::get('loan_defaulted_guarantor', 'Api\V1\LoanReportController@loan_defaulted_guarantor');//reporte de nuevos prestamos desembolsados
+        Route::apiResource('periods', 'Api\V1\PeriodController')->only('index', 'show', 'store', 'update', 'destroy');//cambiar a cobranzas
 
-        // Afiliado
+        Route::get('get_list_month', 'Api\V1\PeriodController@get_list_month');//listado de meses por gestion
+        Route::get('get_list_year', 'Api\V1\PeriodController@get_list_year');//listado de meses por gestion
+
+        //get_list_month
+        // Afiliados
         Route::group([
             'middleware' => 'permission:show-affiliate'
         ], function () {
