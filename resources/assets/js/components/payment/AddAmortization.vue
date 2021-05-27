@@ -40,7 +40,7 @@
                                 </v-col>
                                 <v-col cols="3" class="ma-0 py-2">
                                   <label><b>Fecha de Desembolso:</b></label>
-                                  {{$moment(garantes.disbursement_date).format("YYYY-MM-DD")}}
+                                  {{$moment(garantes.disbursement_date).format("DD-MM-YYYY")}}
                                 </v-col>
                                 <v-col cols="3" class="ma-0 py-2">
                                   <label><b>Monto Desembolsado:</b></label>

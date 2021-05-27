@@ -129,7 +129,7 @@
                 <td> {{Util::money_format($ballot->east_bonus)}}</td>
                 <td> {{Util::money_format($ballot->public_security_bonus)}}</td>
                         
-           </tr >
+           </tr>
            @php ($num_reg = $num_reg + 1)
            @php ($sum_border_bonus += $ballot->border_bonus)
            @php ($sum_position_bonus += $ballot->position_bonus)
@@ -139,7 +139,12 @@
            @php ($sum_mount_adjust += $mount_adjust)         
             @endforeach
            <tr>
-                <td>Total Promedio</td>
+                @php ($title_total = " ")
+                @if($loan->modality->loan_modality_parameter->quantity_ballots >1)
+                    @php ($title_total = "PROMEDIO")
+                @endif
+                    @php ($a = $title_total == "PROMEDIO" ? "DE LA":" ")
+                <td>Total {{$title_total}}</td>
                 <td> {{Util::money_format($sum_payable_liquid/$num_reg)}}</td>
                 <td> {{Util::money_format($sum_mount_adjust/$num_reg)}}</td>
                 <td> {{Util::money_format($sum_border_bonus/$num_reg)}}</td>
@@ -282,7 +287,7 @@
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">ÍNDICE DE ENDEUDAMIENTO</td>
-            <td class="w-50 text-left px-10">{{ $loan->indebtedness_calculated }} </td>
+            <td class="w-50 text-left px-10">{{ $loan->indebtedness_calculated }} %</td>
             </tr>      
         </table>
     </div>
@@ -308,7 +313,7 @@
             </tr>
             <tr  class="w-100">
                 <td class="w-50 text-left px-10">ÍNDICE DE ENDEUDAMIENTO</td>
-                <td class="w-50 text-left px-10">{{ $guarantor->pivot->indebtedness_calculated }} </td> 
+                <td class="w-50 text-left px-10">{{ $guarantor->pivot->indebtedness_calculated }} %</td> 
             </tr>
             <tr  class="w-100">
                 <td class="w-50 text-left px-10">PORCENTAJE DE PAGO</td>

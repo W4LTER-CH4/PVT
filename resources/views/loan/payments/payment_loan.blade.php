@@ -114,7 +114,7 @@
             <tbody>
             <tr height="300px" class="">                  
                 <td class="font-semibold leading-tight text-center w-50">                  
-                ELABORADO POR
+                PAGADO POR
                 </td>
                 <td class="font-semibold leading-tight text-center w-50">
                 REVISADO POR 

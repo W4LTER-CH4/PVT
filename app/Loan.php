@@ -965,8 +965,8 @@ class Loan extends Model
                     foreach($ballots as $is_ballot_id){
                         if(Contribution::find($is_ballot_id))
                         $ballot->push(Contribution::find($is_ballot_id));
-                        if(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->first()){
-                        $adjusts->push(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->first());
+                        if(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->where('loan_id',$this->id)->first()){
+                        $adjusts->push(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->where('loan_id',$this->id)->first());
                         }  
                     }                  
                 }
@@ -974,8 +974,8 @@ class Loan extends Model
                     foreach($ballots as $is_ballot_id){
                         if(AidContribution::find($is_ballot_id))
                         $ballot->push(AidContribution::find($is_ballot_id));
-                        if(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->first())
-                        $adjusts->push(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->first());
+                        if(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->where('loan_id',$this->id)->first())
+                        $adjusts->push(LoanContributionAdjust::where('adjustable_id', $is_ballot_id)->where('loan_id',$this->id)->first());
                     }
                 }
                 if($contributions_type == "loan_contribution_adjusts"){
@@ -984,7 +984,7 @@ class Loan extends Model
                     foreach($liquid_ids as $liquid_id){  
                         $ballot->push(LoanContributionAdjust::find($liquid_id));
                     }
-                foreach($adjust_ids as $adjust_id){  
+                    foreach($adjust_ids as $adjust_id){  
                         $adjusts->push( LoanContributionAdjust::find($adjust_id));
                     }      
                 }

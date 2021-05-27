@@ -366,8 +366,9 @@ class LoanPaymentController extends Controller
                 //$payment->payment_type_id = $request->payment_type_id;
                 $payment->description = $request->input('description', null);
                 $payment->bank_pay_number = $request->input('bank_pay_number', null);
+                $bank_pay_number=$request->input('bank_pay_number', null);
                 $voucher = $loanPayment->voucher_treasury()->create($payment->toArray());
-                $loanPayment->update(['state_id' => $Pagado,'user_id' => $payment->user_id,'validated'=>true,'loan_payment_date'=>Carbon::now()]);
+                $loanPayment->update(['state_id' => $Pagado,'user_id' => $payment->user_id,'validated'=>true,'loan_payment_date'=>Carbon::now(),'voucher'=>$bank_pay_number]);
                 if($loanPayment->loan->verify_balance() == 0)
                 {
                     $loan = Loan::whereId($loanPayment->loan_id);
@@ -1047,11 +1048,12 @@ class LoanPaymentController extends Controller
                 $have_payment = false;
                 if($request->state){//comando
                     $procedure_modality_id = ProcedureModality::whereShortened("DES-COMANDO")->first()->id;
-                    $ci=(int)$array[0][$i][0];
+                    $ci=$array[0][$i][0];
                     $affiliate = Affiliate::whereIdentityCard($ci)->first(); 
-                    $loanPayments = LoanPayment::where('affiliate_id', $affiliate->id)->where('state_id',$pendiente_confirmar_id)
+                    if($affiliate != NULL){
+                        $loanPayments = LoanPayment::where('affiliate_id', $affiliate->id)->where('state_id',$pendiente_confirmar_id)
                     ->where('procedure_modality_id', $procedure_modality_id)->where('estimated_date',$estimated_date_importation)->get();
-                              
+                    }               
                 }else{ //senasir
                     $matricula= $array[0][$i][0];
                     $affiliate = Affiliate::whereRegistration($matricula)->first();
@@ -1196,7 +1198,7 @@ class LoanPaymentController extends Controller
                         }
                     }
                     //verifica si el monto es mayor a garantias
-                    if($amount_Affiliate>0){
+                    if($amount_Affiliate>0 && $affiliate != null ){
                         $affiliate_mount = (object)['ci' => $affiliate->identity_card,'matricula' => $affiliate->registration,'monto_excedente' => $amount_Affiliate,'Estado afiliado' => $affiliate->registration];
                         $amount_more_affiliate->push($affiliate_mount);
                     }
@@ -1274,8 +1276,7 @@ class LoanPaymentController extends Controller
        $export = new ArchivoPrimarioExport($data);
        return Excel::download($export, $File.'.xlsx'); 
     }
-    //reporte 
-    /** 
+   /** 
    * Listar amortizaciones generando reportes
    * Lista todos los amortizaciones con opcion a busquedas
    * @queryParam sortDesc Vector de orden descendente(0) o ascendente(1). Example: 0
