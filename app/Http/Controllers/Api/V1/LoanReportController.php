@@ -194,6 +194,7 @@ class LoanReportController extends Controller
                'loans.parent_reason as parent_reason_loan','loans.amount_approved as amount_disbursement',DB::raw("(loans.amount_approved - loans.refinancing_balance) as amount_disbursement_liquido"),
                'loans.loan_term as term_loan','loan_destinies.name as name_destinity_loan')
                //->where('affiliates.identity_card','LIKE'.'%'.$request->identity_card.'%')
+               ->distinct('loans.code')
                ->orderBy('loans.code', $order_loan)
                ->get();
  
@@ -338,110 +339,95 @@ class LoanReportController extends Controller
 
     //mora
     foreach($loans as $loan){
-      if($loan->defaulted && count($loan->payments) > 0){
-        $loan->guarantor = $loan->guarantor;
-        $loan->lenders = $loan->lenders;
-        $loan->personal_references=$loan->personal_references;
-        $loans_mora->push($loan);
-      }
+        if($loan->defaulted && count($loan->payments) > 0){
+            $loan->guarantor = $loan->guarantor;
+            $loan->lenders = $loan->lenders;
+            //$loan->personal_references;
+            $loans_mora->push($loan);
+          }
+          if($loan->defaulted && count($loan->payments)== 0){
+            $loan->guarantor = $loan->guarantors;
+            $loan->lenders = $loan->lenders;
+            //$loan->personal_references;
+    
+            $loans_mora_total->push($loan);
+          }
+          if($loan->getdelay_parcial() && !$loan->defaulted ){
+            $loan->guarantor = $loan->guarantors;
+            $loan->lenders = $loan->lenders;
+            //$loan->personal_references;
+    
+            $loans_mora_parcial->push($loan);
+          }
     }
-
-    //mora total
-    foreach($loans as $loan){
-      if($loan->defaulted && count($loan->payments)== 0){
-        $loan->guarantor = $loan->guarantors;
-        $loan->lenders = $loan->lenders;
-        $loan->personal_references=$loan->personal_references;
-
-        $loans_mora_total->push($loan);
-      }
-    }
-
-    //mora parcial
-    foreach($loans as $loan){
-      if($loan->getdelay_parcial() && !$loan->defaulted ){
-        $loan->guarantor = $loan->guarantors;
-        $loan->lenders = $loan->lenders;
-        $loan->personal_references=$loan->personal_references;
-
-        $loans_mora_parcial->push($loan);
-      }
-    }
-
+//prestamomora total
     $File="PrestamosMora";
-        $data=array(
-            array("MATRICULA","CI","NOMBRE COMPLETO","NRO DE CEL","NRO DE CEL.2","PTMO","FECHA DESEMBOLSO",
-            "NRO DE CUOTAS","TAZA ANUAL","CUOTA MENSUAL","SALDO","TIPO","PRODUCTO","TIEMPO MORA","NOM. PERSONAL REFERENCE","DIRECCIÓN")
+        $data_mora_total=array(
+            array("MATRICULA","CI","NOMBRE COMPLETO","NRO DE CEL.2","NRO FIJO","CIUDAD","DIRECCIÓN","PTMO","FECHA DESEMBOLSO",
+            "NRO DE CUOTAS","TASA ANUAL","FECHA DEL ÚLTIMO PAGO","TIPO DE PAGO","CUOTA MENSUAL","SALDO ACTUAL","ÉSTADO DEL AFILIADO","MODALIDAD","SUB MODALIDAD","DÍAS MORA","NOM. PERSONAL REFERENCE","DIRECCIÓN")
         );
         foreach ($loans_mora_total as $row){
-            array_push($data, array(
-               $row->lenders[0]->affiliate_registration_number,
-               $row->lenders[0]->identity_card,
-              // $row->lenders[0],
-               $row->lenders[0]->first_name,
-               $row->lenders[0]->last_name,
-               $row->lenders[0]->phone_number,
-               $row->lenders[0]->cell_phone_number,
-               $row->code,
-               $row->disbursement_date,
-               $row->loan_term,
-               $row->estimated_quota,
-               $row->balance,
-               $row->lenders[0]->affiliate_state->affiliate_state_type->name,
-               $row->modality->procedure_type->second_name,
-
-               $row->getdelay()->penal,
+            array_push($data_mora_total, array(
+                $row->lenders[0]->affiliate_registration_number,
+                $row->lenders[0]->identity_card,
+                $row->lenders[0]->first_name.' '.$row->lenders[0]->second_name.' ' .$row->lenders[0]->last_name.' '.$row->lenders[0]->mothers_last_name,
+                $row->lenders[0]->cell_phone_number,
+                $row->lenders[0]->phone_number,
+                $row->code,
+                $row->disbursement_date,
+                $row->loan_term,
+                $row->estimated_quota,
+                $row->balance,
+                $row->lenders[0]->affiliate_state->affiliate_state_type->name,
+                $row->modality->procedure_type->second_name,
+ 
+                $row->getdelay()->penal,
               // $row->getdelay()->interest_accumulated,
                
-               $row->personal_references[0]->last_name,
-               $row->personal_references[0]->address,
+               //$row->personal_references ? $row->personal_references[0]->first_name:' ',
+               //$row->personal_references[0]->address,
             ));
         }
         //prestamomora parcial
         $File="PrestamosMoraParcial";
         $data_mora_parcial=array(
-            array("MATRICULA","CI","NOMBRE COMPLETO","NRO DE CEL","NRO DE CEL.2","PTMO","FECHA DESEMBOLSO",
-            "NRO DE CUOTAS","TAZA ANUAL","CUOTA MENSUAL","SALDO","TIPO","PRODUCTO","TIEMPO MORA","NOM. PERSONAL REFERENCE","DIRECCIÓN")
+            array("MATRICULA","CI","NOMBRE COMPLETO","NRO DE CEL.2","NRO FIJO","CIUDAD","DIRECCIÓN","PTMO","FECHA DESEMBOLSO",
+            "NRO DE CUOTAS","TASA ANUAL","FECHA DEL ÚLTIMO PAGO","TIPO DE PAGO","CUOTA MENSUAL","SALDO ACTUAL","ÉSTADO DEL AFILIADO","MODALIDAD","SUB MODALIDAD","DÍAS MORA","NOM. PERSONAL REFERENCE","DIRECCIÓN")
         );
         foreach ($loans_mora_parcial as $row){
             array_push($data_mora_parcial, array(
-               $row->lenders[0]->affiliate_registration_number,
-               $row->lenders[0]->identity_card,
-              // $row->lenders[0],
-               $row->lenders[0]->first_name,
-               $row->lenders[0]->last_name,
-               $row->lenders[0]->phone_number,
-               $row->lenders[0]->cell_phone_number,
-               $row->code,
-               $row->disbursement_date,
-               $row->loan_term,
-               $row->estimated_quota,
-               $row->balance,
-               $row->lenders[0]->affiliate_state->affiliate_state_type->name,
-               $row->modality->procedure_type->second_name,
-
-               $row->getdelay()->penal,
+                $row->lenders[0]->affiliate_registration_number,
+                $row->lenders[0]->identity_card,
+                $row->lenders[0]->first_name.' '.$row->lenders[0]->second_name.' ' .$row->lenders[0]->last_name.' '.$row->lenders[0]->mothers_last_name,
+                $row->lenders[0]->cell_phone_number,
+                $row->lenders[0]->phone_number,
+                $row->code,
+                $row->disbursement_date,
+                $row->loan_term,
+                $row->estimated_quota,
+                $row->balance,
+                $row->lenders[0]->affiliate_state->affiliate_state_type->name,
+                $row->modality->procedure_type->second_name,
+                $row->getdelay()->penal,
               // $row->getdelay()->interest_accumulated,
                
-               $row->personal_references[0]->last_name,
-               $row->personal_references[0]->address,
+               // $row->personal_references ? $row->personal_references[0]->first_name:' ',
+              // $row->personal_references[0]->address,
             ));
         }
         //prestamomora 
         $File="PrestamosMora";
         $data_mora=array(
-            array("MATRICULA","CI","NOMBRE COMPLETO","NRO DE CEL","NRO DE CEL.2","PTMO","FECHA DESEMBOLSO",
-            "NRO DE CUOTAS","TAZA ANUAL","CUOTA MENSUAL","SALDO","TIPO","PRODUCTO","TIEMPO MORA","NOM. PERSONAL REFERENCE","DIRECCIÓN")
+            array("MATRICULA","CI","NOMBRE COMPLETO","NRO DE CEL.2","NRO FIJO","CIUDAD","DIRECCIÓN","PTMO","FECHA DESEMBOLSO",
+            "NRO DE CUOTAS","TASA ANUAL","FECHA DEL ÚLTIMO PAGO","TIPO DE PAGO","CUOTA MENSUAL","SALDO ACTUAL","ÉSTADO DEL AFILIADO","MODALIDAD","SUB MODALIDAD","DÍAS MORA","NOM. PERSONAL REFERENCE","DIRECCIÓN")
         );
         foreach ($loans_mora as $row){
             array_push($data_mora, array(
                $row->lenders[0]->affiliate_registration_number,
                $row->lenders[0]->identity_card,
-              // $row->lenders[0],
-               $row->lenders[0]->first_name,
-               $row->lenders[0]->last_name,
-               $row->lenders[0]->phone_number,
-               $row->lenders[0]->cell_phone_number,
+              $row->lenders[0]->first_name.' '.$row->lenders[0]->second_name.' ' .$row->lenders[0]->last_name.' '.$row->lenders[0]->mothers_last_name,
+              $row->lenders[0]->cell_phone_number,
+              $row->lenders[0]->phone_number,
                $row->code,
                $row->disbursement_date,
                $row->loan_term,
@@ -451,15 +437,15 @@ class LoanReportController extends Controller
                $row->modality->procedure_type->second_name,
 
                $row->getdelay()->penal,
+              // $row->personal_references ? $row->personal_references[0]->first_name:' ',
               // $row->getdelay()->interest_accumulated,
                
-               $row->personal_references[0]->last_name,
-               $row->personal_references[0]->address,
+               //$row->personal_references[0]->address,
             ));
         }
 
         //$export = new MultipleSheetExportPaymentMora($data,$data_mora_parcial,$data_mora,'MORA TOTAL','MORA PARCIAL','MORA');
-        $export = new MultipleSheetExportPaymentMora($data,$data_mora_parcial,$data_mora);
+        $export = new MultipleSheetExportPaymentMora($data_mora_total,$data_mora_parcial,$data_mora,'MORA TOTAL','MORA PARCIAL','MORA');
         return Excel::download($export, $File.'.xlsx');
   }
 

@@ -15,7 +15,7 @@
       :footer-props="{ itemsPerPageOptions: [8, 15, 30] }"
     >
       <template v-slot:[`item.month_year`]="{ item }">
-        {{ $moment(item.month_year).format("YYYY-MM") }}
+        {{ $moment(item.month_year).format("MM-YYYY") }}
       </template>
       <template v-slot:[`item.degree_id`]="{ item }">
         {{ searchDegree(item.degree_id) }}
@@ -28,6 +28,21 @@
       </template>
       <template v-slot:[`item.unit_id`]="{ item }">
         {{ searchUnit(item.unit_id) }}
+      </template>
+      <template v-slot:[`item.border_bonus`]="{ item }">
+        {{ item.border_bonus | money }}
+      </template>
+      <template v-slot:[`item.east_bonus`]="{ item }">
+        {{ item.east_bonus | money }}
+      </template>
+      <template v-slot:[`item.position_bonus`]="{ item }">
+        {{ item.position_bonus | money }}
+      </template>
+      <template v-slot:[`item.public_security_bonus`]="{ item }">
+        {{ item.public_security_bonus | money }}
+      </template>
+      <template v-slot:[`item.payable_liquid`]="{ item }">
+        {{ item.payable_liquid | money }}
       </template>
     </v-data-table>
   </div>
@@ -57,7 +72,7 @@ export default {
         value: "month_year",
         class: ["normal", "white--text"],
         sortable: false,
-        width: "8%",
+        width: "10%",
       },
       {
         text: "Grado",
@@ -83,36 +98,40 @@ export default {
         class: ["normal", "white--text"],
         sortable: false,
       },
-
       {
         text: "Bono Frontera",
         value: "border_bonus",
         class: ["normal", "white--text"],
         sortable: false,
+        width: "8%",
       },
       {
         text: "Bono Oriente",
         value: "east_bonus",
         class: ["normal", "white--text"],
         sortable: false,
+        width: "8%",
       },
       {
         text: "Bono Cargo",
         value: "position_bonus",
         class: ["normal", "white--text"],
         sortable: false,
+        width: "8%",
       },
       {
         text: "Bono Seguridad Ciudadana",
         value: "public_security_bonus",
         class: ["normal", "white--text"],
         sortable: false,
+        width: "8%",
       },
       {
         text: "Liquido pagable",
         value: "payable_liquid",
         class: ["normal", "white--text"],
         sortable: false,
+        width: "8%",
       },
     ],
     state: [],
@@ -232,26 +251,7 @@ export default {
         return null;
       }
     },
-    /*async getAffiliateState() {
-      try {
-        this.loading = true;
-        let res = await axios.get(`affiliate_state`);
-        this.state = res.data
-        console.log(this.state)
-      } catch (e) {
-        console.log(e);
-      } finally {
-        this.loading = false;
-      }
-    },
-    searchState(item) {
-      let procedureState = this.state.find(o => o.id == item)
-      if (procedureState) {
-        return procedureState.name        
-      } else {
-        return null
-      }
-    },*/
+
   },
 };
 </script>

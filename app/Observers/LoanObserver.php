@@ -25,8 +25,6 @@ class LoanObserver
     */
     public function updating(Loan $object)
     {
-        /*if(!$object->has($role_id))
-            $object->role_id = User::whereUsername('admin')->first()->roles->first()->id;*/
         Util::save_record($object, 'datos-de-un-tramite', Util::concat_action($object));
     }
     /**

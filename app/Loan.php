@@ -590,7 +590,7 @@ class Loan extends Model
         return $quota;
     }
 
-    public function getPlanAttribute() {
+    /*public function getPlanAttribute() {
         $plan = [];
         $daily_interest = $this->interest->daily_current_interest;
         $balance = $this->amount_approved;
@@ -636,7 +636,7 @@ class Loan extends Model
             $i++;
         }
         return $plan;
-    }
+    }*/
 
     //obtener modalidad teniendo el tipo y el afiliado
     public static function get_modality($modality, $affiliate, $type_sismu, $cpop_sismu, $cpop_affiliate){
@@ -998,4 +998,74 @@ class Loan extends Model
           return (object)$data; 
     }
 
+    public function getPlanAttribute()
+    {
+        $plan = [];
+        $loan_global_parameter = LoanGlobalParameter::latest()->first();
+        $balance = $this->amount_approved;
+        $days_aux = 0;
+        $interest_rest = 0;
+        for($i = 1 ;$i<= $this->loan_term; $i++){
+            if($i == 1){
+                $date_ini = Carbon::parse($this->disbursement_date)->format('d-m-Y');
+                if(Carbon::parse($date_ini)->format('d') <= $loan_global_parameter->offset_interest_day){
+                    $date_fin = Carbon::parse($date_ini)->endOfMonth();
+                    $days = $date_fin->diffInDays($date_ini);
+                }
+                else{
+                    $date_fin = Carbon::parse($date_ini)->startOfMonth()->addMonth()->endOfMonth();
+                    $days_aux = Carbon::parse($date_ini)->diffInDays(Carbon::parse($date_ini)->endOfMonth());
+                    $date_ini_aux = $date_ini;
+                    $date_ini = Carbon::parse($date_ini)->startOfMonth()->addMonth()->startOfMonth();
+                    $interest_rest = Util::round2(LoanPayment::interest_by_days($days_aux, $this->interest->annual_interest, $balance));
+                    $days = $date_fin->diffInDays($date_ini)+1;
+                }
+            }
+            else{
+                $date_fin = Carbon::parse($date_ini)->endOfMonth();
+                $days = $date_fin->diffInDays($date_ini)+1;
+            }
+            $interest = Util::round2(LoanPayment::interest_by_days($days, $this->interest->annual_interest, $balance));
+            $capital = $this->estimated_quota - $interest;
+            $payment = $interest + $capital;
+            $balance = $balance - $capital;
+            if($i == 1){
+                array_push($plan, (object)[
+                'nro' => $i,
+                'date' => Carbon::parse($date_fin)->format('d-m-Y'),
+                'days' => $days + $days_aux,
+                'interest' => $interest + $interest_rest,
+                'capital' => Util::round($capital),
+                'payment' => $payment + $interest_rest,
+                'balance' => Util::round($balance),
+                ]);
+            }
+            else{
+                if($i == $this->loan_term){
+                    array_push($plan, (object)[
+                        'nro' => $i,
+                        'date' => Carbon::parse($date_fin)->format('d-m-Y'),
+                        'days' => $days,
+                        'interest' => $interest,
+                        'capital' => Util::round($capital+$balance),
+                        'payment' => Util::round($payment+$balance),
+                        'balance' => 0,
+                        ]);
+                }
+                else{
+                    array_push($plan, (object)[
+                        'nro' => $i,
+                        'date' => Carbon::parse($date_fin)->format('d-m-Y'),
+                        'days' => $days,
+                        'interest' => $interest,
+                        'capital' => Util::round($capital),
+                        'payment' => $payment,
+                        'balance' => Util::round($balance),
+                        ]);
+                }
+            }
+            $date_ini = Carbon::parse($date_fin)->startOfMonth()->addMonth();
+        }
+        return $plan;
+   }
 }

@@ -155,31 +155,19 @@
                 @php ($aux = 0)
                 @foreach ($loan->plan as $quota)
                 <tr>
-                    <td class="data-row py-2">{{ $quota->quota }}</td>
+                    <td class="data-row py-2">{{ $quota->nro }}</td>
                     <td class="data-row py-2">{{ Carbon::parse($quota->date)->format('d/m/Y') }}</td>
-                    @if($sw == 0)
-                        <td class="data-row py-2">{{ $quota->days + $quota->accumulated }}</td>
-                        <td class="data-row py-2">{{ Util::money_format($quota->capital) }}</td>
-                        <td class="data-row py-2">{{ Util::money_format($quota->interest  + $quota->interest_accumulated) }}</td>
-                        <td class="data-row py-2">0.0</td>
-                        <td class="data-row py-2">{{ Util::money_format($quota->estimated_quota + $quota->interest_accumulated) }}</td>
-                        @php ($aux = $quota->interest_accumulated)
-                        @php ($sum_interest += $quota->interest_accumulated)
-                    @else
-                        <td class="data-row py-2">{{ $quota->days }}</td>
-                        <td class="data-row py-2">{{ Util::money_format($quota->capital) }}</td>
-                        <td class="data-row py-2">{{ Util::money_format($quota->interest) }}</td>
-                        <td class="data-row py-2">0.0</td>
-                        <td class="data-row py-2">{{ Util::money_format($quota->estimated_quota) }}</td>
-                    @endif
-                    <td class="data-row py-2">{{ Util::money_format($quota->next_balance) }}</td>
-                    <!--<td class="data-row py-2">{{ $quota->interest_accumulated }}</td>-->
+                    <td class="data-row py-2">{{ $quota->days }}</td>
+                    <td class="data-row py-2">{{ Util::money_format($quota->capital) }}</td>
+                    <td class="data-row py-2">{{ Util::money_format($quota->interest) }}</td>
+                    <td class="data-row py-2">{{ Util::money_format(0) }}</td>
+                    <td class="data-row py-2">{{ Util::money_format($quota->payment) }}</td>
+                    <td class="data-row py-2">{{ Util::money_format($quota->balance) }}</td>
                 </tr>
-                @php ($sum_estimated_quota += $quota->estimated_quota)
+                @php ($sum_estimated_quota += $quota->payment)
                 @php ($sum_days_amr += $quota->days)
                 @php ($sum_capital += $quota->capital)
                 @php ($sum_interest += $quota->interest)
-                @php ($sw = 1)
                 @endforeach
                 <tr>
                     <td colspan="2" class="data-row py-2 font-semibold leading-tight text-xs">TOTALES</td>
@@ -187,9 +175,9 @@
                     <td class="data-row py-2">{{$sum_days_amr}}</td>
                     <td class="data-row py-2">{{ Util::money_format($sum_capital) }}</td>
                     <td class="data-row py-2">{{ Util::money_format($sum_interest) }}</td>
-                    <td class="data-row py-2">0.0</td>
-                    <td class="data-row py-2">{{ Util::money_format($sum_estimated_quota + $aux) }}</td>
-                    <td class="data-row py-2">0.0</td>
+                    <td class="data-row py-2">{{ Util::money_format(0) }}</td>
+                    <td class="data-row py-2">{{ Util::money_format($sum_estimated_quota) }}</td>
+                    <td class="data-row py-2">{{ Util::money_format(0) }}</td>
                 </tr>
             </tbody>
         </table>

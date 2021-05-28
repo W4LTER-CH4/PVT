@@ -22,7 +22,7 @@
                 <template v-slot:[`item.voucher_type_name`]="{ item }">
               {{ item.voucher_type ? item.voucher_type.name : ''}}
             </template>
-                <template v-slot:[`total`]="{ item }">
+                <template v-slot:[`item.total`]="{ item }">
               {{ item.total | money}}
             </template>
                 <template v-slot:[`item.payable_code`]="{ item }">

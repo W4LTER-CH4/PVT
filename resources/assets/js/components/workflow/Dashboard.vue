@@ -61,7 +61,7 @@
                   mdi-currency-usd
                 </v-icon>
                 <h5><strong><b style="color:white">MONTO SOLICITADO:</b></strong></h5>
-                <h5>{{ loan.amount_requested + " Bs" }}</h5>
+                <h5>{{ loan.amount_requested | money}}  Bs </h5>
               </v-card-text>
             </v-card>
           </v-col>

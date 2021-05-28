@@ -30,11 +30,11 @@
                 fab
                 v-on="on"
                 @click="clearAll()" 
-                color="light-blue lighten-3"  
+                color="info"  
                 class="mb-2" 
                 small>
                   <v-icon>
-                      mdi-format-clear
+                      mdi-broom
                   </v-icon>
               </v-btn>
           </template>
@@ -71,7 +71,7 @@
             </v-menu>
           </template>
 
-          <template v-slot:[`header.disbursement_date_loan`]="{ header }">
+          <!--<template v-slot:[`header.disbursement_date_loan`]="{ header }">
             {{ header.text }}<br>
             <v-menu offset-y :close-on-content-click="false">
               <template v-slot:activator="{ on, attrs }">
@@ -93,8 +93,7 @@
                 ></v-text-field>
               </div>
             </v-menu>
-          </template>
-
+          </template>-->
           <template v-slot:[`header.state_type_affiliate`]="{ header }">
             {{ header.text }}<br>
             <v-menu offset-y :close-on-content-click="false">
@@ -191,7 +190,7 @@
             </v-menu>
           </template>
 
-          <template v-slot:[`header.estimated_date_payment`]="{ header }">
+          <!--<template v-slot:[`header.estimated_date_payment`]="{ header }">
             {{ header.text }}<br>
             <v-menu offset-y :close-on-content-click="false">
               <template v-slot:activator="{ on, attrs }">
@@ -213,7 +212,7 @@
                 ></v-text-field>
               </div>
             </v-menu>
-          </template>
+          </template>-->
 
           <template v-slot:[`header.registration_affiliate`]="{ header }">
             {{ header.text }}<br>
@@ -528,6 +527,14 @@
               </div>
             </v-menu>
           </template>
+          
+          <template v-slot:[`item.disbursement_date_loan`]="{ item }">
+            {{ item.disbursement_date_loan | datetimeshorted}}
+          </template>
+
+          <template v-slot:[`item.estimated_date_payment`]="{ item }">
+            {{ item.estimated_date_payment | date}}
+          </template>
 
           <template v-slot:[`item.modality_payment`]="{ item }">
           {{ item.modality_payment }}
@@ -641,10 +648,11 @@ data () {
     },
 
     headers: [
-      { text: 'Cód. Préstamo', value: 'code_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-      { text: 'Fecha Desembolso',value:'disbursement_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-      { text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+      //
+      //{ text: 'Fecha Desembolso',value:'disbursement_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+      //{ text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
       { text: 'Cód. Pago', value: 'code_payment',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+      { text: 'Cód. Préstamo', value: 'code_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
       { text: 'Fecha Pago', value: 'estimated_date_payment',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
       { text: 'Total Pagado', value: 'estimated_quota_payment',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
       { text: 'CI', value: 'identity_card_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
@@ -726,7 +734,7 @@ data () {
                 estimated_quota_payment:this.searching.estimated_quota_payment,
                 estimated_date_payment:this.searching.estimated_date_payment,
                 identity_card_affiliate: this.searching.identity_card_affiliate,
-                registration_affiliate: this.searching.registration_affiliateF,
+                registration_affiliate: this.searching.registration_affiliate,
                 last_name_affiliate: this.searching.last_name_affiliate,
                 mothers_last_name_affiliate: this.searching.mothers_last_name_affiliate,
                 first_name_affiliate: this.searching.first_name_affiliate,
@@ -769,7 +777,7 @@ data () {
           estimated_quota_payment:this.searching.estimated_quota_payment,
           estimated_date_payment:this.searching.estimated_date_payment,
           identity_card_affiliate: this.searching.identity_card_affiliate,
-          registration_affiliate: this.searching.registration_affiliateF,
+          registration_affiliate: this.searching.registration_affiliate,
           last_name_affiliate: this.searching.last_name_affiliate,
           mothers_last_name_affiliate: this.searching.mothers_last_name_affiliate,
           first_name_affiliate: this.searching.first_name_affiliate,

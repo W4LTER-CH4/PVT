@@ -507,6 +507,7 @@ export default {
       try {
       this.loan_contributions_adjust_ids = []
       this.contributionable_ids = []
+      console.log(this.contributionable_ids)
 
       this.contributions.forEach(async (item, i) => {
         //Verificar si el afiliado es pasivo para introducir su contribución

@@ -16,7 +16,7 @@ Vue.filter('datetime', value => {
 })
 Vue.filter('datetimeshorted', value => {
 	if(value != null)
-	return moment(value).format('D/MM/YYYY HH:mm:ss')
+	return moment(value).format('DD/MM/YYYY HH:mm:ss')
 	else ''
 })
 Vue.filter('date', value => {
@@ -25,15 +25,17 @@ Vue.filter('date', value => {
 	else ''
 })
 Vue.filter('money', value => {
-	if(value == 0) return '0.00'
-	else return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+	if(value == 0) return '0,00'
+	//else return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+	else return parseFloat(value).toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})
 })
 Vue.filter('moneyString', value => {
 	value=Number(value)
 	if(value == ''){
 		return 0
 	}else{
-		if (value) return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+		//if (value) return value.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+		if(value) return parseFloat(value).toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})
 	}
   })
 Vue.filter('fullName', (value, byFirstName = false) => {

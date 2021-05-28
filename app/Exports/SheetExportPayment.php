@@ -33,7 +33,7 @@ class SheetExportPayment implements FromArray, WithTitle,WithColumnWidths
         return [
             'A' => 20,
             'B' => 20,
-            'C' => 15,
+            'C' => 30,
             'D' => 20,
             'E' => 20,
             'F' => 15,
