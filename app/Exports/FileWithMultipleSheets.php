@@ -10,15 +10,15 @@ use App\Exports\MultipleSheetsExportDeployed;
 
 class FileWithMultipleSheets implements WithMultipleSheets
 {
-    protected $data_command_deployed;
-    protected $data_senasir_deployed;
+    /*protected $data_command_deployed;
+    protected $data_senasir_deployed;*/
     protected $data_command;
     protected $data_senasir;
 
-    public function __construct(array $data_command_deployed, array $data_senasir_deployed, array $data_command, array $data_senasir)
+    public function __construct(/*array $data_command_deployed, array $data_senasir_deployed, */array $data_command, array $data_senasir)
     {
-        $this->data_command_deployed = $data_command_deployed;
-        $this->data_senasir_deployed = $data_senasir_deployed;
+        /*$this->data_command_deployed = $data_command_deployed;
+        $this->data_senasir_deployed = $data_senasir_deployed;*/
         $this->data_command = $data_command;
         $this->data_senasir = $data_senasir;
     }
@@ -29,8 +29,8 @@ class FileWithMultipleSheets implements WithMultipleSheets
     public function sheets(): array
     {
         $sheets = [
-            "command_deployed" => new MultipleSheetsExportDeployed($this->data_command, 'comando desplegado'),
-            "senasir_deployed" => new MultipleSheetsExportDeployed($this->data_senasir, 'senasir desplegado'),
+            /*"command_deployed" => new MultipleSheetsExportDeployed($this->data_command, 'comando desplegado'),
+            "senasir_deployed" => new MultipleSheetsExportDeployed($this->data_senasir, 'senasir desplegado'),*/
             "command" => new MultipleSheetsExport($this->data_command, 'comando'),
             "senasir" => new MultipleSheetsExport($this->data_senasir, 'senasir')
         ];

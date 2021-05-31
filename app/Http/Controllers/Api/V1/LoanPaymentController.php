@@ -703,7 +703,7 @@ class LoanPaymentController extends Controller
             foreach ($command as $row){
                 if($row->loan->state->name == 'Vigente'){
                     array_push($command_sheet, array(
-                        $row->loan->disbursement_date,
+                        Carbon::parse($row->loan->disbursement_date)->format('d/m/Y'),
                         $row->loan->code,
                         $row->affiliate->affiliate_state->name,
                         $row->affiliate->registration,
@@ -751,7 +751,7 @@ class LoanPaymentController extends Controller
             foreach ($senasir as $row){
                 if($row->loan->state->name == 'Vigente'){
                     array_push($command_sheet, array(
-                        $row->loan->disbursement_date,
+                        Carbon::parse($row->loan->disbursement_date)->format('d/m/Y'),
                         $row->loan->code,
                         $row->affiliate->affiliate_state->name,
                         $row->affiliate->registration,
@@ -790,7 +790,7 @@ class LoanPaymentController extends Controller
                     Carbon::now()->endOfMonth()->format('d/m/Y'),
                     ));
             }
-            $export = new FileWithMultipleSheets($command_sheet_deployed, $senasir_sheet_deployed, $command_sheet, $senasir_sheet);
+            $export = new FileWithMultipleSheets(/*$command_sheet_deployed, $senasir_sheet_deployed, */$command_sheet, $senasir_sheet);
             Excel::store($export, $file_name.$extension, 'public');
             return $file = Storage::disk('public')->download($file_name.$extension);
         }
