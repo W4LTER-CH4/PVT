@@ -209,6 +209,7 @@ class LoanPayment extends Model
         $payment->voucher = $voucher;
         $payment->paid_by = $paid_by;
         //$payment->amortization_type_id = $payment_type->id;
+        $payment->user_id = auth()->id();
         $loan_payment = $loan->payments()->create($payment->toArray());
         return $loan_payment;
     }

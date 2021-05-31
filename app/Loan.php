@@ -1074,4 +1074,65 @@ class Loan extends Model
         }
         return $plan;
    }
+   public function validate_loan_affiliate_edit($amount_approved,$loan_term){   
+    $procedure_modality = ProcedureModality::findOrFail($this->procedure_modality_id);
+        if($amount_approved <= $procedure_modality->loan_modality_parameter->maximum_amount_modality && $amount_approved >= $procedure_modality->loan_modality_parameter->minimum_amount_modality){
+            if($loan_term <= $procedure_modality->loan_modality_parameter->maximum_term_modality && $loan_term >= $procedure_modality->loan_modality_parameter->minimum_term_modality){
+                $quota_estimated = CalculatorController::quota_calculator($procedure_modality,$loan_term,$amount_approved);
+                $new_indebtedness_calculated = Util::round2(($quota_estimated/$this->liquid_qualification_calculated)*100);
+                $validate = false;
+                if($new_indebtedness_calculated<=$procedure_modality->loan_modality_parameter->debt_index){                      
+                    if(count($this->guarantors)>0 || count($this->lenders) > 1){
+                        if($new_indebtedness_calculated <= Util::round2($this->indebtedness_calculated)){ 
+                            foreach ($this->lenders  as $lender) {    
+                                $quota_estimated_lender = ($quota_estimated/100)*$lender->pivot->payment_percentage;
+                                $new_indebtedness_lender = ($quota_estimated_lender/(float)$lender->pivot->liquid_qualification_calculated)*100;
+                                if($new_indebtedness_lender <= (float)$lender->pivot->indebtedness_calculated){
+                                    $validate = true;                
+                                }else  $validate = false; 
+                            }                         
+                            if(count($this->guarantors)>0){   
+                                foreach ($this->guarantors  as $guarantor) {    
+                                    $affiliate = Affiliate::find($guarantor->pivot->affiliate_id);
+                                    $active_guarantees = $affiliate->active_guarantees();$sum_quota = 0;
+                                    foreach($active_guarantees as $res)
+                                        $sum_quota += ($res->estimated_quota * $res->pivot->payment_percentage)/100; // descuento en caso de tener garantias activas
+                                        $active_guarantees_sismu = $affiliate->active_guarantees_sismu();
+                                    foreach($active_guarantees_sismu as $res)
+                                        $sum_quota += $res->PresCuotaMensual / $res->quantity_guarantors; // descuento en caso de tener garantias activas del sismu*/
+                                        $quota_estimated_guarantor = ($quota_estimated/100)*$guarantor->pivot->payment_percentage;
+                                        $new_indebtedness_calculated_guarantor = Util::round2((($quota_estimated_guarantor + $sum_quota - $guarantor->pivot->quota_treat)/(float)$guarantor->pivot->liquid_qualification_calculated) * 100);
+                                    if($new_indebtedness_calculated_guarantor <= Util::round2((float)$guarantor->pivot->indebtedness_calculated)){
+                                        $validate = true;                                                                            
+                                    }else $validate = false;                                  
+                                }                                   
+                            }  
+                            if($validate === true){
+                                return $validate;
+                            }else {
+                                $message['message'] = 'El índice de endeudamiento del titular o garante no debe ser superior a la evaluación realizada anteriormente';
+                            }                                                                                                   
+                        }else {
+                        $message['message'] = 'El índice de endeudamiento no debe ser superior a '.$this->indebtedness_calculated.$new_indebtedness_calculated.'%, evaluación realizada anteriormente';                        
+                        } 
+                    }else{ 
+                        if(count($this->lenders) == 1){
+                            foreach ($this->lenders  as $lender) {     
+                                $validate = true;                       
+                            }    
+                            return $validate;                      
+                        }
+                    }
+                }else {
+                $message['message'] = 'El índice de endeudamiento no debe ser superior a '.$procedure_modality->loan_modality_parameter->debt_index.'%';
+                }                       
+            }else{
+            $message['message'] = 'No se pudo realizar la edicion. El plazo en meses solicitado no corresponde a la modalidad';
+            } 
+        }else{
+        $message['message'] = 'No se pudo realizar la edicion. El monto solicitado no corresponde a la modalidad';
+        } 
+    return $message;            
+    }
+
 }
