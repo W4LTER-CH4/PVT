@@ -78,7 +78,7 @@
           <v-col md="4" class="ma-0 pa-0">
             <strong>Desembolso: </strong>{{ loan.disbursement_date | datetimeshorted }}<br />
             <strong>Nro de comprobante contable: </strong>{{ loan.num_accounting_voucher }}<br />
-            <strong>Tasa anual: </strong> {{ parseInt(loan.intereses.annual_interest) }}%<br />
+            <strong>Tasa anual: </strong> {{ loan.intereses.annual_interest | percentage }}%<br />
             <strong>Cuota fija mensual: </strong> {{ loan.estimated_quota | moneyString}}<br />
           </v-col>
           <v-col md="4" class="ma-0 pa-0">
@@ -162,8 +162,11 @@
         <!--<template v-slot:[`item.amortization_type_id`]="{ item }">
           {{ searchAmortizationType(item.amortization_type_id) }}
         </template>-->
-        <template v-slot:[`item.state.name`]="{ item }">
+        <template v-slot:[`item.state_name`]="{ item }">
           {{ item.state.name }}
+        </template>
+        <template v-slot:[`item.voucher_treasury_code`]="{ item }">
+          {{ item.voucher_treasury != null ? item.voucher_treasury.code : ''}}
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
@@ -418,7 +421,16 @@ export default {
       },
       {
         text: "Estado",
-        value: "state.name",
+        value: "state_name",
+        class: ["normal", "white--text"],
+        align: "center",
+        sortable: true,
+        width: "5%",
+        filterable: false,
+      },
+      {
+        text: "Recibo de pago",
+        value: "voucher_treasury_code",
         class: ["normal", "white--text"],
         align: "center",
         sortable: true,

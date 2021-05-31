@@ -119,7 +119,7 @@
                     v-slot="{ errors }"
                     vid="celular1"
                     name="celular1"
-                    rules="min:1|max:20"
+                    rules="min:1|max:8"
                   >
                     <v-text-field
                       :error-messages="errors"
@@ -138,7 +138,7 @@
                     v-slot="{ errors }"
                     vid="celular"
                     name="celular"
-                    rules="min:1|max:20"
+                    rules="min:1|max:8"
                   >
                     <v-text-field
                       class="text-right"
@@ -158,7 +158,7 @@
                     v-slot="{ errors }"
                     vid="telefono"
                     name="telefono"
-                    rules="min:1|max:20"
+                    rules="min:1|max:8"
                   >
                     <v-text-field
                       :error-messages="errors"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Util;
 
 use DB;
 use App\LoanPayment;
@@ -14,6 +15,7 @@ use App\Exports\SheetExportPayment;
 use App\Exports\MultipleSheetExportPayment;
 use Illuminate\Support\Facades\Storage;
 //use App\Exports\SheetExportPayment;
+use Carbon;
 
 class LoanPaymentReportController extends Controller
 {
@@ -75,11 +77,12 @@ class LoanPaymentReportController extends Controller
                     foreach ($list_loan as $loan) {
                         $padron = Loan::where('id', $loan->id_loan)->first();
                         $loan->modality=$padron->modality->procedure_type->second_name;
+                        $loan->sub_modality=$padron->modality->shortened;
                       }
           
                    $File="ListadoAmortizaciones";
                    $data=array(
-                       array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","PRODUCTO",
+                       array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","MODALIDAD","SUB MODALIDAD",
                        "MATRICULA AFILIADO","MATRICULA CÓNYUGUE", "CI", "APELLIDO PATERNO","APELLIDO CASADA","APELLIDO MATERNO",
                        "PRIMER NOMBRE","SEGUNDO NOMBRE","CAPITAL","INTERÉS CORRIENTE","INTERÉS PENAL","INTERÉS CORRIENTE PENDIENTE", 
                        "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","CBTE","NRO DE COBRO")
@@ -87,12 +90,13 @@ class LoanPaymentReportController extends Controller
                    foreach ($list_loan as $row){
                        array_push($data, array(
                            $row->code_loan,//nro de prestamo
-                           $row->disbursement_date_loan,//fecha de desembolso
+                           Carbon::parse($row->disbursement_date_loan)->format('d/m/Y H:i:s'),//fecha de desembolso
                            $row->state_type_affiliate,//tipo (pasivo o activo)
                            
-                           $row->estimated_date_payment,//fecha de pago
-                           $row->loan_payment_date,//fecha de transacción
-                           $row->modality, //producto
+                           Carbon::parse($row->estimated_date_payment)->format('d/m/Y'),//fecha de pago
+                           Carbon::parse($row->loan_payment_date)->format('d/m/Y H:i:s'),//fecha de transacción
+                           $row->modality, //MOdalidad
+                           $row->sub_modality, //Sub modalidad
 
                            $row->registration_affiliate,//matricula afiliado
                            $row->registration_spouse,//matricula esposa
@@ -104,14 +108,14 @@ class LoanPaymentReportController extends Controller
                       
                            $row->first_name_affiliate,//primer nombre
                            $row->second_name_affiliate,//segundo nombre
-                           $row->capital_payment,//capital .. pagado
-                           $row->interest_payment, //interes corriente 
-                           $row->penal_payment,// interes penal 
-                           $row->interest_current_pending,//interes corriente pendiente
-                           $row->interest_penal_pending,//interes penal pendiente 
-                           $row->estimated_quota_payment,//total pagado 
-                           $row->previous_balance,// saldo anterior 
-                           $row->current_balance,//saldo actual 
+                           Util::money_format($row->capital_payment),//capital .. pagado
+                           Util::money_format($row->interest_payment), //interes corriente 
+                           Util::money_format($row->penal_payment),// interes penal 
+                           Util::money_format($row->interest_current_pending),//interes corriente pendiente
+                           Util::money_format($row->interest_penal_pending),//interes penal pendiente 
+                           Util::money_format($row->estimated_quota_payment),//total pagado 
+                           Util::money_format($row->previous_balance),// saldo anterior 
+                           Util::money_format($row->current_balance),//saldo actual 
 
                            $row->payment_by,//pagado por 
                            $row->sub_modality_shortened_payment,// tipo de descuento 
@@ -121,7 +125,7 @@ class LoanPaymentReportController extends Controller
                        ));
                    }
                    $export = new ArchivoPrimarioExport($data);
-                   return Excel::download($export, $File.'.csv');
+                   return Excel::download($export, $File.'.xls');
       }
 
   /** @group Reportes de amortizaciones 
@@ -178,31 +182,33 @@ class LoanPaymentReportController extends Controller
                 'loan_payments.estimated_quota as estimated_quota_payment','loan_payments.voucher as voucher_payment',
                 'procedure_modalities.name as sub_modality_payment','procedure_modalities.shortened as sub_modality_shortened_payment','procedure_types.name as modality_payment','loan_payment_states.name as state_payment','voucher_types.name as name_voucher_type','spouses.registration as registration_spouse',
                 'loan_payments.paid_by as payment_by','loan_payments.capital_payment as capital_payment','loan_payments.interest_payment as interest_payment','loan_payments.penal_payment as penal_payment','loan_payments.interest_remaining as interest_current_pending','loan_payments.penal_remaining as interest_penal_pending','loan_payments.estimated_quota as estimated_quota_payment',
-                'loan_payments.previous_balance as previous_balance',DB::raw("(loan_payments.previous_balance - loan_payments.capital_payment) as current_balance"),'loan_payments.id as id_payment')
+                'loan_payments.previous_balance as previous_balance',DB::raw("(loan_payments.previous_balance - loan_payments.capital_payment) as current_balance"),'loan_payments.id as id_payment','vouchers.code as code_voucher')
                 ->orderBy('loan_payments.code', $order_loan)
                 ->get();
 
                 foreach ($list_loan as $loan) {
                     $padron = Loan::where('id', $loan->id_loan)->first();
                     $loan->modality=$padron->modality->procedure_type->second_name;
+                    $loan->sub_modality=$padron->modality->shortened;
                   }
       
                $File="ListadoAmortizaciones";
                $data=array(
-                   array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","PRODUCTO",
+                   array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","MODALIDAD","SUB MODALIDAD",
                    "MATRICULA AFILIADO","MATRICULA CÓNYUGUE", "CI", "APELLIDO PATERNO","APELLIDO CASADA","APELLIDO MATERNO",
                    "PRIMER NOMBRE","SEGUNDO NOMBRE","CAPITAL","INTERÉS CORRIENTE","INTERÉS PENAL","INTERÉS CORRIENTE PENDIENTE", 
-                   "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","TIPO DE PAGO","CBTE","CBTE","NRO DE COBRO")
+                   "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DE AMORTIZACIÓN","TIPO DE PAGO","CBTE","COD. TRANSACCIÓN","NRO DE COBRO")
                );
                foreach ($list_loan as $row){
                    array_push($data, array(
                        $row->code_loan,//nro de prestamo
-                       $row->disbursement_date_loan,//fecha de desembolso
+                       Carbon::parse($row->disbursement_date_loan)->format('d/m/Y H:i:s'),//fecha de desembolso
                        $row->state_type_affiliate,//tipo (pasivo o activo)
-                       
-                       $row->estimated_date_payment,//fecha de pago
-                       $row->loan_payment_date,//fecha de transacción
-                       $row->modality, //producto
+                           
+                       Carbon::parse($row->estimated_date_payment)->format('d/m/Y'),//fecha de pago
+                       Carbon::parse($row->loan_payment_date)->format('d/m/Y H:i:s'),//fecha de transacción
+                       $row->modality, //MOdalidad
+                       $row->sub_modality, //Sub modalidad
 
                        $row->registration_affiliate,//matricula afiliado
                        $row->registration_spouse,//matricula esposa
@@ -214,25 +220,27 @@ class LoanPaymentReportController extends Controller
                   
                        $row->first_name_affiliate,//primer nombre
                        $row->second_name_affiliate,//segundo nombre
-                       $row->capital_payment,//capital .. pagado
-                       $row->interest_payment, //interes corriente 
-                       $row->penal_payment,// interes penal 
-                       $row->interest_current_pending,//interes corriente pendiente
-                       $row->interest_penal_pending,//interes penal pendiente 
-                       $row->estimated_quota_payment,//total pagado 
-                       $row->previous_balance,// saldo anterior 
-                       $row->current_balance,//saldo actual 
+                       Util::money_format($row->capital_payment),//capital .. pagado
+                       Util::money_format($row->interest_payment), //interes corriente 
+                       Util::money_format($row->penal_payment),// interes penal 
+                       Util::money_format($row->interest_current_pending),//interes corriente pendiente
+                       Util::money_format($row->interest_penal_pending),//interes penal pendiente 
+                       Util::money_format($row->estimated_quota_payment),//total pagado 
+                       Util::money_format($row->previous_balance),// saldo anterior 
+                       Util::money_format($row->current_balance),//saldo actual 
 
                        $row->payment_by,//pagado por 
-                       $row->sub_modality_shortened_payment,// tipo de descuento 
+                       $row->sub_modality_shortened_payment,// tipo de AMORTIZACION
                        $row->name_voucher_type,//tipo de pago
 
                        $row->voucher_payment, //comprobante
+                       $row->code_voucher,//COD transacción
+
                        $row->code_payment, //Nro de cobro
                    ));
                }
                $export = new ArchivoPrimarioExport($data);
-               return Excel::download($export, $File.'.csv');
+               return Excel::download($export, $File.'.xls');
   }
 
   /** @group Reportes de amortizaciones 
@@ -296,24 +304,26 @@ class LoanPaymentReportController extends Controller
               foreach ($list_loan as $loan) {
                   $padron = Loan::where('id', $loan->id_loan)->first();
                   $loan->modality=$padron->modality->procedure_type->second_name;
+                  $loan->sub_modality=$padron->modality->shortened;
                 }
     
              $File="ListadoAmortizaciones";
              $data=array(
-                 array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","PRODUCTO",
+                 array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","MODALIDAD","SUB MODALIDAD",
                  "MATRICULA AFILIADO","MATRICULA CÓNYUGUE", "CI", "APELLIDO PATERNO","APELLIDO CASADA","APELLIDO MATERNO",
                  "PRIMER NOMBRE","SEGUNDO NOMBRE","CAPITAL","INTERÉS CORRIENTE","INTERÉS PENAL","INTERÉS CORRIENTE PENDIENTE", 
-                 "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","TIPO DE PAGO","CBTE","CBTE","NRO DE COBRO")
+                 "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","CBTE","NRO DE COBRO")
              );
              foreach ($list_loan as $row){
                  array_push($data, array(
                      $row->code_loan,//nro de prestamo
-                     $row->disbursement_date_loan,//fecha de desembolso
+                     Carbon::parse($row->disbursement_date_loan)->format('d/m/Y H:i:s'),//fecha de desembolso
                      $row->state_type_affiliate,//tipo (pasivo o activo)
-                     
-                     $row->estimated_date_payment,//fecha de pago
-                     $row->loan_payment_date,//fecha de transacción
-                     $row->modality, //producto
+                           
+                     Carbon::parse($row->estimated_date_payment)->format('d/m/Y'),//fecha de pago
+                     Carbon::parse($row->loan_payment_date)->format('d/m/Y H:i:s'),//fecha de transacción
+                     $row->modality, //MOdalidad
+                     $row->sub_modality, //Sub modalidad
 
                      $row->registration_affiliate,//matricula afiliado
                      $row->registration_spouse,//matricula esposa
@@ -325,14 +335,14 @@ class LoanPaymentReportController extends Controller
                 
                      $row->first_name_affiliate,//primer nombre
                      $row->second_name_affiliate,//segundo nombre
-                     $row->capital_payment,//capital .. pagado
-                     $row->interest_payment, //interes corriente 
-                     $row->penal_payment,// interes penal 
-                     $row->interest_current_pending,//interes corriente pendiente
-                     $row->interest_penal_pending,//interes penal pendiente 
-                     $row->estimated_quota_payment,//total pagado 
-                     $row->previous_balance,// saldo anterior 
-                     $row->current_balance,//saldo actual 
+                     Util::money_format($row->capital_payment),//capital .. pagado
+                     Util::money_format($row->interest_payment), //interes corriente 
+                     Util::money_format($row->penal_payment),// interes penal 
+                     Util::money_format($row->interest_current_pending),//interes corriente pendiente
+                     Util::money_format($row->interest_penal_pending),//interes penal pendiente 
+                     Util::money_format($row->estimated_quota_payment),//total pagado 
+                     Util::money_format($row->previous_balance),// saldo anterior 
+                     Util::money_format($row->current_balance),//saldo actual 
 
                      $row->payment_by,//pagado por 
                      $row->sub_modality_shortened_payment,// tipo de descuento 
@@ -343,7 +353,7 @@ class LoanPaymentReportController extends Controller
                  ));
              }
              $export = new ArchivoPrimarioExport($data);
-             return Excel::download($export, $File.'.csv');
+             return Excel::download($export, $File.'.xls');
   }
  /** @group Reportes de amortizaciones 
    * Reporte de amortizaciones por complemento y fondo de retiro  
@@ -412,24 +422,26 @@ class LoanPaymentReportController extends Controller
                 foreach ($list_loan as $loan) {
                     $padron = Loan::where('id', $loan->id_loan)->first();
                     $loan->modality=$padron->modality->procedure_type->second_name;
+                    $loan->sub_modality=$padron->modality->shortened;
                   }
       
                $File="ListadoAmortizaciones";
                $data=array(
-                   array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","PRODUCTO",
+                   array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","MODALIDAD","SUB MODALIDAD",
                    "MATRICULA AFILIADO","MATRICULA CÓNYUGUE", "CI", "APELLIDO PATERNO","APELLIDO CASADA","APELLIDO MATERNO",
                    "PRIMER NOMBRE","SEGUNDO NOMBRE","CAPITAL","INTERÉS CORRIENTE","INTERÉS PENAL","INTERÉS CORRIENTE PENDIENTE", 
-                   "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","TIPO DE PAGO","CBTE","NRO DE COBRO")
+                   "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","CBTE","NRO DE COBRO")
                );
                foreach ($list_loan as $row){
                    array_push($data, array(
                        $row->code_loan,//nro de prestamo
-                       $row->disbursement_date_loan,//fecha de desembolso
+                       Carbon::parse($row->disbursement_date_loan)->format('d/m/Y H:i:s'),//fecha de desembolso
                        $row->state_type_affiliate,//tipo (pasivo o activo)
-                       
-                       $row->estimated_date_payment,//fecha de pago
-                       $row->loan_payment_date,//fecha de transacción
-                       $row->modality, //producto
+                           
+                       Carbon::parse($row->estimated_date_payment)->format('d/m/Y'),//fecha de pago
+                       Carbon::parse($row->loan_payment_date)->format('d/m/Y H:i:s'),//fecha de transacción
+                       $row->modality, //MOdalidad
+                       $row->sub_modality, //Sub modalidad
   
                        $row->registration_affiliate,//matricula afiliado
                        $row->registration_spouse,//matricula esposa
@@ -441,14 +453,14 @@ class LoanPaymentReportController extends Controller
                   
                        $row->first_name_affiliate,//primer nombre
                        $row->second_name_affiliate,//segundo nombre
-                       $row->capital_payment,//capital .. pagado
-                       $row->interest_payment, //interes corriente 
-                       $row->penal_payment,// interes penal 
-                       $row->interest_current_pending,//interes corriente pendiente
-                       $row->interest_penal_pending,//interes penal pendiente 
-                       $row->estimated_quota_payment,//total pagado 
-                       $row->previous_balance,// saldo anterior 
-                       $row->current_balance,//saldo actual 
+                       Util::money_format($row->capital_payment),//capital .. pagado
+                       Util::money_format($row->interest_payment), //interes corriente 
+                       Util::money_format($row->penal_payment),// interes penal 
+                       Util::money_format($row->interest_current_pending),//interes corriente pendiente
+                       Util::money_format($row->interest_penal_pending),//interes penal pendiente 
+                       Util::money_format($row->estimated_quota_payment),//total pagado 
+                       Util::money_format($row->previous_balance),// saldo anterior 
+                       Util::money_format($row->current_balance),//saldo actual 
   
                        $row->payment_by,//pagado por 
                        $row->sub_modality_shortened_payment,// tipo de descuento 
@@ -488,24 +500,26 @@ class LoanPaymentReportController extends Controller
                 foreach ($list_loan_fondo as $loan) {
                     $padron = Loan::where('id', $loan->id_loan)->first();
                     $loan->modality=$padron->modality->procedure_type->second_name;
+                    $loan->sub_modality=$padron->modality->shortened;
                   }
       
                $File="ListadoAmortizaciones";
                $data_fondo=array(
-                   array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","PRODUCTO",
+                   array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","MODALIDAD","SUB MODALIDAD",
                    "MATRICULA AFILIADO","MATRICULA CÓNYUGUE", "CI", "APELLIDO PATERNO","APELLIDO CASADA","APELLIDO MATERNO",
                    "PRIMER NOMBRE","SEGUNDO NOMBRE","CAPITAL","INTERÉS CORRIENTE","INTERÉS PENAL","INTERÉS CORRIENTE PENDIENTE", 
-                   "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","TIPO DE PAGO","CBTE","NRO DE COBRO")
+                   "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","TIPO DESCUENTO","CBTE","NRO DE COBRO")
                );
                foreach ($list_loan_fondo as $row){
                    array_push($data_fondo, array(
                        $row->code_loan,//nro de prestamo
-                       $row->disbursement_date_loan,//fecha de desembolso
+                       Carbon::parse($row->disbursement_date_loan)->format('d/m/Y H:i:s'),//fecha de desembolso
                        $row->state_type_affiliate,//tipo (pasivo o activo)
-                       
-                       $row->estimated_date_payment,//fecha de pago
-                       $row->loan_payment_date,//fecha de transacción
-                       $row->modality, //producto
+                           
+                       Carbon::parse($row->estimated_date_payment)->format('d/m/Y'),//fecha de pago
+                       Carbon::parse($row->loan_payment_date)->format('d/m/Y H:i:s'),//fecha de transacción
+                       $row->modality, //MOdalidad
+                       $row->sub_modality, //Sub modalidad
   
                        $row->registration_affiliate,//matricula afiliado
                        $row->registration_spouse,//matricula esposa
@@ -517,14 +531,14 @@ class LoanPaymentReportController extends Controller
                   
                        $row->first_name_affiliate,//primer nombre
                        $row->second_name_affiliate,//segundo nombre
-                       $row->capital_payment,//capital .. pagado
-                       $row->interest_payment, //interes corriente 
-                       $row->penal_payment,// interes penal 
-                       $row->interest_current_pending,//interes corriente pendiente
-                       $row->interest_penal_pending,//interes penal pendiente 
-                       $row->estimated_quota_payment,//total pagado 
-                       $row->previous_balance,// saldo anterior 
-                       $row->current_balance,//saldo actual 
+                       Util::money_format($row->capital_payment),//capital .. pagado
+                       Util::money_format($row->interest_payment), //interes corriente 
+                       Util::money_format($row->penal_payment),// interes penal 
+                       Util::money_format($row->interest_current_pending),//interes corriente pendiente
+                       Util::money_format($row->interest_penal_pending),//interes penal pendiente 
+                       Util::money_format($row->estimated_quota_payment),//total pagado 
+                       Util::money_format($row->previous_balance),// saldo anterior 
+                       Util::money_format($row->current_balance),//saldo actual 
   
                        $row->payment_by,//pagado por 
                        $row->sub_modality_shortened_payment,// tipo de descuento 
@@ -536,7 +550,7 @@ class LoanPaymentReportController extends Controller
                }
 
                $export = new MultipleSheetExportPayment($data, $data_fondo,'COM-ECO','FRP');
-               return Excel::download($export, $File.'.xlsx');
+               return Excel::download($export, $File.'.xls');
     }
 
     /** @group Reportes de amortizaciones 
@@ -597,11 +611,12 @@ class LoanPaymentReportController extends Controller
               foreach ($list_loan as $loan) {
                   $padron = Loan::where('id', $loan->id_loan)->first();
                   $loan->modality=$padron->modality->procedure_type->second_name;
+                  $loan->sub_modality=$padron->modality->shortened;
                 }
     
              $File="ListadoAmortizaciones";
              $data=array(
-                 array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","PRODUCTO",
+                 array("NRO DE PRÉSTAMO", "FECHA DE DESEMBOLSO", "TIPO","FECHA DE PAGO","FECHA DE TRANSACCIÓN","MODALIDAD","SUB MODALIDAD",
                  "MATRICULA AFILIADO","MATRICULA CÓNYUGUE", "CI", "APELLIDO PATERNO","APELLIDO CASADA","APELLIDO MATERNO",
                  "PRIMER NOMBRE","SEGUNDO NOMBRE","CAPITAL","INTERÉS CORRIENTE","INTERÉS PENAL","INTERÉS CORRIENTE PENDIENTE", 
                  "INTERÉS PENAL PENDIENTE","TOTAL PAGADO","SALDO ANTERIOR", "SALDO ACTUAL","PAGADO POR","ESTADO DEL COBRO","TIPO DESCUENTO","CBTE","NRO DE COBRO")
@@ -609,12 +624,13 @@ class LoanPaymentReportController extends Controller
              foreach ($list_loan as $row){
                  array_push($data, array(
                      $row->code_loan,//nro de prestamo
-                     $row->disbursement_date_loan,//fecha de desembolso
+                     Carbon::parse($row->disbursement_date_loan)->format('d/m/Y H:i:s'),//fecha de desembolso
                      $row->state_type_affiliate,//tipo (pasivo o activo)
-                     
-                     $row->estimated_date_payment,//fecha de pago
-                     $row->loan_payment_date,//fecha de transacción
-                     $row->modality, //producto
+                           
+                     Carbon::parse($row->estimated_date_payment)->format('d/m/Y'),//fecha de pago
+                     Carbon::parse($row->loan_payment_date)->format('d/m/Y H:i:s'),//fecha de transacción
+                     $row->modality, //Modalidad
+                     $row->sub_modality, //Sub modalidad
 
                      $row->registration_affiliate,//matricula afiliado
                      $row->registration_spouse,//matricula esposa
@@ -626,14 +642,14 @@ class LoanPaymentReportController extends Controller
                 
                      $row->first_name_affiliate,//primer nombre
                      $row->second_name_affiliate,//segundo nombre
-                     $row->capital_payment,//capital .. pagado
-                     $row->interest_payment, //interes corriente 
-                     $row->penal_payment,// interes penal 
-                     $row->interest_current_pending,//interes corriente pendiente
-                     $row->interest_penal_pending,//interes penal pendiente 
-                     $row->estimated_quota_payment,//total pagado 
-                     $row->previous_balance,// saldo anterior 
-                     $row->current_balance,//saldo actual 
+                     Util::money_format($row->capital_payment),//capital .. pagado
+                     Util::money_format($row->interest_payment), //interes corriente 
+                     Util::money_format($row->penal_payment),// interes penal 
+                     Util::money_format($row->interest_current_pending),//interes corriente pendiente
+                     Util::money_format($row->interest_penal_pending),//interes penal pendiente 
+                     Util::money_format($row->estimated_quota_payment),//total pagado 
+                     Util::money_format($row->previous_balance),// saldo anterior 
+                     Util::money_format($row->current_balance),//saldo actual 
 
                      $row->payment_by,//pagado por 
                      $row->state_payment,// Estado del cobro
@@ -646,7 +662,7 @@ class LoanPaymentReportController extends Controller
                  ));
              }
              $export = new ArchivoPrimarioExport($data);
-             return Excel::download($export, $File.'.csv');
+             return Excel::download($export, $File.'.xls');
   }
   
 

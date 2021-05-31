@@ -2,8 +2,10 @@
 
 namespace App\Observers;
 use App\LoanPayment;
+use App\LoanPaymentState;
 use App\Helpers\Util;
 use App\Loan;
+use App\LoanState;
 
 
 class LoanPaymentObserver
@@ -31,6 +33,15 @@ class LoanPaymentObserver
     }*/
     public function updating(LoanPayment $object)
     {
+        $loan = Loan::whereId($object->loan_id)->first();
+        $option = $loan;
+        if($loan->verify_balance() - $object->capital_payment == 0 && $object->state_id == LoanPaymentState::whereName('Pagado')->first()->id && $object->validated){
+            $loan = Loan::withoutEvents(function () use ($option){
+                $loan = Loan::whereId($option->id)->first();
+                $loan->state_id = LoanState::whereName('Liquidado')->first()->id;
+                $loan->update();
+            });
+        }
         Util::save_record($object, 'datos-de-un-tramite', Util::concat_action($object));
     }
 

@@ -38,6 +38,10 @@ Vue.filter('moneyString', value => {
 		if(value) return parseFloat(value).toLocaleString("de-DE", {minimumFractionDigits: 2, maximumFractionDigits: 2})
 	}
   })
+Vue.filter('percentage', value => {
+	if(value == 0) return '0,00'
+	else return parseFloat(value).toLocaleString("es-ES", {minimumFractionDigits: 2, maximumFractionDigits: 2})
+})
 Vue.filter('fullName', (value, byFirstName = false) => {
   let fullName = []
 	if (byFirstName) {

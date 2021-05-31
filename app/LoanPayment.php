@@ -196,7 +196,8 @@ class LoanPayment extends Model
 
     public static function registry_payment(Loan $loan, $estimated_date, $description, $procedure_modality, $voucher, $paid_by, $percentage_quota, $affiliate_id, $state_id = null, $validated_payment = false)
     {
-        $payment = $loan->next_payment2($affiliate_id, $estimated_date, $paid_by, $procedure_modality, $percentage_quota); //$percentage_quota
+        $liquidate = false;
+        $payment = $loan->next_payment2($affiliate_id, $estimated_date, $paid_by, $procedure_modality, $percentage_quota, $liquidate); //$percentage_quota
         $payment->description = $description;
         if($state_id == null) $payment->state_id = LoanPaymentState::whereName('Pendiente por confirmar')->first()->id;
         if($state_id !== null)$payment->state_id = $state_id;

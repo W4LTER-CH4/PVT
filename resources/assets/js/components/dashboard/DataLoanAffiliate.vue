@@ -85,13 +85,13 @@
                             Liquido para Calificacion:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ anticipo.liquid_calification +" Bs."}}
+                            {{ anticipo.liquid_calification | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Monto Maximo:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ anticipo.amount_max +" Bs."}}
+                            {{ anticipo.amount_max | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Plazo Maximo:
@@ -103,13 +103,13 @@
                             Cuota Calculada:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ anticipo.quota_calculated +" Bs."}}
+                            {{ anticipo.quota_calculated | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Interes Mensual:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ (anticipo.annual_interest/12).toFixed(2) +" %"}}
+                            {{ (anticipo.annual_interest/12) | percentage}} %
                         </v-col>
                       </v-row>
                     </v-card-text>
@@ -129,13 +129,13 @@
                             Liquido para Calificacion:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ corto_plazo.liquid_calification +" Bs."}}
+                            {{ corto_plazo.liquid_calification | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Monto Maximo:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ corto_plazo.amount_max +" Bs."}}
+                            {{ corto_plazo.amount_max | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Plazo Maximo:
@@ -147,13 +147,13 @@
                             Cuota Calculada:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ corto_plazo.quota_calculated +" Bs."}}
+                            {{ corto_plazo.quota_calculated | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Interes Mensual:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ (corto_plazo.annual_interest/12).toFixed(2)  +" %"}}
+                            {{ (corto_plazo.annual_interest/12) | percentage}} %
                         </v-col>
                       </v-row>
                     </v-card-text>
@@ -173,13 +173,13 @@
                             Liquido para Calificacion:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ largo_plazo.liquid_calification +" Bs."}}
+                            {{ largo_plazo.liquid_calification | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Monto Máximo:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ largo_plazo.amount_max +" Bs."}}
+                            {{ largo_plazo.amount_max | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Plazo Máximo:
@@ -191,13 +191,13 @@
                             Cuota Calculada:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{ largo_plazo.quota_calculated +" Bs."}}
+                            {{ largo_plazo.quota_calculated | money}} Bs.
                         </v-col>
                         <v-col cols="12" md="8" >
                             Interes Mensual:
                         </v-col>
                         <v-col cols="12" md="4" >
-                            {{(largo_plazo.annual_interest/12).toFixed(2)  +" %"}}
+                            {{(largo_plazo.annual_interest/12) | percentage}} %
                         </v-col>
                     </v-row>
                     </v-card-text>

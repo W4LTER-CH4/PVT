@@ -122,7 +122,7 @@
             @foreach ($lender->loans_balance as $loans_balance)
             <tr>
                 <td>{{$loans_balance['code']}}</td>
-                <td>{{round($loans_balance['balance'],2)}}</td>
+                <td>{{Util::money_format($loans_balance['balance'])}}</td>
                 <td>{{$loans_balance['origin']}}</td>
             </tr>
             @endforeach

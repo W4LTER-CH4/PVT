@@ -5,7 +5,7 @@
         <v-card flat>
           <v-card-title class="pa-0 pb-3">
             <v-toolbar dense color="tertiary" class="font-weight-regular">
-              <v-toolbar-title>PRÉSTAMOS</v-toolbar-title>
+              <v-toolbar-title>PRÉSTAMOS DESEMBOLSADOS</v-toolbar-title>
             </v-toolbar>
           </v-card-title>
           <template>

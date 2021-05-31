@@ -25,7 +25,7 @@
                                 </v-col>
                                  <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Fecha de Calculo:</b></label>
-                                  {{$moment(payment.estimated_date).format("DD-MM-YYYY")}}
+                                  {{payment.estimated_date | date}}
                                 </v-col>
                                    <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Interes Corriente de Días:</b></label>
@@ -34,7 +34,8 @@
                                 </v-col>
                                  <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Fecha de Transaccion:</b></label>
-                                  {{ $moment(payment.estimated_date).format("DD-MM-YYYY")}}
+                                   {{ payment.now_date | date}}
+
                                 </v-col>
                                 <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Interes Penal de Días:</b></label>

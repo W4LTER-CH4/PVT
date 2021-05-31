@@ -14,9 +14,9 @@
                     <strong>Cód.:</strong>
                     {{ item.code }} |
                     <strong>Desembolso:</strong>
-                    {{ item.amount_approved}} |
+                    {{ item.amount_approved | money}} |
                     <strong>S.Capital:</strong>
-                    {{ item.balance  }} |
+                    {{ item.balance | money}} |
                     <strong>Mod.:</strong>
                     {{ item.modality.procedure_type.second_name  }}
                     <span>
@@ -112,10 +112,10 @@
                     <v-progress-linear
                       :color="randomColor()"
                       height="15"
-                      :value="(((item.amount_approved-item.balance)*100)/item.amount_approved).toFixed(2)"
+                      :value="(((item.amount_approved-item.balance)*100)/item.amount_approved)"
                       striped
                     >
-                      <strong>Porcentaje pagado: {{ (((item.amount_approved-item.balance)*100)/item.amount_approved).toFixed(2) }}%</strong>
+                      <strong>Porcentaje pagado: {{ (((item.amount_approved-item.balance)*100)/item.amount_approved) | percentage}}%</strong>
                     </v-progress-linear>
 
                   </div>

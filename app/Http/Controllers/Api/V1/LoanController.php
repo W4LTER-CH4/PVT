@@ -1039,7 +1039,7 @@ class LoanController extends Controller
                         ['Tipo', $loan->modality->procedure_type->second_name],
                         ['Modalidad', $loan->modality->shortened],
                         ['Fecha', Carbon::now()->format('d/m/Y')],
-                        ['Hora', Carbon::now()->format('h:m:s a')],
+                        ['Hora', Carbon::now()->format('H:i:s')],
                         ['Usuario', Auth::user()->username],
                     ]
                 ],
@@ -1454,7 +1454,7 @@ class LoanController extends Controller
                         ['Tipo', $loan->modality->procedure_type->second_name],
                         ['Modalidad', $loan->modality->shortened],
                         ['Fecha', Carbon::now()->format('d/m/Y')],
-                        ['Hora', Carbon::now()->format('h:m:s a')],
+                        ['Hora', Carbon::now()->format('H:i:s')],
                         ['Usuario', Auth::user()->username]
                     ]
                 ],
@@ -1468,7 +1468,7 @@ class LoanController extends Controller
                 $view = view()->make('loan.payments.payment_kardex')->with($data)->render();
             else
                 $view = view()->make('loan.payments.payment_kardex_unfolded')->with($data)->render();
-            if ($standalone) return Util::pdf_to_base64([$view], $file_name, $information_loan, 'legal', $request->copies ?? 1);
+            if ($standalone) return Util::pdf_to_base64([$view], $file_name, $information_loan, 'legal', $request->copies ?? 1, false);
             return $view;
         }else{
             return "prestamo no desembolsado";
@@ -2023,7 +2023,7 @@ class LoanController extends Controller
                    ));
                }
                $export = new ArchivoPrimarioExport($data);
-               return Excel::download($export, $File.'.xlsx');
+               return Excel::download($export, $File.'.xls');
       }else{
       
        $list_loan = DB::table('loans')
@@ -2091,8 +2091,41 @@ class LoanController extends Controller
                 }
             }
         }
-        return response()->json([
-            'defaulted' => $c,
-        ]);
+    return response()->json([
+        'defaulted' => $c,
+    ]);
+   }
+
+   //cronjob para actualizacion de prestamos
+   public function verify_loans()
+   {
+       $loans = Loan::where('state_id', LoanState::whereName('Vigente')->first()->id)->get();
+       $c = 0;
+       foreach( $loans as $loan ){
+           if($loan->verify_balance() == 0)
+           {
+                $option = $loan;
+                $loan = Loan::withoutEvents(function () use ($option){
+                    $loan = Loan::whereId($option->id)->first();
+                    $loan->state_id = LoanState::whereName('Liquidado')->first()->id;
+                    $loan->update();
+                });
+                $c++;
+           }
+       }
+       $loans = Loan::where('state_id', LoanState::whereName('Liquidado')->first()->id)->get();
+       foreach( $loans as $loan ){
+           if($loan->verify_balance() > 0)
+           {
+                $option = $loan;
+                $loan = Loan::withoutEvents(function () use ($option){
+                    $loan = Loan::whereId($option->id)->first();
+                    $loan->state_id = LoanState::whereName('Vigente')->first()->id;
+                    $loan->update();
+                });
+                $c++;
+           }
+       }
+       return $c;
    }
 }

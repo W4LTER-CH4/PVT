@@ -322,7 +322,6 @@ export default {
     data_sismu:{
       type_sismu: false,
       quota_sismu: 0,
-      cpop_sismu: false,
       livelihood_amount:true
     },
     livelihood_amount: 0,
@@ -397,6 +396,8 @@ export default {
       else {
         if(n==1)
         {
+         this.$refs.ballotsComponent.getLoanModalityAffiliate(this.$route.query.affiliate_id)
+         // this.$refs.ballotsComponent.getLoanModalityAffiliate()
         }
         if(n==2)
         {
@@ -490,7 +491,7 @@ export default {
               modalities_aux.push(this.modalities[i])
             }
           }
-          this.modalities = modalities_aux
+           this.modalities = modalities_aux
         }else if(this.remake){
           this.modalities
         }else{
@@ -499,7 +500,7 @@ export default {
       } catch (e) {
         console.log(e)
       } finally {
-        this.loading = false
+          this.loading = false
       }
     },
     //Ajuste del Titular
@@ -1002,7 +1003,12 @@ export default {
     {
         if(this.affiliate.city_identity_card_id != null){
           if(this.addresses.length != 0){
-            this.nextStep(4)
+            if(this.affiliate.cell_phone_number!='' || this.affiliate.phone_number!=null)
+            {
+              this.nextStep(4)
+            }else{
+              this.toastr.error("No se encuentra registrada ningun telefono. Por favor registre algun numero de celular o fijo del afiliado.")
+            }
           }else{
             this.toastr.error("No se encuentra registrada ninguna dirección. Por favor registre la dirección del afiliado.")
           }

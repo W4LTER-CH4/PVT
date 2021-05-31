@@ -40,7 +40,7 @@
                                 </v-col>
                                 <v-col cols="3" class="ma-0 py-2">
                                   <label><b>Fecha de Desembolso:</b></label>
-                                  {{$moment(garantes.disbursement_date).format("DD-MM-YYYY")}}
+                                  {{garantes.disbursement_date | date}}
                                 </v-col>
                                 <v-col cols="3" class="ma-0 py-2">
                                   <label><b>Monto Desembolsado:</b></label>
@@ -55,37 +55,37 @@
 
                       <v-progress-linear></v-progress-linear>
 
-                        <v-col cols="12" class="py-0" v-show="isNew" >
+                        <v-col cols="12" class="py-0" v-show="isNew" v-if="last_payment" >
                           <center>
                            <v-toolbar-title>DATOS DEL PAGO ANTERIOR</v-toolbar-title>
                            </center>
                        
                         </v-col>
-                      <v-progress-linear v-show="isNew"></v-progress-linear>
+                      <v-progress-linear v-show="isNew" v-if="last_payment"></v-progress-linear>
                        
-                                <v-col cols="3" class="ma-0 py-2"  v-show="isNew">
+                                <v-col cols="3" class="ma-0 py-2"  v-show="isNew" v-if="last_payment">
                                   <label><b style="color:teal" >Saldo Capital:</b></label>
                                   <b style="color:teal">{{garantes.balance | moneyString}}</b>
                                 </v-col>
                                
-                                <v-col cols="3" class="ma-0 py-2" v-show="isNew">
+                                <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
                                   <label><b style="color:teal">Número de Cuota:</b></label>
                                   <b style="color:teal">{{(garantes.last_payment_validated.quota_number+1)  }}</b>
                                 </v-col>
-                                <v-col cols="3" class="ma-0 py-2" v-show="isNew">
+                                <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
                                   <label><b style="color:teal">Fecha del ultimo Pago:</b></label>
-                                  <b style="color:teal">{{$moment(garantes.last_payment_validated.estimated_date).format("DD-MM-YYYY") }}</b>
+                                  <b style="color:teal">{{garantes.last_payment_validated.estimated_date | date }}</b>
                                 </v-col>
-                                <v-col cols="3" class="ma-0 py-2" v-show="isNew">
+                                <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
                                   <label><b style="color:teal" >Total Pagado:</b></label>
                                   <b style="color:teal">{{garantes.last_payment_validated.estimated_quota | moneyString}}</b>
                                 </v-col>
 
-                                 <v-col cols="6" class="ma-0 py-2" v-show="isNew">
+                                 <v-col cols="6" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
                                   <label><b>Intereses Corrientes Pendientes:</b></label>
                                   {{garantes.last_payment_validated.interest_accumulated}}
                                 </v-col>
-                                <v-col cols="6" class="ma-0 py-2" v-show="isNew">
+                                <v-col cols="6" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
                                   <label><b>Interes Penales Pendientes:</b></label>
                                   {{garantes.last_payment_validated.penal_accumulated}}
                                 </v-col>
@@ -401,6 +401,7 @@ export default {
     tipo_afiliado:[],
     view:true,
     efectivo:false,
+    last_payment:false,
     loan_payment:{},
     payment_types:[
       {
@@ -567,7 +568,7 @@ export default {
         this.loan_payment = res.data
              this.garantes.lenders=[this.loan_payment.affiliate]
              this.garantes.code=this.loan_payment.loan.code
-             this.garantes.disbursement_date=this.$moment(this.loan_payment.loan.disbursement_date).format("YYYY-MM-DD")
+             this.garantes.disbursement_date=this.$moment(this.loan_payment.loan.disbursement_date).format("DD-MM-YYYY")
              this.garantes.amount_approved=this.loan_payment.loan.amount_approved
              this.garantes.loan_term=this.loan_payment.loan.loan_term
              this.garantes.estimated_quota=0
@@ -725,6 +726,7 @@ export default {
             procedure_modality_id:this.data_payment.procedure_modality_id,
           })
             this.payment = res.data
+            this.payment.now_date= new Date().toISOString().substr(0, 10),
          //   this.data_payment.pago_total=this.payment.estimated_quota
             this.$forceUpdate()
       }catch (e) {
@@ -755,6 +757,10 @@ export default {
         if(this.garantes.last_payment_validated==null)
         {
           this.garantes.last_payment_validated={}
+          this.last_payment=false
+        }
+        else{
+          this.last_payment=true
         }
         if(this.garantes.guarantors.length > 0)
         {

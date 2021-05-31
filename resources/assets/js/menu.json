@@ -18,7 +18,7 @@
     "params": {}
   }, {
     "href": "listLoanGenerate",
-    "title": "Reporte préstamos",
+    "title": "Préstamos desembolsados",
     "icon": "mdi-view-list",
     "permission": "show-list-loans-generated",
     "params": {}

@@ -38,7 +38,7 @@
     </div>
     <div>
     @if($loan->parent_loan_id != null)
-        <b>SEGUNDA.- (DEL ANTECEDENTE):</b> Mediante contrato de préstamo N° {{ $loan->parent_loan->code }} de fecha {{ Carbon::parse($loan->parent_loan->disbursement_date)->isoFormat('LL') }}, suscrito entre MUSERPOL y el PRESTATARIO, se otorgo un préstamo por la suma de {{ $loan->parent_loan->amount_approved }} (<span class="uppercase">{{ Util::money_format($loan->parent_loan->amount_approved, true) }}</span> Bolivianos), con garantía de todos sus bienes habidos y por haber, así como la garantía personal, 
+        <b>SEGUNDA.- (DEL ANTECEDENTE):</b> Mediante contrato de préstamo N° {{ $loan->parent_loan->code }} de fecha {{ Carbon::parse($loan->parent_loan->disbursement_date)->isoFormat('LL') }}, suscrito entre MUSERPOL y el PRESTATARIO, se otorgo un préstamo por la suma de {{ Util::money_format($loan->parent_loan->amount_approved) }} (<span class="uppercase">{{ Util::money_format($loan->parent_loan->amount_approved, true) }}</span> Bolivianos), con garantía de todos sus bienes habidos y por haber, así como la garantía personal, 
         <?php $cont = 0; $concat_guarantor = "";
             foreach($guarantors as $guarantor){
                 $male_female_guarantor = Util::male_female($guarantor->gender);
@@ -49,9 +49,9 @@
             {{ $guarantor->gender == 'M' ? 'el Sr.' : 'la Sra' }} {{ $guarantor->full_name }}, con C.I. {{ $guarantor->identity_card_ext }}, {{ $guarantor->civil_status_gender }}, mayor de edad, hábil por derecho, natural de {{ $guarantor->city_birth->name }}, vecin{{ $male_female_guarantor }} de {{ $guarantor->address->cityName() }} y con domicilio especial en {{ $guarantor->address->full_address }} {{ $concat_guarantor }}
             </span>
         <?php } ?>
-        programados a {{ $loan->parent_loan->loan_term}} meses de pago y cumplimiento de obligación, con una amortización mensual de Bs. {{ $loan->parent_loan->estimated_quota }} (<span class="uppercase">{{ Util::money_format($loan->parent_loan->estimated_quota, true) }}</span> Bolivianos). 
+        programados a {{ $loan->parent_loan->loan_term}} meses de pago y cumplimiento de obligación, con una amortización mensual de Bs. {{ Util::money_format($loan->parent_loan->estimated_quota) }} (<span class="uppercase">{{ Util::money_format($loan->parent_loan->estimated_quota, true) }}</span> Bolivianos). 
     @else
-    <b>SEGUNDA.- (DEL ANTECEDENTE):</b> Mediante contrato de préstamo N° {{ $loan->data_loan->code }} SISMU suscrito entre MUSERPOL y el PRESTATARIO, se otorgo un préstamo por la suma de {{ $loan->data_loan->amount_approved }} (<span class="uppercase">{{ Util::money_format($loan->data_loan->amount_approved, true) }}</span> Bolivianos), con garantía de todos sus bienes habidos y por haber, así como la garantía personal 
+    <b>SEGUNDA.- (DEL ANTECEDENTE):</b> Mediante contrato de préstamo N° {{ $loan->data_loan->code }} SISMU suscrito entre MUSERPOL y el PRESTATARIO, se otorgo un préstamo por la suma de {{ Util::money_format($loan->data_loan->amount_approved) }} (<span class="uppercase">{{ Util::money_format($loan->data_loan->amount_approved, true) }}</span> Bolivianos), con garantía de todos sus bienes habidos y por haber, así como la garantía personal 
         <?php $cont = 0; $concat_guarantor = "";
             foreach($guarantors as $guarantor){
                 $male_female_guarantor = Util::male_female($guarantor->gender);
@@ -62,7 +62,7 @@
             {{ $guarantor->gender == 'M' ? 'el Sr.' : 'la Sra' }} {{ $guarantor->full_name }}, con C.I. {{ $guarantor->identity_card_ext }}, {{ $guarantor->civil_status_gender }}, mayor de edad, hábil por derecho, natural de {{ $guarantor->city_birth->name }}, vecin{{ $male_female_guarantor }} de {{ $guarantor->address->cityName() }} y con domicilio especial en {{ $guarantor->address->full_address }} {{ $concat_guarantor }} ,
             </span>
         <?php } ?>
-        ; programados a {{ $loan->data_loan->loan_term}} meses de pago y cumplimiento de obligación, con una amortización mensual de Bs. {{ $loan->data_loan->estimated_quota }} (<span class="uppercase">{{ Util::money_format($loan->data_loan->estimated_quota, true) }}</span> Bolivianos).
+        ; programados a {{ $loan->data_loan->loan_term}} meses de pago y cumplimiento de obligación, con una amortización mensual de Bs. {{ Util::money_format($loan->data_loan->estimated_quota) }} (<span class="uppercase">{{ Util::money_format($loan->data_loan->estimated_quota, true) }}</span> Bolivianos).
     @endif
     </div>
     <div>
@@ -72,7 +72,7 @@
         @else
         <br><b>3.1.- Se modifica la cláusula (Plazo)</b>.-  El plazo para el pago total de la deuda establecida de {{ $loan->data_loan->loan_term}} es reprogramado y modificado a {{ $loan->loan_term}}
         @endif
-        <br><b>3.2.- Se modifica la cláusula (Cuota de Amortización)</b>.-  La amortización del pago a capital e intereses mensual y constantes que el prestatario efectuara a partir de la fecha de la suscripción de la presente adenda es de Bs. {{ $loan->estimated_quota }} (<span class="uppercase">{{ Util::money_format($loan->estimated_quota, true) }}</span> Bolivianos). 
+        <br><b>3.2.- Se modifica la cláusula (Cuota de Amortización)</b>.-  La amortización del pago a capital e intereses mensual y constantes que el prestatario efectuara a partir de la fecha de la suscripción de la presente adenda es de Bs. {{ Util::money_format($loan->estimated_quota) }} (<span class="uppercase">{{ Util::money_format($loan->estimated_quota, true) }}</span> Bolivianos). 
         <br><b>3.3.- Se modifica la cláusula (De la Garantía)</b>.-  El PRESTATARIO garantizara el pago de lo adeudado con todos sus bienes, derechos y acciones habidas y por haber, presentes y futuros, ademas de todos los beneficios que otorga la MUSERPOL.
     </div>
     <div>

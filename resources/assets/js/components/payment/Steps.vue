@@ -9,7 +9,7 @@
             :step="1">Creación Amortización
           </v-stepper-step>
           <v-divider v-if="1 !== steps" :key="1" ></v-divider>
-          
+
          </template>
       </v-stepper-header>
       <v-stepper-items>

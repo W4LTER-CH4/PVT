@@ -160,6 +160,7 @@ class LoanPaymentController extends Controller
                     $loanPayment->role = Role::whereId($loanPayment->role_id)->first();
                     $loanPayment->user = User::whereId($loanPayment->user_id)->first();
                     $loanPayment->modality;
+                    $loanPayment->voucher_treasury;
                     $payments->push($loanPayment);
                 }
             }
@@ -243,15 +244,19 @@ class LoanPaymentController extends Controller
         if (Auth::user()->can('update-payment-loan')) {
             $update = $request->only('description', 'validated','procedure_modality_id','affiliate_id','voucher','paid_by');
         }
-        if($payment_procedure_type != 'Amortización Directa' && $request->validated) $loanPayment->state_id=$Pagado;
-        if($payment_procedure_type != 'Amortización Directa' && !$request->validated) $loanPayment->state_id=$pendiente_pago;
+        if($payment_procedure_type != 'Amortización Directa' && $request->validated) {
+            $loanPayment->state_id=$Pagado;
+        }
+        if($payment_procedure_type != 'Amortización Directa' && !$request->validated){
+            $loanPayment->state_id=$pendiente_pago;
+        }
         $user_id = auth()->id();
         $loanPayment->fill($update);
         $loanPayment->save();
         $loanPayment->update(['user_id' => $user_id]);
         if($request->validated && $loanPayment->state_id == $Pagado || $request->validated && $request->state_id == $Pagado){
             $loanPayment->update(['loan_payment_date' => Carbon::now()]);
-            $loanPayment->save();        
+            $loanPayment->save();
         }
         return  $loanPayment;
     }
@@ -369,11 +374,6 @@ class LoanPaymentController extends Controller
                 $bank_pay_number=$request->input('bank_pay_number', null);
                 $voucher = $loanPayment->voucher_treasury()->create($payment->toArray());
                 $loanPayment->update(['state_id' => $Pagado,'user_id' => $payment->user_id,'validated'=>true,'loan_payment_date'=>Carbon::now(),'voucher'=>$bank_pay_number]);
-                if($loanPayment->loan->verify_balance() == 0)
-                {
-                    $loan = Loan::whereId($loanPayment->loan_id);
-                    $loan->update(['state_id' => $Liquidado]);
-                }
                 if($loanPayment->loan->payments->count() == 1 && $loanPayment->loan->payments->first()->state_id == $Pagado){
                     $user = User::whereUsername('admin')->first();
                     $amortizing_tag = Tag::whereSlug('amortizando')->first();
@@ -684,7 +684,7 @@ class LoanPaymentController extends Controller
         $month = CarbonImmutable::parse($request->estimated_date)->format('M');
         $year = Carbon::parse($request->estimated_date)->format('Y');
         $file_name = $month.'-'.$year;
-        $extension = '.xlsx';
+        $extension = '.xls';
         if(Storage::disk('public')->has($file_name.$extension)){
             return $file = Storage::disk('public')->download($file_name.$extension);
             //return $file = Storage::file($file_name.$extension);
@@ -1231,7 +1231,7 @@ class LoanPaymentController extends Controller
         }
        } 
         $export = new ArchivoPrimarioExport($data);
-        return Excel::download($export, $File.'.xlsx');
+        return Excel::download($export, $File.'.xls');
 
 
     }
@@ -1274,7 +1274,7 @@ class LoanPaymentController extends Controller
             ));
         }
        $export = new ArchivoPrimarioExport($data);
-       return Excel::download($export, $File.'.xlsx'); 
+       return Excel::download($export, $File.'.xls'); 
     }
    /** 
    * Listar amortizaciones generando reportes
@@ -1526,7 +1526,7 @@ class LoanPaymentController extends Controller
                    ));
                }
                $export = new ArchivoPrimarioExport($data);
-               return Excel::download($export, $File.'.csv');
+               return Excel::download($export, $File.'.xls');
       }else{
       $loan_payments='loan_payments';
         $list_loan = DB::table('loan_payments')

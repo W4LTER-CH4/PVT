@@ -103,7 +103,7 @@
                     ></v-select>
                   </ValidationProvider>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <ValidationProvider
                     v-slot="{ errors }"
                     vid="identity_card"
@@ -121,7 +121,7 @@
                     ></v-text-field>
                   </ValidationProvider>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <ValidationProvider
                     v-slot="{ errors }"
                     vid="city_identity_card_id"
@@ -141,6 +141,24 @@
                       :outlined="editable && permission.secondary"
                       :disabled="editable && !permission.secondary"
                     ></v-select>
+                  </ValidationProvider>
+                </v-col>
+                    <v-col cols="12" md="4">
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    vid="registration"
+                    name="matrícula"
+                    rules="required|alpha_dash|min:5|max:15"
+                  >
+                    <v-text-field
+                      :error-messages="errors"
+                      dense
+                      v-model="affiliate.registration"
+                      label="Matrícula"
+                      :readonly="!editable || !permission.primary"
+                      :outlined="editable && permission.primary"
+                      :disabled="editable && !permission.primary"
+                    ></v-text-field>
                   </ValidationProvider>
                 </v-col>
                 <v-col
@@ -252,8 +270,9 @@
                     label="Estado"
                     v-model="affiliate.affiliate_state_id"
                     :Onchange="Onchange()"
-                    :readonly="!editable || !permission.secondary"
-                    :outlined="editable && permission.secondary"
+                    :readonly="!editable || !permission.primary"
+                    :outlined="editable && permission.primary"
+                    :disabled="editable && !permission.primary"
                   ></v-select>
                 </ValidationProvider>
               </v-col>
@@ -375,8 +394,9 @@
                     label="Unidad"
                     v-model="affiliate.unit_id"
                     persistent-hint
-                    :readonly="!editable || !permission.secondary"
-                    :outlined="editable && permission.secondary"
+                    :readonly="!editable || !permission.primary"
+                    :outlined="editable && permission.primary"
+                    :disabled="editable && !permission.primary"
                   ></v-select>
                 </ValidationProvider>
               </v-col>
@@ -422,6 +442,7 @@
                     v-model="affiliate.pension_entity_id"
                     :readonly="!editable || !permission.secondary"
                     :outlined="editable && permission.secondary"
+                    :disabled="editable && !permission.secondary"
                   ></v-select>
                 </ValidationProvider>
               </v-col>

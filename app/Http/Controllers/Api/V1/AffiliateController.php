@@ -611,7 +611,7 @@ class AffiliateController extends Controller
    * @urlParam affiliate required ID de afiliado. Example: 5
    * @queryParam procedure_type_id required ID de tipo de trámite. Example: 11
    * @bodyParam type_sismu boolean Tipo sismu. Example: true
-   * @bodyParam cpop_sismu boolean El afiliado es cpop del sismu. Example: true
+   * @bodyParam remake_loan boolean Rehacer el préstamo obtiene modalidad. Example: true
    * @bodyParam cpop_affiliate boolean Para cambiar el affiliado a cpop. Example: false
    * @authenticated
    * @responseFile responses/affiliate/get_loan_modality.200.json
@@ -620,15 +620,17 @@ class AffiliateController extends Controller
         $request->validate([
             'procedure_type_id' => 'required|integer|exists:procedure_types,id',
             'type_sismu' => 'boolean',
-            'cpop_sismu' => 'boolean',
-            'cpop_affiliate' => 'boolean'
+            //'cpop_sismu' => 'boolean',
+            'cpop_affiliate' => 'boolean',
+            'remake_loan' => 'boolean'
         ]);
         if(!$affiliate->affiliate_state) abort(403, 'Debe actualizar el estado del afiliado');
         $modality = ProcedureType::findOrFail($request->procedure_type_id);
         $type_sismu = $request->input('type_sismu',false);
-        $cpop_sismu = $request->input('cpop_sismu',false);
+       // $cpop_sismu = $request->input('cpop_sismu',false);
         $cpop_affiliate = $request->input('cpop_affiliate',false);
-        $affiliate_modality= Loan::get_modality($modality, $affiliate, $type_sismu, $cpop_sismu, $cpop_affiliate);
+        $remake_loan = $request->input('remake_loan',false);
+        $affiliate_modality= Loan::get_modality($modality, $affiliate, $type_sismu, $cpop_affiliate, $remake_loan);
         return $affiliate_modality;
     }
 

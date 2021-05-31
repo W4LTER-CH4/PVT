@@ -536,6 +536,10 @@
             {{ item.estimated_date_payment | date}}
           </template>
 
+          <template v-slot:[`item.estimated_quota_payment`]="{ item }">
+            {{ item.estimated_quota_payment | money}}
+          </template>
+
           <template v-slot:[`item.modality_payment`]="{ item }">
           {{ item.modality_payment }}
           </template>
@@ -796,7 +800,7 @@ data () {
           const url = window.URL.createObjectURL(new Blob([response.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "ReporteAmortizaciones.xlsx");
+          link.setAttribute("download", "ReporteAmortizaciones.xls");
           document.body.appendChild(link);
           link.click();
         })

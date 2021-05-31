@@ -100,7 +100,7 @@
                                     <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated | moneyString}}</p>
                                   </v-col>
                                    <v-col cols="12" md="4" class="py-0">
-                                    <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+ (loan.indebtedness_calculated/1).toFixed(2)+'%'}} </p>
+                                    <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+ loan.indebtedness_calculated|percentage }}% </p>
                                   </v-col>
                                   <v-col cols="12" md="4" v-show="calificacion_edit" class="py-0">
                                     <center>
@@ -382,7 +382,7 @@
                                               <p><b>TELEFONO:</b> {{guarantor.cell_phone_number}}</p>
                                             </v-col>
                                             <v-col cols="12" md="3">
-                                              <p><b>PORCENTAJE DE PAGO:</b> {{parseInt(guarantor.pivot.payment_percentage).toFixed(2) }} %</p>
+                                              <p><b>PORCENTAJE DE PAGO:</b> {{guarantor.pivot.payment_percentage|percentage }}%</p>
                                             </v-col>
                                              <v-col cols="12" md="3">
                                               <p><b>LIQUIDO PARA CALIFICACION:</b> {{guarantor.pivot.payable_liquid_calculated | moneyString}}</p>
@@ -394,7 +394,7 @@
                                               <p><b>LIQUIDO PARA CALIFICACION CALCULADO:</b> {{guarantor.pivot.liquid_qualification_calculated | moneyString}}</p>
                                             </v-col>
                                             <v-col cols="12" md="3">
-                                              <p><b>INDICE DE ENDEUDAMIENTO CALCULADO:</b> {{ parseInt(guarantor.pivot.indebtedness_calculated).toFixed(2) }} %</p>
+                                              <p><b>INDICE DE ENDEUDAMIENTO CALCULADO:</b> {{guarantor.pivot.indebtedness_calculated|percentage }}%</p>
                                             </v-col>
                                           </v-row>
                                         </v-col>
@@ -968,6 +968,34 @@
               </v-container>
             </v-col>
           </v-row>
+          <v-dialog
+            v-model="dialog"
+            max-width="500"
+          >
+            <v-card>
+              <v-card-title>
+                Esta seguro de generar el corte del prestamo?
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red darken-1"
+                  text
+                  @click="prueba2()"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  color="green darken-1"
+                  text
+                  @click="prueba()"
+                >
+                  Aceptar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
         <!--/v-card-->
       </v-form>
     </ValidationObserver>
@@ -1319,6 +1347,27 @@ export default {
         this.loading = false
       }
     },
+   prueba2(){
+      this.dialog = false 
+      this.resetForm()
+    }, 
+    async  prueba(){
+    try {      
+          let res = await axios.patch(`loan/${this.loan.id}/update_refinancing_balance`)
+          this.loan_refinancing.refinancing_balance= res.data.refinancing_balance
+          this.loan_refinancing.balance_parent_loan_refinancing= res.data.balance_parent_loan_refinancing
+          //  this.loan_refinancing.date_cut_refinancing= this.$moment(res.data.request_date).format("YYYY-MM-DD")
+
+          this.toastr.success('Se Actualizó Correctamente.')
+          this.cobranzas_edit = false
+        //    this.cobranzas_edit_sismu= false
+          this.dialog=false 
+      } catch (e) {
+        this.toastr.error("Ocurrió un error en la impresión.")
+        console.log(e)
+      }
+    },
+ 
     async editRefinanciamiento(){
       try {
         if (!this.cobranzas_edit) {
@@ -1326,7 +1375,9 @@ export default {
           if(this.loan_refinancing.type_sismu){
             this.cobranzas_edit_sismu= true
           }else{
+           this.dialog=true
             this.cobranzas_edit_sismu= false
+            
           }
         } else {
          //Edit refinancing
@@ -1341,19 +1392,16 @@ export default {
                 let res = await axios.patch(`loan/${this.loan.id}/update_refinancing_balance`)
                 this.loan_refinancing.refinancing_balance= res.data.refinancing_balance
                 this.loan_refinancing.balance_parent_loan_refinancing= res.data.balance_parent_loan_refinancing
-      
-            }else{
-               this.cobranzas_edit_sismu=false
-              let res = await axios.patch(`loan/${this.loan.id}/update_refinancing_balance`)
-              this.loan_refinancing.refinancing_balance= res.data.refinancing_balance
-              this.loan_refinancing.balance_parent_loan_refinancing= res.data.balance_parent_loan_refinancing
-            //  this.loan_refinancing.date_cut_refinancing= this.$moment(res.data.request_date).format("YYYY-MM-DD")
-      
-      
-            }
-            this.toastr.success('Se Actualizó Correctamente.')
+
+                  this.toastr.success('Se Actualizó Correctamente.')
             this.cobranzas_edit = false
             this.cobranzas_edit_sismu= false
+      
+            }else{
+              this.cobranzas_edit_sismu=false
+     
+            }
+          
         }
       } catch (e) {
         console.log(e)
