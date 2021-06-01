@@ -128,8 +128,8 @@
         <template v-slot:[`item.role_display_name`]="{ item }">
           {{ item.role.display_name }}
         </template>
-                <template v-slot:[`item.user_username`]="{ item }">
-          {{ item.user.username }}
+        <template v-slot:[`item.user_username`]="{ item }">
+          {{ item.user ? item.user.username : '' }}
         </template>
         <template v-slot:[`item.estimated_date`]="{ item }">
           {{ item.estimated_date | date }}

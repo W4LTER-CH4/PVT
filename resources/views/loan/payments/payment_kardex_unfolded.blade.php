@@ -207,7 +207,7 @@
                     <th class="w-8"><div>Interés </div>Penal</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
-                    <th class="w-8"><div>Cpte</div> </th>
+                    <th class="w-8"><div>Cbte</div> </th>
                     <th class="w-11"><div>Codigo de</div><div> Transaccion</div> </th>
                     <th class="w-8"><div>Estado</div> </th>
                     <th class="w-8"><div>Observación</div> </th>        

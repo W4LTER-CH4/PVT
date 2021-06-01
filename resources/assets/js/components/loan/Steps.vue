@@ -1003,13 +1003,8 @@ export default {
     {
         if(this.affiliate.city_identity_card_id != null){
           if(this.addresses.length != 0){
-            if(this.affiliate.cell_phone_number!='' || this.affiliate.phone_number!=null)
-            {
               this.nextStep(4)
-            }else{
-              this.toastr.error("No se encuentra registrada ningun telefono. Por favor registre algun numero de celular o fijo del afiliado.")
-            }
-          }else{
+             }else{
             this.toastr.error("No se encuentra registrada ninguna dirección. Por favor registre la dirección del afiliado.")
           }
         }else{

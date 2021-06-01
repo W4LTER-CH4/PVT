@@ -87,6 +87,10 @@ class Util
         if ($literal) {
             $f = new \NumberFormatter('es', \NumberFormatter::SPELLOUT);
             $data = $f->format(intval($value)) . ' ' . explode('.', number_format(round($value, 2), 2))[1] . '/100';
+            $mil = explode(" ",$data);
+            $mil = $mil[0] == "mil" ? 'un ':" ";
+            $data =   $mil.$data;
+
         } else {
             $data = number_format($value, 2, ',', '.');
         }

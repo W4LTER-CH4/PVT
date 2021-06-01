@@ -119,7 +119,7 @@
                     v-slot="{ errors }"
                     vid="celular1"
                     name="celular1"
-                    rules="min:1|max:8"
+                    rules="min:1|max:8 |required"
                   >
                     <v-text-field
                       :error-messages="errors"
@@ -374,12 +374,12 @@ export default {
           console.log("entro al grabar por falso :)")
           // Edit affiliate
           //await axios.patch(`affiliate/${this.affiliate.id}`, this.affiliate)
-          await axios.patch(`affiliate/${this.affiliate.id}`, {
+            await axios.patch(`affiliate/${this.affiliate.id}`, {
             phone_number: this.affiliate.phone_number,
             cell_phone_number: this.affiliate.cell_phone_number,
             city_identity_card_id: this.affiliate.city_identity_card_id
           })
-          await axios.patch(`affiliate/${this.affiliate.id}/address`, {
+            await axios.patch(`affiliate/${this.affiliate.id}/address`, {
             addresses: this.addresses.map(o => o.id)
           })
           this.toastr.success("Registro guardado correctamente")

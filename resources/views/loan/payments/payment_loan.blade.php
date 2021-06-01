@@ -95,10 +95,7 @@
                 <td class="text-right data-row py-5">{{ Util::money_format($loan_payment->previous_balance) }}</td>
             </tr>
             <tr class="">
-            @php ($literal_amount= Util::money_format($loan_payment->estimated_quota, true))
-            @php ($mil = explode(" ",$literal_amount))
-            @php ($mil = $mil[0] == "mil" ? 'un ':" ")
-                <td colspan="2" class="font-semibold  leading-tight text-right">Son:(<span class="uppercase font-semibold leading-tight  m-b-10 text-xs">{{$mil}}{{$literal_amount}} Bolivianos</span> )</td>
+                <td colspan="2" class="font-semibold  leading-tight text-right">Son:(<span class="uppercase font-semibold leading-tight  m-b-10 text-xs">{{Util::money_format($loan_payment->estimated_quota, true)}} Bolivianos</span> )</td>
                 <td class="w-40 font-semibold ">Saldo Actual</td> 
                 <td class="data-row w-10 text-right">{{ Util::money_format($loan_payment->previous_balance-$loan_payment->capital_payment) }}</td>               
             </tr>       

@@ -330,10 +330,10 @@
                 ELABORADO POR
                 </td>
                 <td width="35%">
-                REVISADO POR 
+                APROBADO POR 
                 </td>
                 <td width="30%">
-                APROBADO POR
+                AUTORIZADO POR
                 </td>
                 </tr>             
             </tbody>

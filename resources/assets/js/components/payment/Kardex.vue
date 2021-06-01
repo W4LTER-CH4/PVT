@@ -402,6 +402,15 @@ export default {
         filterable: false,
       },
       {
+        text: "Código de Transacción",
+        value: "voucher_treasury_code",
+        class: ["normal", "white--text"],
+        align: "center",
+        sortable: true,
+        width: "5%",
+        filterable: false,
+      },
+      {
         text: "Tipo de Amortización.",
         value: "modality_shortened",
         class: ["normal", "white--text"],
@@ -422,15 +431,6 @@ export default {
       {
         text: "Estado",
         value: "state_name",
-        class: ["normal", "white--text"],
-        align: "center",
-        sortable: true,
-        width: "5%",
-        filterable: false,
-      },
-      {
-        text: "Recibo de pago",
-        value: "voucher_treasury_code",
         class: ["normal", "white--text"],
         align: "center",
         sortable: true,
