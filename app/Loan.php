@@ -371,8 +371,8 @@ class Loan extends Model
             else
                 $date_pay = $date_ini->addMonth()->endOfMonth()->format('Y-m-d');
             if(!$this->last_payment_validated && CarbonImmutable::parse($quota->estimated_date)->format('Y-m-d') <= CarbonImmutable::parse($date_pay)->format('Y-m-d') && CarbonImmutable::parse($quota->estimated_date)->format('Y-m-d') != CarbonImmutable::parse($this->disbursement_date)->format('Y-m-d')){
-                /*$quota->paid_days->current +=1;
-                $quota->estimated_days->current +=1;*/
+                $quota->paid_days->current +=1;
+                $quota->estimated_days->current +=1;
                 $quota->paid_days->current_generated = Util::round2(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
                 $quota->estimated_days->current_generated = Util::round2(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
                 if($date_ini->day >= LoanGlobalParameter::latest()->first()->offset_interest_day){
@@ -952,12 +952,14 @@ class Loan extends Model
         $payments = $this->payments;
         $loan_state = LoanPaymentState::where('name', 'Pagado')->first();
         $balance = $this->amount_approved;
+        $sum = 0;
         foreach($payments as $payment)
         {
             if($payment->state_id == $loan_state->id)
-                $balance -= $payment->capital_payment;
+                $sum += $payment->capital_payment;
         }
-        return $balance;
+        return round($balance - $sum);
+        //return ($balance - $this->payments->where('state_id', LoanPaymentState::where('name', 'Pagado')->first()->id)->sum('capital_payment'));
     }
     //muestra boletas de afiliado
     public function ballot_affiliate($affiliate_id){

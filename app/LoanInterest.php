@@ -28,6 +28,7 @@ class LoanInterest extends Model
 
     public function getMonthlyCurrentInterestAttribute()
     {
+        //return round((((pow((1+(($this->annual_interest)/100)),365.25/360))-1)/12),8);
         return $this->annual_interest / (100 * 12);
     }
 

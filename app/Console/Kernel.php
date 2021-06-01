@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
         $schedule->call(function () {
             app()->call([app()->make('App\Http\Controllers\Api\V1\LoanController'), 'verify_loans']);
-        })->daily();
+        })->everyMinute();
     }
 
     /**

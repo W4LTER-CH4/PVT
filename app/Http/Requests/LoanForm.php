@@ -83,7 +83,7 @@ class LoanForm extends FormRequest
         if($this->parent_loan_id>0) $quota_previous = true;
         $rules = [
             'procedure_modality_id' => ['integer', 'exists:procedure_modalities,id'],
-            'amount_requested' => ['integer', 'min:200', 'max:700000', new LoanIntervalAmount($procedure_modality)],
+            'amount_requested' => ['numeric', 'min:0', 'max:700000', new LoanIntervalAmount($procedure_modality)],
             'city_id' => ['integer', 'exists:cities,id'],
             'loan_term' => ['integer', 'min:1', 'max:240', new LoanIntervalTerm($procedure_modality)],
             'payment_type_id' => ['integer', 'exists:payment_types,id'],
@@ -134,7 +134,7 @@ class LoanForm extends FormRequest
             'parent_loan_id' => ['integer', 'nullable', 'exists:loans,id'],
             'parent_reason'=> ['string', 'nullable',$refinanciamiento? 'required':'nullable', 'in:REFINANCIAMIENTO,REPROGRAMACIÓN'],
             'state_id' => ['exists:loan_states,id'],
-            'amount_approved' => ['integer', 'min:200', 'max:700000', new LoanIntervalAmount($procedure_modality)],
+            'amount_approved' => ['numeric', 'min:0', 'max:700000', new LoanIntervalAmount($procedure_modality)],
             'notes' => ['array'],
             'validated' => ['boolean'],
             'guarantor_amortizing' => ['boolean'],
