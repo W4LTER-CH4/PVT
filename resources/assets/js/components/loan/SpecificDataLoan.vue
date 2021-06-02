@@ -1421,7 +1421,12 @@ export default {
             amount_approved: this.loan.amount_approved,
             loan_term: this.loan.loan_term
           })
+          if(!res.data.messaje){
+             this.toastr.error(res.data.message)
+          }
+          if(res.data.id){
             this.toastr.success('Se registró correctamente.')
+          }
             this.calificacion_edit = false
         }
       } catch (e) {
