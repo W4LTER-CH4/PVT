@@ -235,11 +235,11 @@
             </tr>
             <tr >
             <td class="w-50 text-left px-10">TOTAL {{$title_average }} LÍQUIDO PAGABLE</td>
-            <td class="w-50 text-left px-10">{{ $sum_prom_payable_liquid_calculated}} </td>
+            <td class="w-50 text-left px-10">{{ Util::money_format($sum_prom_payable_liquid_calculated)}} </td>
             </tr>
             <tr >
             <td class="w-50 text-left px-10">TOTAL {{$title_average }} BONOS</td>
-            <td class="w-50 text-left px-10">{{ $sum_prom_bonus_calculated}}</td>
+            <td class="w-50 text-left px-10">{{ Util::money_format($sum_prom_bonus_calculated)}}</td>
             </tr>
             <tr >
             <td class="w-50 text-left px-10">LÍQUIDO PARA CALIFICACIÓN</td>
@@ -263,19 +263,19 @@
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">INTERÉS CORRIENTE</td>
-            <td class="w-50 text-left px-10">{{ $loan->interest->annual_interest }} % Anual</td>
+            <td class="w-50 text-left px-10">{{ Util::money_format($loan->interest->annual_interest) }} % Anual</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">INTERÉS PENAL</td>
-            <td class="w-50 text-left px-10">{{ $loan->interest->penal_interest }} % Anual</td>
+            <td class="w-50 text-left px-10">{{ Util::money_format($loan->interest->penal_interest) }} % Anual</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">LÍQUIDO PARA CALIFICACIÓN</td>
-            <td class="w-50 text-left px-10">{{ $loan->liquid_qualification_calculated }}</td>
+            <td class="w-50 text-left px-10">{{ Util::money_format($loan->liquid_qualification_calculated) }}</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">MONTO DEL PRÉSTAMO AUTORIZADO</td>
-            <td class="w-50 text-left px-10">{{ $loan->amount_approved }}</td>
+            <td class="w-50 text-left px-10">{{ Util::money_format($loan->amount_approved) }}</td>
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">PLAZO EN MESESES</td>
@@ -287,7 +287,7 @@
             </tr>
             <tr  class="w-100">
             <td class="w-50 text-left px-10">ÍNDICE DE ENDEUDAMIENTO</td>
-            <td class="w-50 text-left px-10">{{ $loan->indebtedness_calculated }} %</td>
+            <td class="w-50 text-left px-10">{{ Util::money_format($loan->indebtedness_calculated) }} %</td>
             </tr>      
         </table>
     </div>
@@ -313,7 +313,7 @@
             </tr>
             <tr  class="w-100">
                 <td class="w-50 text-left px-10">ÍNDICE DE ENDEUDAMIENTO</td>
-                <td class="w-50 text-left px-10">{{ $guarantor->pivot->indebtedness_calculated }} %</td> 
+                <td class="w-50 text-left px-10">{{ Util::money_format($guarantor->pivot->indebtedness_calculated) }} %</td> 
             </tr>
             <tr  class="w-100">
                 <td class="w-50 text-left px-10">PORCENTAJE DE PAGO</td>

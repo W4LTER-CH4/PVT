@@ -79,7 +79,7 @@
                 <td class="w-35">Trámite origen</td>
                 @endif
                 <td class="{{ $loan->parent_loan ? 'w-50' : 'w-50' }}" colspan="{{ $loan->parent_loan ? 1 : 2 }}">Modalidad de trámite</td>
-                <td class="w-15">Tasa Anual</td>
+                <td class="w-15">Tasa Anual(%)</td>
                 <td class="w-25">Cuota Fija Mensual</td>
             </tr>
             <tr>
@@ -88,8 +88,8 @@
                 <td class="data-row py-5 m-b-10 text-xs">{{ $loan->parent_loan->code }}</td>
                 @endif
                 <td class="data-row py-5 m-b-10 text-xs" colspan="{{ $loan->parent_loan ? 1 : 2 }}">{{ $loan->modality->name }}</td>
-                <td class="m-b-10 text-xs">{{ $loan->interest->annual_interest}}</td>
-                <td class="m-b-10 text-xs" colspan="2">{{$loan->estimated_quota}}</td>
+                <td class="m-b-10 text-xs">{{ Util::money_format($loan->interest->annual_interest)}}</td>
+                <td class="m-b-10 text-xs" colspan="2">{{Util::money_format($loan->estimated_quota)}}</td>
             </tr>
             <tr class="bg-grey-darker text-xxs text-white">
                 <td class="w-25">Plazo</td>
@@ -107,7 +107,7 @@
                         {{ $loan->payment_type->name}}
                     @endif
                 </td>
-                <td class="data-row py-5 m-b-10 text-xs" >{{Carbon::parse($loan->disbursement_date)->format('d/m/Y H:m:s')}}</td>
+                <td class="data-row py-5 m-b-10 text-xs" >{{Carbon::parse($loan->disbursement_date)->format('d/m/Y H:i:s')}}</td>
                 @if($loan->parent_loan && $loan->parent_reason == "REPROGRAMACIÓN")
                 <td colspan="2">{{ Util::money_format($loan->parent_loan->amount_approved) }} <span class="capitalize">Bs.</span></td>
                 @else
@@ -122,8 +122,8 @@
             <tr>
             @if($loan->paymentsKardex->first() != null)
                 <td class="data-row py-5 m-b-10 text-xs">{{$loan->num_accounting_voucher}}</td>
-                <td colspan="2">{{ $loan->paymentsKardex->first()->interest_accumulated}}</td>
-                <td colspan="2">{{ $loan->paymentsKardex->first()->penal_accumulated}}</td>
+                <td colspan="2">{{ Util::money_format($loan->paymentsKardex->first()->interest_accumulated)}}</td>
+                <td colspan="2">{{ Util::money_format($loan->paymentsKardex->first()->penal_accumulated)}}</td>
                 @else
                 <td class="data-row py-5 m-b-10 text-xs">0</td>
                 <td colspan="2">0</td>
@@ -156,13 +156,13 @@
                     <th class="w-7"><div>Fecha de</div><div>Cobro</div></td>
                     <th class="w-8"><div>Amortización</div><div>capital</div></td>
                     <th class="w-8"><div>Interés</div><div>corriente</div></td>
-                    <th class="w-8"><div>Interes</div><div>Penal</div></td>
-                    <th class="w-8"><div>Interes</div> Corriente</div><div>Pendiente</div></td>
+                    <th class="w-8"><div>Interés</div><div>Penal</div></td>
+                    <th class="w-8"><div>Interés</div> Corriente</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Interés </div>Penal</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
                     <th class="w-8"><div>Cbte</div> </th>  
-                    <th class="w-11"><div>Codigo de</div><div> Transaccion</div> </th>      
+                    <th class="w-11"><div>Código de</div><div> Transacción</div> </th>      
                     <th class="w-8"><div>Estado</div> </th>        
                     <th class="w-8"><div>Observación</div> </th>        
                 </tr>
@@ -202,13 +202,13 @@
                     <th class="w-7"><div>Fecha de</div><div>Cobro</div></td>
                     <th class="w-8"><div>Amortización</div><div>capital</div></td>
                     <th class="w-8"><div>Interés</div><div>corriente</div></td>
-                    <th class="w-8"><div>Interes</div><div>Penal</div></td>
-                    <th class="w-8"><div>Interes</div> Corriente</div><div>Pendiente</div></td>
+                    <th class="w-8"><div>Interés</div><div>Penal</div></td>
+                    <th class="w-8"><div>Interés</div> Corriente</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Interés </div>Penal</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
                     <th class="w-8"><div>Cbte</div> </th>
-                    <th class="w-11"><div>Codigo de</div><div> Transaccion</div> </th>
+                    <th class="w-11"><div>Código de</div><div> Transacción</div> </th>
                     <th class="w-8"><div>Estado</div> </th>
                     <th class="w-8"><div>Observación</div> </th>        
                 </tr>
