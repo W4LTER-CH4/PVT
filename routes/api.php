@@ -189,6 +189,7 @@ Route::group([
             Route::apiResource('loan', 'Api\V1\LoanController')->only('update');
             Route::patch('loan/{loan}/document/{document}', 'Api\V1\LoanController@update_document');
             Route::patch('loan/{loan}/sismu', 'Api\V1\LoanController@update_sismu');
+            Route::get('switch_guarantor_lender', 'Api\V1\LoanController@switch_guarantor_lender');
         });
         Route::group([
             'middleware' => 'permission:delete-loan'

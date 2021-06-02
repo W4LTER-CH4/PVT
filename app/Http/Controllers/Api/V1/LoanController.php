@@ -1533,7 +1533,7 @@ class LoanController extends Controller
     */
     public function validate_affiliate($affiliate_id){
      
-         $message['validate'] = false;
+        $message['validate'] = false;
         $affiliate = Affiliate::findOrFail($affiliate_id);
         $loan_global_parameter = LoanGlobalParameter::latest()->first();
         $loan_disbursement = count($affiliate->disbursement_loans);
@@ -2105,5 +2105,33 @@ class LoanController extends Controller
            }
        }
        return $c;
+   }
+
+    /**
+    * Cobro de garante a titular
+    * devuelve el afiliado al que se cambio
+    * @bodyParam loan integer required ID del préstamo. Example: 6
+    * @bodyParam rol_id integer required id del rol que cambia el tipo de cobro. Example: 2
+    * @authenticated
+    * @responseFile responses/loan/switch_guarantor_lender.200.json
+    */
+   public function switch_guarantor_lender(request $request)
+   {
+       $message = [];
+       if(Loan::whereId($request->loan_id)->first() != null && Role::whereId($request->role_id)->first() != null){
+            $option = Loan::whereId($request->loan_id)->first();
+            $loan = Loan::withoutEvents(function () use ($option, $request){
+                $loan = Loan::whereId($option->id)->first();
+                $loan->guarantor_amortizing = false;
+                $loan->update();
+                $loan->role_id = $request->role_id;
+                Util::save_record($loan, 'datos-de-un-tramite', Util::concat_action($loan,'cambio cobro de garante a titular: '.$loan->code));
+            });
+            $message['validate'] = 'Se cambio el cobro a '.$option->lenders->first()->full_name;
+        }
+        else{
+            $message['validate'] = 'prestamo y / o rol inexistente';
+        }
+        return $message;
    }
 }

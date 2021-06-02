@@ -296,6 +296,7 @@ class LoanReportController extends Controller
                'loans.parent_reason as parent_reason_loan','loans.amount_approved as amount_disbursement',DB::raw("(loans.amount_approved - loans.refinancing_balance) as amount_disbursement_liquido"),
                'loans.loan_term as term_loan','loan_destinies.name as name_destinity_loan','loan_affiliates.indebtedness_calculated as indebtedness_calculated_loan_affiliate')
                //->where('affiliates.identity_card','LIKE'.'%'.$request->identity_card.'%')
+               ->distinct('loans.code')
                ->orderBy('loans.code', $order_loan)
                ->get();
  
