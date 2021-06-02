@@ -109,9 +109,11 @@
                           <fieldset class="pa-2">
                               <v-toolbar-title>Datos del Prestamo</v-toolbar-title>
                                 <v-progress-linear></v-progress-linear>
-                                 <p class="py-0 mb-0 caption">Monto del Inmueble: {{loan_detail.net_realizable_value }} <br>
-                                 Monto Solicitado: {{calculator_result.amount_requested}}<br>
-                                 Interes Calculado Total: {{calculator_result.indebtedness_calculated_total|percentage }}%  <br> Liquido Calculado Total: {{calculator_result.liquid_qualification_calculated_total}}<br> Cuota Total del Prestamo: {{calculator_result.quota_calculated_estimated_total}}</p>
+                                 <p class="py-0 mb-0 caption">Monto del Inmueble: {{loan_detail.net_realizable_value | money }} <br>
+                                 Monto Solicitado: {{calculator_result.amount_requested | money}}<br>
+                                 Interes Calculado Total: {{calculator_result.indebtedness_calculated_total|percentage }}%  <br>
+                                 Liquido Calculado Total: {{calculator_result.liquid_qualification_calculated_total | money}}<br>
+                                 Cuota Total del Prestamo: {{calculator_result.quota_calculated_estimated_total | money}}</p>
                                 <p class="py-0 mb-0 caption" v-show="type_sismu">Cuota de refinanciamiento Sismu: {{ data_sismu.quota_sismu}}</p>
                           </fieldset>
                         </v-flex>
@@ -122,8 +124,8 @@
                               <li v-for="(liquido,i) in liquid_calificated" :key="i">
                                 <v-progress-linear></v-progress-linear>
                                 <h1 class="py-0 mb-0 caption">Nombre del Afiliado: {{lenders_aux[i]}}</h1>
-                                <p class="py-0 mb-0 caption">Liquido Pagable:  {{liquido.payable_liquid_calculated}}<br>
-                                {{"  "+"Total de Bonos:"+liquido.bonus_calculated +" "}} <b>{{liquido.livelihood_amount?'Cubre la Cuota ':'No Cubre la Cuota'}}</b></p>
+                                <p class="py-0 mb-0 caption">Liquido Pagable:  {{liquido.payable_liquid_calculated | money}}<br>
+                                <p class="py-0 mb-0 caption">Total de Bonos:   {{liquido.bonus_calculated | money}} <b>{{liquido.livelihood_amount?'Cubre la Cuota ':'No Cubre la Cuota'}}</b></p>
                               </li>
                             </ul>
                           </fieldset>
@@ -141,7 +143,7 @@
                                 <li v-for="(calculado,i) in calculator_result.affiliates" :key="i" >
                                   <v-progress-linear></v-progress-linear>
                                    <h5 class="py-0 mb-0 caption ">Nombre del Afiliado: {{ lenders_aux[i] }}</h5>
-                                  <p class="py-0 mb-0 caption">Liquido para Callificacion: {{calculado.liquid_qualification_calculated}} <b> | </b> Cuota Estimada: {{calculado.quota_calculated_estimated}} <b> | </b> Porcentaje de Pago: {{calculado.payment_percentage|percentage }}% </p>
+                                  <p class="py-0 mb-0 caption">Liquido para Callificacion: {{calculado.liquid_qualification_calculated | money}} <b> | </b> Cuota Estimada: {{calculado.quota_calculated_estimated | money}} <b> | </b> Porcentaje de Pago: {{calculado.payment_percentage|percentage }}% </p>
                                 </li>
                               </ul>
                           </fieldset>
