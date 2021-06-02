@@ -97,7 +97,7 @@
                                     ></v-text-field>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0">
-                                    <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated | moneyString}}</p>
+                                    <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated | moneyString }}</p>
                                   </v-col>
                                    <v-col cols="12" md="4" class="py-0">
                                     <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+ loan.indebtedness_calculated|percentage }}% </p>
@@ -890,7 +890,7 @@
                                       <v-col cols="12" md="3" v-show="loan.payment_type.name=='Depósito Bancario'">
                                         <p><b>CUENTA SIGEP:</b> {{' '+loan.lenders[0].sigep_status}}</p>
                                       </v-col>
-                                    
+
                                       <!--v-col cols="12" md="4">
                                         <v-select
                                           dense
@@ -1348,11 +1348,11 @@ export default {
       }
     },
    prueba2(){
-      this.dialog = false 
+      this.dialog = false
       this.resetForm()
-    }, 
+    },
     async  prueba(){
-    try {      
+    try {
           let res = await axios.patch(`loan/${this.loan.id}/update_refinancing_balance`)
           this.loan_refinancing.refinancing_balance= res.data.refinancing_balance
           this.loan_refinancing.balance_parent_loan_refinancing= res.data.balance_parent_loan_refinancing
@@ -1361,13 +1361,13 @@ export default {
           this.toastr.success('Se Actualizó Correctamente.')
           this.cobranzas_edit = false
         //    this.cobranzas_edit_sismu= false
-          this.dialog=false 
+          this.dialog=false
       } catch (e) {
         this.toastr.error("Ocurrió un error en la impresión.")
         console.log(e)
       }
     },
- 
+
     async editRefinanciamiento(){
       try {
         if (!this.cobranzas_edit) {
@@ -1377,7 +1377,7 @@ export default {
           }else{
            this.dialog=true
             this.cobranzas_edit_sismu= false
-            
+
           }
         } else {
          //Edit refinancing
@@ -1396,12 +1396,12 @@ export default {
                   this.toastr.success('Se Actualizó Correctamente.')
             this.cobranzas_edit = false
             this.cobranzas_edit_sismu= false
-      
+
             }else{
               this.cobranzas_edit_sismu=false
-     
+
             }
-          
+
         }
       } catch (e) {
         console.log(e)

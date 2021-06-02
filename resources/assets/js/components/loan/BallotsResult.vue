@@ -117,9 +117,9 @@
                         <fieldset class="py-0">
                           <ul style="list-style: none" class="py-3 ps-4 ">
                             <li v-for="(liquid,i) in liquid_calificated" :key="i" >
-                              <p>PROMEDIO LIQUIDO PAGABLE:{{ liquid.payable_liquid_calculated}}</p>
-                              <p>TOTAL BONOS: {{ liquid.bonus_calculated }}</p>
-                              <p>LIQUIDO PARA CALIFICACION: {{ liquid.liquid_qualification_calculated}}</p>
+                              <p>PROMEDIO LIQUIDO PAGABLE: {{ liquid.payable_liquid_calculated | money}}</p>
+                              <p>TOTAL BONOS: {{ liquid.bonus_calculated | money }}</p>
+                              <p>LIQUIDO PARA CALIFICACION: {{ liquid.liquid_qualification_calculated | money}}</p>
                               <p v-show="type_sismu">CUOTA DE REFINANCIAMIENTO SISMU: {{ data_sismu.quota_sismu}}</p>
                               <p v-show="liquid_calificated[0].guarantees.length==0">DESCUENTO DE CUOTAS POR GARANTIAS: {{liquid_calificated[0].guarantees.length}}</p>
                               </li>
@@ -134,11 +134,11 @@
                     <v-layout row wrap>
                       <v-flex xs12 class="px-2">
                         <fieldset class="pa-3">
-                          <p>CALCULO DE CUOTA: {{ calculator_result.quota_calculated_estimated_total }}</p>
+                          <p>CALCULO DE CUOTA: {{ calculator_result.quota_calculated_estimated_total | money}}</p>
                           <p>INDICE DE ENDEUDAMIENTO: {{calculator_result.indebtedness_calculated_total|percentage }}%</p>
-                          <p>MONTO SOLICITADO: {{calculator_result.amount_requested }}</p>
-                          <p v-show="calculator_result.maximum_suggested_valid" class="success--text font-weight-black">MONTO MAXIMO SUGERIDO : {{calculator_result.amount_maximum_suggested}}</p>
-                          <p v-show="!calculator_result.maximum_suggested_valid" class="error--text font-weight-black">MONTO MAXIMO SUGERIDO : {{calculator_result.amount_maximum_suggested}}</p>
+                          <p>MONTO SOLICITADO: {{calculator_result.amount_requested | money}}</p>
+                          <p v-show="calculator_result.maximum_suggested_valid" class="success--text font-weight-black">MONTO MAXIMO SUGERIDO : {{calculator_result.amount_maximum_suggested | money}}</p>
+                          <p v-show="!calculator_result.maximum_suggested_valid" class="error--text font-weight-black">MONTO MAXIMO SUGERIDO : {{calculator_result.amount_maximum_suggested | money}}</p>
                         </fieldset>
                       </v-flex>
                     </v-layout>
@@ -158,7 +158,7 @@
                                       <p class="caption" >CODIGO:{{ guarantees.code}}</p>
                                     </v-col>
                                     <v-col  cols="12" md="3" class='py-0 mb-0'>
-                                      <p class="caption" >CUOTA: {{ guarantees.quota }}</p>
+                                      <p class="caption" >CUOTA: {{ guarantees.quota | money}}</p>
                                     </v-col>
                                     <v-col  cols="12" md="3" class='py-0 mb-0'>
                                       <p class="caption" >SISTEMA: {{ guarantees.origin}}</p>

@@ -10,7 +10,7 @@
               <ul style="list-style: none;" class="pa-0">
                 <li v-for="(item,index) in loan" :key="item.id" class="pb-2">
                   <div v-if="index < 3">
-                    
+
                     <strong>Cód.:</strong>
                     {{ item.code }} |
                     <strong>Desembolso:</strong>
@@ -31,8 +31,8 @@
                             color="warning"
                             bottom
                             right
-                            v-on="on" 
-                            :to="{ name: 'flowAdd', params: { id: item.id}}" 
+                            v-on="on"
+                            :to="{ name: 'flowAdd', params: { id: item.id}}"
                           >
                             <v-icon>mdi-eye</v-icon>
                           </v-btn>
@@ -52,7 +52,7 @@
                             color="error"
                             bottom
                             right
-                            v-on="on" 
+                            v-on="on"
                             @click.stop="validateRemakeLoan(affiliate.id, item.id)"
                           >
                             <v-icon>mdi-redo-variant</v-icon>
@@ -64,8 +64,8 @@
 
                     <span v-if="item.state.name == 'Vigente'">
                     <v-tooltip
-                    left  
-                    v-if="item.modality.procedure_type.name != 'Préstamo Anticipo'"         
+                    left
+                    v-if="item.modality.procedure_type.name != 'Préstamo Anticipo'"
                     >
                     <template v-slot:activator="{ on }">
                       <v-btn
@@ -75,7 +75,7 @@
                         color="success"
                         bottom
                         right
-                        v-on="on" 
+                        v-on="on"
                         @click.stop="validateRefinancingLoan(affiliate.id, item.id)"
                       >
                       <v-icon>mdi-cash-multiple</v-icon>
@@ -87,7 +87,7 @@
 
                     <span v-if="item.state.name == 'Vigente'">
                     <v-tooltip
-                    left   
+                    left
                     v-if="item.modality.procedure_type.name == 'Préstamo a Largo Plazo' || item.modality.procedure_type.name == 'Préstamo Hipotecario'"
                     >
                       <template v-slot:activator="{ on }">
@@ -98,7 +98,7 @@
                           color="info"
                           bottom
                           right
-                          v-on="on" 
+                          v-on="on"
                           @click.stop="validateReprogrammingLoan(affiliate.id, item.id)"
                         >
                         <v-icon>mdi-calendar-clock</v-icon>
@@ -280,7 +280,7 @@ export default {
     //Metodo para obtener Permisos por rol
     permissionSimpleSelected () {
       return this.$store.getters.permissionSimpleSelected
-    },    
+    },
     isNew() {
       return this.$route.params.id == "new";
     }
@@ -429,7 +429,7 @@ export default {
         console.log(e)
       }
     },
-    async validateReprogrammingLoan(a_id, l_id){     
+    async validateReprogrammingLoan(a_id, l_id){
       try {
           let res = await axios.post(`loan/${l_id}/validate_re_loan`,{
             type_procedure: false
@@ -445,13 +445,13 @@ export default {
                 }
               }else{
                 this.toastr.error("Tiene pendiente menos de CUATRO pagos para finalizar la deuda")
-              } 
+              }
             }else{
               this.toastr.error("El afiliado no puede tener más de "+ this.global_parameters.max_loans_active +" préstamos vigentes. Actualemnte ya tiene "+ this.loan_affiliate.disbursement_loans+ " préstamos vigentes.")
             }
           }else{
             this.toastr.error("El afiliado no puede tener más de "+ this.global_parameters.max_loans_process +" trámite en proceso. Actualmente ya tiene "+ this.loan_affiliate.process_loans+ " préstamos en proceso.")
-          }         
+          }
       } catch (e) {
         console.log(e)
       }
@@ -474,7 +474,7 @@ export default {
       let res
       try {
         res = await axios.post(`loan/${id}/validate_affiliate`)
-        this.validate_affiliate = res.data.validate  
+        this.validate_affiliate = res.data.validate
         if(this.validate_affiliate == true){
           if(type_procedure == "is_new"){
             this.$router.push({ name: 'loanAdd',  params: { hash: 'new'},  query: { affiliate_id: id}})
@@ -482,7 +482,7 @@ export default {
             this.$router.push({ name: 'loanAdd', params: { hash: 'refinancing'}, query: { affiliate_id: id, type_sismu: true}})
           } if(type_procedure == "is_reprogramming"){
             this.$router.push({ name: 'loanAdd', params: { hash: 'reprogramming'}, query: { affiliate_id: id, type_sismu: true}})
-          } 
+          }
         }else{
           this.toastr.error(this.validate_affiliate)
         }
