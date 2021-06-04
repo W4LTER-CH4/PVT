@@ -132,11 +132,7 @@
                                 <v-progress-linear></v-progress-linear>
                                 <h1 class="py-0 mb-0 caption">Nombre del Afiliado: {{lenders_aux[i]}}</h1>
                                 <p class="py-0 mb-0 caption">Liquido Pagable:  {{liquido.payable_liquid_calculated | money}}<br>
-<<<<<<< HEAD
-                                <p class="py-0 mb-0 caption">Total de Bonos:   {{liquido.bonus_calculated | money}} <b>{{liquido.livelihood_amount?'Cubre la Cuota ':'No Cubre la Cuota'}}</b></p>
-=======
                                 Total de Bonos: {{liquido.bonus_calculated | money}} <b> {{liquido.livelihood_amount?'Cubre la Cuota ':'No Cubre la Cuota'}}</b></p>
->>>>>>> 90c24faa599510b7a04b94e220c13d162623c3a4
                               </li>
                             </ul>
                           </fieldset>

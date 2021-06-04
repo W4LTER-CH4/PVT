@@ -97,11 +97,7 @@
                                     ></v-text-field>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0">
-<<<<<<< HEAD
-                                    <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated | moneyString }}</p>
-=======
                                     <p><b>TOTAL BONOS:</b> {{loan.lenders[0].pivot.bonus_calculated | moneyString}}</p>
->>>>>>> 90c24faa599510b7a04b94e220c13d162623c3a4
                                   </v-col>
                                    <v-col cols="12" md="4" class="py-0">
                                     <p><b>INDICE DE ENDEUDAMIENTO:</b> {{loan.indebtedness_calculated|percentage }}% </p>

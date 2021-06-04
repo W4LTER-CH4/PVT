@@ -117,17 +117,10 @@
                         <fieldset class="py-0">
                           <ul style="list-style: none" class="py-3 ps-4 ">
                             <li v-for="(liquid,i) in liquid_calificated" :key="i" >
-<<<<<<< HEAD
-                              <p>PROMEDIO LIQUIDO PAGABLE: {{ liquid.payable_liquid_calculated | money}}</p>
-                              <p>TOTAL BONOS: {{ liquid.bonus_calculated | money }}</p>
-                              <p>LIQUIDO PARA CALIFICACION: {{ liquid.liquid_qualification_calculated | money}}</p>
-                              <p v-show="type_sismu">CUOTA DE REFINANCIAMIENTO SISMU: {{ data_sismu.quota_sismu}}</p>
-=======
                               <p>PROMEDIO LIQUIDO PAGABLE: {{liquid.payable_liquid_calculated | money}}</p>
                               <p>TOTAL BONOS: {{liquid.bonus_calculated | money}}</p>
                               <p>LIQUIDO PARA CALIFICACION: {{ liquid.liquid_qualification_calculated | money}}</p>
                               <p v-show="type_sismu">CUOTA DE REFINANCIAMIENTO SISMU: {{data_sismu.quota_sismu | money}}</p>
->>>>>>> 90c24faa599510b7a04b94e220c13d162623c3a4
                               <p v-show="liquid_calificated[0].guarantees.length==0">DESCUENTO DE CUOTAS POR GARANTIAS: {{liquid_calificated[0].guarantees.length}}</p>
                               </li>
                             </ul>
