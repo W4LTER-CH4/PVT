@@ -43,16 +43,19 @@ class LoanPaymentForm extends FormRequest
             'procedure_modality_id' => ['required','integer', 'exists:procedure_modalities,id'],
             'affiliate_id' => ['required','integer', 'exists:affiliates,id'],
             'paid_by' => ['string', 'in:T,G'],
+            'categorie_id'=>['required','integer', 'exists:loan_payment_categories,id'],
             'estimated_date' => 'nullable|date_format:Y-m-d|after_or_equal:'.$date,
             'voucher' => ['nullable','string','min:3'],
             'estimated_quota' => 'nullable|numeric|min:1',
             'user_id' => ['nullable', 'integer', 'exists:users,id'],
             'loan_payment_date'=>['nullable|date_format:Y-m-d'],
-            'liquidate' => ['boolean']
+            'liquidate' => ['boolean'],
+            'initial_affiliate'=> ['nullable','string','min:2'],
+            'state_affiliate'=> ['string', 'in:ACTIVO,PASIVO'],
         ];
         switch ($this->method()) {
             case 'POST': {
-                foreach (array_slice($rules, 0, 3) as $key => $rule) {
+                foreach (array_slice($rules, 0, 4) as $key => $rule) {
                     array_push($rules[$key], 'required');
                 }
                 return array_merge($rules, [

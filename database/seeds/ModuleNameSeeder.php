@@ -30,14 +30,8 @@ class ModuleNameSeeder extends Seeder
                 case 'asuntos-financieros':
                     $module->update(['shortened' => 'AF']);
                     break;
-                case 'juridica':
-                    $module->update(['shortened' => 'JU']);
-                    break;
                 case 'prestamos':
                     $module->update(['shortened' => 'PRE']);
-                    break;
-                case 'regional':
-                    $module->update(['shortened' => 'REG']);
                     break;
                 case 'cuota-y-auxilio-mortuorio':
                     $module->update(['shortened' => 'CAM']);

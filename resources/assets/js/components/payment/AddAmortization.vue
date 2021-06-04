@@ -101,7 +101,7 @@
                             label="Validar Pago"
                           ></v-checkbox>
                         </v-col>
-                        <v-col cols="5" class="ma-0 pb-0"  >
+                        <v-col cols="4" class="ma-0 pb-0"  >
                           <v-select
                             dense
                             class="caption"
@@ -117,7 +117,7 @@
                             :disabled="ver || editable"
                           ></v-select>
                         </v-col>
-                        <v-col cols="4" class="ma-0 pb-0" v-show="isNew">
+                        <v-col cols="3" class="ma-0 pb-0" v-show="isNew">
                           <v-select
                             dense
                             class="caption"
@@ -166,6 +166,16 @@
                             :disabled="ver || editable"
                           ></v-select>
                         </v-col>
+                         <v-col cols="2" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan') && isNew" >
+                          <v-text-field
+                          v-show="permissionSimpleSelected.includes('create-payment-loan')"
+                            dense
+                            v-model="code_initials"
+                            label="Codigo "
+                            :disabled="true"
+                            :readonly="true"
+                          ></v-text-field>
+                        </v-col>
                         <v-col cols="3" class="ma-0 pb-0" v-show="garante_show">
                             <ul style="list-style: none" class="pa-0" >
                                <li v-for="guarantor in garantes.guarantors" :key="guarantor.id" class="mb-4">
@@ -194,8 +204,8 @@
                             dense
                             v-model="data_payment.voucher"
                             label="Codigo de Comprobante"
-                            :outlined="isNew  || editable"
-                            :disabled="ver"
+                            :disabled="true"
+                            :readonly="true"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="4" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan')" v-if="!isNew">
@@ -324,10 +334,26 @@
                           ></v-text-field>
                           
                         </v-col>
+                          <v-col cols="3" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan') && isNew" >
+                          <v-select
+                            dense
+                            class="caption"
+                            style="font-size: 10px;"
+                            :Onchange="OnchangeAffiliate()"
+                            v-model="data_payment.categori_id"
+                            :outlined="isNew"
+                            :readonly="!isNew"
+                            :items="tipo_de_categoria"
+                            item-text="name"
+                            item-value="id"
+                            label="Categoria "
+                            persistent-hint
+                            :disabled="ver || editable"
+                          ></v-select>
+                        </v-col>
                           <v-col cols="8" v-show="permissionSimpleSelected.includes('create-payment-loan')">
                         </v-col>
-                        <v-col cols="10" v-show="isNew" class="py-0">
-                     
+                         <v-col cols="10" v-show="isNew" class="py-0">
                         </v-col>
                         <v-col cols="2" v-show="isNew" class="py-0">
                            <v-btn
@@ -399,8 +425,11 @@ export default {
       }
     ],
     tipo_afiliado:[],
+    tipo_de_categoria:[],
     view:true,
     efectivo:false,
+    titular_show:true,
+    code_initials:null,
     last_payment:false,
     loan_payment:{},
     payment_types:[
@@ -449,6 +478,7 @@ export default {
     this.getTypeProcedure()
     this.getPymentTypes()
     this.getVoucherTypes()
+    this.getCategori()
     if(this.isNew)
     {
       this.getLoan(this.$route.query.loan_id)
@@ -473,7 +503,20 @@ export default {
   methods: {
       OnchangeAmortization(){
  //        this.data_payment.pago_total=null
-        if(this.data_payment.pago=="Liquidar"){
+        if(this.data_payment.affiliate_id=="G"){
+          if(this.data_payment.pago=="Liquidar"){
+      
+          this.data_payment.pago_total= this.garantes.balance
+          this.data_payment.liquidate=true
+
+        }else{
+          this.data_payment.pago_total=this.garantes.guarantors[0].pivot.quota_treat
+          this.data_payment.liquidate=false
+        }
+
+
+        }else{
+          if(this.data_payment.pago=="Liquidar"){
       
           this.data_payment.pago_total= this.garantes.balance
           this.data_payment.liquidate=true
@@ -482,20 +525,27 @@ export default {
           this.data_payment.pago_total=(this.garantes.estimated_quota).toFixed(2)
           this.data_payment.liquidate=false
         }
+
+        }
+        
       },
       OnchangeAffiliate(){
       if(this.data_payment.affiliate_id=="G")
       {
         this.garante_show= true
+        this.titular_show=false
       }
      else{
         this.garante_show= false
+        this.titular_show=true
       /*  if(this.isNew)
         {
           this.data_payment.voucher=null
         }*/
          for (let i = 0; i<  this.garantes.lenders.length; i++) {
             this.data_payment.affiliate_id_paid_by=this.garantes.lenders[0].id
+            this.code_initials=this.garantes.lenders[0].type_initials
+          
          }
         }
     },
@@ -513,40 +563,40 @@ export default {
             this.separa[1]=this.garantes.guarantors[i].second_name
             this.separa[2]=this.garantes.guarantors[i].last_name
             this.separa[3]=this.garantes.guarantors[i].mothers_last_name
-            this.data_payment.voucher='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)+this.separa[2].charAt(0)+this.separa[3].charAt(0)
+            this.code_initials='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)+this.separa[2].charAt(0)+this.separa[3].charAt(0)
           }
           else{
             if(this.garantes.guarantors[i].second_name!=null && this.garantes.guarantors[i].last_name!=null && this.garantes.guarantors[i].mothers_last_name!=null){
               this.separa[0]=this.garantes.guarantors[i].second_name
               this.separa[1]=this.garantes.guarantors[i].last_name
               this.separa[2]=this.garantes.guarantors[i].mothers_last_name
-              this.data_payment.voucher='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)+this.separa[2].charAt(0)
+              this.code_initials='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)+this.separa[2].charAt(0)
           }else{
               if(this.garantes.guarantors[i].first_name!=null && this.garantes.guarantors[i].last_name!=null && this.garantes.guarantors[i].mothers_last_name!=null){
                 this.separa[0]=this.garantes.guarantors[i].first_name
                 this.separa[1]=this.garantes.guarantors[i].last_name
                 this.separa[2]=this.garantes.guarantors[i].mothers_last_name
-                this.data_payment.voucher='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)+this.separa[2].charAt(0)
+                this.code_initials='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)+this.separa[2].charAt(0)
             }else{
                 if(this.garantes.guarantors[i].first_name!=null && this.garantes.guarantors[i].last_name!=null){
                   this.separa[0]=this.garantes.guarantors[i].first_name
                   this.separa[1]=this.garantes.guarantors[i].last_name
-                  this.data_payment.voucher='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
+                  this.code_initials='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
               }else{
                   if(this.garantes.guarantors[i].first_name!=null && this.garantes.guarantors[i].mothers_last_name!=null){
                     this.separa[0]=this.garantes.guarantors[i].first_name
                     this.separa[1]=this.garantes.guarantors[i].mothers_last_name
-                    this.data_payment.voucher='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
+                    this.code_initials='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
               }else{
                 if(this.garantes.guarantors[i].second_name!=null && this.garantes.guarantors[i].last_name!=null){
                       this.separa[0]=this.garantes.guarantors[i].second_name
                       this.separa[1]=this.garantes.guarantors[i].last_name
-                      this.data_payment.voucher='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
+                      this.code_initials='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
               }else{
                   if(this.garantes.guarantors[i].second_name!=null && this.garantes.guarantors[i].mothers_last_name!=null){
                       this.separa[0]=this.garantes.guarantors[i].second_name
                       this.separa[1]=this.garantes.guarantors[i].mothers_last_name
-                      this.data_payment.voucher='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
+                      this.code_initials='GAR-'+this.separa[0].charAt(0)+ this.separa[1].charAt(0)
                     }
                   }
                 }
@@ -661,6 +711,17 @@ export default {
         this.loading = false
       }
     },
+     async getCategori() {
+      try {
+        this.loading = true
+        let res = await axios.get(`get_categorie_user`)
+        this.tipo_de_categoria = res.data
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
     //Metodo para sacar los tipos de pagos
     async getPymentTypes() {
       try {
@@ -724,6 +785,7 @@ export default {
             estimated_quota:this.data_payment.pago_total,
             liquidate : this.data_payment.liquidate,
             procedure_modality_id:this.data_payment.procedure_modality_id,
+              categorie_id :this.data_payment.categori_id
           })
             this.payment = res.data
             this.payment.now_date= new Date().toISOString().substr(0, 10),
@@ -780,6 +842,7 @@ export default {
                 id:"T"
               })
               this.data_payment.affiliate_id="T"
+              this.code_initials=this.garantes.lenders[0].type_initials
         }
       } catch (e) {
         console.log(e)

@@ -17,14 +17,11 @@ class RoleSequenceSeeder extends Seeder
         RoleSequence::flushEventListeners();
         $sequences = [
             'Préstamo Anticipo' => [
-                ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
-                ['PRE-recepcion'],
+                ['PRE-plataforma'],
                 ['PRE-calificacion'],
-                ['PRE-jefatura'],
+                ['PRE-aprobacion-jefatura'],
+                ['PRE-autorizacion-direccion'],
                 ['PRE-revision-legal'],
-                ['PRE-aprobacion-direccion'],
-                ['PRE-presupuesto'],
-                ['PRE-contabilidad'],
                 ['PRE-tesoreria'],
                 ['PRE-archivo'],   
             ]
@@ -32,14 +29,13 @@ class RoleSequenceSeeder extends Seeder
         $this->create($sequences);
         //Flujo de Préstamo a corto plazo Refinanciamiento
         $sequences = [
-            'Refinanciamiento Préstamo a Corto Plazo' => [
-                ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
-                ['PRE-recepcion'],
+            'Refinanciamiento Préstamo a Corto Plazo' => [      
+                ['PRE-plataforma'],
                 ['PRE-calificacion'],
                 ['PRE-cobranzas-corte'],
-                ['PRE-aprobacion-calificacion'], 
-                ['PRE-jefatura'],
-                ['PRE-aprobacion-direccion'],
+                ['PRE-revision-calificacion'],
+                ['PRE-aprobacion-jefatura'],     
+                ['PRE-autorizacion-direccion'],
                 ['PRE-revision-legal'],
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
@@ -51,11 +47,10 @@ class RoleSequenceSeeder extends Seeder
     //Flujo de Préstamo a corto plazo 
       $sequences = [
             'Préstamo a Corto Plazo' => [
-                ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
-                ['PRE-recepcion'],
+                ['PRE-plataforma'],
                 ['PRE-calificacion'],
-                ['PRE-jefatura'],
-                ['PRE-aprobacion-direccion'],
+                ['PRE-aprobacion-jefatura'],
+                ['PRE-autorizacion-direccion'],
                 ['PRE-revision-legal'],
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
@@ -67,11 +62,10 @@ class RoleSequenceSeeder extends Seeder
          //Flujo de Préstamo a largo plazo
          $sequences = [
             'Préstamo a Largo Plazo' => [
-                ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
-                ['PRE-recepcion'],
+                ['PRE-plataforma'],
                 ['PRE-calificacion'],
-                ['PRE-jefatura'],
-                ['PRE-revision-direccion'],
+                ['PRE-aprobacion-jefatura'],
+                ['PRE-autorizacion-direccion'],
                 ['PRE-revision-legal'],
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
@@ -83,13 +77,12 @@ class RoleSequenceSeeder extends Seeder
             //Flujo de Préstamo a largo plazo Refinanciamiento
             $sequences = [
                 'Refinanciamiento Préstamo a Largo Plazo' => [
-                    ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
-                    ['PRE-recepcion'],
+                    ['PRE-plataforma'],
                     ['PRE-calificacion'],
                     ['PRE-cobranzas-corte'],
-                    ['PRE-aprobacion-calificacion'],
-                    ['PRE-jefatura'],     
-                    ['PRE-aprobacion-direccion'],
+                    ['PRE-revision-calificacion'],
+                    ['PRE-aprobacion-jefatura'],     
+                    ['PRE-autorizacion-direccion'],
                     ['PRE-revision-legal'],
                     ['PRE-presupuesto'],
                     ['PRE-contabilidad'],
@@ -101,13 +94,13 @@ class RoleSequenceSeeder extends Seeder
         //Flujo de Préstamo hipotecario
         $sequences = [
             'Préstamo Hipotecario' => [
-                ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
-                ['PRE-recepcion'],
+                ['PRE-plataforma'],
                 ['PRE-calificacion'],
-                ['PRE-jefatura'],
+                ['PRE-revision-jefatura'],
                 ['PRE-revision-legal'],
                 ['PRE-revision-direccion'],
-                ['PRE-aprobacion-direccion'],
+                ['PRE-aprobacion-jefatura'],
+                ['PRE-autorizacion-direccion'],
                 ['PRE-aprobacion-legal'],
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],
@@ -119,15 +112,15 @@ class RoleSequenceSeeder extends Seeder
         //Flujo de Préstamo hipotecario refinanciamiento
         $sequences = [
             'Refinanciamiento Préstamo Hipotecario' => [
-                ['PRE-regional-santa-cruz', 'PRE-regional-cochabamba', 'PRE-regional-oruro', 'PRE-regional-potosi', 'PRE-regional-sucre', 'PRE-regional-tarija', 'PRE-regional-trinidad', 'PRE-regional-cobija'],
-                ['PRE-recepcion'],
+                ['PRE-plataforma'],
                 ['PRE-calificacion'],
                 ['PRE-cobranzas-corte'],
-                ['PRE-aprobacion-calificacion'], 
-                ['PRE-jefatura'],
+                ['PRE-revision-calificacion'], 
+                ['PRE-revision-jefatura'],
                 ['PRE-revision-legal'],
                 ['PRE-revision-direccion'],
-                ['PRE-aprobacion-direccion'],
+                ['PRE-aprobacion-jefatura'],
+                ['PRE-autorizacion-direccion'],
                 ['PRE-aprobacion-legal'],
                 ['PRE-presupuesto'],
                 ['PRE-contabilidad'],

@@ -225,7 +225,7 @@ export default {
       trays: [
         {
           name: 'received',
-          display_name: 'REALIZADOS',
+          display_name: this.$store.getters.rolePermissionSelected.display_name == 'Cobranzas'? 'REALIZADOS' : 'RECIBIDOS',
           count: 0,
           color: 'info'
         },

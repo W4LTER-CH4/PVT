@@ -42,7 +42,8 @@ class LoanStructureSeeder extends Seeder
                     'minimum_amount_modality' => 1,
                     'maximum_term_modality' => 2,
                     'minimum_term_modality' => 1,
-                    'print_contract_platform' =>true
+                    'print_contract_platform' =>true,
+                    'print_receipt_fund_rotary' =>true
                 ],
                 'interest' => ['annual_interest' => 36,'penal_interest' => 6]
               ],
@@ -68,7 +69,8 @@ class LoanStructureSeeder extends Seeder
                     'minimum_amount_modality' => 1,
                     'maximum_term_modality' => 2,
                     'minimum_term_modality' => 1,
-                    'print_contract_platform' =>true
+                    'print_contract_platform' =>true,
+                    'print_receipt_fund_rotary' =>true
                 ],
                 'interest' => ['annual_interest' => 36,'penal_interest' => 6]
               ],              
@@ -94,7 +96,8 @@ class LoanStructureSeeder extends Seeder
                     'minimum_amount_modality' => 1,
                     'maximum_term_modality' => 2,
                     'minimum_term_modality' => 1,
-                    'print_contract_platform' =>true
+                    'print_contract_platform' =>true,
+                    'print_receipt_fund_rotary' =>true
                 ],
                 'interest' => ['annual_interest' => 36,'penal_interest' => 6]
               ],
@@ -119,7 +122,8 @@ class LoanStructureSeeder extends Seeder
                     'minimum_amount_modality' => 1,
                     'maximum_term_modality' => 2,
                     'minimum_term_modality' => 1,
-                    'print_contract_platform' =>true
+                    'print_contract_platform' =>true,
+                    'print_receipt_fund_rotary' =>true
                 ],
                 'interest' => ['annual_interest' => 36,'penal_interest' => 6]
               ]

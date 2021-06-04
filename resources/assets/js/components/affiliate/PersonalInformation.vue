@@ -6,7 +6,7 @@
           <v-card>
             <v-row class="ma-0 pa-0">
               <v-col cols="12" md="6">
-                <v-toolbar-title>DOMICILIO</v-toolbar-title>
+                <v-toolbar-title>DOMICILIOS</v-toolbar-title>
               </v-col>
               <v-col cols="12" md="3">
                 <v-tooltip top v-if="editable && permission.secondary">
@@ -119,7 +119,7 @@
                     v-slot="{ errors }"
                     vid="celular1"
                     name="celular1"
-                    rules="min:1|max:8 |required"
+                    rules="min:11|max:11|required"
                   >
                     <v-text-field
                       :error-messages="errors"
@@ -130,6 +130,7 @@
                       :readonly="!editable || !permission.secondary"
                       :outlined="editable && permission.secondary"
                       :disabled="editable && !permission.secondary"
+                      v-mask="'(###)-#####'"
                     ></v-text-field>
                   </ValidationProvider>
                 </v-col>
@@ -137,8 +138,8 @@
                   <ValidationProvider
                     v-slot="{ errors }"
                     vid="celular"
-                    name="celular"
-                    rules="min:1|max:8"
+                    name="celular2"
+                    rules="min:11|max:11"
                   >
                     <v-text-field
                       class="text-right"
@@ -150,15 +151,16 @@
                       :readonly="!editable || !permission.secondary"
                       :outlined="editable && permission.secondary"
                       :disabled="editable && !permission.secondary"
+                      v-mask="'(###)-#####'"
                     ></v-text-field>
                   </ValidationProvider>
                 </v-col>
                 <v-col cols="12" class="py-0">
                   <ValidationProvider
                     v-slot="{ errors }"
-                    vid="telefono"
+                    vid="teléfono"
                     name="telefono"
-                    rules="min:1|max:8"
+                    rules="min:11|max:11"
                   >
                     <v-text-field
                       :error-messages="errors"
@@ -168,6 +170,7 @@
                       :readonly="!editable || !permission.secondary"
                       :outlined="editable && permission.secondary"
                       :disabled="editable && !permission.secondary"
+                      v-mask="'(#) ###-###'"
                     ></v-text-field>
                   </ValidationProvider>
                 </v-col>

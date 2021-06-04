@@ -91,6 +91,8 @@ Route::group([
         Route::get('get_list_month', 'Api\V1\PeriodController@get_list_month');//listado de meses por gestion
         Route::get('get_list_year', 'Api\V1\PeriodController@get_list_year');//listado de meses por gestion
 
+        Route::get('get_categorie_user', 'Api\V1\LoanPaymentCategorieController@get_categorie_user');//listado de meses por gestion
+
         //get_list_month
         // Afiliados
         Route::group([

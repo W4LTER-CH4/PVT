@@ -107,3 +107,12 @@ export const vm = new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+import VueTheMask from 'vue-the-mask'
+Vue.use(VueTheMask)
+
+import money from 'v-money'
+ 
+// register directive v-money and component <money>
+Vue.use(money, {precision: 2})
+

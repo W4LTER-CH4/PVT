@@ -90,6 +90,15 @@ class Affiliate extends Model
         return $data;
     }
 
+    public function getExpeditionCardAttribute()
+    {
+        $data = ' ';
+        if ($this->city_identity_card && $this->city_identity_card != 'NINGUNO'){
+          $data .= ' ' . $this->city_identity_card->first_shortened;
+        } 
+        return $data;
+    }
+
     public function getFullUnitAttribute()
     {
         $data = "";
@@ -520,5 +529,9 @@ class Affiliate extends Model
         $loan->quantity_guarantors = $quantity[0]->quantity;
     }
     return $loans;
+   }
+
+   public function getInitialsAttribute(){
+     return (substr($this->first_name, 0, 1).substr($this->second_name, 0, 1).substr($this->last_name, 0, 1).substr($this->mothers_last_name, 0, 1).substr($this->surname_husband, 0, 1));
    }
 }

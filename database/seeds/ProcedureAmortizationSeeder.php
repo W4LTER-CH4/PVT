@@ -27,7 +27,7 @@ class ProcedureAmortizationSeeder extends Seeder
                     ]
                 ],
                 'amortizacion fondo' => [
-                    'type' => ['module_id' => $module->id,'name'=>'Amortización Fondo de Retiro','second_name'=>'Amort. FR'],
+                    'type' => ['module_id' => $module->id,'name'=>'Amortización Fondo de Retiro','second_name'=>'Amort. FRP'],
                     'modalities' => [ ['name'=>'Fondo de Retiro','shortened'=>'FRP','requirements'=>[]],
                     ]
                 ],
@@ -38,7 +38,7 @@ class ProcedureAmortizationSeeder extends Seeder
                     ]
                 ],
                 'amortizacion por ajuste' => [
-                    'type' => ['module_id' => $module->id,'name'=>'Amortización por Ajuste','second_name'=>'Amort. AJUST'],
+                    'type' => ['module_id' => $module->id,'name'=>'Amortización por Ajuste Contable','second_name'=>'Amort. AJUST-CONT'],
                     'modalities' => [['name'=>'Ajuste Contable','shortened'=>'AJUSTE-CONT','requirements'=>[]],
                                     ['name'=>'Refinanciamiento de Préstamo','shortened'=>'REFINANCIAMIENTO','requirements'=>[]]
                     ]

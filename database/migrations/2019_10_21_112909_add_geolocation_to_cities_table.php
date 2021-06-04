@@ -14,8 +14,12 @@ class AddGeolocationToCitiesTable extends Migration
     public function up()
     {
         Schema::table('cities', function (Blueprint $table) {
-            $table->float('latitude', 16, 14)->nullable();
-            $table->float('longitude', 17, 14)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->string('company_address')->default('');
+            $table->tinyInteger('phone_prefix')->default(0);
+            $table->json('company_phones')->default(json_encode([]));
+            $table->json('company_cellphones')->default(json_encode([]));
         });
     }
 
@@ -27,7 +31,7 @@ class AddGeolocationToCitiesTable extends Migration
     public function down()
     {
         Schema::table('cities', function (Blueprint $table) {
-            $table->dropColumn(['latitude', 'longitude']);
+            $table->dropColumn(['latitude', 'longitude','company_address' ,'phone_prefix' ,'company_phones' ,'company_cellphones']);
         });
     }
 }

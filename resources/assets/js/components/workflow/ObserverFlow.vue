@@ -241,7 +241,7 @@ export default {
   mounted() {
     this.getObservationType()
     this.getRecords(this.loan.id)
-    this.getRecordsPayment(this.loan.id)
+    //this.getRecordsPayment(this.loan.id)
     this.bus.$on("saveObservation", observation => {
       this.observations.unshift(observation)
     })

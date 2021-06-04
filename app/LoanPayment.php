@@ -41,7 +41,10 @@ class LoanPayment extends Model
         'loan_payment_date',
         'validated',
         'description',
-        'user_id'
+        'user_id',
+        'categorie_id',
+        'initial_affiliate',
+        'state_affiliate'
 
     ];
 
@@ -194,7 +197,7 @@ class LoanPayment extends Model
         return $this->belongsTo(Affiliate::class);
     }
 
-    public static function registry_payment(Loan $loan, $estimated_date, $description, $procedure_modality, $voucher, $paid_by, $percentage_quota, $affiliate_id, $state_id = null, $validated_payment = false)
+    public static function registry_payment($categorie_id,Loan $loan, $estimated_date, $description, $procedure_modality, $voucher, $paid_by, $percentage_quota, $affiliate_id, $state_id = null, $validated_payment = false)
     {
         $liquidate = false;
         $payment = $loan->next_payment2($affiliate_id, $estimated_date, $paid_by, $procedure_modality, $percentage_quota, $liquidate); //$percentage_quota
@@ -208,6 +211,15 @@ class LoanPayment extends Model
         $payment->affiliate_id = $affiliate_id;
         $payment->voucher = $voucher;
         $payment->paid_by = $paid_by;
+        $payment->categorie_id=$categorie_id;
+
+        $affiliate_id=$affiliate_id;
+        $affiliate=Affiliate::find($affiliate_id);
+        $affiliate_state=$affiliate->affiliate_state->affiliate_state_type->name;
+        $payment->state_affiliate = strtoupper($affiliate_state);
+        $payment->initial_affiliate = $affiliate->initials;//iniciales
+        $payment->loan_payment_date =Carbon::now();
+
         //$payment->amortization_type_id = $payment_type->id;
         $payment->user_id = auth()->id();
         $loan_payment = $loan->payments()->create($payment->toArray());

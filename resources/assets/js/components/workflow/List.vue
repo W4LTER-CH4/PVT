@@ -39,8 +39,8 @@
     <template v-slot:[`item.request_date`]="{ item }">
       {{ item.request_date | date }}
     </template>
-    <template v-slot:[`item.amount_requested`]="{ item }">
-      {{ item.amount_requested | money }}
+    <template v-slot:[`item.amount_approved`]="{ item }">
+      {{ item.amount_approved | money }}
     </template>
     <template v-slot:[`item.balance`]="{ item }">
       {{ item.balance | money }}
@@ -208,8 +208,8 @@ export default {
         align: 'center',
         sortable: true
       }, {
-        text: 'Solicitado [Bs]',
-        value: 'amount_requested',
+        text: 'Monto aprobado [Bs]',
+        value: 'amount_approved',
         class: ['normal', 'white--text'],
         align: 'center',
         sortable: true

@@ -61,6 +61,14 @@ class LoanController extends Controller
         $loan->observed = $loan->observed;
         $loan->last_payment_validated = $loan->last_payment_validated;
         if ($with_lenders) {
+            foreach($loan->lenders as $lender)
+            {
+                $lender->affiliate_state = $lender->affiliate_state;
+            }
+            foreach($loan->guarantors as $guarantor)
+            {
+                $guarantor->affiliate_state = $guarantor->affiliate_state;
+            }
             $loan->lenders = $loan->lenders;
             $loan->guarantors = $loan->guarantors;
         }
@@ -353,7 +361,14 @@ class LoanController extends Controller
         if (Auth::user()->can('show-all-loan') || Auth::user()->can('show-payment-loan') || Auth::user()->roles()->whereHas('module', function($query) {
             return $query->whereName('prestamos');
         })->pluck('id')->contains($loan->role_id)) {
-            return self::append_data($loan, true);
+            $loan = self::append_data($loan, true);
+            foreach($loan->lenders as $lender){
+                $lender->type_initials = "TIT-".$lender->initials;
+            }
+            foreach($loan->guarantors as $guarantor){
+                $guarantor->type_initials = "GAR-".$guarantor->initials;
+            }
+            return $loan;
         } else {
             abort(403);
         }
@@ -571,8 +586,9 @@ class LoanController extends Controller
         {
             $remake_loan = Loan::find($request->remake_loan_id);
             $loan->code = $remake_loan->code;
+        }if($request->has('indebtedness_calculated')){
+            $loan->indebtedness_calculated_previous = $request->indebtedness_calculated;
         }
-
         $loan->save();
 
         if($request->has('data_loan') && $request->parent_loan_id == null && $request->parent_reason != null && !$request->has('id')){
@@ -606,6 +622,7 @@ class LoanController extends Controller
                     'quota_previous' => $quota_previous,
                     'quota_treat' => $affiliate['quota_treat'],
                     'indebtedness_calculated' => $indebtedness,
+                    'indebtedness_calculated_previous' => $indebtedness,
                     'liquid_qualification_calculated' => $affiliate['liquid_qualification_calculated'],
                     'guarantor' => false,
                     'contributionable_type' => $affiliate['contributionable_type'],
@@ -633,6 +650,7 @@ class LoanController extends Controller
                         'quota_previous' => $previous,
                         'quota_treat' => $affiliate['quota_treat'],
                         'indebtedness_calculated' => $affiliate['indebtedness_calculated'],
+                        'indebtedness_calculated_previous' => $affiliate['indebtedness_calculated'],
                         'liquid_qualification_calculated' => $affiliate['liquid_qualification_calculated'],
                         'guarantor' => true,
                         'contributionable_type'=>$affiliate['contributionable_type'],
@@ -1183,6 +1201,7 @@ class LoanController extends Controller
     * @bodyParam paid_by enum required Pago realizado por Titular(T) o Garante(G). Example: T
     * @bodyParam procedure_modality_id integer required ID de la modalidad de amortización. Example: 53
     * @bodyParam user_id integer required ID del usuario. Example: 95
+    * @bodyParam categorie_id integer required ID de la categoria del cobro. Example: 95
     * @bodyParam liquidate boolean liquidacion del prestamo true cuota introducida false
     * @authenticated
     * @responseFile responses/loan/set_payment.200.json
@@ -1205,6 +1224,16 @@ class LoanController extends Controller
             $payment->voucher = $request->input('voucher', null);
             //$payment->amortization_type_id = $request->input('amortization_type_id');
             $payment->affiliate_id = $request->input('affiliate_id');
+
+            $affiliate_id=$request->input('affiliate_id');
+            $affiliate=Affiliate::find($affiliate_id);
+            $affiliate_state=$affiliate->affiliate_state->affiliate_state_type->name;
+            $payment->state_affiliate = strtoupper($affiliate_state);
+
+            $payment->initial_affiliate = $affiliate->initials;//iniciales
+
+            $payment->categorie_id = $request->input('categorie_id');
+
             $payment->paid_by = $request->input('paid_by');
             if($request->has('user_id')){
                 $payment->user_id = $request->user_id;
@@ -1719,6 +1748,7 @@ class LoanController extends Controller
                         'quota_previous' => (float)$lender->pivot->quota_previous,
                         'quota_treat' => Util::round2($quota_estimated_lender),
                         'indebtedness_calculated' => Util::round2($new_indebtedness_lender),
+                        'indebtedness_calculated_previous' =>(float)$lender->pivot->indebtedness_calculated_previous,
                         'liquid_qualification_calculated' => (float)$lender->pivot->liquid_qualification_calculated,
                         'guarantor' => false,
                         'contributionable_type' => $lender->pivot->contributionable_type,
@@ -1747,6 +1777,7 @@ class LoanController extends Controller
                                 'quota_previous' => (float)$guarantor->pivot->quota_previous,
                                 'quota_treat' => Util::round2($quota_estimated_guarantor),
                                 'indebtedness_calculated' => Util::round2($new_indebtedness_calculated_guarantor),
+                                'indebtedness_calculated_previous' =>(float)$guarantor->pivot->indebtedness_calculated_previous,
                                 'liquid_qualification_calculated' => (float)$guarantor->pivot->liquid_qualification_calculated,
                                 'guarantor' => true,
                                 'contributionable_type' => $guarantor->pivot->contributionable_type,

@@ -34,6 +34,7 @@ class CreateLoansTable extends Migration
             $table->foreign('state_id')->references('id')->on('loan_states'); // estado de prestamo
             $table->float('amount_approved')->nullable(); // monto aprobado
             $table->float('indebtedness_calculated',5,2); //indice de endeudamiento calculado
+            $table->float('indebtedness_calculated_previous',5,2); //indice de endeudamiento calculado anterior
             $table->float('liquid_qualification_calculated',10,2); //liquido para calificación calculado
             $table->unsignedSmallInteger('loan_term'); // plazo del prestamo en meses
             $table->float('refinancing_balance',10,2)->default(0); // monto del saldo de refinanciamiento
@@ -52,8 +53,10 @@ class CreateLoansTable extends Migration
             $table->boolean('validated')->default(true);
             $table->unsignedBigInteger('user_id')->nullable();  // id usuario
             $table->foreign('user_id')->references('id')->on('users');
-            $table->date('delivery_contract_date')->nullable(); //fecha de entrega de contrato al affiliado
-            $table->date('return_contract_date')->nullable(); //fecha de devolución de contrato del affiliado
+            $table->dateTime('delivery_contract_date')->nullable(); //fecha de entrega de contrato al affiliado
+            $table->dateTime('return_contract_date')->nullable(); //fecha de devolución de contrato del affiliado
+            $table->dateTime('regional_delivery_contract_date')->nullable(); //fecha de entrega de contrato a la regional
+            $table->dateTime('regional_return_contract_date')->nullable(); //fecha de devolución de contrato de la regional
             $table->timestamps();
             $table->softDeletes();
         });

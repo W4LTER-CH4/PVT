@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "name": "Refinanciamiento",
+        "type_register": "USUARIO",
+        "shortened": "REFI-U",
+        "is_valid": true,
+        "description": "Cobro para Refinanciamiento de préstamo, reg por Usuario",
+        "created_at": "2021-06-03T04:39:47.000000Z",
+        "updated_at": "2021-06-03T04:39:47.000000Z",
+        "deleted_at": null
+    },
+    {
+        "id": 2,
+        "name": "Reprogramacion",
+        "type_register": "USUARIO",
+        "shortened": "REPRO-U",
+        "is_valid": true,
+        "description": "Cobro para Reprogramación de préstamo, reg por Usuario",
+        "created_at": "2021-06-03T04:39:47.000000Z",
+        "updated_at": "2021-06-03T04:39:47.000000Z",
+        "deleted_at": null
+    },
+    {
+        "id": 3,
+        "name": "Regular",
+        "type_register": "USUARIO",
+        "shortened": "REGULAR-U",
+        "is_valid": true,
+        "description": "Cobro Regular de préstamo, reg por Usuario",
+        "created_at": "2021-06-03T04:39:47.000000Z",
+        "updated_at": "2021-06-03T04:39:47.000000Z",
+        "deleted_at": null
+    }
+]

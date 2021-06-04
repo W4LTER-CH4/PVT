@@ -12,56 +12,87 @@ class CityGeolocationSeeder extends Seeder
      */
     public function run()
     {
-        city::firstOrCreate([
-            'name' => 'NINGUNO',
-            'first_shortened'=>'',
-            'second_shortened'=>'',
-            'third_shortened'=>'',
-        ]);
+        $contacts = [
+            [
+                'city' => 'LA PAZ',
+                'address' => 'Zona Sopocachi - Av. 6 de Agosto N° 2354',
+                'coordinates' => [-16.5086, -68.12653],
+                'prefix' => 2,
+                'phones' => [2442270, 2445101, 2443506],
+                'cellphones' => []
+            ], [
+                'city' => 'COCHABAMBA',
+                'address' => 'Av. Melchor Urquidi - Zona Queru Queru Nº 1985',
+                'coordinates' => [-17.369605, -66.149686],
+                'prefix' => 4,
+                'phones' => [4458935, 4242210],
+                'cellphones' => [71782067]
+            ], [
+                'city' => 'SANTA CRUZ',
+                'address' => 'Calle Ballivian Zona Este Nº 1229',
+                'coordinates' => [-16.508697, -68.126546],
+                'prefix' => 3,
+                'phones' => [3337570],
+                'cellphones' => [72134627]
+            ], [
+                'city' => 'CHUQUISACA',
+                'address' => 'Calle Loa - Zona San Roque Nº 1070',
+                'coordinates' => [-19.050645, -65.26576],
+                'prefix' => 4,
+                'phones' => [6452587],
+                'cellphones' => [72875480]
+            ], [
+                'city' => 'ORURO',
+                'address' => 'Av. 6 de Octubre entre oblitas y Belzu Zona Central Nº 4836',
+                'coordinates' => [-17.959307, -67.109766],
+                'prefix' => 5,
+                'phones' => [246509],
+                'cellphones' => [67200819]
+            ], [
+                'city' => 'POTOSI',
+                'address' => 'Calle 1º de Abril - Zona Central Nº 615',
+                'coordinates' => [-19.582756, -65.752783],
+                'prefix' => 2,
+                'phones' => [6226428],
+                'cellphones' => [72405059]
+            ], [
+                'city' => 'BENI',
+                'address' => 'Av. Cipriano Barece - Zona San Jose',
+                'coordinates' => [-15.671311, -66.5176],
+                'prefix' => 3,
+                'phones' => [4622030],
+                'cellphones' => [71133639]
+            ], [
+                'city' => 'TARIJA',
+                'address' => 'Av Los Ceibos Esq. Cosio',
+                'coordinates' => [-21.539301, -64.745244],
+                'prefix' => 4,
+                'phones' => [6644229],
+                'cellphones' => [71862987]
+            ], [
+                'city' => 'PANDO',
+                'address' => 'Av. 9 de Febrero ex SEGIP, 2do. Piso',
+                'coordinates' => [-11.028398, -68.761157],
+                'prefix' => 4,
+                'phones' => [],
+                'cellphones' => [67669749]
+            ]
+        ];
 
-        $cities = City::get();
-        foreach ($cities as $city) {
-            switch ($city->name) {
-                case 'BENI':
-                    $city->latitude = -14.834909060282543;
-                    $city->longitude = -64.90420103073122;
-                    break;
-                case 'CHUQUISACA':
-                    $city->latitude = -19.04790026387467;
-                    $city->longitude = -65.25959372520448;
-                    break;
-                case 'COCHABAMBA':
-                    $city->latitude = -17.393741314813106;
-                    $city->longitude = -66.15700721740724;
-                    break;
-                case 'LA PAZ':
-                    $city->latitude = -16.495323179001716;
-                    $city->longitude = -68.1342512369156;
-                    break;
-                case 'ORURO':
-                    $city->latitude = -17.96955349604632;
-                    $city->longitude = -67.11474359035493;
-                    break;
-                case 'PANDO':
-                    $city->latitude = -11.018289250407365;
-                    $city->longitude = -68.75365376472475;
-                    break;
-                case 'POTOSI':
-                    $city->latitude = -19.589262281538055;
-                    $city->longitude = -65.75350105762483;
-                    break;
-                case 'SANTA CRUZ':
-                    $city->latitude = -17.784324090235096;
-                    $city->longitude = -63.18201363086701;
-                    break;
-                case 'TARIJA':
-                    $city->latitude = -21.533913878007194;
-                    $city->longitude = -64.73429381847383;
-                    break;
-                default:
-                    continue 2;
+        foreach($contacts as $contact) {
+            $city = City::whereName($contact['city'])->first();
+            if ($city) {
+                $city->update([
+                    'company_address' => $contact['address'],
+                    'latitude' => $contact['coordinates'][0],
+                    'longitude' => $contact['coordinates'][1],
+                    'phone_prefix' => $contact['prefix'],
+                    'company_phones' => json_encode($contact['phones']),
+                    'company_cellphones' => json_encode($contact['cellphones'])
+                ], [
+                    'timestamps' => false
+                ]);
             }
-            $city->save();
         }
     }
 }

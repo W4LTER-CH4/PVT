@@ -46,6 +46,7 @@ class Loan extends Model
         'state_id',
         'amount_approved',
         'indebtedness_calculated',
+        'indebtedness_calculated_previous',
         'liquid_qualification_calculated',
         'loan_term',
         'refinancing_balance',
@@ -59,7 +60,9 @@ class Loan extends Model
         'validated',
         'user_id',
         'delivery_contract_date',
-        'return_contract_date'
+        'return_contract_date',
+        'regional_delivery_contract_date',
+        'regional_return_contract_date'
     ];
 
     function __construct(array $attributes = [])
@@ -164,12 +167,12 @@ class Loan extends Model
 
     public function guarantors()
     {
-        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous','quota_treat','indebtedness_calculated','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(true);
+        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous','quota_treat','indebtedness_calculated','indebtedness_calculated_previous','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(true);
     }
 
     public function lenders()
     {
-        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous','quota_treat', 'indebtedness_calculated','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(false);
+        return $this->loan_affiliates()->withPivot('payment_percentage','payable_liquid_calculated', 'bonus_calculated', 'quota_previous','quota_treat', 'indebtedness_calculated','indebtedness_calculated_previous','liquid_qualification_calculated','contributionable_ids','contributionable_type')->whereGuarantor(false);
     }
 
     public function loan_affiliates()
@@ -1086,11 +1089,11 @@ class Loan extends Model
                 $validate = false;
                 if($new_indebtedness_calculated<=$procedure_modality->loan_modality_parameter->debt_index){                      
                     if(count($this->guarantors)>0 || count($this->lenders) > 1){
-                        if($new_indebtedness_calculated <= Util::round2($this->indebtedness_calculated)){ 
+                        if(($new_indebtedness_calculated <= Util::round2($this->indebtedness_calculated))|| ($new_indebtedness_calculated <= Util::round2($this->indebtedness_calculated_previous))){ 
                             foreach ($this->lenders  as $lender) {    
                                 $quota_estimated_lender = ($quota_estimated/100)*$lender->pivot->payment_percentage;
-                                $new_indebtedness_lender = ($quota_estimated_lender/(float)$lender->pivot->liquid_qualification_calculated)*100;
-                                if($new_indebtedness_lender <= (float)$lender->pivot->indebtedness_calculated){
+                                $new_indebtedness_lender = Util::round2(($quota_estimated_lender/(float)$lender->pivot->liquid_qualification_calculated)*100);
+                                if(($new_indebtedness_lender <= (float)$lender->pivot->indebtedness_calculated)||($new_indebtedness_lender <= (float)$lender->pivot->indebtedness_calculated_previous)){
                                     $validate = true;                
                                 }else  $validate = false; 
                             }                         
@@ -1105,7 +1108,7 @@ class Loan extends Model
                                         $sum_quota += $res->PresCuotaMensual / $res->quantity_guarantors; // descuento en caso de tener garantias activas del sismu*/
                                         $quota_estimated_guarantor = ($quota_estimated/100)*$guarantor->pivot->payment_percentage;
                                         $new_indebtedness_calculated_guarantor = Util::round2((($quota_estimated_guarantor + $sum_quota - $guarantor->pivot->quota_treat)/(float)$guarantor->pivot->liquid_qualification_calculated) * 100);
-                                    if($new_indebtedness_calculated_guarantor <= Util::round2((float)$guarantor->pivot->indebtedness_calculated)){
+                                    if($new_indebtedness_calculated_guarantor <= Util::round2((float)$guarantor->pivot->indebtedness_calculated) || ($new_indebtedness_calculated_guarantor <= (float)$guarantor->pivot->indebtedness_calculated_previous)){
                                         $validate = true;                                                                            
                                     }else $validate = false;                                  
                                 }                                   

@@ -38,10 +38,10 @@
               {{"PRESTAMO: "+this.loan.code}}
             </v-col>
             <v-col  cols="2" v-show="!ver">
-              {{'MONTO:'+this.loan.amount_approved}}
+              MONTO: {{this.loan.amount_approved | money}}
             </v-col>
              <v-col  cols="2" v-show="!ver">
-              {{'CUOTA:'+this.loan.estimated_quota}}
+              CUOTA: {{this.loan.estimated_quota | money}}
             </v-col>
             <v-col  cols="4" v-show="ver" class='mb-0 pb-0'>
                 <span>
@@ -72,13 +72,13 @@
               {{"PRESTAMO: "+this.loan.code}}
             </v-col>
             <v-col  cols="4" v-show="ver" class='py-1'>
-              {{"NÚMERO DE CUOTA: "+this.loan_payment.quota_number}}
+              NÚMERO DE CUOTA: {{this.loan_payment.quota_number }}
             </v-col>
             <v-col  cols="4" v-show="ver" class='py-1'>
-              {{'MONTO:'+this.loan.amount_approved}}
+              MONTO: {{this.loan.amount_approved | money}}
             </v-col>
             <v-col  cols="4" v-show="ver" class='py-1'>
-              {{'CUOTA ESTIMADA MENSUAL :'+this.loan_payment.estimated_quota}}
+              CUOTA ESTIMADA MENSUAL : {{this.loan.estimated_quota | money}}
             </v-col>
           </v-row>
           <Steps

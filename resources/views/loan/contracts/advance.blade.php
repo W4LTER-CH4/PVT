@@ -152,7 +152,7 @@
     </div>
     <div class="m-t-75 w-100">
         <table>
-            <tr>
+           <!-- <tr>
                 @foreach ($employees as $key => $employee)
                 <td>
                     @include('partials.signature_box', [
@@ -162,6 +162,16 @@
                         'employee' => true
                     ])
                 @endforeach
+                </td>
+            </tr>-->
+            <tr>
+                <td>
+                    @include('partials.signature_box', [
+                        'full_name' => 'LIC. JORGE FRANCISCO MACHACA CALCINA ',
+                        'identity_card' => '4881022 LP',
+                        'position' => 'DIRECTOR DE ESTRATÉGIAS SOCIALES E INVERSIONES',
+                        'employee' => true
+                    ])
                 </td>
             </tr>
         </table>

@@ -30,6 +30,7 @@ php artisan db:seed --class=TagSeeder
 php artisan db:seed --class=LoanDestinySeeder
 php artisan db:seed --class=LoanDestinyProcedureTypeSeeder
 php artisan db:seed --class=ObservationTypeSeeder
+php artisan db:seed --class=LoanPaymentCategorieSeeder
 
 
 

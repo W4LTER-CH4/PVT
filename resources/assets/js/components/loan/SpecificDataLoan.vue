@@ -67,7 +67,7 @@
                                   </v-col>
                                   <v-progress-linear></v-progress-linear>
                                   <v-col cols="12" md="4" v-show="!calificacion_edit" class="pb-0">
-                                    <p><b>MONTO SOLICITADO: </b>{{' '+loan.amount_approved | moneyString}} Bs.</p>
+                                    <p><b>MONTO SOLICITADO: </b> {{loan.amount_approved | moneyString}} Bs.</p>
                                   </v-col>
                                   <v-col cols="12" md="4" v-show="calificacion_edit" class="pb-0" >
                                     <v-text-field
@@ -79,10 +79,10 @@
                                     ></v-text-field>
                                   </v-col>
                                   <v-col cols="12" md="4" class="pb-0">
-                                    <p><b>PROMEDIO LIQUIDO PAGABLE: </b>{{' '+ loan.lenders[0].pivot.payable_liquid_calculated | moneyString }} Bs.</p>
+                                    <p><b>PROMEDIO LIQUIDO PAGABLE: </b> {{loan.lenders[0].pivot.payable_liquid_calculated | moneyString }} Bs.</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="pb-0" >
-                                    <p><b>LIQUIDO PARA CALIFICACION: </b>{{loan.liquid_qualification_calculated | moneyString}} Bs.</p>
+                                    <p><b>LIQUIDO PARA CALIFICACION: </b> {{loan.liquid_qualification_calculated | moneyString}} Bs.</p>
                                   </v-col>
                                   <v-col cols="12" md="4" v-show="!calificacion_edit" class="py-0">
                                     <p><b>PLAZO EN MESES:</b>{{' '+loan.loan_term}}</p>
@@ -97,10 +97,14 @@
                                     ></v-text-field>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0">
+<<<<<<< HEAD
                                     <p><b>TOTAL BONOS:</b>{{' '+loan.lenders[0].pivot.bonus_calculated | moneyString }}</p>
+=======
+                                    <p><b>TOTAL BONOS:</b> {{loan.lenders[0].pivot.bonus_calculated | moneyString}}</p>
+>>>>>>> 90c24faa599510b7a04b94e220c13d162623c3a4
                                   </v-col>
                                    <v-col cols="12" md="4" class="py-0">
-                                    <p><b>INDICE DE ENDEUDAMIENTO:</b>{{' '+ loan.indebtedness_calculated|percentage }}% </p>
+                                    <p><b>INDICE DE ENDEUDAMIENTO:</b> {{loan.indebtedness_calculated|percentage }}% </p>
                                   </v-col>
                                   <v-col cols="12" md="4" v-show="calificacion_edit" class="py-0">
                                     <center>
@@ -114,7 +118,7 @@
                                     </center>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0">
-                                    <p><b>CALCULO DE CUOTA: </b>{{' '+loan.estimated_quota | moneyString}} Bs.</p>
+                                    <p><b>CALCULO DE CUOTA: </b> {{loan.estimated_quota | moneyString}} Bs.</p>
                                   </v-col>
                                   <v-col cols="12" md="12" >
                                     <div v-for="procedure_type in procedure_types" :key="procedure_type.id">
@@ -123,8 +127,8 @@
                                           <p style="color:teal"><b>CODEUDOR</b></p>
                                           <div v-for="(lenders,i) in loan.lenders" :key="i">
                                             <div  v-if="(lenders,i)>0">
-                                              <p><b>PROMEDIO LIQUIDO PAGABLE:</b>{{' '+lenders.pivot.payable_liquid_calculated}}</p>
-                                              <p><b>TOTAL BONOS:</b>{{' '+lenders.pivot.bonus_calculated}}</p>
+                                              <p><b>PROMEDIO LIQUIDO PAGABLE:</b> {{lenders.pivot.payable_liquid_calculated | money}}</p>
+                                              <p><b>TOTAL BONOS:</b> {{lenders.pivot.bonus_calculated | money}}</p>
                                           </div>
                                         </div>
                                       </div>
@@ -132,7 +136,7 @@
                                   </v-col>
                                   <v-progress-linear v-show="loan_refinancing.refinancing"></v-progress-linear>
                                     <v-col cols="12" md="6" class="pb-0" v-show="loan_refinancing.refinancing">
-                                    <p style="color:teal"><b>DATOS DEL PRESTAMO A REFINANCIAR{{' => '+ loan_refinancing.description}}</b></p>
+                                    <p style="color:teal"><b>DATOS DEL PRéSTAMO A REFINANCIAR{{' => '+ loan_refinancing.description}}</b></p>
                                   </v-col>
                                 <v-col cols="12" md="6" class="py-0" v-show="loan_refinancing.refinancing">
                                 <div  v-if="permissionSimpleSelected.includes('update-refinancing-balance')">
@@ -185,16 +189,16 @@
                                     <p><b>Codigo de Prestamo a Padre:</b>{{' '+loan_refinancing.code}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-2" >
-                                    <p><b>Monto de Prestamo Padre:</b>{{' '+loan_refinancing.amount_approved}}</p>
+                                    <p><b>Monto de Préstamo Padre:</b> {{loan_refinancing.amount_approved | money}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-2">
-                                    <p><b>Plazo de Prestamo Padre:</b>{{' '+loan_refinancing.loan_term}}</p>
+                                    <p><b>Plazo de Préstamo Padre:</b>{{' '+loan_refinancing.loan_term}}</p>
                                   </v-col>
                                    <v-col cols="12" md="4" class="py-0">
-                                    <p><b>Cuota de Prestamo Padre:</b>{{' '+loan_refinancing.estimated_quota}}</p>
+                                    <p><b>Cuota de Préstamo Padre:</b> {{loan_refinancing.estimated_quota | money}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0"  v-show="!cobranzas_edit_sismu" v-if="loan_refinancing.type_sismu==true">
-                                    <p><b>Fecha de Corte :</b>{{' '+loan_refinancing.date_cut_refinancing}}</p>
+                                    <p><b>Fecha de Corte :</b> {{loan_refinancing.date_cut_refinancing ? loan_refinancing.date_cut_refinancing : 'Sin registar'}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4"  v-show="cobranzas_edit_sismu "  class="py-0">
                                     <v-text-field
@@ -207,7 +211,7 @@
                                    ></v-text-field>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0" v-show="!cobranzas_edit_sismu">
-                                    <p><b>Saldo de Prestamo a Refinanciar:</b>{{' '+loan_refinancing.balance}}</p>
+                                    <p><b>Saldo de Prestamo a Refinanciar:</b> {{loan_refinancing.balance | money}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" v-show="cobranzas_edit_sismu " class="py-0" >
                                     <v-text-field
@@ -218,13 +222,13 @@
                                     ></v-text-field>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0" >
-                                    <p class="success--text"><b>Monto Solicitado del Prestamo Nuevo:</b>{{' '+loan_refinancing.amount_approved}}</p>
+                                    <p class="success--text"><b>Monto Solicitado del Prestamo Nuevo:</b> {{loan_refinancing.amount_approved | money}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0" >
-                                    <p class="success--text"><b>Saldo Anterior de la Deuda:</b>{{' '+loan_refinancing.balance_parent_loan_refinancing}}</p>
+                                    <p class="success--text"><b>Saldo Anterior de la Deuda:</b> {{loan_refinancing.balance_parent_loan_refinancing | money}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0" >
-                                    <p class="success--text"><b>Monto del Refinanciamiento:</b>{{' '+loan_refinancing.refinancing_balance}}</p>
+                                    <p class="success--text"><b>Monto del Refinanciamiento:</b> {{loan_refinancing.refinancing_balance | money}}</p>
                                   </v-col>
                                   </v-row>
                                   <v-progress-linear></v-progress-linear>

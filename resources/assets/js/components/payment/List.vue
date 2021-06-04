@@ -70,23 +70,23 @@
           </template>
           <span>Ver registro de cobro</span>
         </v-tooltip>
-
+        <!--VALIDAR PAGO POR COBRANZAS-->
         <v-tooltip bottom v-if="permissionSimpleSelected.includes('create-payment-loan')">
           <template v-slot:activator="{ on }">
             <v-btn
               icon
               small
               v-on="on"
-              v-if="item.state.name!='Pagado'"
+              v-if="item.state.name!='Pagado' && item.modality.procedure_type.name != 'Amortización Directa'"
               color="success"
               :to="{ name: 'paymentAdd',  params: { hash: 'edit'},  query: { loan_payment: item.id}}"
             >
               <v-icon>mdi-file-document-edit-outline</v-icon>
             </v-btn>
           </template>
-          <span>Validar pago</span>
+          <span>Editar/Validar registro de cobro</span>
         </v-tooltip>
-
+        <!--CREAR PAGO POR TESORERIA-->
         <v-tooltip bottom v-if="permissionSimpleSelected.includes('create-payment')">
           <template v-slot:activator="{ on }">
             <v-btn
@@ -102,7 +102,7 @@
           </template>
           <span>Registrar pago</span>
         </v-tooltip>
-
+        <!--SE QUITA LA OPCION DE ANULACIÓN DESDE LA BANDEJA POR QUE NO SE IDENTIFICA EL ULTIMO PAGO
         <v-tooltip bottom v-if="permissionSimpleSelected.includes('delete-payment-loan')">
           <template v-slot:activator="{ on }">
             <v-btn
@@ -110,14 +110,14 @@
               small
               v-on="on"
               color="error"
-              v-if="item.state.name == 'Pendiente de ajuste' || item.state.name == 'Pendiente de Pago' "
+              v-if="item.state.name == 'Pendiente por confirmar' || item.state.name == 'Pendiente de Pago' "
               @click.stop="bus.$emit('openRemoveDialog', `loan_payment/${item.id}`)"
             >
               <v-icon>mdi-file-cancel-outline</v-icon>
             </v-btn>
           </template>
           <span>Anular registro de cobro</span>
-        </v-tooltip>
+        </v-tooltip> -->
 
         <v-menu offset-y close-on-content-click>
           <template v-slot:activator="{ on }">
@@ -361,9 +361,10 @@ export default {
       if (this.permissionSimpleSelected.includes("print-payment-loan")) {
         docs.push({ id: 5, title: "Registro de cobro", icon: "mdi-file-check-outline" });
       }
-      if (this.permissionSimpleSelected.includes("print-payment-voucher")) {
+      /*if (this.permissionSimpleSelected.includes("print-payment-voucher")) {
         docs.push({ id: 6, title: "Registro de pago", icon: "mdi-cash-multiple" });
-      } else {
+      } */ 
+      else {
         console.log("Se ha producido un error durante la generación de la impresión");
       }
       this.printDocs = docs;

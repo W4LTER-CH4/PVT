@@ -437,8 +437,8 @@ class Util
             'position' => $position
         ];
         try {
-            $req = collect(json_decode(file_get_contents(env("RRHH_URL") . '/position?name=' . $position), true));
-            if ($req->count() == 1) {
+            $req = collect(json_decode(file_get_contents(env("RRHH_URL") . '/position?name=' . $position), true))->sortByDesc('id');
+            if ($req->count() >= 1) {
                 $pos = $req->first();
             } else {
                 throw new Exception();

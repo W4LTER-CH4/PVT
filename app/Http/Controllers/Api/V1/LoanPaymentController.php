@@ -39,6 +39,7 @@ use App\AffiliateState;
 use App\Imports\LoanPaymentImport;
 use App\Tag;
 use Carbon\CarbonImmutable;
+use App\LoanPaymentCategorie;
 
 /** @group Cobranzas
 * Datos de los trámites de Cobranzas
@@ -383,6 +384,14 @@ class LoanPaymentController extends Controller
                         'date' => Carbon::now()
                     ]]);
                 }
+                $loan=Loan::find($loanPayment->loan_id);
+                 //generar PDF
+                    $information_loan= $this->get_information_loan($loan);
+                    $file_name = implode('_', ['voucher', $voucher->code]) . '.pdf';
+                    $loanpayment = new VoucherController;
+                    $payment->attachment = Util::pdf_to_base64([
+                        $loanpayment->print_voucher(new Request([]), $voucher, false)
+                    ], $file_name,$information_loan, 'legal', $request->copies ?? 1);
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollback();
@@ -825,6 +834,8 @@ class LoanPaymentController extends Controller
         $estimated_date = $estimated_date? Carbon::parse($estimated_date) : Carbon::now()->endOfMonth();
         $loan_state = LoanState::where('name', 'Vigente')->first();
         $modalities = ProcedureModality::where('name', 'like', '%AFP')->get();
+        $categorie=LoanPaymentCategorie::where('name','Regular')->where('type_register','SISTEMA')->first();
+
         $id = [];
         foreach($modalities as $modality)
         {
@@ -853,13 +864,13 @@ class LoanPaymentController extends Controller
                             if($lender->affiliate_state->name == 'Jubilado' && $lender->affiliate_state && $lender->pension_entity->name == 'SENASIR') 
                                 $procedure_modality = $procedure_modality_senasir;
                             if($disbursement_day < LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
-                                LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
+                                LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
                                 $loans_quantity++;
                             }
                             else{
                                 if(Carbon::parse($estimated_date)->toDateString() > Carbon::parse($date_payment)->toDateString())
                                 {
-                                    LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
+                                    LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
                                     $loans_quantity++;
                                 }
                             }
@@ -873,13 +884,13 @@ class LoanPaymentController extends Controller
                             if($guarantor->affiliate_state->name == 'Servicio' || $guarantor->affiliate_state->name == 'Disponibilidad') $procedure_modality = $procedure_modality_command;
                             if($guarantor->affiliate_state->name == 'Jubilado' && $guarantor->affiliate_state && $guarantor->pension_entity->name == 'SENASIR') $procedure_modality = $procedure_modality_senasir;
                             if($disbursement_day < LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
-                                LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $guarantor->pivot->quota_treat, $guarantor->id);
+                                LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $guarantor->pivot->quota_treat, $guarantor->id);
                                 $loans_quantity++;
                             }
                             else{
                                 if(Carbon::parse($estimated_date)->toDateString() > Carbon::parse($date_payment)->toDateString())
                                 {
-                                    LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $guarantor->pivot->quota_treat, $guarantor->id);
+                                    LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $guarantor->pivot->quota_treat, $guarantor->id);
                                     $loans_quantity++;
                                 }
                             }
@@ -893,13 +904,13 @@ class LoanPaymentController extends Controller
                         if($lender->affiliate_state->name == 'Servicio' || $lender->affiliate_state->name == 'Disponibilidad') $procedure_modality = $procedure_modality_command;
                         if($lender->affiliate_state->name == 'Jubilado' && $lender->pension_entity && $lender->pension_entity->name == 'SENASIR') $procedure_modality = $procedure_modality_senasir;
                         if($disbursement_day < LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
-                            LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
+                            LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
                             $loans_quantity++;
                         }
                         else{
                             if(Carbon::parse($estimated_date)->toDateString() > Carbon::parse($date_payment)->toDateString())
                             {
-                                LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
+                                LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
                                 $loans_quantity++;
                             }
                         }
@@ -944,6 +955,7 @@ class LoanPaymentController extends Controller
         $estimated_date_importation = $request->estimated_date? Carbon::parse($request->estimated_date) : Carbon::now()->endOfMonth();
        // $payment_type = AmortizationType::get();
         //$payment_type_desc = $payment_type->where('name', 'LIKE', 'Descuento automático')->first();
+        $categorie=LoanPaymentCategorie::where('name','Regular')->where('type_register','SISTEMA')->first();
         $contand=0;
         $concatenando='';
         $concatenandoCi='';
@@ -1033,6 +1045,7 @@ class LoanPaymentController extends Controller
         $procedure_type_id = ProcedureType::whereName("Amortización Automática")->first()->id;
         $pendiente_confirmar_id = LoanPaymentState::whereName('Pendiente por confirmar')->first()->id;
         $pagado = LoanPaymentState::whereName('Pagado')->first()->id;
+        $categorie=LoanPaymentCategorie::where('name','Regular')->where('type_register','SISTEMA')->first();
 
         $estimated_date_importation = $request->estimated_date? Carbon::parse($request->estimated_date) : Carbon::now()->endOfMonth();
         $mestimated_date = $estimated_date_importation->month;
@@ -1130,7 +1143,7 @@ class LoanPaymentController extends Controller
                                         $loanPaymentsLender->delete();
                                         $validated_payment = false;
                                         $state_id = $pagado;
-                                        $new_loanPayment = LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality, $voucher_pago, $paid_by,$estimated_quota,$lender->id, $state_id, $validated_payment);
+                                        $new_loanPayment = LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality, $voucher_pago, $paid_by,$estimated_quota,$lender->id, $state_id, $validated_payment);
                                         $new_loanPayment->user_id = auth()->id();
                                         $new_loanPayment->state_id = $pagado;
                                         $new_loanPayment->validated = true;
@@ -1185,7 +1198,7 @@ class LoanPaymentController extends Controller
                                     $state_id = $pagado;
                                     $validated_payment = false;
                                     //registro del pago
-                                    $new_loanPayment = LoanPayment::registry_payment($loan, $estimated_date, $description, $procedure_modality, $voucher_pago, $paid_by, $estimated_quota,$lender->id, $state_id,$validated_payment );
+                                    $new_loanPayment = LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality, $voucher_pago, $paid_by, $estimated_quota,$lender->id, $state_id,$validated_payment );
                                     $new_loanPayment->validated = true;
                                     $new_loanPayment->state_id = $pagado;
                                     $new_loanPayment->user_id = auth()->id();

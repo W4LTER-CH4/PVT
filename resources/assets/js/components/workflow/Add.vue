@@ -378,7 +378,11 @@ export default {
     bonos: [0, 0, 0, 0],
     payable_liquid: [0, 0, 0],
     modalidad: {},
-    loan: {},
+    loan: {
+      intereses: {},
+      state: {},
+      user:{}
+    },
     loan_refinancing:{},
     datos: {},
     formulario: [],

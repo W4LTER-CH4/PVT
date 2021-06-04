@@ -8,14 +8,14 @@
               <v-toolbar-title>Tesorería</v-toolbar-title>
             </v-toolbar>
           </v-card-title>
-            <v-data-table
-              :headers="headers"
-              :items="vouchers"
-              :loading="loading"
-              :options.sync="options"
-              :server-items-length="totalVouchers"
-              :footer-props="{ itemsPerPageOptions: [8, 15, 30] }"
-            >
+          <v-data-table
+            :headers="headers"
+            :items="vouchers"
+            :loading="loading"
+            :options.sync="options"
+            :server-items-length="totalVouchers"
+            :footer-props="{ itemsPerPageOptions: [8, 15, 30] }"
+          >
             <template v-slot:[`item.payment_date`]="{ item }">
               {{ item.payment_date | date}}
             </template>
@@ -29,41 +29,54 @@
               {{ item.payable ? item.payable.code : ''}}
             </template>
 
-      <template v-slot:[`item.actions`]="{ item }">
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              icon
-              small
-              v-on="on"
-              color="warning"
-              :to="{ name: 'paymentAdd',  params: { hash: 'view'},  query: { loan_payment: item.payable_id}}"
-            >
-              <v-icon>mdi-eye</v-icon>
-            </v-btn>
-          </template>
-          <span>Ver voucher</span>
-        </v-tooltip>
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    small
+                    v-on="on"
+                    color="warning"
+                    :to="{ name: 'paymentAdd',  params: { hash: 'view'},  query: { loan_payment: item.payable_id}}"
+                  >
+                    <v-icon>mdi-eye</v-icon>
+                  </v-btn>
+                </template>
+                <span>Ver voucher</span>
+              </v-tooltip>
 
-        <v-tooltip bottom v-if="permissionSimpleSelected.includes('delete-voucher-paid')">
-          <template v-slot:activator="{ on }">
-            <v-btn
-              icon
-              small
-              v-on="on"
-              color="error"
-              @click.stop="bus.$emit('openRemoveDialog', `voucher/${item.id}`)"
-            >
-              <v-icon>mdi-file-cancel-outline</v-icon>
-            </v-btn>
-          </template>
-          <span>Anular voucher</span>
-        </v-tooltip>
+              <v-tooltip bottom v-if="permissionSimpleSelected.includes('delete-voucher-paid')">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    small
+                    v-on="on"
+                    color="error"
+                    @click.stop="bus.$emit('openRemoveDialog', `voucher/${item.id}`)"
+                  >
+                    <v-icon>mdi-file-cancel-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>Anular voucher</span>
+              </v-tooltip>
 
-        <template></template>
-      </template>
-
-          </v-data-table>
+              <v-menu offset-y close-on-content-click>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon color="primary" dark v-on="on">
+                    <v-icon>mdi-printer</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense class="py-0">
+                  <v-list-item v-for="doc in printDocs" :key="doc.id" @click="imprimir(doc.id, item.id)">
+                    <v-list-item-icon class="ma-0 py-0 pt-2">
+                      <v-icon class="ma-0 py-0" small v-text="doc.icon" color="light-blue accent-4"></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title class="ma-0 py-0 mt-n2">{{ doc.title }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </template>
+           </v-data-table>
           <RemoveItem :bus="bus" />
         </v-card>
       </v-form>
@@ -99,6 +112,13 @@ export default {
         class: ['normal', 'white--text'],
         width: '15%',
         sortable: false 
+      },
+      {
+        text: 'Registro de cobro',
+        value: 'payable_code',
+        class: ['normal', 'white--text'],
+        width: '15%',
+        sortable: false
       },{ 
         text: 'Fecha de pago',
         value: 'payment_date',
@@ -123,12 +143,6 @@ export default {
         class: ['normal', 'white--text'],
         width: '10%',
         sortable: false
-      },{
-        text: 'Registro de cobro',
-        value: 'payable_code',
-        class: ['normal', 'white--text'],
-        width: '15%',
-        sortable: false
       },{ 
         text: 'Acción',
         value: "actions",
@@ -139,7 +153,8 @@ export default {
       }    
     ],
     state: [],
-    category:[]
+    category:[],
+    printDocs: []
 
   }),
   computed: {
@@ -161,6 +176,7 @@ export default {
       this.getVouchers()
     })
     this.getVouchers()
+    this.docsLoans()
   },
   methods: {
     async getVouchers(params) {
@@ -187,7 +203,34 @@ export default {
         this.loading = false
       }
     },
+    async imprimir(id, item){
+      try {
+        let res;
+        if(id == 6){
+          res = await axios.get(`voucher/${item}/print/voucher`);
+        }
+        printJS({
+            printable: res.data.content,
+            type: res.data.type,
+            documentTitle: res.data.file_name,
+            base64: true
+        })  
+      } catch (e) {
+        this.toastr.error("Ocurrió un error en la impresión.")
+        console.log(e)
+      }      
+    },
 
+        docsLoans() {
+      let docs = [];
+      if (this.permissionSimpleSelected.includes("print-payment-voucher")) {
+        docs.push({ id: 6, title: "Registro de pago", icon: "mdi-cash-multiple" });
+      } else {
+        console.log("Se ha producido un error durante la generación de la impresión");
+      }
+      this.printDocs = docs;
+      console.log(this.printDocs);
+    }
 
 
   }

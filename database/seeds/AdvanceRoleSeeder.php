@@ -37,22 +37,27 @@ class AdvanceRoleSeeder extends Seeder
         $collection_court = ['show-all-loan','show-loan','update-loan','update-refinancing-balance','show-history-loan'];
         $pay_permissions_treasury = ['show-list-voucher','show-affiliate','show-loan','show-all-loan','print-payment-kardex-loan','print-payment-loan','print-payment-plan','delete-payment-loan','update-payment','create-payment','show-payment','show-payment-loan','delete-payment', 'print-payment-voucher', 'update-payment-loan'];
         $treasury_permissions = ['print-payment-plan', 'print-payment-kardex-loan', 'show-loan','disbursement-loan','delete-payment', 'update-loan'];
-        $loan_collection = ['show-all-loan', 'show-loan', 'show-affiliate','show-report-payment','print-payment-plan', 'print-payment-kardex-loan', 'show-payment-loan', 'create-payment-loan', 'update-payment-loan', 'delete-payment-loan', 'print-payment-loan','update-loan','show-list-payments-generated'];
-        $receipt_roles = ['Regional Santa Cruz', 'Regional Cochabamba', 'Regional Oruro', 'Regional Potosí', 'Regional Sucre', 'Regional Tarija', 'Regional Trinidad', 'Regional Cobija', 'Recepción'];
+        $loan_collection = ['show-all-loan','show-affiliate','show-report-payment','print-payment-plan', 'print-payment-kardex-loan', 'show-payment-loan', 'create-payment-loan', 'update-payment-loan', 'delete-payment-loan', 'print-payment-loan','update-loan','show-list-payments-generated'];
         $legal_permissions = ['registration-delivery-return-contracts','update-documents-requirements', 'print-contract-loan'];
         $calification_permissions = ['update-loan-calculations','print-qualification-form','update-reference-cosigner'];
         $sequence_roles = [
-        [
+            [ 
+                'name' => 'Plataforma',
+                'action' => 'Recepcionado',             
+            ], [ 
                 'name' => 'Calificación',
                 'action' => 'Calificado',
+            ], [
+                'name' => 'Aprobación Jefatura',
+                'action' => 'Aprobado',
+            ], [
+                'name' => 'Autorización Dirección',
+                'action' => 'Aprobado',
             ], [
                 'name' => 'Revisión Legal',
                 'action' => 'Revisado',
             ], [
-                'name' => 'Jefatura',
-                'action' => 'Aprobado',
-            ], [
-                'name' => 'Aprobación Dirección',
+                'name' => 'Revisión Jefatura',
                 'action' => 'Aprobado',
             ], [
                 'name' => 'Revisión Dirección',
@@ -61,7 +66,7 @@ class AdvanceRoleSeeder extends Seeder
                 'name' => 'Aprobación Legal',
                 'action' => 'Aprobado',
             ], [
-                'name' => 'Aprobación Calificación',
+                'name' => 'Revisión Calificación',
                 'action' => 'Aprobado',
             ], [
                 'name' => 'Presupuesto',
@@ -69,7 +74,7 @@ class AdvanceRoleSeeder extends Seeder
             ], [
                 'name' => 'Contabilidad',
                 'action' => 'Aprobado',
-            ],  [
+            ], [
                 'name' => 'Tesorería',
                 'action' => 'Desembolsado',
             ], [
@@ -81,29 +86,16 @@ class AdvanceRoleSeeder extends Seeder
             [
                 'name' => 'Cobranzas',
                 'action' => 'Liquidado',
-            ],
-            [
+            ], [
                 'name' => 'Tesorería Cobros',
                 'action' => 'Pago Confirmado',
             ], [
                 'name' => 'Archivo',
                 'action' => 'archivado',
             ],
-
         ];
       
         if ($module) {
-            foreach ($receipt_roles as $role) {
-                $role = Role::firstOrCreate([
-                    'name' => $module->shortened . '-' . Str::slug($role, '-')
-                ], [
-                    'display_name' => $role,
-                    'action' => 'Recepcionado',
-                    'module_id' => $module->id,
-                ]);
-                $role->syncPermissions($receipt_permissions);
-            }
-
             foreach ($sequence_roles as $role) {
                 $role = Role::firstOrCreate([
                     'name' => $module->shortened . '-' . Str::slug($role['name'], '-')
@@ -112,9 +104,11 @@ class AdvanceRoleSeeder extends Seeder
                     'action' => $role['action'],
                     'module_id' => $module->id,
                 ]);
-                if (in_array($role['display_name'], ['Jefatura'])) {
+                if (in_array($role['display_name'], ['Revisión Jefatura','Aprobación Jefatura'])) {
                     $role->syncPermissions(array_merge($sequence_permissions, $leadership_permissions, $permissions_primary,$reports_permissions));
-                } elseif (in_array($role['display_name'], ['Aprobación Dirección', 'Revisión Dirección'])) {
+                }  elseif (in_array($role['display_name'], ['Plataforma'])) {
+                    $role->syncPermissions(array_merge($receipt_permissions));
+                } elseif (in_array($role['display_name'], ['Autorización Dirección', 'Revisión Dirección'])) {
                     $role->syncPermissions(array_merge($sequence_permissions, $leadership_permissions, $executive_permissions, $permissions_primary,$reports_permissions));
                 } elseif (in_array($role['display_name'], ['Presupuesto'])) {
                     $role->syncPermissions(array_merge($budget,$reports_permissions));
@@ -126,7 +120,7 @@ class AdvanceRoleSeeder extends Seeder
                     $role->syncPermissions(array_merge($treasury_permissions,$reports_permissions));
                 }elseif (in_array($role['display_name'], ['Revisión Legal','Aprobación Legal'])) {
                     $role->syncPermissions(array_merge($sequence_permissions,$legal_permissions,$reports_permissions));
-                }elseif (in_array($role['display_name'], ['Calificación'])) {
+                }elseif (in_array($role['display_name'], ['Calificación','Revisión Calificación'])) {
                     $role->syncPermissions(array_merge($sequence_permissions,$calification_permissions,$reports_permissions));
                 }elseif (in_array($role['display_name'], ['Archivo'])) {
                     $role->syncPermissions(array_merge($file,$reports_permissions));

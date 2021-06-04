@@ -80,6 +80,7 @@ export default {
       payment_date:new Date().toISOString().substr(0, 10),
       voucher_date:new Date().toISOString().substr(0, 10),
       pago_total: null,
+      voucher:'REGISTRO MANUAL'
   
       
     },
@@ -156,6 +157,11 @@ export default {
             voucher_payment_date: this.data_payment.voucher_date,
             description: this.data_payment.glosa_voucher
           })
+          printJS({
+            printable: res.data.attachment.content,
+            type: res.data.attachment.type,
+            base64: true
+          })
             this.$router.push('/loanPayment')
       }catch (e) {
         console.log(e)
@@ -213,6 +219,7 @@ export default {
             state: this.data_payment.refinanciamiento,
             description:this.data_payment.glosa,
             liquidate : this.data_payment.liquidate,
+            categorie_id:this.data_payment.categori_id
           })
              if(res.status==201 || res.status == 200){
               this.status_click = false
@@ -298,6 +305,7 @@ export default {
             estimated_quota:this.data_payment.pago_total,
             liquidate : this.data_payment.liquidate,
             procedure_modality_id:this.data_payment.procedure_modality_id,
+            categorie_id :this.data_payment.categori_id
           })
             this.payment = res.data
             this.data_payment.pago_total=this.payment.estimated_quota

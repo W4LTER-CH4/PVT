@@ -18,6 +18,7 @@ class LoanStateSeeder extends Seeder
             ['name' => 'Anulado', 'description' => 'Tramite del prestamo Anulado' ],
             ['name' => 'Vigente', 'description' => 'Préstamo en vigencia' ],
             ['name' => 'Liquidado', 'description' => 'Pago de la deuda en su totalidad' ],
+            ['name' => 'Pendiente', 'description' => 'Préstamo en transición' ]
         ];
         foreach ($states as $state) {
             LoanState::firstOrCreate($state);

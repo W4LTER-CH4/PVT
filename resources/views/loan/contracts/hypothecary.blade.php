@@ -457,7 +457,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo con Garantía Hipotecaria 
         <b>QUINTA.- (PLAZO Y AMORTIZACIÓN):</b> {{ $plural ? 'Los DEUDORES se comprometen' : 'El DEUDOR se compromete'}} a que el presente préstamo será cancelado en un plazo de <b><span class="uppercase">{{ Util::number_integer($loan->loan_term,true) }}</span> ({{ ($loan->loan_term) }}) meses</b> computables a partir de la fecha efectiva de desembolso, mediante <b><span class="uppercase">{{ Util::number_integer($loan->loan_term, true) }}</span> ({{ $loan->plan? $loan->loan_term:'no desembolsado' }})amortizaciones </b> mensuales consecutivas e improrrogables y será pagado en capital e intereses convenidos al vencimiento de dichas amortizaciones sin necesidad de aviso ni formalidad previa alguna, conforme al PLAN DE PAGO.
     </div>
     <div>
-        La cuota de amortización mensual es de Bs. {{ $loan->estimated_quota }} (<span class="uppercase">{{ Util::money_format($loan->estimated_quota, true) }}</span> Bolivianos).
+        La cuota de amortización mensual es de Bs. {{ Util::money_format($loan->estimated_quota) }} (<span class="uppercase">{{ Util::money_format($loan->estimated_quota, true) }}</span> Bolivianos).
     </div>
     <div>
         Los intereses generados entre la fecha del desembolso del préstamo y la fecha de primer pago, serán cobrados con la primera cuota; conforme lo establece el Reglamento de Préstamos.
