@@ -163,13 +163,14 @@
                           <ValidationProvider
                             v-slot="{ errors }"
                             name="Teléfono"
-                            rules="integer|min:7|max:12"
+                            rules="integer|min:11|max:11"
                           >
                             <v-text-field
                               :error-messages="errors"
                               dense
                               v-model="editedItem.phone_number"
                               label="Teléfono"
+                              v-mask="'(#) ###-###'"
                             ></v-text-field>
                           </ValidationProvider>
                         </v-col>
@@ -177,13 +178,14 @@
                           <ValidationProvider
                             v-slot="{ errors }"
                             name="Celular"
-                            rules="integer|min:7|max:12"
+                            rules="integer|min:11|max:11"
                           >
                             <v-text-field
                               :error-messages="errors"
                               dense
                               v-model="editedItem.cell_phone_number"
                               label="Celular"
+                              v-mask="'(###)-#####'"
                             ></v-text-field>
                           </ValidationProvider>
                         </v-col>

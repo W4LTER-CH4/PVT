@@ -159,7 +159,7 @@
                   <ValidationProvider
                     v-slot="{ errors }"
                     vid="teléfono"
-                    name="telefono"
+                    name="teléfono"
                     rules="min:11|max:11"
                   >
                     <v-text-field

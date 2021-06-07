@@ -379,7 +379,7 @@
                                               <p><b>CÉDULA DE IDENTIDAD:</b> {{guarantor.identity_card +" "+ identityCardExt(guarantor.city_identity_card_id) }}</p>
                                             </v-col>
                                             <v-col cols="12" md="3">
-                                              <p><b>TELEFONO:</b> {{guarantor.cell_phone_number}}</p>
+                                              <p><b>TELÉFONO:</b> {{guarantor.cell_phone_number}}</p>
                                             </v-col>
                                             <v-col cols="12" md="3">
                                               <p><b>PORCENTAJE DE PAGO:</b> {{guarantor.pivot.payment_percentage|percentage }}%</p>
@@ -616,7 +616,8 @@
                                                 <v-text-field
                                                   dense
                                                   v-model="editedItem.phone_number"
-                                                  label="Telefono"
+                                                  label="Teléfono"
+                                                  v-mask="'(#) ###-###'"
                                                 ></v-text-field>
                                               </v-col>
                                               <v-col cols="12" sm="6" md="4" >
@@ -624,6 +625,7 @@
                                                   dense
                                                   v-model="editedItem.cell_phone_number"
                                                   label="Celular"
+                                                  v-mask="'(###)-#####'"
                                                 ></v-text-field>
                                               </v-col>
                                               <v-col cols="12" sm="6" md="12">
@@ -764,7 +766,8 @@
                                                 <v-text-field
                                                   dense
                                                   v-model="editedItem1.phone_number"
-                                                  label="Telefono"
+                                                  label="Teléfono"
+                                                  v-mask="'(#) ###-###'"
                                                 ></v-text-field>
                                               </v-col>
                                               <v-col cols="12" sm="6" md="4" >
@@ -772,6 +775,7 @@
                                                   dense
                                                   v-model="editedItem1.cell_phone_number"
                                                   label="Celular"
+                                                  v-mask="'(###)-#####'"
                                                 ></v-text-field>
                                               </v-col>
                                               <v-col cols="12" sm="6" md="8">
@@ -1065,7 +1069,7 @@ export default {
         { text: 'SEGUNDO NOMBRE',  value: 'second_name' },
         { text: 'PRIMER APELLIDO ', value: 'last_name' },
         { text: 'SEGUNDO APELLIDO ', value: 'mothers_last_name' },
-        { text: 'TELEFONO', value: 'phone_number' },
+        { text: 'TELÉFONO', value: 'phone_number' },
         { text: 'CELULAR', value: 'cell_phone_number' },
         { text: 'DIRECCION ', value: 'address' },
         {

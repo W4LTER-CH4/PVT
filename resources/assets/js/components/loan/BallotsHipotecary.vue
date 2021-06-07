@@ -462,16 +462,12 @@ export default {
         this.data_ballots = res.data.data
         if (res.data.valid) {
           this.editar = false
-          //console.log("RESULTADOS DE BALLOT")
-          //console.log(this.modalidad.quantity_ballots)
-          //console.log(res.data)
-          //console.log(data_ballots)
           this.editedItem.id_affiliate = this.data_ballots[0].affiliate_id
           for (let i = 0; i < this.modalidad.quantity_ballots; i++) {
 
           if(this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Activo'){
-          this.enabled = false
-          this.editar=false
+            this.enabled = false
+            this.editar=false
 
             this.editedItem.contribution[i].contributionable_id = this.data_ballots[i].id
             this.editedItem.contribution[i].payable_liquid = this.data_ballots[i].payable_liquid != null ? this.data_ballots[i].payable_liquid : 0
@@ -487,7 +483,7 @@ export default {
             this.editedItem.p_east_bonus = this.editedItem.p_east_bonus +  parseFloat(this.data_ballots[i].east_bonus != null ? this.data_ballots[i].east_bonus : 0)
             this.editedItem.p_position_bonus = this.editedItem.p_position_bonus + parseFloat(this.data_ballots[i].position_bonus != null ? this.data_ballots[i].position_bonus : 0)
             this.editedItem.p_public_security_bonus = this.editedItem.p_public_security_bonus +  parseFloat(this.data_ballots[i].public_security_bonus != null ? this.data_ballots[i].public_security_bonus : 0)
-          
+        
         } else if(!this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Activo'){
             this.enabled = false
             this.editar=false
@@ -498,17 +494,13 @@ export default {
             this.editedItem.contribution[i].east_bonus = 0
             this.editedItem.contribution[i].position_bonus = 0
             this.editedItem.contribution[i].public_security_bonus = 0
-            this.editedItem.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('YYYY-MM-DD')
-            this.editedItem.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('MMMM')
+            this.editedItem.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('YYYY-MM-DD')
+            this.editedItem.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('MMMM')
+         
         } else{
           this.toastr.error("el afiliado no es activo")
         }   
 
-          /*this.editedItem.contribution[i].payable_liquid = data_ballots[i].payable_liquid
-          this.editedItem.contribution[i].border_bonus = data_ballots[i].border_bonus
-          this.editedItem.contribution[i].east_bonus = data_ballots[i].east_bonus
-          this.editedItem.contribution[i].position_bonus = data_ballots[i].position_bonus
-          this.editedItem.contribution[i].public_security_bonus = data_ballots[i].public_security_bonus*/
         }
         this.editedItem.p_payable_liquid = (this.editedItem.p_payable_liquid / this.modalidad.quantity_ballots)
         this.editedItem.p_border_bonus = (this.editedItem.p_border_bonus / this.modalidad.quantity_ballots)
@@ -566,16 +558,24 @@ export default {
             this.affiliate_codebtor = resp.data
             this.exist_codebtor = this.affiliate_codebtor.state
             let codebtor_information = this.affiliate_codebtor.information
+            let state_affiliate = this.affiliate_codebtor.affiliate.affiliate_state.name
+            console.log(state_affiliate)
             this.ver = true
             if (this.exist_codebtor){
-              if(codebtor_information){
-                this.getBallots(this.affiliate_codebtor.affiliate.id)
-                this.generateContributions()
-                console.log("ID DEL AFILIADO " + this.affiliate_codebtor)
-                this.getAffiliate(this.affiliate_codebtor.affiliate.id)
-                this.dialog = true
+              if(state_affiliate =='Servicio' || state_affiliate =='Disponibilidad' ){
+                if(codebtor_information){
+                  this.choose_diff_month = false
+                  this.number_diff_month = 1
+                  this.getBallots(this.affiliate_codebtor.affiliate.id)
+                  this.generateContributions()
+                  console.log("ID DEL AFILIADO " + this.affiliate_codebtor)
+                  this.getAffiliate(this.affiliate_codebtor.affiliate.id)
+                  this.dialog = true
+                }else{
+                  this.toastr.error("No se tiene la información actualizada del Codeudor. Por favor actualice sus datos.")
+                }
               }else{
-                this.toastr.error("No se tiene la información actualizada del Codeudor. Por favor actualice sus datos.")
+                this.toastr.error("El afiliados debe tener el estado de Disponibilidad ó Servicio.")
               }
             }
           }else{

@@ -80,7 +80,7 @@
                     <v-text-field
                       dense
                       v-model="number_diff_month"
-                      label="Número de meses"
+                      label="Retroceder meses"
                       color="info"
                       append-icon="mdi-plus-box"
                       prepend-icon="mdi-minus-box"
@@ -585,8 +585,8 @@ export default {
               this.contribution[i].east_bonus = 0
               this.contribution[i].position_bonus = 0
               this.contribution[i].public_security_bonus = 0
-              this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('YYYY-MM-DD')
-              this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('MMMM')
+              this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('YYYY-MM-DD')
+              this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('MMMM')
               
           } else if(this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Pasivo'){
               this.enabled = true
@@ -601,27 +601,26 @@ export default {
                 this.contribution[i].contributionable_id = 0
                 this.contribution[i].payable_liquid = 0
                 this.contribution[i].dignity_rent = 0
-                this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('YYYY-MM-DD')
-                this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('MMMM')
+                this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('YYYY-MM-DD')
+                this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('MMMM')
                 }
 
-          }
-          else if(!this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Pasivo'){
+          } else if(!this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Pasivo'){
               this.enabled = true
               this.editar  = true
               this.contribution[i].contributionable_id = 0
               this.contribution[i].payable_liquid = 0
               this.contribution[i].dignity_rent = 0
-              this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('YYYY-MM-DD')
-              this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('MMMM')
-          }
-          else if(!this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Comisión'){
+              this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('YYYY-MM-DD')
+              this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('MMMM')
+          
+          } else if(!this.lender_contribution.valid && this.lender_contribution.state_affiliate =='Comisión'){
               this.contribution[i].contributionable_id = 0
               this.contribution[i].payable_liquid = 0
-              this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('YYYY-MM-DD')
-              this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(i,'months').format('MMMM')
-          }
-          else {
+              this.contribution[i].period = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('YYYY-MM-DD')
+              this.contribution[i].month = this.$moment(this.lender_contribution.current_tiket).subtract(this.modalidad.quantity_ballots-1-i,'months').format('MMMM')
+          
+          } else {
             this.toastr.error("Ocurrio caso especial de afiliado que no fue considerado.")}
         }
       } catch (e) {

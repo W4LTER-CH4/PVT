@@ -866,12 +866,12 @@ class LoanController extends Controller
             $guarantors[] = $guarantor;
         }
         $employees = [
-            ['position' => 'Director General Ejecutivo'],
-            ['position' => 'Director de Asuntos Administrativos']
+            ['position' => 'Director General Ejecutivo','name'=>'EDGAR JOSE CORTEZ ALBORNOZ','identity_card'=>'3351371 LP'],
+            ['position' => 'Director de Asuntos Administrativos','name'=>'FRANZ LAZO CHAVEZ','identity_card'=>'3367169 LP']
         ];
-        foreach ($employees as $key => $employee) {
+        /*foreach ($employees as $key => $employee) {
             $employees[$key] = Util::request_rrhh_employee($employee['position']);
-        }
+        }*/
         $data = [
             'header' => [
                 'direction' => 'DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES',
@@ -914,7 +914,7 @@ class LoanController extends Controller
         if($loan->parent_loan_id != null && $loan->parent_reason == "REPROGRAMACIÓN" || $loan->parent_loan_id ==null && $loan->parent_reason == "REPROGRAMACIÓN")
         $view_type = 'reprogramming';
 		$view = view()->make('loan.contracts.' . $view_type)->with($data)->render();
-        if ($standalone) return Util::pdf_to_base64contract([$view], $file_name,$information_loan,'legal', $request->copies ?? 1);
+        if ($standalone) return Util::pdf_to_base64([$view], $file_name,$information_loan,'legal', $request->copies ?? 1);
         return $view;
     }
     

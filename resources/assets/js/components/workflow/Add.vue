@@ -501,6 +501,9 @@ export default {
 
 
         this.loan.disbursement_date=this.$moment(res.data.disbursement_date).format('YYYY-MM-DD')
+        this.loan.delivery_contract_date=this.$moment(res.data.delivery_contract_date).format('YYYY-MM-DD')
+        this.loan.return_contract_date=this.$moment(res.data.return_contract_date).format('YYYY-MM-DD')
+
         if(this.loan.parent_reason=='REFINANCIAMIENTO')
         {
           this.loan_refinancing.refinancing = true
@@ -695,13 +698,13 @@ export default {
       //VALIDACION FECHA ENTREGA DE CONTRATO
      if(this.permissionSimpleSelected.includes('registration-delivery-return-contracts') == true)
       {
-        if((this.loan.delivery_contract_date != null)){
+        if((this.loan.delivery_contract_date != 'Fecha invalida')){
          this.validate.valid_date_contract = true
         }else{
            this.validate.valid_date_contract = false
         }
 
-        if((this.loan.return_contract_date != null)){
+        if((this.loan.return_contract_date != 'Fecha invalida')){
           this.validate.valid_date_contract_return = true
         }else{
           this.validate.valid_date_contract_return = false
@@ -716,7 +719,7 @@ export default {
         }
       }else if(this.permissionSimpleSelected.includes('update-accounting-voucher')==true)
       {
-        if((this.loan.num_accounting_voucher != null ) ){
+        if((this.loan.num_accounting_voucher != 'Fecha invalida' ) ){
           this.validate.valid_certificate = true
         }else{
           this.validate.valid_certificate = false
