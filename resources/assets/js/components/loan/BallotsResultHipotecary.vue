@@ -109,19 +109,10 @@
                           <fieldset class="pa-2">
                               <v-toolbar-title>Datos del Préstamo</v-toolbar-title>
                                 <v-progress-linear></v-progress-linear>
-<<<<<<< HEAD
-                                 <p class="py-0 mb-0 caption">Monto del Inmueble: {{loan_detail.net_realizable_value | money }} <br>
-                                 Monto Solicitado: {{calculator_result.amount_requested | money}}<br>
-                                 Interes Calculado Total: {{calculator_result.indebtedness_calculated_total|percentage }}%  <br>
-                                 Liquido Calculado Total: {{calculator_result.liquid_qualification_calculated_total | money}}<br>
-                                 Cuota Total del Prestamo: {{calculator_result.quota_calculated_estimated_total | money}}</p>
-                                <p class="py-0 mb-0 caption" v-show="type_sismu">Cuota de refinanciamiento Sismu: {{ data_sismu.quota_sismu}}</p>
-=======
                                  <p class="py-0 mb-0 caption">Monto del Inmueble: {{loan_detail.net_realizable_value | money}} <br>
                                  Monto Solicitado: {{calculator_result.amount_requested | money}}<br>
                                  Interes Calculado Total: {{calculator_result.indebtedness_calculated_total|percentage }}%  <br> Liquido Calculado Total: {{calculator_result.liquid_qualification_calculated_total | money}}<br> Cuota Total del Préstamo: {{calculator_result.quota_calculated_estimated_total | money}}</p>
                                 <p class="py-0 mb-0 caption" v-show="type_sismu">Cuota de refinanciamiento Sismu: {{ data_sismu.quota_sismu | money}}</p>
->>>>>>> 90c24faa599510b7a04b94e220c13d162623c3a4
                           </fieldset>
                         </v-flex>
                          <v-flex xs7 class="px-1">

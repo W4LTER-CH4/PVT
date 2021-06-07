@@ -875,14 +875,10 @@
                                     <v-row>
                                       <v-progress-linear></v-progress-linear><br>
                                       <v-col cols="12" md="4">
-<<<<<<< HEAD
-                                        <p><b>ENTIDAD FINANCIERA:</b>{{' '+cuenta!=null?cuenta:"Dato no registrado"}}</p>
-=======
                                         <p><b>TIPO DE DESEMBOLSO:</b> {{loan.payment_type.name}}</p>
                                       </v-col>
                                       <v-col cols="12" md="3" v-show="loan.payment_type.name=='Depósito Bancario'">
                                         <p><b>ENTIDAD FINANCIERA:</b>{{' '+cuenta}}</p>
->>>>>>> 3e4c065f48ab1c9d076916026ef106fceb9a1186
                                       </v-col>
                                       <v-col cols="12" md="3" v-show="loan.payment_type.name=='Depósito Bancario'">
                                         <p><b>NUMERO DE CUENTA:</b>{{' '+loan.lenders[0].account_number}}</p>
