@@ -388,10 +388,10 @@ class Util
             'footer-html' => $footerHtml,
             'user-style-sheet' => public_path('css/report-print.min.css'),
             'orientation' => $portrait ? 'portrait' : 'landscape',
-            'margin-top' => '8',
+            'margin-top' => '15',
             'margin-bottom' => '16',
-            'margin-left' => '5',
-            'margin-right' => '7',
+            'margin-left' => '15',
+            'margin-right' => '15',
             'encoding' => 'UTF-8',
             'page-width' => '216'
         ];

@@ -278,7 +278,7 @@
             <td class="w-50 text-left px-10">{{ Util::money_format($loan->amount_approved) }}</td>
             </tr>
             <tr  class="w-100">
-            <td class="w-50 text-left px-10">PLAZO EN MESESES</td>
+            <td class="w-50 text-left px-10">PLAZO EN MESES</td>
             <td class="w-50 text-left px-10">{{ $loan->loan_term }}</td>
             </tr>
             <tr  class="w-100">
