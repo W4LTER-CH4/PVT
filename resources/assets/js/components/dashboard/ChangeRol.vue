@@ -13,7 +13,8 @@
           elevation="2">
 					<v-card-text>
 						<v-icon color="teal">mdi-account-circle</v-icon>&nbsp;
-						{{ item.display_name }}
+						{{ item.display_name }}<br>
+            <span class="teal--text font-weight-bold text-uppercase text-center">{{item.module.name}}</span>
 					</v-card-text>
 				</v-card>
 			</v-col>

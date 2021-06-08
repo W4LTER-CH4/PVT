@@ -350,6 +350,122 @@
                                       </v-tooltip>
                                     </div>
                                   </v-col>
+                                     <!--v-col cols="12" md="3">
+                                      <v-text-field
+                                        dense
+                                        v-model="loan.delivery_contract_date"
+                                        label="FECHA ENTREGA DE CONTRATO REGIONAL"
+                                        hint="Día/Mes/Año"
+                                        type="date"
+                                        :outlined="edit_delivery_date"
+                                        :readonly="!edit_delivery_date"
+                                      ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                      <div>
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="'error'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 45px;"
+                                            @click.stop="resetForm()"
+                                            v-show="edit_delivery_date"
+                                          >
+                                            <v-icon>mdi-close</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span>Cancelar</span>
+                                        </div>
+                                      </v-tooltip>
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="edit_delivery_date ? 'danger' : 'success'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 10px;"
+                                            @click.stop="editDateDelivery()"
+                                          >
+                                            <v-icon v-if="edit_delivery_date">mdi-check</v-icon>
+                                            <v-icon v-else>mdi-pencil</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span v-if="edit_delivery_date">Guardar Fecha Entrega</span>
+                                          <span v-else>Editar Fecha Entrega</span>
+                                        </div>
+                                      </v-tooltip>
+                                    </div>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                      <v-text-field
+                                        dense
+                                        v-model="loan.return_contract_date"
+                                        label="FECHA RECEPCION DE CONTRATO REGIONAL"
+                                        hint="Día/Mes/Año"
+                                        type="date"
+                                        :outlined="edit_return_date"
+                                        :readonly="!edit_return_date"
+                                      ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="3">
+                                      <div >
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="'error'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 45px;"
+                                            @click.stop="resetForm()"
+                                            v-show="edit_return_date"
+                                          >
+                                            <v-icon>mdi-close</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span>Cancelar</span>
+                                        </div>
+                                      </v-tooltip>
+                                      <v-tooltip top>
+                                        <template v-slot:activator="{ on }">
+                                          <v-btn
+                                            fab
+                                            dark
+                                            x-small
+                                            :color="edit_return_date ? 'danger' : 'success'"
+                                            top
+                                            right
+                                            v-on="on"
+                                            style="margin-right: 10px;"
+                                            @click.stop="editDateReturn()"
+                                          >
+                                            <v-icon v-if="edit_return_date">mdi-check</v-icon>
+                                            <v-icon v-else>mdi-pencil</v-icon>
+                                          </v-btn>
+                                        </template>
+                                        <div>
+                                          <span v-if="edit_return_date">Guardar Fecha Recepcion</span>
+                                          <span v-else>Editar Fecha Recepcion</span>
+                                        </div>
+                                      </v-tooltip>
+                                    </div>
+                                  </v-col-->
                               </v-row>
                             </v-col>
                           </v-card-text>
@@ -1247,8 +1363,8 @@ export default {
     },
      async simuladores() {
       try {
-        if(this.loan.amount_approved_before >= this.loan.amount_approved)
-        {
+     //   if(this.loan.amount_approved_before >= this.loan.amount_approved)
+      //  {
           let res = await axios.post(`simulator`, {
             procedure_modality_id:this.loan.procedure_modality_id,
             amount_requested: this.loan.amount_approved,
@@ -1266,12 +1382,12 @@ export default {
             this.loan.loan_term = res.data.months_term
             this.loan.indebtedness_calculated = res.data.indebtedness_calculated_total
             this.loan.estimated_quota = res.data.quota_calculated_estimated_total
-        }
-        else{
-          this.loan.amount_approved = this.loan.amount_approved_before
-          this.loan.loan_term = this.loan.loan_term_before
-          this.toastr.error("El Monto Solicitado sobrepasa al monto anterior")
-        }
+       // }
+      //  else{
+       //   this.loan.amount_approved = this.loan.amount_approved_before
+       //   this.loan.loan_term = this.loan.loan_term_before
+        //  this.toastr.error("El Monto Solicitado sobrepasa al monto anterior")
+       // }
       } catch (e) {
         console.log(e)
       } finally {
