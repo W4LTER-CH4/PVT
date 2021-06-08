@@ -866,8 +866,8 @@ class LoanController extends Controller
             $guarantors[] = $guarantor;
         }
         $employees = [
-            ['position' => 'Director General Ejecutivo','name'=>'EDGAR JOSE CORTEZ ALBORNOZ','identity_card'=>'3351371 LP'],
-            ['position' => 'Director de Asuntos Administrativos','name'=>'FRANZ LAZO CHAVEZ','identity_card'=>'3367169 LP']
+            ['position' => 'Director General Ejecutivo','name'=>'CNL. DESP. EDGAR JOSE CORTEZ ALBORNOZ','identity_card'=>'3351371 LP'],
+            ['position' => 'Director de Asuntos Administrativos','name'=>'LIC. FRANZ LAZO CHAVEZ','identity_card'=>'3367169 LP']
         ];
         /*foreach ($employees as $key => $employee) {
             $employees[$key] = Util::request_rrhh_employee($employee['position']);

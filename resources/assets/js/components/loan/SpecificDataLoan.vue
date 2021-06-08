@@ -185,7 +185,7 @@
                                     <p><b>Codigo de Prestamo a Padre:</b>{{' '+loan_refinancing.code}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-2" >
-                                    <p><b>Monto de Préstamo Padre:</b> {{loan_refinancing.amount_approved | money}}</p>
+                                    <p><b>Monto de Préstamo Padre:</b> {{loan_refinancing.amount_approved_son | money}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-2">
                                     <p><b>Plazo de Préstamo Padre:</b>{{' '+loan_refinancing.loan_term}}</p>

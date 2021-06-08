@@ -510,7 +510,7 @@ export default {
           if(this.loan.parent_loan_id){
 
             this.loan_refinancing.code = this.loan.parent_loan.code
-            this.loan_refinancing.amount_approved  = this.loan.parent_loan.amount_approved
+            this.loan_refinancing.amount_approved_son  = this.loan.parent_loan.amount_approved
             this.loan_refinancing.loan_term  = this.loan.parent_loan.loan_term
             this.loan_refinancing.balance  = this.loan.parent_loan.balance
             this.loan_refinancing.estimated_quota = this.loan.parent_loan.estimated_quota
@@ -518,7 +518,7 @@ export default {
             this.loan_refinancing.description= 'PRESTAMO DEL PVT'
           }else{
             this.loan_refinancing.code = this.loan.data_loan.code
-            this.loan_refinancing.amount_approved  = this.loan.data_loan.amount_approved
+            this.loan_refinancing.amount_approved_son  = this.loan.data_loan.amount_approved
             this.loan_refinancing.loan_term  = this.loan.data_loan.loan_term
             this.loan_refinancing.balance  = this.loan.data_loan.balance
             this.loan_refinancing.type_sismu = true
