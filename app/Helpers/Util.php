@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers; 
+namespace App\Helpers;
 
 use Carbon;
 use Config;
@@ -88,7 +88,7 @@ class Util
             $f = new \NumberFormatter('es', \NumberFormatter::SPELLOUT);
             $data = $f->format(intval($value)) . ' ' . explode('.', number_format(round($value, 2), 2))[1] . '/100';
             $mil = explode(" ",$data);
-            $mil = $mil[0] == "mil" ? 'un ':" ";
+            $mil = $mil[0] == "mil" ? 'un ':"";
             $data =   $mil.$data;
 
         } else {

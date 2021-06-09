@@ -252,8 +252,8 @@
                   </v-col>        
                 </v-row>
                 <template >
-                  <v-col cols="12" class="py-0 my-0" v-if="type_sismu"> DATOS SISMU </v-col>
-                  <v-col cols="12" md="3" class="py0 my-0" v-if="type_sismu">
+                  <v-col cols="12" class="py-0 my-0" v-if="type_sismu || (remake && data_loan.data_loan != null)"> DATOS SISMU </v-col>
+                  <v-col cols="12" md="3" class="py0 my-0" v-if="type_sismu || (remake && data_loan.data_loan != null)">
                     <ValidationProvider
                       v-slot="{ errors }"
                       name="cuota"

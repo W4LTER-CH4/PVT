@@ -26,7 +26,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo con Garantía Hipotecaria 
     <div>
         <b>PRIMERA.- (PARTES DEL CONTRATO):</b> Las siguientes partes celebran el presente contrato de refinanciamiento:
         <ol>
-            <li><b>LA ENTIDAD:</b> La Mutual de Servicios al Policía "MUSERPOL", representada legalmente por su por el {{ $employees[0]['position'] }} Cnl. {{ $employees[0]['name'] }} con C.I. {{ $employees[0]['identity_card'] }} y su {{ $employees[1]['position'] }} Lic. {{ $employees[1]['name'] }} con C.I. {{ $employees[1]['identity_card'] }}, que para fines de este contrato en adelante se denominará MUSERPOL con domicilio en la Z. Sopocachi, Av. 6 de agosto N° 2354.</li>
+            <li><b>LA ENTIDAD:</b> La Mutual de Servicios al Policía "MUSERPOL", representada legalmente por su {{ $employees[0]['position'] }} Cnl. {{ $employees[0]['name'] }} con C.I. {{ $employees[0]['identity_card'] }} y su {{ $employees[1]['position'] }} Lic. {{ $employees[1]['name'] }} con C.I. {{ $employees[1]['identity_card'] }}, que para fines de este contrato en adelante se denominará MUSERPOL con domicilio en la Z. Sopocachi, Av. 6 de agosto N° 2354.</li>
             @if (count($lenders) == 1)
             @php ($lender = $lenders[0]->disbursable)
             @php ($male_female = Util::male_female($lender->gender))
@@ -386,7 +386,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo con Garantía Hipotecaria 
     <div>
         <b>PRIMERA.- (PARTES DEL CONTRATO):</b> Las siguientes partes celebran el presente contrato:
         <ol>
-            <li><b>LA ENTIDAD:</b> La Mutual de Servicios al Policía "MUSERPOL", representada legalmente por su por el {{ $employees[0]['position'] }} Cnl. {{ $employees[0]['name'] }} con C.I. {{ $employees[0]['identity_card'] }} y su {{ $employees[1]['position'] }} Lic. {{ $employees[1]['name'] }} con C.I. {{ $employees[1]['identity_card'] }}, que para fines de este contrato en adelante se denominará MUSERPOL con domicilio en la Z. Sopocachi, Av. 6 de agosto N° 2354.</li>
+            <li><b>LA ENTIDAD:</b> La Mutual de Servicios al Policía "MUSERPOL", representada legalmente por su {{ $employees[0]['position'] }} Cnl. {{ $employees[0]['name'] }} con C.I. {{ $employees[0]['identity_card'] }} y su {{ $employees[1]['position'] }} Lic. {{ $employees[1]['name'] }} con C.I. {{ $employees[1]['identity_card'] }}, que para fines de este contrato en adelante se denominará MUSERPOL con domicilio en la Z. Sopocachi, Av. 6 de agosto N° 2354.</li>
             @if (count($lenders) == 1)
             @php ($lender = $lenders[0]->disbursable)
             @php ($male_female = Util::male_female($lender->gender))

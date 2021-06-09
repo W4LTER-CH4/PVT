@@ -262,7 +262,7 @@ export default {
 
     },
     habilitar() {
-      if(this.$route.query.type_sismu)
+      if(this.$route.query.type_sismu || (this.remake && this.data_loan_parent_aux.parent_loan_id == null))//Si es sismu o rehacer sismu
       {
         return true
       }
@@ -277,6 +277,9 @@ export default {
     },
     reprogramming() {
       return this.$route.params.hash == 'reprogramming'
+    },
+    remake() {
+      return this.$route.params.hash == 'remake'
     }
   },
   methods: {

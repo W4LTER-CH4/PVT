@@ -311,7 +311,7 @@ export default {
     loan_property: {},
     destino:[],
     //Variables reprogramacion y refinanciamiento
-    data_loan: {},
+    //data_loan: {},
     data_loan_aux:{},
     data_loan_parent_sismu:{},
     amount_requested:0,
@@ -583,9 +583,9 @@ export default {
       }
       array_lender[0] = {
         affiliate_id:this.$route.query.affiliate_id,
-        sismu: this.data_sismu.type_sismu,
+        sismu: this.data_sismu.type_sismu || (this.remake && this.data_loan.data_loan != null),
         quota_sismu: this.data_sismu.quota_sismu,
-        parent_loan_id: this.parent_loan_id,
+        parent_loan_id: this.data_loan_parent_aux.parent_loan_id,
         contributions: contributions_lender
       }
       //Armar contribuciones del codeudor afiliado
@@ -602,9 +602,9 @@ export default {
         }
         array_codebtors[i] = {
           affiliate_id: this.contrib_codebtor[i].id_affiliate,
-          sismu: this.data_sismu.type_sismu,
+          sismu: this.data_sismu.type_sismu || (this.remake && this.data_loan.data_loan != null),
           quota_sismu: this.data_sismu.quota_sismu,
-          parent_loan_id: this.parent_loan_id,
+          parent_loan_id: this.data_loan_parent_aux.parent_loan_id,
           contributions: contributions_codebtor
         }
       }
@@ -746,6 +746,7 @@ export default {
          this.data_loan_parent_aux.guarantors=res.data.guarantors
 
          this.data_loan_parent_aux.parent_loan_id = res.data.parent_loan_id
+         //alert(this.data_loan_parent_aux.parent_loan_id )
          this.data_loan_parent_aux.parent_reason = res.data.parent_reason
 
         if(this.refinancing || this.reprogramming){
@@ -875,7 +876,7 @@ export default {
                 this.toastr.error("El valor VNR debe ser mayor al monto minimo "+this.modalidad.minimun_amoun+ " correspondiente a la modalidad")
               }
             }else{
-                if(this.data_sismu.quota_sismu > 0){
+                if(this.data_sismu.quota_sismu > 0 || (this.remake && this.data_loan.data_loan != null)){
                    this.saveAdjustment()
                   this.liquidCalificated()
                   this.data_loan_parent_aux.estimated_quota= this.data_sismu.quota_sismu

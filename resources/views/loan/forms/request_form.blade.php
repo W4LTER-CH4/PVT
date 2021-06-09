@@ -16,12 +16,12 @@
     </div>
 
     <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DEL TRÁMITE</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DEL TRÁMITE</div>
     </div>
 
     <div class="block">
-        <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+            <tr class="bg-grey-darker text-white">
                 <td class="w-25">Código Tŕamite</td>
                 @if ($loan->parent_loan || $loan->parent_reason)
                 <td class="w-25">Trámite origen</td>
@@ -38,7 +38,7 @@
                 @endif
                 <td class="data-row py-5" colspan="{{ $loan->parent_loan ? 1 : 2 }}">@if($loan->parent_reason == "REPROGRAMACIÓN") {{$loan->parent_reason}} @endif {{ $loan->modality->name }}</td>
             </tr>
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 <td>Monto solicitado</td>
                 <td>Plazo</td>
                 <td>Tipo de Desembolso</td>
@@ -59,13 +59,13 @@
     </div>
 
     <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DE{{ $plural ? ' LOS' : 'L' }} TITULAR{{ $plural ? 'ES' : ''}}</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DE{{ $plural ? ' LOS' : 'L' }} TITULAR{{ $plural ? 'ES' : ''}}</div>
     </div>
 
     <div class="block">
         @foreach ($lenders as $lender)
-        <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+            <tr class="bg-grey-darker text-white">
                 <td class="w-70">Solicitante</td>
                 <td class="w-15">CI</td>
                 <td class="w-15">Estado</td>
@@ -79,7 +79,7 @@
                 <td class="data-row py-5">no corresponde</td>
                 @endif
             </tr>
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 <td>Domilicio actual</td>
                 <td colspan="2">Teléfono(s)</td>
             </tr>
@@ -97,7 +97,7 @@
                 </td>
             </tr>
             @if (!$lender->affiliate_id)
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 @php ($inactive = $lender->pension_entity)
                 <td colspan="{{$inactive ? 1 : 2}}">Unidad</td>
                 <td>Categoría</td>
@@ -114,7 +114,7 @@
             </tr>
             @endif
             @if(count($lender->loans_balance)>0)
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 <td>Codigo de Prestamo</td>
                 <td>Saldo</td>
                 <td>origen</td>
@@ -134,7 +134,7 @@
 
     @if ($loan->guarantors()->count())
     <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DE{{ $plural ? ' LOS' : 'L' }} GARANTE{{ $plural ? 'S' : ''}}</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DE{{ $plural ? ' LOS' : 'L' }} GARANTE{{ $plural ? 'S' : ''}}</div>
     </div>
 
     <div class="block ">
@@ -142,10 +142,10 @@
         @foreach ($guarantors as $guarantor)
 
         <div class="block">
-            <div class="font-semibold leading-tight text-left m-b-10 text-base">Garante {{$count}}</div>@php ($count = $count + 1)
+            <div class="font-semibold leading-tight text-left m-b-10 text-base">Garante {{$count}}</div>@php ($count = $count + 1) 
         </div>
-        <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+            <tr class="bg-grey-darker text-white">
                 <td class="w-70">Garante</td>
                 <td class="w-15">CI</td>
                 <td class="w-15">Estado</td>
@@ -159,7 +159,7 @@
                 <td class="data-row py-5">no corresponde</td>
                 @endif
             </tr>
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 <td>Domicilio actual</td>
                 <td colspan="2">Teléfono(s)</td>
             </tr>
@@ -177,7 +177,7 @@
                 </td>
             </tr>
             @if(!$is_spouse)
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 @php ($inactive = $guarantor->pension_entity)
                 <td colspan="{{$inactive ? 1 : 2}}">Unidad</td>
                 <td>Categoría</td>
@@ -200,13 +200,13 @@
 
     @if (count($loan->personal_references)>0)
     <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. REFERENCIAS PERSONALES</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. REFERENCIAS PERSONALES</div>
     </div>
 
     <div class="block">
     @foreach ($loan->personal_references as $personal_reference)
-        <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+            <tr class="bg-grey-darker text-white">
                 <td class="w-70">Referencia</td>
                 <td class="w-15">Teléfono(s)</td>
             </tr>
@@ -223,7 +223,7 @@
                 @endif
                 </td>
             </tr>
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 <td colspan="2">Domicilio actual</td>
             </tr>
             <tr>
@@ -235,11 +235,11 @@
     @endif
 
     <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DOCUMENTOS PRESENTADOS</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DOCUMENTOS PRESENTADOS</div>
     </div>
 
     <div class="block">
-        <table class="table-info w-100 text-center uppercase my-20">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
             <tr class="bg-grey-darker text-white">
                 <td colspan="3">Requisitos</td>
             </tr>
@@ -278,10 +278,10 @@
             @endif
         </table>
     </div>
-    @if($n==6||$key==14)
+    @if (count($loan->guarantors) == 2)
     <div style="page-break-after: always"></div>
-    @endif
-    <div class="block  text-justify ">
+    @endif    
+    <div style="font-size:10px;" class="block  text-justify ">
         <div>   
             La presente solicitud se constituye en una <span class="font-bold">DECLARACIÓN JURADA</span>, consignandose los datos como fidedignos por los interesados.
         </div>
@@ -329,6 +329,6 @@
                 </tr>
                 @endif
             </tbody>
-        </table>
+        </table>         
 </body>
 </html>
