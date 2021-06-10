@@ -367,8 +367,9 @@ class Affiliate extends Model
       return $cpop;
     }
 
-    public function test_guarantor($modality, $sw){
+    public function test_guarantor($modality, $sw, $remake_evaluation = false, $remake_loan_id = null){
       $guarantor= self::verify_guarantor($this);
+      $remake_loan = 0;
       if($guarantor===true){
       if($modality){
           $modality = ProcedureModality::findOrFail($modality); //evaluando categoria acorde a la modalidad
@@ -380,9 +381,13 @@ class Affiliate extends Model
       if($guarantor){
           $loan_global_parameter = LoanGlobalParameter::latest()->first();
           if($this->affiliate_state->affiliate_state_type->name == 'Activo'){
-              if($loan_global_parameter->max_guarantor_active <= count($this->active_guarantees()) + count($this->active_guarantees_sismu())) $guarantor = false;
+            if($remake_evaluation)
+              $remake_loan = 1;
+            if($loan_global_parameter->max_guarantor_active <= count($this->active_guarantees()) + count($this->active_guarantees_sismu()) - $remake_loan) $guarantor = false;
           }
           if($this->affiliate_state->affiliate_state_type->name == 'Pasivo'){
+            if($remake_evaluation)
+              $remake_loan = count($this->guarantees->where('id', $remake_loan_id)->first());
             if($loan_global_parameter->max_guarantor_passive <= count($this->active_guarantees()) + count($this->active_guarantees_sismu())) $guarantor = false;
           }
           if($this->affiliate_state->affiliate_state_type->name != 'Activo' && $this->affiliate_state->affiliate_state_type->name != 'Pasivo') $guarantor = false; // en otro caso no corresponde ya que seria Disponibilidad A o C
@@ -393,7 +398,7 @@ class Affiliate extends Model
       return response()->json([
           'affiliate' => AffiliateController::append_data($this, true),
           'guarantor' => $guarantor,
-          'active_guarantees_quantity' => count($this->active_guarantees()),
+          'active_guarantees_quantity' => count($this->active_guarantees()) - $remake_loan,
           'guarantor_information' => self::verify_information($this),
           'double_perception'=> false,
           'loans_sismu' => $this->active_loans_sismu(),

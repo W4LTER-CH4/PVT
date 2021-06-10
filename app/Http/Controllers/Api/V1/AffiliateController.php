@@ -661,34 +661,33 @@ class AffiliateController extends Controller
                 $sw = true;
             $affiliate = $spouse->affiliate;
         }
-            if($affiliate){
-                if(!$sw){
-                    $request->affiliate_id = $affiliate->id;
-                    return self::test_spouse_guarantor($request);
-                }
-                else
-                {
-                    $affiliate->spouse = $affiliate->spouse;
-                    $affiliate->category = $affiliate->category;
-                    $affiliate->affiliate_state = $affiliate->affiliate_state;
-                    $own_affiliate = Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first();
-                    $own_affiliate->category = $own_affiliate->category;
-                    $own_affiliate->affiliate_state = $own_affiliate->affiliate_state;
-                    return array(
-                        "double_perception" => $sw,
-                        "affiliate" => $affiliate,
-                        "own_affiliate" => $own_affiliate,
-                        "guarantor" => false,
-                        "active_guarantees_quantity"=> 0,
-                        "guarantor_information"=> false,
-                        "loans_sismu" => 0,
-                        "guarantees_sismu"=> 0
-
-                    );
-                }
+        if($affiliate){
+            if(!$sw){
+                $request->affiliate_id = $affiliate->id;
+                return self::test_spouse_guarantor($request);
             }
             else
-                $message['validate'] = "No se encontraron coincidencias";
+            {
+                $affiliate->spouse = $affiliate->spouse;
+                $affiliate->category = $affiliate->category;
+                $affiliate->affiliate_state = $affiliate->affiliate_state;
+                $own_affiliate = Affiliate::where('identity_card', $request->identity_card)->orWhere('registration', $request->identity_card)->first();
+                $own_affiliate->category = $own_affiliate->category;
+                $own_affiliate->affiliate_state = $own_affiliate->affiliate_state;
+                return array(
+                    "double_perception" => $sw,
+                    "affiliate" => $affiliate,
+                    "own_affiliate" => $own_affiliate,
+                    "guarantor" => false,
+                    "active_guarantees_quantity"=> 0,
+                    "guarantor_information"=> false,
+                    "loans_sismu" => 0,
+                    "guarantees_sismu"=> 0
+                );
+            }
+        }
+        else
+            $message['validate'] = "No se encontraron coincidencias";
        return $message;
     }
 
@@ -720,10 +719,12 @@ class AffiliateController extends Controller
                                 if($affiliate->affiliate_state->name == "Fallecido")
                                 {
                                     if($affiliate->spouse->city_birth && $affiliate->spouse->city_identity_card && $affiliate->spouse->birth_date){
-                                       // if($affiliate->spouse->address)
+                                        if($request->remake_evaluation && $request->remake_loan_id != null){
+                                            return $affiliate->test_guarantor($request->procedure_modality_id, $request->type, $request->remake_evaluation, $request->remake_loan_id);
+                                        }
+                                        else{
                                             return $affiliate->test_guarantor($request->procedure_modality_id, $request->type);
-                                        //else
-                                          // $message['validate'] = "Debe actualizar la los datos del afiliado postulante a ser garante";
+                                        }
                                     }
                                     else{
                                         $message['validate'] = "Actualizar datos de la viuda";
@@ -749,7 +750,12 @@ class AffiliateController extends Controller
             return $message;
         }
         else{
-            return $affiliate->test_guarantor($request->procedure_modality_id, $request->type);
+            if($request->remake_evaluation && $request->remake_loan_id != null){
+                return $affiliate->test_guarantor($request->procedure_modality_id, $request->type, $request->remake_evaluation, $request->remake_loan_id);
+            }
+            else{
+                return $affiliate->test_guarantor($request->procedure_modality_id, $request->type);
+            }
         }
     }
 

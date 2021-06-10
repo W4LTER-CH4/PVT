@@ -1634,13 +1634,13 @@ class LoanController extends Controller
 
             if($loan->loan_contribution_adjusts) $loan->loan_contribution_adjusts()->forceDelete();
 
-            if($loan->lenders) $loan->lenders()->detach();
-
             if($loan->loan_persons) $loan->loan_persons()->detach();
             
             if($loan->submitted_documents) $loan->submitted_documents()->detach();
             
             if($loan->tags) $loan->tags()->detach();
+            if($loan->lenders) $loan->lenders()->detach();
+            if($loan->guarantors) $loan->guarantors()->detach();
             //$loan->forceDelete();
             $options=[$loan->id];
             $loan = Loan::withoutEvents(function() use($options){

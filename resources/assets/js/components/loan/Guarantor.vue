@@ -625,6 +625,8 @@ ver()
                 procedure_modality_id:this.modalidad_id,
                 affiliate_id:this.affiliate_garantor.affiliate.id,
                 quota_calculated_total_lender:this.loan_detail.quota_calculated_total_lender,
+                remake_evaluation:this.$route.params.hash == 'remake' ? true : false,
+                remake_loan_id: this.$route.params.hash == 'remake' ? this.$route.query.loan_id : null,
                 contributions: [
                 {
                   payable_liquid: parseFloat(this.payable_liquid[0]) + parseFloat(this.monto_ajustable),
@@ -707,6 +709,8 @@ ver()
             identity_card: this.guarantor_ci,
             procedure_modality_id:this.modalidad_id,
             type_guarantor_spouse:this.tipo_afiliado,
+            remake_evaluation:this.$route.params.hash == 'remake' ? true : false,
+            remake_loan_id: this.$route.params.hash == 'remake' ? this.$route.query.loan_id : 0
           })
             this.affiliate_garantor=resp.data
             this.double_perception= this.affiliate_garantor.double_perception
@@ -874,6 +878,8 @@ ver()
             identity_card: this.guarantor_ci,
             procedure_modality_id:this.modalidad_id,
             type_guarantor_spouse:this.tipo_afiliado,
+            remake_evaluation:this.$route.params.hash == 'remake' ? true : false,
+            remake_loan_id: this.$route.params.hash == 'remake' ? this.$route.query.loan_id : 0
           })
       this.affiliate_garantor.guarantor_information=resp.data.guarantor_information
 

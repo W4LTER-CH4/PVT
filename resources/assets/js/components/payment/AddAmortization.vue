@@ -17,79 +17,70 @@
                       <v-progress-linear></v-progress-linear>
                       <template>
                         <v-row>
-
+                          <v-col cols="3" class="ma-0 py-2">
+                            <label><b>Primer Nombre:</b></label>
+                              {{garantes.lenders[0].first_name}}
+                          </v-col>
+                          <v-col cols="3" class="ma-0 py-2">
+                            <label><b>Paterno:</b></label>
+                            {{garantes.lenders[0].last_name}}
+                          </v-col>
+                          <v-col cols="3" class="ma-0 py-2">
+                            <label><b>Materno:</b></label>
+                            {{garantes.lenders[0].mothers_last_name}}
+                          </v-col>
+                          <v-col cols="3" class="ma-0 py-2">
+                            <label><b>C.I.:</b></label>
+                            {{ garantes.lenders[0].identity_card}}
+                          </v-col>
+                          <v-col cols="3" class="ma-0 py-2">
+                            <label><b>Nro Prestamos:</b></label>
+                            {{garantes.code}}
+                          </v-col>
+                          <v-col cols="3" class="ma-0 py-2">
+                            <label><b>Fecha de Desembolso:</b></label>
+                            {{garantes.disbursement_date | date}}
+                          </v-col>
+                          <v-col cols="3" class="ma-0 py-2">
+                            <label><b>Monto Desembolsado:</b></label>
+                            {{ garantes.amount_approved | moneyString}}
+                          </v-col>
                             <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>Primer Nombre:</b></label>
-                                    {{garantes.lenders[0].first_name}}
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>Paterno:</b></label>
-                                  {{garantes.lenders[0].last_name}}
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>Materno:</b></label>
-                                  {{garantes.lenders[0].mothers_last_name}}
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>C.I.:</b></label>
-                                  {{ garantes.lenders[0].identity_card}}
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>Nro Prestamos:</b></label>
-                                  {{garantes.code}}
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>Fecha de Desembolso:</b></label>
-                                  {{garantes.disbursement_date | date}}
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>Monto Desembolsado:</b></label>
-                                  {{ garantes.amount_approved | moneyString}}
-                                </v-col>
-                                 <v-col cols="3" class="ma-0 py-2">
-                                  <label><b>Plazo :</b></label>
-                                   {{ garantes.loan_term +' Meses'}}
-                                </v-col>
-                              
-                                 
-
-                      <v-progress-linear></v-progress-linear>
-
+                            <label><b>Plazo :</b></label>
+                              {{ garantes.loan_term +' Meses'}}
+                          </v-col>
+                          <v-progress-linear></v-progress-linear>
                         <v-col cols="12" class="py-0" v-show="isNew" v-if="last_payment" >
                           <center>
-                           <v-toolbar-title>DATOS DEL PAGO ANTERIOR</v-toolbar-title>
-                           </center>
-                       
+                            <v-toolbar-title>DATOS DEL PAGO ANTERIOR</v-toolbar-title>
+                          </center>
                         </v-col>
                       <v-progress-linear v-show="isNew" v-if="last_payment"></v-progress-linear>
-                       
-                                <v-col cols="3" class="ma-0 py-2"  v-show="isNew" v-if="last_payment">
-                                  <label><b style="color:teal" >Saldo Capital:</b></label>
-                                  <b style="color:teal">{{garantes.balance | moneyString}}</b>
-                                </v-col>
-                               
-                                <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
-                                  <label><b style="color:teal">Número de Cuota:</b></label>
-                                  <b style="color:teal">{{(garantes.last_payment_validated.quota_number+1)  }}</b>
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
-                                  <label><b style="color:teal">Fecha del ultimo Pago:</b></label>
-                                  <b style="color:teal">{{garantes.last_payment_validated.estimated_date | date }}</b>
-                                </v-col>
-                                <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
-                                  <label><b style="color:teal" >Total Pagado:</b></label>
-                                  <b style="color:teal">{{garantes.last_payment_validated.estimated_quota | moneyString}}</b>
-                                </v-col>
-
-                                 <v-col cols="6" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
-                                  <label><b>Intereses Corrientes Pendientes:</b></label>
-                                  {{garantes.last_payment_validated.interest_accumulated}}
-                                </v-col>
-                                <v-col cols="6" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
-                                  <label><b>Interes Penales Pendientes:</b></label>
-                                  {{garantes.last_payment_validated.penal_accumulated}}
-                                </v-col>
-                          <v-progress-linear></v-progress-linear>
+                      <v-col cols="3" class="ma-0 py-2"  v-show="isNew" v-if="last_payment">
+                        <label><b style="color:teal" >Saldo Capital:</b></label>
+                        <b style="color:teal">{{garantes.balance | moneyString}}</b>
+                      </v-col>
+                      <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
+                        <label><b style="color:teal">Número de Cuota:</b></label>
+                        <b style="color:teal">{{(garantes.last_payment_validated.quota_number+1)  }}</b>
+                      </v-col>
+                      <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
+                        <label><b style="color:teal">Fecha del ultimo Pago:</b></label>
+                        <b style="color:teal">{{garantes.last_payment_validated.estimated_date | date }}</b>
+                      </v-col>
+                      <v-col cols="3" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
+                        <label><b style="color:teal" >Total Pagado:</b></label>
+                        <b style="color:teal">{{garantes.last_payment_validated.estimated_quota | moneyString}}</b>
+                      </v-col>
+                      <v-col cols="6" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
+                        <label><b>Intereses Corrientes Pendientes:</b></label>
+                        {{garantes.last_payment_validated.interest_accumulated}}
+                      </v-col>
+                      <v-col cols="6" class="ma-0 py-2" v-show="isNew" v-if="last_payment">
+                        <label><b>Interes Penales Pendientes:</b></label>
+                        {{garantes.last_payment_validated.penal_accumulated}}
+                      </v-col>
+                      <v-progress-linear></v-progress-linear>
                         <v-col cols="9"  v-show="editable" v-if="permissionSimpleSelected.includes('create-payment-loan') && this.data_payment.validar">
                         </v-col>
                          <v-col cols="3" class="ma-0 py-0" v-show="permissionSimpleSelected.includes('create-payment-loan') && this.data_payment.validar" v-if="editable">
@@ -204,8 +195,8 @@
                             dense
                             v-model="data_payment.voucher"
                             label="Codigo de Comprobante"
-                            :disabled="true"
-                            :readonly="true"
+                            :outlined=" isNew || editable "
+                            :readonly="ver"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="4" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan')" v-if="!isNew">
@@ -276,7 +267,6 @@
                             dense
                           ></v-text-field>
                         </v-col>
-                     
                         <v-col cols="4" class="ma-0 pb-0" v-show="editable" v-if="permissionSimpleSelected.includes('create-payment')">
                           <v-select
                             class="caption"
@@ -332,7 +322,6 @@
                             dense
                             label="Glosa"
                           ></v-text-field>
-                          
                         </v-col>
                           <v-col cols="3" class="ma-0 pb-0" v-show="permissionSimpleSelected.includes('create-payment-loan') && isNew" >
                           <v-select
@@ -356,22 +345,19 @@
                          <v-col cols="10" v-show="isNew" class="py-0">
                         </v-col>
                         <v-col cols="2" v-show="isNew" class="py-0">
-                           <v-btn
-                    color="info"
-                    @click="Calcular($route.query.loan_id)" v-show="!ver">
-                    Calcular
-                  </v-btn>
+                          <v-btn
+                            color="info"
+                            @click="Calcular($route.query.loan_id)" v-show="!ver">
+                            Calcular
+                          </v-btn>
                         </v-col>
-
                           <AddPayment
-                :payment.sync="payment"
-                :data_payment.sync="data_payment"/>
-                          
-                      </v-row>
-                    </template>
-                    
-                  </v-form>
-                </ValidationObserver>
+                            :payment.sync="payment"
+                            :data_payment.sync="data_payment"/>
+                        </v-row>
+                      </template>
+                    </v-form>
+                      </ValidationObserver>
                       </fieldset>
                     </v-flex>
                   </v-layout>
@@ -392,7 +378,6 @@ export default {
       type: Object,
       required: true
     },
-  
   },
     components: {
     AddPayment

@@ -57,8 +57,7 @@
              <v-text-field
                 class="py-0"
                 dense
-                :outlined="habilitar"
-                :readonly="!habilitar"
+                :readonly="true"
                 label="Cuota"
                 v-model="data_loan_parent_aux.estimated_quota"
             ></v-text-field>
@@ -118,10 +117,11 @@
                           <ul style="list-style: none" class="py-3 ps-4 ">
                             <li v-for="(liquid,i) in liquid_calificated" :key="i" >
                               <p>PROMEDIO LIQUIDO PAGABLE: {{liquid.payable_liquid_calculated | money}}</p>
-                              <p>TOTAL BONOS: {{liquid.bonus_calculated | money}}</p>
-                              <p>LIQUIDO PARA CALIFICACION: {{ liquid.liquid_qualification_calculated | money}}</p>
-                              <p v-show="type_sismu">CUOTA DE REFINANCIAMIENTO SISMU: {{data_sismu.quota_sismu | money}}</p>
-                              <p v-show="liquid_calificated[0].guarantees.length==0">DESCUENTO DE CUOTAS POR GARANTIAS: {{liquid_calificated[0].guarantees.length}}</p>
+                              <p class="error--text "> TOTAL BONOS: (-) {{liquid.bonus_calculated | money}} </p>
+                              <p class="error--text ">  MONTO DE SUBSISTENCIA: (-) {{global_parameters.livelihood_amount | money}} </p>
+                              <p class="success--text " v-show="type_sismu"> (+) CUOTA DE REFINANCIAMIENTO SISMU: {{data_sismu.quota_sismu | money}} </p>
+                              <p style="color:teal" class="font-weight-black" >LIQUIDO PARA CALIFICACION: {{ liquid.liquid_qualification_calculated | money}}</p>
+                              <p v-show="liquid_calificated[0].guarantees.length==0">GARANTIAS: {{liquid_calificated[0].guarantees.length}}</p>
                               </li>
                             </ul>
                         </fieldset>
@@ -188,7 +188,8 @@ export default {
   name: "loan-requirement",
   data: () => ({
     ver:false,
-    calculator_result_aux:{}
+    calculator_result_aux:{},
+    global_parameters:{}
   }),
   props: {
     data_sismu: {
@@ -224,6 +225,10 @@ export default {
       type: Array,
       required: true
     }
+  },
+  mounted(){
+    this.getGlobalParameters()
+
   },
     computed: {
 
@@ -283,6 +288,14 @@ export default {
     }
   },
   methods: {
+    async getGlobalParameters(){
+      try {
+        let res = await axios.get(`loan_global_parameter`)
+        this.global_parameters = res.data.data[0]
+      } catch (e) {
+        console.log(e)
+      }
+    },
     async simuladores() {
       try {
         if(this.loan_detail.maximun_amoun>=this.calculator_result.amount_requested)
