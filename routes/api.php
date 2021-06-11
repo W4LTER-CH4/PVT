@@ -93,6 +93,8 @@ Route::group([
 
         Route::get('get_categorie_user', 'Api\V1\LoanPaymentCategorieController@get_categorie_user');//listado de meses por gestion
 
+        Route::get('loan_tracking', 'Api\V1\LoanReportController@loan_tracking');//seguimiento de prestamos
+
         //get_list_month
         // Afiliados
         Route::group([

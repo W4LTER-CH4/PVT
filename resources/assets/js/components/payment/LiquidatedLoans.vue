@@ -345,7 +345,7 @@
             </template>
 
             <template v-slot:[`item.actions`]="{ item }">
-              <v-tooltip bottom>
+              <!--<v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <v-btn
                     icon
@@ -361,7 +361,7 @@
                   </v-btn>
                 </template>
                 <span>Ver trámite</span>
-              </v-tooltip>
+              </v-tooltip>-->
               <v-tooltip bottom v-if="item.state_loan == 'Vigente'">
                 <template v-slot:activator="{ on }">
                   <v-btn

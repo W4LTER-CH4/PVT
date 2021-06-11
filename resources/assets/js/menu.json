@@ -5,6 +5,12 @@
     "icon": "mdi-home",
     "params": {}
   }, {
+    "href": "listTracing",
+    "title": "Seguimiento",
+    "icon": "mdi-swap-horizontal",
+    "permission": "show-all-loan",
+    "params": {}
+  }, {
     "href": "affiliateIndex",
     "title": "Afiliados",
     "icon": "mdi-account",

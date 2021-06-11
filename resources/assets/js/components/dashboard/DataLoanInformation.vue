@@ -56,7 +56,7 @@
                               v-on="on"
                               color="warning"
                               :to="{
-                                name: 'flowAdd',
+                                name: 'tracingAdd',
                                 params: { id: item.id },
                               }"
                               target="_blank"
@@ -129,7 +129,7 @@
                               v-on="on"
                               color="warning"
                               :to="{
-                                name: 'flowAdd',
+                                name: 'tracingAdd',
                                 params: { id: item.id },
                               }"
                               ><v-icon>mdi-eye</v-icon>
@@ -204,7 +204,7 @@
                               v-on="on"
                               color="warning"
                               :to="{
-                                name: 'flowAdd',
+                                name: 'tracingAdd',
                                 params: { id: item.id },
                               }"
                               target="_blank"
@@ -278,7 +278,7 @@
                               v-on="on"
                               color="warning"
                               :to="{
-                                name: 'flowAdd',
+                                name: 'tracingAdd',
                                 params: { id: item.id },
                               }"
                               ><v-icon>mdi-eye</v-icon>

@@ -185,8 +185,12 @@ class Affiliate extends Model
 
     public function getCategoryAttribute()
     {
-      $category =  Category::whereId($this->category_id)->first();
-      if(count($this->contributions)>0) {
+      $category = null;
+      if($this->category_id){
+        $category =  Category::whereId($this->category_id)->first();
+      }
+      return $category;
+     /* if(count($this->contributions)>0) {
         $contribution = $this->contributions->last();
         if($contribution->base_wage>0) {
           $contribution_category = intval($contribution->seniority_bonus*100/$contribution->base_wage);
@@ -197,8 +201,7 @@ class Affiliate extends Model
           }
         }
       }
-        unset ($this->contributions);
-      return $category;
+        unset ($this->contributions)*/
     }
 
     public function degree()

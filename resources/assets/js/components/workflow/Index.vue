@@ -72,7 +72,7 @@
           ></v-text-field>
         </v-flex>
         <!--bandejas Seguimiento/Trabajo-->
-        <template v-if="hasTray">
+        <!--<template v-if="hasTray">
           <v-tooltip
             top
           >
@@ -94,7 +94,7 @@
             <span v-if="track">Bandeja de trabajo</span>
             <span v-else>Seguimiento de trámites</span>
           </v-tooltip>
-        </template>
+        </template>-->
       </v-toolbar>
     </v-card-title>
     <v-tooltip

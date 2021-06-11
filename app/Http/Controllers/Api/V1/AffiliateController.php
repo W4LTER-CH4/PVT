@@ -58,7 +58,11 @@ class AffiliateController extends Controller
             }else
             {$affiliate->spouse = [];
             }
-        if ($with_category) $affiliate->category = $affiliate->category;
+        if ($with_category){
+            if($affiliate->category){
+                $affiliate->category = $affiliate->category;
+            }
+        }
         if($affiliate->affiliate_state !=null) $affiliate->affiliate_state;
         return $affiliate;
     }
@@ -70,7 +74,11 @@ class AffiliateController extends Controller
         if($affiliate->affiliate_state !=null) $affiliate->dead = $affiliate->dead;
         $affiliate->identity_card_ext = $affiliate->identity_card_ext;
         if($affiliate->affiliate_state !=null) $affiliate->affiliate_state;
-        if ($with_category) $affiliate->category = $affiliate->category;
+        if ($with_category){
+            if($affiliate->category){
+                $affiliate->category = $affiliate->category;
+            }
+        }
         return $affiliate;
     }
 

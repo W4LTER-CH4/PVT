@@ -32,7 +32,7 @@
                             bottom
                             right
                             v-on="on"
-                            :to="{ name: 'flowAdd', params: { id: item.id}}"
+                            :to="{ name: 'tracingAdd', params: { id: item.id} }"
                           >
                             <v-icon>mdi-eye</v-icon>
                           </v-btn>

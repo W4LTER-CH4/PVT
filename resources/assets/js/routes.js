@@ -20,6 +20,8 @@ import ListPaymentGenerate from '@/components/payment/ListPaymentGenerate'
 import ChangeRol from '@/components/dashboard/ChangeRol'
 import ListVouchers from '@/components/treasury/ListVouchers'
 import Reports from '@/components/reports/Reports'
+import ListTracingLoans from '@/components/tracing/ListTracingLoans'
+import TracingAdd from '@/components/tracing/Add'
 
 export const routes = [
   {
@@ -49,7 +51,7 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
-  }, 
+  },
   {
     path: '/changeRol',
     name: 'changeRol',
@@ -57,7 +59,8 @@ export const routes = [
     meta: {
       requiresAuth: true
     }
-  }, {
+  },
+  {
     path: '/dashboard',
     name: 'dashboardIndex',
     component: DashboardIndex,
@@ -170,7 +173,6 @@ export const routes = [
       requiresAuth: true
     }
   },
-  
   {
     path: '/listPaymentGenerate',
     name: 'listPaymentGenerate',
@@ -191,6 +193,22 @@ export const routes = [
     path: '/reports',
     name: 'reports',
     component: Reports,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/listTracing',
+    name: 'listTracing',
+    component: ListTracingLoans,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/tracing/:id',
+    name: 'tracingAdd',
+    component: TracingAdd,
     meta: {
       requiresAuth: true
     }

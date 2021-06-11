@@ -14,12 +14,12 @@
 @php ($n = 1)
 
 <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DEL TRÁMITE {{$Loan_type_title}}</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DEL TRÁMITE {{$Loan_type_title}}</div>
     </div>
 
 <div class="block">
-        <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
+            <tr class="bg-grey-darker text-white">
                 <td class="w-25">Código Tŕamite</td>
                 @if ($loan->parent_loan || $loan->parent_reason)
                 <td class="w-25">Trámite origen</td>
@@ -36,7 +36,7 @@
                 @endif
                 <td class="data-row py-5" colspan="{{ $loan->parent_loan ? 1 : 2 }}">@if($loan->parent_reason == "REPROGRAMACIÓN") {{$loan->parent_reason}} @endif {{ $loan->modality->name }}</td>
             </tr>
-            <tr class="bg-grey-darker text-sm-1 text-white">
+            <tr class="bg-grey-darker text-white">
                 <td>Monto solicitado</td>
                 <td>Plazo</td>
                 <td>Tipo de Desembolso</td>
@@ -56,8 +56,8 @@
         </table>
     </div>
     @if($Loan_type_title == "REFINANCIAMIENTO" || $Loan_type_title == "SISMU REFINANCIAMIENTO")
-    <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+    <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
+            <tr class="bg-grey-darker text-white">
                 <td colspan="2" >REFINANCIAMIENTO DE PRÉSTAMO</td>
             </tr>
             <tr  class="w-100">
@@ -80,30 +80,30 @@
         </table>
         @endif
     <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DE BOLETA</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DE BOLETA</div>
     </div>
 <div class="block">
-        <table class="table-info w-100 text-center uppercase my-20">        
+    <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">        
         @php ($sum_prom_payable_liquid_calculated = 0)
         @php ($sum_prom_bonus_calculated = 0)
         @php ($count_lender = 0)
         @foreach($loan->lenders as $lender_affiliate)
             @php ($count_lender = $count_lender + 1)
             @php ($title_lender = $count_lender == 1 ? "TITULAR":"CODEUDOR")    
-        <tr class="bg-grey-darker text-sm-1 text-white">
+        <tr class="bg-grey-darker text-white">
             <td class="w-50 text-left px-10" colspan="7" > {{$title_lender}} {{$lender_affiliate->full_name}} </td>
         </tr>
             @php ($sum_prom_payable_liquid_calculated += $lender_affiliate->pivot->payable_liquid_calculated)
             @php ($sum_prom_bonus_calculated += $lender_affiliate->pivot->bonus_calculated)
         @if($lender_affiliate->pivot->contributionable_type == "contributions")
             <tr>
-                <td class="bg-grey-darker text-sm-1 text-white">Periodo</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Liquido</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Monto de Ajuste</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Bono Frontera</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Bono Cargo</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Bono Oriente</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Bono Seguridad Ciudadana</td>       
+                <td class="bg-grey-darker text-white">Periodo</td>
+                <td class="bg-grey-darker text-white">Liquido</td>
+                <td class="bg-grey-darker text-white">Monto de Ajuste</td>
+                <td class="bg-grey-darker text-white">Bono Frontera</td>
+                <td class="bg-grey-darker text-white">Bono Cargo</td>
+                <td class="bg-grey-darker text-white">Bono Oriente</td>
+                <td class="bg-grey-darker text-white">Bono Seguridad Ciudadana</td>       
            </tr>        
             @php ($sum_border_bonus = 0)
             @php ($sum_position_bonus = 0)
@@ -113,8 +113,7 @@
             @php ($sum_mount_adjust= 0)
             @php ($num_reg = 0)
          @foreach($loan->ballot_affiliate($lender_affiliate->id)->ballot as $ballot)
-            @php ($mount_adjust = 0)
-         
+            @php ($mount_adjust = 0)        
            <tr>
                 <td>{{Carbon::parse($ballot->month_year)->format('d/m/y')}}</td>
                 <td> {{Util::money_format($ballot->payable_liquid)}}</td>
@@ -127,8 +126,7 @@
                 <td> {{Util::money_format($ballot->border_bonus)}}</td>
                 <td> {{Util::money_format($ballot->position_bonus)}}</td>
                 <td> {{Util::money_format($ballot->east_bonus)}}</td>
-                <td> {{Util::money_format($ballot->public_security_bonus)}}</td>
-                        
+                <td> {{Util::money_format($ballot->public_security_bonus)}}</td>                       
            </tr>
            @php ($num_reg = $num_reg + 1)
            @php ($sum_border_bonus += $ballot->border_bonus)
@@ -150,17 +148,15 @@
                 <td> {{Util::money_format($sum_border_bonus/$num_reg)}}</td>
                 <td> {{Util::money_format($sum_position_bonus/$num_reg)}}</td>
                 <td> {{Util::money_format($sum_east_bonus/$num_reg)}}</td>
-                <td> {{Util::money_format($sum_public_security_bonus/$num_reg)}}</td>
-              
+                <td> {{Util::money_format($sum_public_security_bonus/$num_reg)}}</td>          
            </tr>
         @endif
        @if($lender_affiliate->pivot->contributionable_type =="aid_contributions")
             <tr>
-                <td class="bg-grey-darker text-sm-1 text-white">Periodo</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Liquido</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Monto de Ajuste</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Bono Renta Dignidad</td>
-              
+                <td class="bg-grey-darker text-white">Periodo</td>
+                <td class="bg-grey-darker text-white">Liquido</td>
+                <td class="bg-grey-darker text-white">Monto de Ajuste</td>
+                <td class="bg-grey-darker text-white">Bono Renta Dignidad</td>          
            </tr>
             @php ($sum_dignity_rent = 0)
             @php ($sum_rent = 0)
@@ -193,9 +189,9 @@
         @endif
         @if($lender_affiliate->pivot->contributionable_type == "loan_contribution_adjusts")
            <tr>
-                <td class="bg-grey-darker text-sm-1 text-white">Periodo</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Liquido</td>
-                <td class="bg-grey-darker text-sm-1 text-white">Monto de Ajuste</td>
+                <td class="bg-grey-darker text-white">Periodo</td>
+                <td class="bg-grey-darker text-white">Liquido</td>
+                <td class="bg-grey-darker text-white">Monto de Ajuste</td>
            </tr>
            @php ($sum_liquid_amount = 0)
            @php ($sum_mount_adjust = 0)
@@ -223,9 +219,9 @@
              </tr>
         @endif
         @endforeach
-            </table>
-            <table class="table-info w-100 text-center uppercase my-20"> 
-            <tr class="bg-grey-darker text-sm-1 text-white">
+    </table>
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10"> 
+            <tr class="bg-grey-darker text-white">
             @php ($title_average = " ")
             @if($loan->modality->loan_modality_parameter->quantity_ballots >1)
                 @php ($title_average = "PROMEDIO")
@@ -249,11 +245,11 @@
     </div>
    </div>
    <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DE EVALUACIÓN AL TITULAR</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DE EVALUACIÓN AL TITULAR</div>
     </div>
     <div class="block">
-        <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
+            <tr class="bg-grey-darker text-white">
                 <td colspan="2" >PROPUESTA Y APROBACIÓN </td>
             </tr>
             <tr  class="w-100">
@@ -295,27 +291,27 @@
     @php ($num_gar = 1)
     @if ($loan->guarantors()->count())
     <div class="block">
-        <div class="font-semibold leading-tight text-left m-b-10 text-base">{{ $n++ }}. DATOS DE EVALUACIÓN DE{{ $plural ? ' LOS' : 'L' }} GARANTE{{ $plural ? 'S' : ''}}</div>
+        <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DE EVALUACIÓN DE{{ $plural ? ' LOS' : 'L' }} GARANTE{{ $plural ? 'S' : ''}}</div>
     </div>
     <div class="block ">
         @foreach ($loan->guarantors as $guarantor)
-        <table class="table-info w-100 text-center uppercase my-20">
-            <tr class="bg-grey-darker text-sm-1 text-white">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
+            <tr class="bg-grey-darker text-white">
                     <td class="w-100" colspan="2">Garante {{ $num_gar++ }}</td>               
             </tr>
-            <tr  class="w-100">
+            <tr class="w-100">
                 <td class="w-50 text-left px-10">NOMBRES</td>
                 <td class="w-50 text-left px-10">{{ $guarantor->full_name }}</td> 
             </tr>
-            <tr  class="w-100">
+            <tr class="w-100">
                 <td class="w-50 text-left px-10">LÍQUIDO PARA CALIFICACIÓN</td>
                 <td class="w-50 text-left px-10">{{ Util::money_format($guarantor->pivot->liquid_qualification_calculated) }}</td> 
             </tr>
-            <tr  class="w-100">
+            <tr class="w-100">
                 <td class="w-50 text-left px-10">ÍNDICE DE ENDEUDAMIENTO</td>
                 <td class="w-50 text-left px-10">{{ Util::money_format($guarantor->pivot->indebtedness_calculated) }} %</td> 
             </tr>
-            <tr  class="w-100">
+            <tr class="w-100">
                 <td class="w-50 text-left px-10">PORCENTAJE DE PAGO</td>
                 <td class="w-50 text-left px-10">{{ $guarantor->pivot->payment_percentage }} %</td> 
             </tr>

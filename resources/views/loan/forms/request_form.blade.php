@@ -20,7 +20,7 @@
     </div>
 
     <div class="block">
-        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
             <tr class="bg-grey-darker text-white">
                 <td class="w-25">Código Tŕamite</td>
                 @if ($loan->parent_loan || $loan->parent_reason)
@@ -61,10 +61,10 @@
     <div class="block">
         <div class="font-semibold leading-tight text-left m-b-10 text-sm">{{ $n++ }}. DATOS DE{{ $plural ? ' LOS' : 'L' }} TITULAR{{ $plural ? 'ES' : ''}}</div>
     </div>
-
+    
     <div class="block">
         @foreach ($lenders as $lender)
-        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
             <tr class="bg-grey-darker text-white">
                 <td class="w-70">Solicitante</td>
                 <td class="w-15">CI</td>
@@ -144,7 +144,7 @@
         <div class="block">
             <div class="font-semibold leading-tight text-left m-b-10 text-base">Garante {{$count}}</div>@php ($count = $count + 1) 
         </div>
-        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
             <tr class="bg-grey-darker text-white">
                 <td class="w-70">Garante</td>
                 <td class="w-15">CI</td>
@@ -205,7 +205,7 @@
 
     <div class="block">
     @foreach ($loan->personal_references as $personal_reference)
-        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
             <tr class="bg-grey-darker text-white">
                 <td class="w-70">Referencia</td>
                 <td class="w-15">Teléfono(s)</td>
@@ -239,7 +239,7 @@
     </div>
 
     <div class="block">
-        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-20">
+        <table style="font-size:12px;" class="table-info w-100 text-center uppercase my-10">
             <tr class="bg-grey-darker text-white">
                 <td colspan="3">Requisitos</td>
             </tr>
