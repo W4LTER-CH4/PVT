@@ -273,7 +273,7 @@ class LoanController extends Controller
         $procedure_modality = ProcedureModality::findOrFail($request->procedure_modality_id);
         $request->merge([
             'role_id' => $procedure_modality->procedure_type->workflow->pluck('role_id')->intersect($roles)->first()
-        ]);        
+        ]);
         if (!$request->role_id) abort(403, 'Debe crear un flujo de trabajo');
         // Guardar préstamo
         $saved = $this->save_loan($request);
@@ -305,10 +305,32 @@ class LoanController extends Controller
             $remake_loan = Loan::find($request->remake_loan_id);
             $this->destroyAll($remake_loan);
             $this->happenRecordLoan($remake_loan,$loan->id);
-            Util::save_record($loan, 'datos-de-un-tramite', Util::concat_action($loan,'rehízo préstamo: '.$loan->code));
+            Util::save_record($loan, 'datos-de-un-tramite', Util::concat_action($loan,'rehízo préstamo: '));
         }
+        else{//ini aqui
+            if($loan->parent_reason == 'REPROGRAMACIÓN' && $loan->parent_loan)
+            {
+                Util::save_record($loan, 'datos-de-un-tramite', Util::concat_action($loan,'registró el préstamo de REPROGRAMACIÓN '));
+            }else{
+               /* $loan->code = implode(['PTMO', str_pad($loan->id, 6, '0', STR_PAD_LEFT), '-', Carbon::now()->year]);
+                $loan->save();
+                Util::save_record($loan, 'datos-de-un-tramite', Util::concat_action($loan,'registró el préstammmmo'.$loan->code));*/
 
-        //Etiqueta Sismu 
+               $option = $loan;
+                $loan_a = Loan::withoutEvents(function () use ($option) {
+                    $loan = Loan::whereId($option->id)->first();
+                    $loan->code = implode(['PTMO', str_pad($loan->id, 6, '0', STR_PAD_LEFT), '-', Carbon::now()->year]);
+                    $loan->save();
+                    return  $loan;
+                });
+                (object)$loan = $loan_a;
+               // return $loan_a;
+                Util::save_record($loan, 'datos-de-un-tramite', Util::concat_action($loan,'registró el préstamo'));
+                //return $loan_a;
+            }
+        }//fin aqui
+
+        //Etiqueta Sismu
         $user = User::whereUsername('admin')->first();
         $sismu_tag = Tag::whereSlug('sismu')->first();
         if(empty($loan->parent_loan_id)){
@@ -319,10 +341,10 @@ class LoanController extends Controller
                     'date' => Carbon::now()
                 ]]);
                 Util::save_record($loan, 'datos-de-un-tramite', Util::concat_action($loan,'etiquetado: Préstamo proveniente del Sismu'));
-            } 
+            }
         }
         // Generar PDFs
-        $file_name = implode('_', ['solicitud', 'prestamo', $loan->code]) . '.pdf';       
+        $file_name = implode('_', ['solicitud', 'prestamo', $loan->code]) . '.pdf';
         if(Auth::user()->can('print-contract-loan')){
             if($loan->modality->loan_modality_parameter->print_contract_platform){
                 $loan->attachment = Util::pdf_to_base64([
@@ -339,7 +361,7 @@ class LoanController extends Controller
                 $this->print_form(new Request([]), $loan, false),
             ], $file_name, 'legal', $request->copies ?? 1);
         }
-        
+
         DB::commit();
         return $loan;
     } catch (\Exception $e) {
@@ -458,7 +480,7 @@ class LoanController extends Controller
             $date->addSeconds($second);
             $date = Carbon::parse($date);
             $request['disbursement_date'] = $date;*/
-        //si es refinanciamiento o reprogramacion colocar la etiqueta correspondiente al padre del préstamo   
+        //si es refinanciamiento o reprogramacion colocar la etiqueta correspondiente al padre del préstamo
             if($loan->parent_loan_id != null){
                 $user = User::whereUsername('admin')->first();
                 $refinancing_tag = Tag::whereSlug('refinanciamiento')->first();
@@ -471,7 +493,7 @@ class LoanController extends Controller
                             'date' => Carbon::now()
                         ]]);
                     Util::save_record($parent_loan, 'datos-de-un-tramite', Util::concat_action($parent_loan,'etiquetado: Préstamo refinanciado'));
-                } 
+                }
                 if($loan->parent_reason == 'REPROGRAMACIÓN'){
                         $parent_loan ->tags()->detach($reprogramming_tag);
                         $parent_loan ->tags()->attach([$reprogramming_tag->id => [
@@ -497,12 +519,12 @@ class LoanController extends Controller
                     $loan['state_id'] = $state_id;
                     $loan->save();
                     }  else return $message['validate'] = "El usuario no tiene los permisos necesarios para realizar el registro" ;
-                } 
-            }    
-       } 
+                }
+            }
+       }
     }
         $saved = $this->save_loan($request, $loan);
-        return $saved->loan;   
+        return $saved->loan;
     }
 
     /**
@@ -581,7 +603,7 @@ class LoanController extends Controller
                 $loan->code = $loan->parent_loan->code;
         }*/
 
-        //rehacer obtener cod 
+        //rehacer obtener cod
         if($request->has('remake_loan_id')&& $request->remake_loan_id != null)
         {
             $remake_loan = Loan::find($request->remake_loan_id);
@@ -589,7 +611,15 @@ class LoanController extends Controller
         }if($request->has('indebtedness_calculated')){
             $loan->indebtedness_calculated_previous = $request->indebtedness_calculated;
         }
-        $loan->save();
+        //ini aqui
+        $option = $loan;
+        $loan_a = Loan::withoutEvents(function () use ($option) {
+        $option->save();
+        return $option;
+        });
+
+        $loan=$loan_a;//fin aqui
+        //$loan->save();
 
         if($request->has('data_loan') && $request->parent_loan_id == null && $request->parent_reason != null && !$request->has('id')){
             $data_loan = $request->data_loan[0];
@@ -1802,26 +1832,26 @@ class LoanController extends Controller
    * @authenticated
    * @responseFile responses/loan/update_refinancing_balance.200.json
    */
-   public function update_balance_refinancing(Loan $loan){
-    $balance_parent = 0;
-       if($loan->data_loan){
-        $balance_parent=$loan->balance_parent_refi();
-        $loan->refinancing_balance=$loan->amount_approved - $balance_parent;
-        $loan->update();
-       }else{
-           if($loan->parent_loan){
-            $balance_parent = $loan->balance_parent_refi();
+    public function update_balance_refinancing(Loan $loan){
+        $balance_parent = 0;
+        if($loan->data_loan){
+            $balance_parent=$loan->balance_parent_refi();
             $loan->refinancing_balance=$loan->amount_approved - $balance_parent;
             $loan->update();
-           }else
-                abort(409, 'No es un préstamo de tipo refinanciamiento! ');
-       }
-        $loan_res = collect([
-            'balance_parent_loan_refinancing' => $balance_parent
-        ])->merge($loan);
+        }else{
+            if($loan->parent_loan){
+                $balance_parent = $loan->balance_parent_refi();
+                $loan->refinancing_balance=$loan->amount_approved - $balance_parent;
+                $loan->update();
+            }else
+                    abort(409, 'No es un préstamo de tipo refinanciamiento! ');
+        }
+            $loan_res = collect([
+                'balance_parent_loan_refinancing' => $balance_parent
+            ])->merge($loan);
 
-        return $loan_res;
-   }
+            return $loan_res;
+    }
 
    /** 
    * Listar prestamos generando reportes
