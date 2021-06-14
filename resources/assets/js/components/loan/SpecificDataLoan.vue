@@ -21,7 +21,7 @@
                                     <p style="color:teal"><b>TITULAR</b></p>
                                   </v-col>
                                   <v-col cols="12" md="1" class="py-0" >
-                                <div v-if="permissionSimpleSelected.includes('update-loan-calculations')" >
+                                <div v-if="permissionSimpleSelected.includes('update-loan-calculations') && $route.query.workTray != 'tracingLoans'" >
                                   <v-tooltip top >
                                     <template v-slot:activator="{ on }">
                                       <v-btn
@@ -35,7 +35,7 @@
                                         @click.stop="resetForm()"
                                         v-show="calificacion_edit"
                                       >
-                                        <v-icon>mdi-close</v-icon>
+                                      <v-icon>mdi-close</v-icon>
                                       </v-btn>
                                     </template>
                                     <div>
@@ -135,7 +135,7 @@
                                     <p style="color:teal"><b>DATOS DEL PRéSTAMO A REFINANCIAR{{' => '+ loan_refinancing.description}}</b></p>
                                   </v-col>
                                 <v-col cols="12" md="6" class="py-0" v-show="loan_refinancing.refinancing">
-                                <div  v-if="permissionSimpleSelected.includes('update-refinancing-balance')">
+                                <div  v-if="permissionSimpleSelected.includes('update-refinancing-balance') && $route.query.workTray != 'tracingLoans'">
                                   <v-tooltip top >
                                     <template v-slot:activator="{ on }">
                                       <v-btn
@@ -243,9 +243,9 @@
                                         :readonly="!edit_delivery_date"
                                       ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="1"  v-if="!permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                    <v-col cols="12" md="1"  v-if="!permissionSimpleSelected.includes('registration-delivery-return-contracts') && $route.query.workTray != 'tracingLoans'">
                                     </v-col>
-                                    <v-col cols="12" md="3"  v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                    <v-col cols="12" md="3"  v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts') && $route.query.workTray != 'tracingLoans'">
                                       <div>
                                       <v-tooltip top>
                                         <template v-slot:activator="{ on }">
@@ -303,7 +303,9 @@
                                         :readonly="!edit_return_date"
                                       ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="3" v-show="loan.delivery_contract_date != null"  v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                      <v-col cols="12" md="3"  v-show="loan.delivery_contract_date == 'Fecha invalida'">
+                                    </v-col>
+                                    <v-col cols="12" md="3" v-show="loan.delivery_contract_date != 'Fecha invalida'"  v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts') && $route.query.workTray != 'tracingLoans'">
                                       <div >
                                       <v-tooltip top>
                                         <template v-slot:activator="{ on }">
@@ -350,18 +352,20 @@
                                       </v-tooltip>
                                     </div>
                                   </v-col>
-                                     <!--v-col cols="12" md="3">
+                                   <v-col cols="12" md="3" v-if="!permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                    </v-col>
+                                  <v-col cols="12" md="3">
                                       <v-text-field
                                         dense
-                                        v-model="loan.delivery_contract_date"
+                                        v-model="loan.regional_delivery_contract_date"
                                         label="FECHA ENTREGA DE CONTRATO REGIONAL"
                                         hint="Día/Mes/Año"
                                         type="date"
-                                        :outlined="edit_delivery_date"
-                                        :readonly="!edit_delivery_date"
+                                        :outlined="edit_delivery_date_regional"
+                                        :readonly="!edit_delivery_date_regional"
                                       ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="3">
+                                    <v-col cols="12" md="3" v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts') && $route.query.workTray != 'tracingLoans'">
                                       <div>
                                       <v-tooltip top>
                                         <template v-slot:activator="{ on }">
@@ -375,7 +379,7 @@
                                             v-on="on"
                                             style="margin-right: 45px;"
                                             @click.stop="resetForm()"
-                                            v-show="edit_delivery_date"
+                                            v-show="edit_delivery_date_regional"
                                           >
                                             <v-icon>mdi-close</v-icon>
                                           </v-btn>
@@ -390,36 +394,38 @@
                                             fab
                                             dark
                                             x-small
-                                            :color="edit_delivery_date ? 'danger' : 'success'"
+                                            :color="edit_delivery_date_regional? 'danger' : 'success'"
                                             top
                                             right
                                             v-on="on"
                                             style="margin-right: 10px;"
-                                            @click.stop="editDateDelivery()"
+                                            @click.stop="editDateDeliveryRegional()"
                                           >
-                                            <v-icon v-if="edit_delivery_date">mdi-check</v-icon>
+                                            <v-icon v-if="edit_delivery_date_regional">mdi-check</v-icon>
                                             <v-icon v-else>mdi-pencil</v-icon>
                                           </v-btn>
                                         </template>
                                         <div>
-                                          <span v-if="edit_delivery_date">Guardar Fecha Entrega</span>
-                                          <span v-else>Editar Fecha Entrega</span>
+                                          <span v-if="edit_delivery_date_regional">Guardar Fecha Entrega Regional</span>
+                                          <span v-else>Editar Fecha Entrega Regional</span>
                                         </div>
                                       </v-tooltip>
                                     </div>
                                     </v-col>
+                                      <v-col cols="12" md="1"  v-if="!permissionSimpleSelected.includes('registration-delivery-return-contracts')">
+                                    </v-col>
                                     <v-col cols="12" md="3">
                                       <v-text-field
                                         dense
-                                        v-model="loan.return_contract_date"
+                                        v-model="loan.regional_return_contract_date"
                                         label="FECHA RECEPCION DE CONTRATO REGIONAL"
                                         hint="Día/Mes/Año"
                                         type="date"
-                                        :outlined="edit_return_date"
-                                        :readonly="!edit_return_date"
+                                        :outlined="edit_return_date_regional"
+                                        :readonly="!edit_return_date_regional"
                                       ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" md="3">
+                                    <v-col cols="12" md="3" v-show="loan.regional_delivery_contract_date != 'Fecha invalida'" v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts') && $route.query.workTray != 'tracingLoans'">
                                       <div >
                                       <v-tooltip top>
                                         <template v-slot:activator="{ on }">
@@ -433,7 +439,7 @@
                                             v-on="on"
                                             style="margin-right: 45px;"
                                             @click.stop="resetForm()"
-                                            v-show="edit_return_date"
+                                            v-show="edit_return_date_regional"
                                           >
                                             <v-icon>mdi-close</v-icon>
                                           </v-btn>
@@ -448,24 +454,24 @@
                                             fab
                                             dark
                                             x-small
-                                            :color="edit_return_date ? 'danger' : 'success'"
+                                            :color="edit_return_date_regional ? 'danger' : 'success'"
                                             top
                                             right
                                             v-on="on"
                                             style="margin-right: 10px;"
-                                            @click.stop="editDateReturn()"
+                                            @click.stop="editDateReturnRegional()"
                                           >
-                                            <v-icon v-if="edit_return_date">mdi-check</v-icon>
+                                            <v-icon v-if="edit_return_date_regional">mdi-check</v-icon>
                                             <v-icon v-else>mdi-pencil</v-icon>
                                           </v-btn>
                                         </template>
                                         <div>
-                                          <span v-if="edit_return_date">Guardar Fecha Recepcion</span>
+                                          <span v-if="edit_return_date_regional">Guardar Fecha Recepcion</span>
                                           <span v-else>Editar Fecha Recepcion</span>
                                         </div>
                                       </v-tooltip>
                                     </div>
-                                  </v-col-->
+                                  </v-col>
                               </v-row>
                             </v-col>
                           </v-card-text>
@@ -542,7 +548,7 @@
                                           <span>Cancelar</span>
                                         </div>
                                       </v-tooltip>
-                                      <v-tooltip top  v-if="permissionSimpleSelected.includes('update-warranty-hipotecary') || permissionSimpleSelected.includes('update-values-commercial-rescue')">
+                                      <v-tooltip top  v-if="permissionSimpleSelected.includes('update-warranty-hipotecary') || permissionSimpleSelected.includes('update-values-commercial-rescue') && $route.query.workTray != 'tracingLoans'">
                                         <template v-slot:activator="{ on }">
                                           <v-btn
                                             fab
@@ -774,7 +780,7 @@
                                       </v-card>
                                     </v-dialog>
                                 </template>
-                                <template v-slot:[`item.actions`]="{ item }" v-if="permissionSimpleSelected.includes('update-reference-cosigner')">
+                                <template v-slot:[`item.actions`]="{ item }" v-if="permissionSimpleSelected.includes('update-reference-cosigner') && $route.query.workTray != 'tracingLoans'">
                                   <v-icon
                                     small
                                     class="mr-2"
@@ -924,7 +930,7 @@
                                       </v-card>
                                     </v-dialog>
                                 </template>
-                                <template v-slot:[`item.actions`]="{ item }" v-if="permissionSimpleSelected.includes('update-reference-cosigner')">
+                                <template v-slot:[`item.actions`]="{ item }" v-if="permissionSimpleSelected.includes('update-reference-cosigner') && $route.query.workTray != 'tracingLoans'">
                                   <v-icon
                                     small
                                     class="mr-2"
@@ -1170,6 +1176,8 @@ export default {
       cobranzas_edit_sismu:false,
       edit_return_date : false,
       edit_delivery_date : false,
+      edit_return_date_regional : false,
+      edit_delivery_date_regional : false,
       editedIndex: -1,
       editedItem: {},
       defaultItem: {},
@@ -1339,6 +1347,8 @@ export default {
       this.cobranzas_edit_sismu=false
       this.edit_return_date = false
       this.edit_delivery_date = false
+      this.edit_return_date_regional = false
+      this.edit_delivery_date_regional = false
       this.reload = true
       if(this.loan_refinancing.type_sismu==true){
         this.loan_refinancing.balance= this.loan.balance_parent_loan_refinancing
@@ -1427,6 +1437,42 @@ export default {
           })
             this.toastr.success('Se registró correctamente.')
             this.edit_return_date = false
+         }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+       async editDateDeliveryRegional(){
+      try {
+        if (!this.edit_delivery_date_regional) {
+          this.edit_delivery_date_regional = true
+        } else {
+          //Edit data delivery
+            let res = await axios.patch(`loan/${this.loan.id}`, {
+            regional_delivery_contract_date:this.loan.regional_delivery_contract_date,
+           })
+            this.toastr.success('Se registró correctamente.')
+            this.edit_delivery_date_regional = false
+         }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
+    },
+      async editDateReturnRegional(){
+      try {
+        if (!this.edit_return_date_regional) {
+          this.edit_return_date_regional = true
+        } else {
+           //Edit data return
+            let res = await axios.patch(`loan/${this.loan.id}`, {
+              regional_return_contract_date: this.loan.regional_return_contract_date
+          })
+            this.toastr.success('Se registró correctamente.')
+            this.edit_return_date_regional = false
          }
       } catch (e) {
         console.log(e)

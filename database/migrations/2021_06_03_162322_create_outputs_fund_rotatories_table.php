@@ -15,7 +15,7 @@ class CreateOutputsFundRotatoriesTable extends Migration
     {
         Schema::create('outputs_fund_rotatories', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('code')->unique();
             $table->unsignedBigInteger('loan_id')->unsigned();
             $table->foreign('loan_id')->references('id')->on('loans');
             $table->unsignedBigInteger('fund_rotary_entry_id');  // id usuario
@@ -23,7 +23,10 @@ class CreateOutputsFundRotatoriesTable extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('user_id');  // id usuario
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('role_id');  // id usuario
+            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

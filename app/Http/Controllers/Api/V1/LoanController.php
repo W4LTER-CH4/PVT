@@ -259,6 +259,7 @@ class LoanController extends Controller
     * @bodyParam data_loan[0].balance numeric required saldo del prestamo del Sismu. Example: 10000.50
     * @bodyParam data_loan[0].estimated_quota numeric required cuota del prestamo del Sismu. Example: 1000.50
     * @bodyParam data_loan[0].date_cut_refinancing date Fecha de corte de refinanciamineto Example: 2021-04-07
+    * @bodyParam data_loan[0].disbursement_date datetime Fecha y hora de  desembolso del prestamo a refinanciar Example: 2021-04-23 21:28:24
     * @authenticated
     * @responseFile responses/loan/store.200.json
     */
@@ -769,6 +770,7 @@ class LoanController extends Controller
     * @bodyParam data_loan[0].balance numeric saldo del prestamo del Sismu. Example: 10000.50
     * @bodyParam data_loan[0].estimated_quota numeric cuota del prestamo del Sismu. Example: 1000.50
     * @bodyParam data_loan[0].date_cut_refinancing date Fecha de corte de refinanciamineto Example: 2021-04-07
+    * @bodyParam data_loan[0].disbursement_date datetime Fecha y hora de  desembolso del prestamo a refinanciar sismu Example: 2021-04-23 21:28:24
     * @authenticated
     * @responseFile responses/loan/update_sismu.200.json
     */

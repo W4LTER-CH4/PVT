@@ -15,13 +15,17 @@ class CreateFundRotaryEntriesTable extends Migration
     {
         Schema::create('fund_rotary_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('code_entry');
-            $table->float('amount',10,2);
+            $table->string('code_entry')->unique();
+            $table->float('amount',10,2); //mondo ingresado
+            $table->float('balance',10,2); //saldo
+            $table->float('balance_previous',10,2); //saldo anterior al monto ingresado
             $table->dateTime('date_entry_amount');
-            $table->float('balance',10,2);
             $table->unsignedBigInteger('user_id');  // id usuario
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('role_id');  // id usuario
+            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

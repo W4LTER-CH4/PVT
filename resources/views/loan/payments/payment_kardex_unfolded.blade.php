@@ -161,10 +161,11 @@
                     <th class="w-8"><div>Interés </div>Penal</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
-                    <th class="w-8"><div>Cbte</div> </th>  
-                    <th class="w-11"><div>Código de</div><div> Transacción</div> </th>      
-                    <th class="w-8"><div>Estado</div> </th>        
-                    <th class="w-8"><div>Observación</div> </th>        
+                    <th class="w-9" style="Word-wrap: break-all; width:20px;"><div>Cbte</div> </th>
+                    <th class="w-9" style="Word-wrap: break-all; width:20px;"><div>Código de</div><div> Transaccion</div> </th>
+                    <th class="w-11" style="Word-wrap: break-all; width:20px;"><div>Estado</div> </th>
+                    <th class="w-9" style="Word-wrap: width:20px;"><div>Pagado por</div> </th>        
+                    <th class="w-9" style="Word-wrap: break-all; width:20px;" ><div>Observación</div> </th>            
                 </tr>
             </thead>
             <tbody>
@@ -185,6 +186,7 @@
                     <td class="w-8 text-right">{{ $parent_loan_payment->voucher }}</td>
                     <td class="w-8 text-right">{{ $parent_loan_payment->voucher_treasury ? $parent_loan_payment->voucher_treasury->code : '' }}</td>
                     <td class="w-8 text-right">{{ $parent_loan_payment->state->name }}</td>
+                    <td class="w-12">{{ $payment->paid_by }}-{{ $payment->initial_affiliate }}</td>
                     <td class="w-8">{{ $parent_loan_payment->modality->shortened}}</td>
                 </tr>
                 @php ($sum_estimated_quota += $parent_loan_payment->estimated_quota)
@@ -207,10 +209,11 @@
                     <th class="w-8"><div>Interés </div>Penal</div><div>Pendiente</div></td>
                     <th class="w-8"><div>Total Pagado</div></th>
                     <th class="w-8"><div>Saldo</div><div>Capital</div> </th>
-                    <th class="w-8"><div>Cbte</div> </th>
-                    <th class="w-11"><div>Código de</div><div> Transacción</div> </th>
-                    <th class="w-8"><div>Estado</div> </th>
-                    <th class="w-8"><div>Observación</div> </th>        
+                    <th class="w-9" style="Word-wrap: break-all; width:20px;"><div>Cbte</div> </th>
+                    <th class="w-9" style="Word-wrap: break-all; width:20px;"><div>Código de</div><div> Transacción</div> </th>
+                    <th class="w-11" style="Word-wrap: break-all; width:20px;"><div>Estado</div> </th>
+                    <th class="w-9" style="Word-wrap: width:20px;"><div>Pagado por</div> </th>        
+                    <th class="w-9" style="Word-wrap: break-all; width:20px;" ><div>Observación</div> </th>            
                 </tr>
             </thead>
                 @php ($res_saldo_capital = 0)
@@ -231,6 +234,7 @@
                     <td class="w-8 text-right">{{ $payment->voucher }}</td>
                     <td class="w-8 text-right">{{ $payment->voucher_treasury ? $payment->voucher_treasury->code : '' }}</td>
                     <td class="w-8 text-right">{{ $payment->state->name }}</td>
+                    <td class="w-12">{{ $payment->paid_by }}-{{ $payment->initial_affiliate }}</td>
                     <td class="w-8">{{ $payment->modality->shortened }}</td>
                 </tr>
                 @php ($sum_capital_payment += $payment->capital_payment)

@@ -503,6 +503,8 @@ export default {
         this.loan.disbursement_date=this.$moment(res.data.disbursement_date).format('YYYY-MM-DD')
         this.loan.delivery_contract_date=this.$moment(res.data.delivery_contract_date).format('YYYY-MM-DD')
         this.loan.return_contract_date=this.$moment(res.data.return_contract_date).format('YYYY-MM-DD')
+        this.loan.regional_delivery_contract_date=this.$moment(res.data.regional_delivery_contract_date).format('YYYY-MM-DD')
+        this.loan.regional_return_contract_date=this.$moment(res.data.regional_return_contract_date).format('YYYY-MM-DD')
 
         if(this.loan.parent_reason=='REFINANCIAMIENTO')
         {

@@ -4,17 +4,30 @@
       <v-form>
         <!--v-card-->
         <v-row justify="center">
-          <v-col cols="3" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
+          <v-col cols="2" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
               <v-text-field
                 class="py-0"
                 dense
                 :outlined="habilitar"
                 :readonly="!habilitar"
-                label="Codigo de Prestamo Padre"
+                label="Código de Préstamo Padre"
                 v-model="data_loan_parent_aux.code"
               ></v-text-field>
           </v-col>
-          <v-col cols="3" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
+          <v-col cols="2" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
+            <v-text-field
+              dense
+              v-model="data_loan_parent_aux.disbursement_date"
+              label="Fecha Desembolso"
+              hint="Día/Mes/Año"
+              class="purple-input"
+              type="date"
+              :clearable="habilitar"
+              :outlined="habilitar"
+              :readonly="!habilitar"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="2" class="py-2" v-show="editar || (($route.params.hash == 'remake' && data_loan_parent_aux.parent_reason != null))">
             <ValidationProvider v-slot="{ errors }" name="monto" :rules="'required|min_value:'+loan_detail.minimun_amoun+'|max_value:'+loan_detail.maximun_amoun"  mode="aggressive">
               <v-text-field
                 :error-messages="errors"

@@ -428,8 +428,8 @@
             <template v-slot:[`item.quota_loan`]="{ item }">
               {{ item.quota_loan | moneyString }}
             </template>
-            <template v-slot:[`item.disbursement_date_loan`]="{ item }">
-              {{ item.disbursement_date_loan }}
+            <template v-slot:[`item.request_date_loan`]="{ item }">
+              {{ item.request_date_loan | date }}
             </template>
 
             <template v-slot:[`item.actions`]="{ item }">
@@ -453,7 +453,7 @@
                     small
                     v-on="on"
                     color="info"
-                    @click="imprimir(1, item.id_loan)"
+                    @click="imprimir(2, item.id_loan)"
                     ><v-icon>mdi-file-document</v-icon>
                   </v-btn>
                 </template>
@@ -466,7 +466,7 @@
                     small
                     v-on="on"
                     color="info"
-                    @click="imprimir(2, item.id_loan)"
+                    @click="imprimir(1, item.id_loan)"
                     ><v-icon>mdi-file</v-icon>
                   </v-btn>
                 </template>
@@ -527,7 +527,7 @@ export default {
         second_name_affiliate: "",
         surname_husband_affiliate: "",
         modality_loan: "",
-        disbursement_date_loan: "",
+        request_date_loan: "",
         amount_approved_loan: "",
         state_type_affiliate: "",
         quota_loan: "",
@@ -536,28 +536,28 @@ export default {
 
       },
       headers: [
-        { text: 'Dpto', value: 'citi_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Área', value: 'name_role_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-         { text: 'Usuario',value:'user_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Cód. Préstamo', value: 'code_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'CI', value: 'identity_card_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+        { text: 'Dpto', value: 'citi_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%', sortable: false},
+        { text: 'Área', value: 'name_role_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
+         { text: 'Usuario',value:'user_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
+        { text: 'Cód. Préstamo', value: 'code_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: true},
+        { text: 'CI', value: 'identity_card_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         
         //{ text: 'Matrícula', value: 'registration_affiliate' ,input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
         //{ text: 'Matrícula conyugue', value: 'registration_spouse' ,input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: '1er Nombre', value: 'first_name_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: '2do Nombre', value: 'second_name_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Ap. Paterno', value: 'last_name_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Ap. Materno',value:'mothers_last_name_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+        { text: '1er Nombre', value: 'first_name_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%', sortable: false},
+        { text: '2do Nombre', value: 'second_name_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
+        { text: 'Ap. Paterno', value: 'last_name_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
+        { text: 'Ap. Materno',value:'mothers_last_name_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%', sortable: false},
         //{ text: 'Ap. Casada',value:'surname_husband_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Modalidad',value:'modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        //{ text: 'Fecha Desembolso',value:'disbursement_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+        { text: 'Modalidad',value:'modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
+        { text: 'Fecha Solicitud',value:'request_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         //{ text: 'Monto Desembolsado',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Monto aprobado', value: 'amount_approved_loan' ,input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+        { text: 'Monto aprobado', value: 'amount_approved_loan' ,input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         //{ text: 'Saldo Capital',value:'balance_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
         //{ text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+        { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         //{ text: 'Garante?',value:'guarantor_loan_affiliate',class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Estado',value:'state_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+        { text: 'Estado',value:'state_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         { text: 'Acción',value:'actions',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'], sortable: false,width: '10%'},
       ],
       loans: [],
@@ -611,7 +611,7 @@ export default {
             second_name_affiliate: this.searching.second_name_affiliate,
             surname_husband_affiliate: this.searching.surname_husband_affiliate,
             modality_loan: this.searching.modality_loan,
-            disbursement_date_loan: this.searching.disbursement_date_loan,
+            request_date_loan: this.searching.request_date_loan,
             amount_approved_loan: this.searching.amount_approved_loan,
             state_type_affiliate: this.searching.state_type_affiliate,
             quota_loan: this.searching.quota_loan,
@@ -653,7 +653,7 @@ export default {
           second_name_affiliate: this.searching.second_name_affiliate,
           surname_husband_affiliate: this.searching.surname_husband_affiliate,
           modality_loan: this.searching.modality_loan,
-          disbursement_date_loan: this.searching.disbursement_date_loan,
+          request_date_loan: this.searching.request_date_loan,
           amount_approved_loan: this.searching.amount_approved_loan,
           state_type_affiliate: this.searching.state_type_affiliate,
           quota_loan: this.searching.quota_loan,
@@ -690,7 +690,7 @@ export default {
       this.searching.second_name_affiliate = "",
       this.searching.surname_husband_affiliate = "",
       this.searching.modality_loan = "",
-      this.searching.disbursement_date_loan = "",
+      this.searching.request_date_loan = "",
       this.searching.amount_approved_loan = "",
       this.searching.state_type_affiliate = "",
       this.searching.quota_loan = "",

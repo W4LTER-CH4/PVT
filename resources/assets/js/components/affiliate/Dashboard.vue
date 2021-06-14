@@ -40,7 +40,7 @@
                         <span>Ver préstamo</span>
                       </v-tooltip>
                     </span>
-                    <span v-if="item.state.name == 'En Proceso'">
+                    <span v-if="item.state.name == 'En Proceso' && permissionSimpleSelected.includes('create-loan')">
                       <v-tooltip
                         left
                       >
@@ -65,7 +65,7 @@
                     <span v-if="item.state.name == 'Vigente'">
                     <v-tooltip
                     left
-                    v-if="item.modality.procedure_type.name != 'Préstamo Anticipo'"
+                    v-if="item.modality.procedure_type.name != 'Préstamo Anticipo' && permissionSimpleSelected.includes('create-loan')"
                     >
                     <template v-slot:activator="{ on }">
                       <v-btn
@@ -88,7 +88,8 @@
                     <span v-if="item.state.name == 'Vigente'">
                     <v-tooltip
                     left
-                    v-if="item.modality.procedure_type.name == 'Préstamo a Largo Plazo' || item.modality.procedure_type.name == 'Préstamo Hipotecario'"
+                    v-if="(item.modality.procedure_type.name == 'Préstamo a Largo Plazo' || item.modality.procedure_type.name == 'Préstamo Hipotecario')
+                          && permissionSimpleSelected.includes('create-loan') "
                     >
                       <template v-slot:activator="{ on }">
                         <v-btn

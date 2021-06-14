@@ -9,7 +9,7 @@
                 <v-col cols="12">
                   <v-toolbar-title>DATOS PERSONALES</v-toolbar-title>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <ValidationProvider
                     v-slot="{ errors }"
                     vid="first_name"
@@ -27,7 +27,7 @@
                     ></v-text-field>
                   </ValidationProvider>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="4">
                   <ValidationProvider
                     v-slot="{ errors }"
                     vid="second_name"
@@ -75,6 +75,24 @@
                       dense
                       v-model="affiliate.mothers_last_name"
                       label="Apellido Materno"
+                      :readonly="!editable || !permission.primary"
+                      :outlined="editable && permission.primary"
+                      :disabled="editable && !permission.primary"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                  <v-col cols="12" md="4">
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    vid="last_name"
+                    name="Apellido de Casada"
+                    rules="alpha_spaces|min:3|max:20"
+                  >
+                    <v-text-field
+                      :error-messages="errors"
+                      dense
+                      v-model="affiliate.surname_husband"
+                      label="Apellido de Casada"
                       :readonly="!editable || !permission.primary"
                       :outlined="editable && permission.primary"
                       :disabled="editable && !permission.primary"

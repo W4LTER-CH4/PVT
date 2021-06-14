@@ -28,7 +28,8 @@ class LoanGlobalParameterSeeder extends Seeder
             'consecutive_manual_payment' => 3,
             'max_months_go_back' => 10,
             'min_percentage_paid' => 25,
-            'min_remaining_installments' => 3
+            'min_remaining_installments' => 3,
+            'min_amount_fund_rotary' =>10000
             ]
         ];
         foreach ($global_parameters as $global_parameter) {

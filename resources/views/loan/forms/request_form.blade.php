@@ -55,6 +55,15 @@
                     @endif
                 </td>
             </tr>
+
+            <tr class="bg-grey-darker text-white">
+                <td colspan="2">Fecha de Solicitud</td>
+                <td colspan="1">Destino del Préstamo</td>
+            </tr>
+            <tr>
+                <td colspan="2">{{ Carbon::parse($loan->request_date)->format('d/m/y')}}</td>
+                <td colspan="1">{{ $loan->destiny->name }}</td>
+            </tr>
         </table>
     </div>
 

@@ -23,6 +23,7 @@ class CreatePaymentGroupedsTable extends Migration
             $table->float('amount_balance',10,2);
             $table->enum('origin', ['C', 'S']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

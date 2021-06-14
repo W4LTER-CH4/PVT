@@ -9,12 +9,12 @@
           shaped 
           outlined 
           @click="clickRole(item)" 
-          style="cursor: pointer;border: thin solid rgba(0, 0, 0, 0.5);" 
+          style="cursor: pointer;border: thin solid rgba(0, 0, 0, 0.5);"
           elevation="2">
 					<v-card-text>
 						<v-icon color="teal">mdi-account-circle</v-icon>&nbsp;
-						{{ item.display_name }}<br>
-            <span class="teal--text font-weight-bold text-uppercase text-center">{{item.module.name}}</span>
+            <span class="teal--text font-weight-bold  text-center">{{item.display_name }}</span><br>
+            <span class=" font-weight-medium text-uppercase text-center">{{ item.module.name }}</span><br>
 					</v-card-text>
 				</v-card>
 			</v-col>

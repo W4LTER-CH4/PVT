@@ -85,7 +85,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo con Garantía Hipotecaria 
     <div>
         <?php $modality = $loan->modality;
         if($loan->data_loan){ ?>
-            <b>SEGUNDA.- (DEL ANTECEDENTE):</b>Mediante contrato de préstamo {{ $loan->data_loan->code }} SISMU suscrito entre MUSERPOL y el PRESTATARIO un préstamo por la suma de Bs. {{ Util::money_format($loan->data_loan->amount_approved) }} (<span class="uppercase">{{ Util::money_format($loan->data_loan->amount_approved, true) }}</span> Bolivianos), con garantía de haberes y garantía personal si corresponde.
+            <b>SEGUNDA.- (DEL ANTECEDENTE):</b>Mediante contrato de préstamo {{ $loan->data_loan->code }} SISMU con fecha de desembolso {{$loan->data_loan->disbursement_date? Carbon::parse($loan->data_loan->disbursement_date)->isoFormat('LL'):'_________________'}}, se ha suscrito entre MUSERPOL y el PRESTATARIO un préstamo por la suma de Bs. {{ Util::money_format($loan->data_loan->amount_approved) }} (<span class="uppercase">{{ Util::money_format($loan->data_loan->amount_approved, true) }}</span> Bolivianos), con garantía de haberes y garantía personal si corresponde.
             <div>
             <b>TERCERA.- (DEL OBJETO):</b>  El objeto del presente contrato es el refinanciamiento del préstamo de dinero que MUSERPOL otorga al PRESTATARIO conforme a calificación, previa evaluación y autorización, de conformidad a los niveles de aprobación respectivos en la suma de Bs. {{ $loan->refinancing_balance }} (<span class="uppercase">{{ Util::money_format($loan->refinancing_balance, true) }}</span> Bolivianos), para lo cual el PRESTATARIO reconoce de manera expresa el saldo anterior de la deuda correspondiente al préstamo contraído con anterioridad, que asciende a la suma de Bs. {{ Util::money_format($loan->balance_parent_refi())}} (<span class="uppercase">{{ Util::money_format($loan->balance_parent_refi(), true) }}</span> Bolivianos), montos que hacen un total efectivo de {{ Util::money_format($loan->amount_approved) }} (<span class="uppercase">{{ Util::money_format($loan->amount_approved, true) }}</span> Bolivianos), que representa la nueva obligación contraída sujeta a cumplimiento, en función a la operación de refinanciamiento.
             </div>
@@ -250,7 +250,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo con Garantía Hipotecaria 
     </div><br><br>
     <div class="text-center">
         <p class="center">
-        La Paz, {{ Carbon::parse($loan->request_date)->isoFormat('LL') }}
+        La Paz, {{ Carbon::now()->isoFormat('LL') }}
         </p>
     </div>
     <div></div>
@@ -597,7 +597,7 @@ if(($modality->name == 'Refinanciamiento de Préstamo con Garantía Hipotecaria 
     </div><br><br>
     <div class="text-center">
         <p class="center">
-        La Paz, {{ Carbon::parse($loan->request_date)->isoFormat('LL') }}
+        La Paz, {{ Carbon::now()->isoFormat('LL') }}
         </p>
     </div>
     <div></div>

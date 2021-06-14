@@ -15,7 +15,7 @@
             <v-col  cols="6">
               <span>
                 <v-tooltip
-                left          
+                left
                 >
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -24,7 +24,7 @@
                     small
                     color="success"
                     bottom
-                    right                        
+                    right
                     v-on="on"
                     :to="{ name: 'affiliateAdd', params: { id: $route.query.affiliate_id }}"
                   >
@@ -32,12 +32,12 @@
                   </v-btn>
                 </template>
                 <span>Regresar</span>
-                </v-tooltip>            
+                </v-tooltip>
               </span>
               {{"TITULAR: "+this.degree_name}} {{this.$options.filters.fullName(this.affiliate, true)}}
             </v-col>
             <v-col  cols="6">
-              {{'CATEGORIA:'+this.category_name}}
+              {{'CATEGORÍA:'+this.category_name}}
             </v-col>
           </v-row>
           <Steps

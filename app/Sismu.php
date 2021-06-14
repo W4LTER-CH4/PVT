@@ -27,6 +27,7 @@ class Sismu extends Model
         'balance',
         'estimated_quota',
         'date_cut_refinancing',
+        'disbursement_date',
         'loan_id',
     ];
     // add records

@@ -1,7 +1,8 @@
 <template>
-  <v-container fluid >
+  <v-container fluid class="py-0" >
    <v-form>
-             <v-row  class="py-3">
+             <v-row  class="py-0">
+                  <v-toolbar-title style="color:teal"> DOCUMENTOS REQUERIDOS</v-toolbar-title>
                   <v-col v-for="(req,i) in docsRequired" :key="req.id" cols="12" class="py-1">
                       <v-row>
                         <v-col cols="12" class="py-0">
@@ -31,7 +32,7 @@
           <v-col cols="12" v-if="docsOptional.length >0" >
            <!--<v-data-iterator :items="docsOptional" hide-default-footer>-->
               <template>
-                <v-toolbar-title>ADICIONALES</v-toolbar-title>
+                <v-toolbar-title style="color:teal" >ADICIONALES</v-toolbar-title>
                  <v-progress-linear></v-progress-linear>
                 <v-row  class="py-3">
                   <v-col v-for="(opt,i) in docsOptional" :key="opt.id" cols="12" class="py-1">
@@ -60,7 +61,7 @@
               </template>
               <template>
                 <v-toolbar-title class="align-end font-weight-black text-left ma-0 pa-4 pl-8">
-                  <h5 v-if="notes.length >0">Otros Documentos</h5>
+                  <h5 v-if="notes.length >0" style="color:teal">Otros Documentos</h5>
                 </v-toolbar-title>
                 <v-row v-show="!editar">
                   <v-col cols="12" class="ma-0 px-10">

@@ -31,7 +31,7 @@ class CreateLoanGlobalParametersTable extends Migration
             $table->unsignedTinyInteger('max_months_go_back'); // maximo de meses atras de boletas
             $table->unsignedTinyInteger('min_percentage_paid'); // min de porcentage de pago a capital para Refi
             $table->unsignedTinyInteger('min_remaining_installments'); // min de cuotas restantes para refi
-
+            $table->unsignedTinyInteger('min_amount_fund_rotary'); // monto minimos del fondo rotatorio
             $table->timestamps();
         });
     }

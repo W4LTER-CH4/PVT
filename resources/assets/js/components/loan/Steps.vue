@@ -12,7 +12,7 @@
           <v-stepper-step
             :key="`${2}-step`"
             :complete="e1 > 2"
-            :step="2">Calculo
+            :step="2">Cálculo
           </v-stepper-step>
           <v-divider v-if="2 !== steps" :key="2" ></v-divider>
           <v-stepper-step
@@ -436,6 +436,7 @@ export default {
           this.data_loan_parent=[]
           this.data_loan_parent.push({
             code: this.data_loan_parent_aux.code,
+            disbursement_date: this.data_loan_parent_aux.disbursement_date,
             amount_approved: this.data_loan_parent_aux.amount_approved,
             loan_term: this.data_loan_parent_aux.loan_term,
             balance: this.data_loan_parent_aux.balance,
@@ -749,22 +750,25 @@ export default {
          //alert(this.data_loan_parent_aux.parent_loan_id )
          this.data_loan_parent_aux.parent_reason = res.data.parent_reason
 
-        if(this.refinancing || this.reprogramming){
+        if(this.refinancing || this.reprogramming){//Casos nuevo de refi repro
           this.data_loan_parent_aux.code= res.data.code
+          this.data_loan_parent_aux.disbursement_date= this.$moment(res.data.disbursement_date).format('YYYY-MM-DD')
           this.data_loan_parent_aux.amount_approved= res.data.amount_approved
           this.data_loan_parent_aux.loan_term= res.data.loan_term
           this.data_loan_parent_aux.balance= res.data.balance
           this.data_loan_parent_aux.estimated_quota= res.data.estimated_quota
 
-        } else if(this.remake && res.data.parent_loan != null && res.data.data_loan == null){
+        } else if(this.remake && res.data.parent_loan != null && res.data.data_loan == null){//Para PVT
           this.data_loan_parent_aux.code = res.data.parent_loan.code
+          this.data_loan_parent_aux.disbursement_date= this.$moment(res.data.parent_loan.disbursement_date).format('YYYY-MM-DD')
           this.data_loan_parent_aux.amount_approved = res.data.parent_loan.amount_approved
           this.data_loan_parent_aux.loan_term = res.data.parent_loan.loan_term
           this.data_loan_parent_aux.balance = res.data.parent_loan.balance
           this.data_loan_parent_aux.estimated_quota = res.data.parent_loan.estimated_quota
 
-        } else if(this.remake && res.data.parent_loan == null && res.data.data_loan != null){
+        } else if(this.remake && res.data.parent_loan == null && res.data.data_loan != null){//Para sismu
           this.data_loan_parent_aux.code = res.data.data_loan.code
+          this.data_loan_parent_aux.disbursement_date = this.$moment(res.data.data_loan.disbursement_date).format('YYYY-MM-DD')
           this.data_loan_parent_aux.amount_approved = res.data.data_loan.amount_approved
           this.data_loan_parent_aux.loan_term = res.data.data_loan.loan_term
           this.data_loan_parent_aux.balance = res.data.data_loan.balance
@@ -904,12 +908,16 @@ export default {
           this.toastr.error("No puede quedarse con un liquido menor al monto de subsistencia.")
         }
         else{
-           if(!(this.isNew || (this.remake && this.data_loan.parent_reason == null))){
+          if(!(this.isNew || (this.remake && this.data_loan.parent_reason == null))){
             if(this.data_loan_parent_aux.code==null)
             {
               this.toastr.error("Tiene que llenar el Codigo del Prestamo Padre.")
             }else{
-              if(this.data_loan_parent_aux.amount_approved==null)
+              if(this.data_loan_parent_aux.disbursement_date==null)
+              {
+                this.toastr.error("Tiene que llenar la fecha de desembolso del Préstamo Padre.")
+              }else{
+                if(this.data_loan_parent_aux.amount_approved==null)
                 {
                   this.toastr.error("Tiene que llenar el Monto del Prestamo Padre.")
                 }else{
@@ -957,6 +965,7 @@ export default {
                   }
                 }
               }
+            }
             }else{
               if(this.modalidad.procedure_type_name=='Préstamo Hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo Hipotecario'){
                  if(parseFloat(this.calculator_result.amount_requested) > parseFloat(this.loan_detail.net_realizable_value) )

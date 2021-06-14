@@ -21,6 +21,7 @@ class CreateImportPaymentsTable extends Migration
             $table->float('amount',10,2);
             $table->enum('origin', ['C', 'S']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

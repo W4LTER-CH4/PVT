@@ -4,20 +4,27 @@
       <v-col cols="12" class="py-0">
         <v-row justify="center" class="py-0">
           <v-col cols="12" class="py-0">
-            <p style="color:teal"> <b>OBSERVACIONES DEL TRAMITE</b></p>
-                  <v-card flat tile>
-                  <v-card-text >
-                    <v-col cols="12" class="pl-3">
-                      <v-data-table
-                        :headers="headersObs"
-                        :items="observations"
-                        :items-per-page="6"
-                        class="elevation-1"
-                      >
-                      </v-data-table>
-                    </v-col>
-                  </v-card-text>
-                </v-card>
+              <p style="color:teal"> <b>HISTORIAL DEL TRAMITE</b></p>
+              <v-card flat tile>
+                <v-card-text>
+                  <v-col cols="12" class="mb-0">
+                    <v-data-table
+                      :headers="headersHist"
+                      :items="record"
+                      :items-per-page="6"
+                      class="elevation-1"
+                    >
+                      <template v-slot:item="items">
+                        <tr>
+                          <td>{{items.item.created_at|datetime}}</td>
+                          <td>{{items.item.updated_at|datetime}}</td>
+                              <td>{{items.item.action}}</td>
+                          </tr>
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </v-card-text>
+              </v-card>
           </v-col>
         </v-row>
       </v-col>
@@ -29,7 +36,7 @@
 
 
 export default {
-  name: "observer-flow",
+  name: "history-flow",
   data: () => ({
     //valor: false,
     observation_type: [],
