@@ -1016,7 +1016,7 @@ class LoanController extends Controller
             //
             $persons->push([
                 'id' => $lender->id,
-                'full_name' => implode(' ', [$lender->title, $lender->full_name]),
+                'full_name' => implode(' ', [$lender->title ? $lender->title : '', $lender->full_name]),
                 'identity_card' => $lender->identity_card_ext,
                 'position' => 'SOLICITANTE',
             ]);
@@ -1032,7 +1032,7 @@ class LoanController extends Controller
                 array_push($guarantors, $guarantor); 
             $persons->push([
                 'id' => $lender->id,
-                'full_name' => implode(' ', [$guarantor->title, $guarantor->full_name]),
+                'full_name' => implode(' ', [$guarantor->title ? $guarantor->title :'', $guarantor->full_name]),
                 'identity_card' => $guarantor->identity_card_ext,
                 'position' => 'GARANTE'
             ]);

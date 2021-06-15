@@ -421,12 +421,7 @@
 <script>
 export default {
   name: "list-loans-generate",
-  props: {
-    state_loan: {
-      type: String,
-      required: true
-    }
-  },
+
   data() {
     return {
       searching: {

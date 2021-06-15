@@ -87,8 +87,8 @@ class OutputsFundRotatorieController extends Controller
     }
 
     /**
-    * Detalle del fondo de retiro
-    * Devuelve el detalle de un registro de fondo de retiro mediante su ID
+    * Detalle del fondo rotatorio
+    * Devuelve el detalle de un registro de fondo rotatorio mediante su ID
     * @urlParam output_fund_rotatorie required ID de registro de pago. Example: 1
     * @authenticated
     * @responseFile responses/outputs_fund_rotatorie/show.200.json
@@ -100,11 +100,11 @@ class OutputsFundRotatorieController extends Controller
     }
 
     /**
-    * Edita el Registro del fondo de retiro.
+    * Edita el Registro del fondo rotatorio.
     * @urlParam id required ID del registro realizado. Example: 1
 	* @bodyParam description string Texto de descripción. Example: pago de anticipo
-    * @bodyParam loan_id integer numero del prestamo perteneciente al fondo de retiro. Example: 1
-    * @bodyParam fund_rotary_entry_id integer ID del condo de retiro ingresado. Example: 1
+    * @bodyParam loan_id integer numero del prestamo perteneciente al fondo rotatorio. Example: 1
+    * @bodyParam fund_rotary_entry_id integer ID del fondo rotatorio ingresado. Example: 1
     * @bodyParam user_id integer ID del usuario que registro. Example: 70
     * @bodyParam role_id integer role con el que el registro fue creado. Example: 90
     * @authenticated
@@ -133,10 +133,10 @@ class OutputsFundRotatorieController extends Controller
 
 
     /**
-    * Nuevo registro de periodo
+    * Nuevo registro de fondo rotatorio
     * Inserta el registro del fondo rotatorio
     * @bodyParam description string Texto de descripción. Example: pago de anticipo
-    * @bodyParam loan_id integer numero del prestamo perteneciente al fondo de retiro. Example: 1
+    * @bodyParam loan_id integer numero del prestamo perteneciente al fondo rotatorio. Example: 1
     * @bodyParam fund_rotary_entry_id integer ID del condo de retiro ingresado. Example: 1
     * @bodyParam user_id integer ID del usuario que registro. Example: 70
     * @bodyParam role_id integer role con el que el registro fue creado. Example: 90

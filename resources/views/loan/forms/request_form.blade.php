@@ -79,8 +79,8 @@
                 <td class="w-15">CI</td>
                 <td class="w-15">Estado</td>
             </tr>
-            <tr>
-                <td class="data-row py-5">{{ $lender->title }} {{ $lender->full_name }}</td>
+            <tr> 
+                <td class="data-row py-5">{{ $lender->title ? $lender->title : '' }} {{ $lender->full_name }}</td>
                 <td class="data-row py-5">{{ $lender->identity_card_ext }}</td>
                 @if(!$is_dead)
                 <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
@@ -118,7 +118,7 @@
                 <td class="data-row py-5" colspan="{{$inactive ? 1 : 2}}">{{ $lender->full_unit}}</td>
                 <td class="data-row py-5">{{ $lender->category ? $lender->category->name : '' }}</td>
                 @if ($inactive)
-                    <td class="data-row py-5">{{ $lender->afp ? $lender->pension_entity ? $lender->pension_entity->name : "APS" : "SENASIR"}}</td>
+                    <td class="data-row py-5">{{$lender->pension_entity ? $lender->pension_entity->name :''}}</td>
                 @endif
             </tr>
             @endif
@@ -198,7 +198,7 @@
                 <td class="data-row py-5" colspan="{{$inactive ? 1 : 2}}">{{ $guarantor->full_unit}}</td>
                 <td class="data-row py-5">{{ $guarantor->category ? $guarantor->category->name : '' }}</td>
                 @if ($inactive)
-                    <td class="data-row py-5">{{ $guarantor->afp ? $guarantor->pension_entity ? $guarantor->pension_entity->name : "APS" : "SENASIR"}}</td>
+                    <td class="data-row py-5">{{ $guarantor->pension_entity ? $guarantor->pension_entity->name :''}}</td>
                 @endif
             </tr>
             @endif

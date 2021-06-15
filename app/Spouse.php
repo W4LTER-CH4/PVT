@@ -41,8 +41,8 @@ class Spouse extends Model
     }
 
     public function getTitleAttribute()
-    {
-        return 'Vd' . ($this->affiliate->gender == 'M' ? 'a' : 'o') . '.';
+    {   return '';
+        //return 'Vd' . ($this->affiliate->gender == 'M' ? 'a' : 'o') . '.';
     }
 
     public function getGenderAttribute()
@@ -57,7 +57,7 @@ class Spouse extends Model
 
     public function getFullNameAttribute()
     {
-        return preg_replace('/[[:blank:]]+/', ' ', join(' ', [$this->first_name, $this->second_name, $this->last_name, $this->mothers_last_name]));
+        return preg_replace('/[[:blank:]]+/', ' ', join(' ', [$this->first_name, $this->second_name, $this->last_name, $this->mothers_last_name,$this->surname_husband]));
     }
 
     public function getAddressAttribute()

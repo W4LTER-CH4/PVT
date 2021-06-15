@@ -956,7 +956,7 @@ export default {
                               this.addDataLoan()
                               this.nextStep(2)
                             }else{
-                              this.toastr.error("La cuota del prestamo padre no puede ser menor a la nueva cuota.")
+                              this.toastr.error("La cuota del nuevo prestamo no puede ser menor a la antigua cuota.")
                             }
                           }
                         }
