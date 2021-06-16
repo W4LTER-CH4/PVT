@@ -96,7 +96,7 @@ Route::group([
 
         Route::get('loan_tracking', 'Api\V1\LoanReportController@loan_tracking');//seguimiento de prestamos
 
-        Route::apiResource('fund_rotatory_entry', 'Api\V1\FundRotaryEntrieController')->only('index', 'show', 'store', 'update', 'destroy');//Fondo rotatorio
+        Route::apiResource('fund_rotatory_entry', 'Api\V1\FundRotatoryController')->only('index', 'show', 'store', 'update', 'destroy');//Fondo rotatorio
         Route::get('print_fund_rotary/{ouputs_fund_rotatorie_id}', 'Api\V1\OutputsFundRotatorieController@print_fund_rotary');
         //get_list_month
         // Afiliados

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOutputsFundRotatoriesTable extends Migration
+class CreateFundRotatoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateOutputsFundRotatoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('outputs_fund_rotatories', function (Blueprint $table) {
+        Schema::create('fund_rotatories', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->unsignedBigInteger('loan_id')->unsigned();
-            $table->foreign('loan_id')->references('id')->on('loans');
-            $table->unsignedBigInteger('fund_rotary_entry_id');  // id usuario
-            $table->foreign('fund_rotary_entry_id')->references('id')->on('fund_rotary_entries');
-            $table->text('description')->nullable();
+            $table->string('code_entry')->unique();
+            $table->unsignedBigInteger('check_number'); 
+            $table->dateTime('date_check_delivery'); 
+            $table->float('amount',10,2); //mondo ingresado   
+            $table->float('balance_previous',10,2); //saldo anterior al monto ingresado     
+            $table->float('balance',10,2); //saldo
+            $table->string('description')->nulable();
             $table->unsignedBigInteger('user_id');  // id usuario
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('role_id');  // id usuario
@@ -37,6 +38,6 @@ class CreateOutputsFundRotatoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('outputs_fund_rotatories');
+        Schema::dropIfExists('fund_rotatories');
     }
 }

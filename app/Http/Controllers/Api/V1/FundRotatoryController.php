@@ -6,15 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Util;
 use App\User;
-use App\FundRotaryEntry;
-use App\Http\Requests\FundRotaryEntryForm;
+use App\FundRotatory;
+use App\Http\Requests\FundRotatoryForm;
 use Illuminate\Support\Facades\Auth;
 
 /** @group Fondo Rotatorio Anticipos
 * Fondo rotatorio para anticipos
 */
 
-class FundRotaryEntrieController extends Controller
+class FundRotatoryController extends Controller
 {
     /**
     * Listar los Fondos rotatorios
@@ -29,39 +29,41 @@ class FundRotaryEntrieController extends Controller
      */
     public function index(Request $request)
     {
-        return Util::search_sort(new FundRotaryEntry(), $request);
+        return Util::search_sort(new FundRotatory(), $request);
     }
 
     /**
      * Nuevo registro de fondo Rotatorio
      * Inserta nuevo fondo rotatorio
-     * @bodyParam code_entry string required Código del fondo rotatorio. Example: 06/2021
+     * @bodyParam check_number numeric required Numero del Cheque del fondo rotatorio. Example: 112
      * @bodyParam amount numeric required Monto de ingreso del fondo rotatoio. Example: 50000
-     * @bodyParam date_entry_amount date required Fecha de ingreso del fondo o asignacion. Example: 2021/06/01
+     * @bodyParam date_check_delivery date required Fecha de ingreso del fondo o asignacion. Example: 2021-06-01
      * @bodyParam role_id numeric required Rol con el cual se realizo el registro. Example: 92
+     * @bodyParam description string  Descripcion del registro de del fondo Rotatorio. Example: Ingres
      * @authenticated
      * @responseFile responses/fund_rotary_entry/store.200.json
      */
-    public function store(FundRotaryEntryForm $request)
+    public function store(FundRotatoryForm $request)
     {
-        $fundRotaryEntry = new FundRotaryEntry;
-        $fundRotaryEntry->user_id = Auth::id();
-
-        $fundRotaryEntry->code_entry = $request->input('code_entry');
-        $fundRotaryEntry->amount = $request->input('amount');
-        $fundRotaryEntry->date_entry_amount = $request->input('date_entry_amount');
-        $fundRotaryEntry->role_id = $request->input('role_id');
-
-        $fundRotaryEntry->balance = $request->input('amount');
-
-        if($fundRotaryEntry->last == null)
-            $fundRotaryEntry->balance_previous= 0;
+        $fundRotatory = new FundRotatory;
+        $fundRotatory->user_id = Auth::id();
+        $code_entry = count(FundRotatory::all());
+        $code_entry = $code_entry+1;
+        $fundRotatory->code_entry ="FR-".$code_entry;
+        $fundRotatory->check_number = $request->input('check_number');
+        $fundRotatory->amount = $request->input('amount');
+        $fundRotatory->date_check_delivery = $request->input('date_check_delivery');
+        $fundRotatory->description = $request->input('description');
+        $fundRotatory->role_id = $request->input('role_id');
+        $fundRotatory->balance = $request->input('amount')+$fundRotatory->last->balance;
+        if($fundRotatory->last == null)
+            $fundRotatory->balance_previous= 0;
         else{
-            $balance_previous= $fundRotaryEntry->last->balance;
-            $fundRotaryEntry->balance_previous= $balance_previous;
+            $balance_previous= $fundRotatory->last->balance;
+            $fundRotatory->balance_previous= $balance_previous;
         }
 
-        return FundRotaryEntry::create($fundRotaryEntry->toArray());
+        return FundRotatory::create($fundRotatory->toArray());
 
     }
 
@@ -74,29 +76,28 @@ class FundRotaryEntrieController extends Controller
      */
     public function show($id)
     {
-        $fundRotaryEntry = FundRotaryEntry::find($id);
-        return $fundRotaryEntry;
+        $fundRotatory = FundRotatory::find($id);
+        return $fundRotatory;
     }
 
     /**
      * Actualizar informacion del fondo rotatorio
      * Actualizar datos del fondo rotatorio
      * @urlParam fund_rotatory_id ID del fondo rotatorio. Example: 1
-     * @bodyParam code_entry string Código del fondo rotatorio. Example: 06/2021
      * @bodyParam amount numeric Monto de ingreso del fondo rotatoio. Example: 50000
-     * @bodyParam date_entry_amount date Fecha de ingreso del fondo o asignacion. Example: 2021/06/01
+     * @bodyParam date_check_delivery date Fecha de ingreso del fondo o asignacion. Example: 2021/06/01
      * @bodyParam role_id numeric Rol con el cual se realizo el registro. Example: 92
      * @bodyParam balance numeric Saldo del fondo rotatorio. Example: 10000
      * @bodyParam balance_previous numeric Saldo del fondo rotatorio anterior. Example: 200
      * @authenticated
      * @responseFile responses/aid_contribution/update.200.json
      */
-    public function update(FundRotaryEntryForm $request,$fundRotaryEntry)
+    public function update(FundRotatoryForm $request,$fundRotatory)
     {
-        $fundRotaryEntry = FundRotaryEntry::find($fundRotaryEntry);
-        $fundRotaryEntry->fill($request->all());
-        $fundRotaryEntry->save();
-        return  $fundRotaryEntry;
+        $fundRotatory = FundRotatory::find($fundRotatory);
+        $fundRotatory->fill($request->all());
+        $fundRotatory->save();
+        return  $fundRotatory;
     }
 
     /**
@@ -106,10 +107,10 @@ class FundRotaryEntrieController extends Controller
      * @authenticated
      * @responseFile responses/fund_rotary_entry/destroy.200.json
      */
-    public function destroy($fundRotaryEntry)
+    public function destroy($fundRotatory)
     {
-        $fundRotaryEntry = FundRotaryEntry::find($fundRotaryEntry);
-        $fundRotaryEntry->delete();
-        return $fundRotaryEntry;
+        $fundRotatory = FundRotatory::find($fundRotatory);
+        $fundRotatory->delete();
+        return $fundRotatory;
     }
 }

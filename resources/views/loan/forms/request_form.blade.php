@@ -82,11 +82,9 @@
             <tr> 
                 <td class="data-row py-5">{{ $lender->title ? $lender->title : '' }} {{ $lender->full_name }}</td>
                 <td class="data-row py-5">{{ $lender->identity_card_ext }}</td>
-                @if(!$is_dead)
-                <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
-                @else
-                <td class="data-row py-5">no corresponde</td>
-                @endif
+           
+                <td class="data-row py-5">{{ $lender->affiliate_state ? $lender->affiliate_state->affiliate_state_type->name : 'Pasivo' }}</td>
+              
             </tr>
             <tr class="bg-grey-darker text-white">
                 <td>Domilicio actual</td>
@@ -105,20 +103,27 @@
                 @endif
                 </td>
             </tr>
+            @php ($pasivo = false )
             @if (!$lender->affiliate_id)
             <tr class="bg-grey-darker text-white">
-                @php ($inactive = $lender->pension_entity)
-                <td colspan="{{$inactive ? 1 : 2}}">Unidad</td>
+                @php ($inactive = $lender->pension_entity )
+                @if ($lender->affiliate_state->affiliate_state_type->name != "Pasivo")
+                                <td colspan="{{$inactive ? 1 : 2}}">Unidad</td>
+                @else 
+                @php ($pasivo = true )
+                @endif
                 <td>Categoría</td>
                 @if ($inactive)
-                    <td>Tipo de Renta</td>
+                <td colspan="{{$pasivo ? 2 : 1}}">Tipo de Renta</td>
                 @endif
             </tr>
             <tr>
+                 @if ($lender->affiliate_state->affiliate_state_type->name != "Pasivo")
                 <td class="data-row py-5" colspan="{{$inactive ? 1 : 2}}">{{ $lender->full_unit}}</td>
+                @endif
                 <td class="data-row py-5">{{ $lender->category ? $lender->category->name : '' }}</td>
                 @if ($inactive)
-                    <td class="data-row py-5">{{$lender->pension_entity ? $lender->pension_entity->name :''}}</td>
+                <td colspan="{{$pasivo ? 2 : 1}}" class="data-row py-5">{{$lender->pension_entity ? $lender->pension_entity->name :''}}</td>
                 @endif
             </tr>
             @endif
@@ -162,11 +167,7 @@
             <tr>
                 <td class="data-row py-5">{{ $guarantor->title }} {{ $guarantor->full_name }}</td>
                 <td class="data-row py-5">{{ $guarantor->identity_card_ext }}</td>
-                @if(!$is_spouse)
-                <td class="data-row py-5">{{ $guarantor->affiliate_state->affiliate_state_type->name }}</td>
-                @else
-                <td class="data-row py-5">no corresponde</td>
-                @endif
+                <td class="data-row py-5">{{$guarantor->affiliate_state ? $guarantor->affiliate_state->affiliate_state_type->name : 'Pasivo'}}</td>
             </tr>
             <tr class="bg-grey-darker text-white">
                 <td>Domicilio actual</td>
@@ -185,20 +186,27 @@
                 @endif
                 </td>
             </tr>
+            @php ($pasivo_guarantor = false )
             @if(!$is_spouse)
             <tr class="bg-grey-darker text-white">
                 @php ($inactive = $guarantor->pension_entity)
+                @if ($guarantor->affiliate_state->affiliate_state_type->name != "Pasivo")
                 <td colspan="{{$inactive ? 1 : 2}}">Unidad</td>
+                @else 
+                @php ($pasivo_guarantor = true )
+                @endif
                 <td>Categoría</td>
                 @if ($inactive)
-                    <td>Tipo de Renta</td>
+                <td colspan="{{$pasivo_guarantor ? 2 : 1}}">Tipo de Renta</td>
                 @endif
             </tr>
             <tr>
+            @if ($guarantor->affiliate_state->affiliate_state_type->name != "Pasivo")
                 <td class="data-row py-5" colspan="{{$inactive ? 1 : 2}}">{{ $guarantor->full_unit}}</td>
+            @endif
                 <td class="data-row py-5">{{ $guarantor->category ? $guarantor->category->name : '' }}</td>
                 @if ($inactive)
-                    <td class="data-row py-5">{{ $guarantor->pension_entity ? $guarantor->pension_entity->name :''}}</td>
+                    <td colspan="{{$pasivo_guarantor ? 2 : 1}}" class="data-row py-5">{{ $guarantor->pension_entity ? $guarantor->pension_entity->name :''}}</td>
                 @endif
             </tr>
             @endif

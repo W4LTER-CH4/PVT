@@ -5,13 +5,13 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class FundRotaryEntry extends Model
+class FundRotatory extends Model
 {
-    protected $table = 'fund_rotary_entries';
+    protected $table = 'fund_rotatories';
 
     public $timestamps = true;
     public $guarded = ['id'];
-    public $fillable = ['code_entry','amount','balance', 'balance_previous','date_entry_amount','user_id','role_id'];
+    public $fillable = ['code_entry','check_number','amount','balance', 'balance_previous','date_check_delivery','description','user_id','role_id'];
     use SoftDeletes;
 
     public function user()
