@@ -55,12 +55,13 @@ class FundRotatoryController extends Controller
         $fundRotatory->date_check_delivery = $request->input('date_check_delivery');
         $fundRotatory->description = $request->input('description');
         $fundRotatory->role_id = $request->input('role_id');
-        $fundRotatory->balance = $request->input('amount')+$fundRotatory->last->balance;
         if($fundRotatory->last == null)
             $fundRotatory->balance_previous= 0;
+            $fundRotatory->balance = $request->input('amount');
         else{
             $balance_previous= $fundRotatory->last->balance;
             $fundRotatory->balance_previous= $balance_previous;
+            $fundRotatory->balance = $request->input('amount')+$fundRotatory->last->balance;
         }
 
         return FundRotatory::create($fundRotatory->toArray());
