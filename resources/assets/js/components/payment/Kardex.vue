@@ -89,7 +89,7 @@
            </v-col>
         </v-row>
       </v-card>
-  
+
       <v-data-table
         dense
         :headers="headers"
@@ -100,7 +100,7 @@
         :search="search"
         :key="refreshKardexTable"
       >
-        
+
         <template v-slot:[`header.code`]="{ header }">
             {{ header.text }}<br>
             <v-menu offset-y :close-on-content-click="false">
@@ -499,7 +499,7 @@ export default {
           this.$router.push({ name: 'paymentAdd', params: { hash: 'new' }, query: { loan_id: this.$route.params.id } })
         }else{
           this.toastr.error("El saldo es 0, no puede realizar mas pagos.")
-        }        
+        }
       }
       else {
         this.toastr.error("El trámite tiene estado LIQUIDADO, no puede realizar mas pagos.")
@@ -580,7 +580,7 @@ export default {
         return false
       }
     },
-  
+
 
     //Busca el tipo de Cobro que se realizará para el cobro
     /*searchAmortizationType(item) {
