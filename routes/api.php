@@ -17,7 +17,6 @@ Route::group([
     //Route::get('depuracion', 'Api\V1\AffiliateController@eliminacion');
     // INDEFINIDO (TODO)
     Route::get('document/{affiliate_id}', 'Api\V1\ScannedDocumentController@create_document');
-    
 
     // Autenticado con token
     Route::group([
@@ -87,8 +86,8 @@ Route::group([
         Route::get('loan_information', 'Api\V1\LoanReportController@loan_information');//reporte de nuevos prestamos desembolsados
         Route::get('loan_defaulted_guarantor', 'Api\V1\LoanReportController@loan_defaulted_guarantor');//reporte de nuevos prestamos desembolsados
         Route::apiResource('periods', 'Api\V1\PeriodController')->only('index', 'show', 'store', 'update', 'destroy');//cambiar a cobranzas
-        Route::apiResource('fund_rotatorie', 'Api\V1\OutputsFundRotatorieController');
-
+        Route::apiResource('fundRotatoryOutput', 'Api\V1\FundRotatoryOutputController');
+        Route::get('fund_rotatory_entry_output', 'Api\V1\FundRotatoryController@get_fund_rotatori_entry_output');//listadosentradas y salidas
         Route::get('get_list_month', 'Api\V1\PeriodController@get_list_month');//listado de meses por gestion
         Route::get('get_list_year', 'Api\V1\PeriodController@get_list_year');//listado de meses por gestion
 
@@ -97,7 +96,7 @@ Route::group([
         Route::get('loan_tracking', 'Api\V1\LoanReportController@loan_tracking');//seguimiento de prestamos
 
         Route::apiResource('fund_rotatory_entry', 'Api\V1\FundRotatoryController')->only('index', 'show', 'store', 'update', 'destroy');//Fondo rotatorio
-        Route::get('print_fund_rotary/{ouputs_fund_rotatorie_id}', 'Api\V1\OutputsFundRotatorieController@print_fund_rotary');
+        Route::get('print_fund_rotary_output/{loan_id}', 'Api\V1\FundRotatoryOutputController@print_fund_rotary');
         //get_list_month
         // Afiliados
         Route::group([

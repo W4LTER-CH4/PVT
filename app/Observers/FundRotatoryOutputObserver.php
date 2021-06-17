@@ -1,44 +1,44 @@
 <?php
 
 namespace App\Observers;
-use App\OutputsFundRotatorie;
+use App\FundRotatoryOutput;
 use App\Helpers\Util;
 use App\User;
 
-class OutputsFundRotatorieObserver
+class FundRotatoryOutputObserver
 {
     /**
     * Handle the contract "created" event.
     *
-    * @param  \App\OutputsFundRotatorie  $contract
+    * @param  \App\FundRotatoryOutput  $contract
     * @return void
     */
-    public function created(OutputsFundRotatorie $object)
+    public function created(FundRotatoryOutput $object)
     {
         Util::save_record($object, 'datos-de-un-tramite', 'registró fondo rotatorio : '. $object->code);
     }
     /**
-    * Handle the OutputsFundRotatorie "updating" event.
+    * Handle the FundRotatoryOutput "updating" event.
     *
-    * @param  \App\OutputsFundRotatorie  $OutputsFundRotatorie
+    * @param  \App\FundRotatoryOutput  $FundRotatoryOutput
     * @return void
     */
-    public function updating(OutputsFundRotatorie $object)
+    public function updating(FundRotatoryOutput $object)
     {
         Util::save_record($object, 'datos-de-un-tramite', Util::concat_action($object));
     }
     /**
-    * Handle the OutputsFundRotatorie "deleted" event.
+    * Handle the FundRotatoryOutput "deleted" event.
     *
-    * @param  \App\OutputsFundRotatorie  $OutputsFundRotatorie
+    * @param  \App\FundRotatoryOutput  $FundRotatoryOutput
     * @return void
     */
-    public function deleted(OutputsFundRotatorie $object)
+    public function deleted(FundRotatoryOutput $object)
     {
         Util::save_record($object, 'datos-de-un-tramite', 'eliminó registro de fondo rotatorio: ' . $object->code);
     }
 
-    public function pivotUpdating(OutputsFundRotatorie $object, $relationName, $pivotIds, $pivotIdsAttributes)
+    public function pivotUpdating(FundRotatoryOutput $object, $relationName, $pivotIds, $pivotIdsAttributes)
     {
         Util::save_record($object, 'datos-de-un-tramite', Util::relation_action($object, $relationName, $pivotIds, $pivotIdsAttributes, 'modificó'));
     }
@@ -46,10 +46,10 @@ class OutputsFundRotatorieObserver
     /**
      * Handle the aid contribution "force deleted" event.
      *
-     * @param  \App\OutputsFundRotatorie  $OutputsFundRotatorie
+     * @param  \App\FundRotatoryOutput  $FundRotatoryOutput
      * @return void
     */
-    public function forceDeleted(OutputsFundRotatorie $object)
+    public function forceDeleted(FundRotatoryOutput $object)
     {
        // Util::save_record($object, 'datos-de-un-tramite', 'rehízo el registro de fondo rotatorio: ' . $object->code);
     }

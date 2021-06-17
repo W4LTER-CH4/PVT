@@ -6,21 +6,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
-use App\OutputsFundRotatorie;
+use App\FundRotatoryOutput;
 use App\Affiliate;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Util;
 use Carbon\CarbonImmutable;
 use Carbon;
 use App\Loan;
-use App\Http\Requests\OutputsFundRotatorieForm;
+use App\Http\Requests\FundRotatoryOutputForm;
 
-/** @group fondo rotatorio
+/** @group Salida del fondo rotatorio
 * Datos del fondo rotatorio 
 */
-class OutputsFundRotatorieController extends Controller
+class FundRotatoryOutputController extends Controller
 {
-    public static function append_data(OutputsFundRotatorie $outputsFundRotatorie)
+    public static function append_data(FundRotatoryOutput $outputsFundRotatorie)
     {
         $outputsFundRotatorie->loan = $outputsFundRotatorie->loan;
         //$outputsFundRotatorie->fund_rotary_entry = $outputsFundRotatorie->fund_rotary_entry;
@@ -29,7 +29,7 @@ class OutputsFundRotatorieController extends Controller
 
 
     /**
-    * Lista de Registro de fondo rotatorio
+    * Lista de Registro de salidas fondo rotatorio
     * Devuelve el listado con los datos paginados
     * @queryParam role_id integer Ver fondos del rol, si es 0 se muestra la lista completa. Example: 73
     * @queryParam loan_id integer ID del tramite de préstamo. Example 1
@@ -79,7 +79,7 @@ class OutputsFundRotatorieController extends Controller
                 'user_id' => $request->user_id
             ];
         }
-        $data = Util::search_sort(new OutputsFundRotatorie(), $request, $filters, $relations);
+        $data = Util::search_sort(new FundRotatoryOutput(), $request, $filters, $relations);
         $data->getCollection()->transform(function ($outputsFund) {
             return self::append_data($outputsFund, true);
         });
@@ -87,16 +87,16 @@ class OutputsFundRotatorieController extends Controller
     }
 
     /**
-    * Detalle del fondo rotatorio
+    * Detalle de salida de un fondo rotatorio
     * Devuelve el detalle de un registro de fondo rotatorio mediante su ID
     * @urlParam output_fund_rotatorie required ID de registro de pago. Example: 1
     * @authenticated
     * @responseFile responses/outputs_fund_rotatorie/show.200.json
     */
-    public function show($OutputsFundRotatorie)
+    public function show($FundRotatoryOutput)
     {
-        return $this::append_data(OutputsFundRotatorie::findOrFail($OutputsFundRotatorie));
-        //return self::append_data($OutputsFundRotatorie);
+        return $this::append_data(FundRotatoryOutput::findOrFail($FundRotatoryOutput));
+        //return self::append_data($FundRotatoryOutput);
     }
 
     /**
@@ -110,9 +110,9 @@ class OutputsFundRotatorieController extends Controller
     * @authenticated
     * @responseFile responses/outputs_fund_rotatorie/update.200.json
     */
-    public function update(OutputsFundRotatorieForm $request,$fundRotatory_id)
+    public function update(FundRotatoryOutputForm $request,$fundRotatory_id)
     {
-        $fundRotatory = OutputsFundRotatorie::findOrFail($fundRotatory_id);
+        $fundRotatory = FundRotatoryOutput::findOrFail($fundRotatory_id);
         $fundRotatory->fill($request->all());
         $fundRotatory->save();
         return  $fundRotatory;
@@ -126,7 +126,7 @@ class OutputsFundRotatorieController extends Controller
     */
     public function destroy($fundRotatory_id)
     {
-        $fundRotatory = OutputsFundRotatorie::findOrFail($fundRotatory_id);
+        $fundRotatory = FundRotatoryOutput::findOrFail($fundRotatory_id);
         $fundRotatory->delete();
         return $fundRotatory;
     }
@@ -143,9 +143,9 @@ class OutputsFundRotatorieController extends Controller
     * @authenticated
     * @responseFile responses/outputs_fund_rotatorie/store.200.json
     */
-    public function store(OutputsFundRotatorieForm $request)
+    public function store(FundRotatoryOutputForm $request)
     {
-        return OutputsFundRotatorie::create($request->all());
+        return FundRotatoryOutput::create($request->all());
     }
 
     /**
@@ -156,9 +156,8 @@ class OutputsFundRotatorieController extends Controller
     * @authenticated
     * @responseFile responses/outputs_fund_rotatorie/print_fund_rotatorie.200.json
     */
-    public function print_fund_rotary(Request $request,$ouputs_fund_rotatorie_id, $standalone = true)
-    { 
-        $ouputs_fund_rotatorie = OutputsFundRotatorie::find($ouputs_fund_rotatorie_id);
+    public function print_fund_rotary(Request $request,$loan_id, $standalone = true)
+    {   $ouputs_fund_rotatorie = FundRotatoryOutput::whereLoanId($loan_id)->first();
         $loan = Loan::findOrFail($ouputs_fund_rotatorie->loan_id);   
         $affiliate = Affiliate::findOrFail($loan->disbursable_id);
         $lenders = [];
@@ -194,7 +193,7 @@ class OutputsFundRotatorieController extends Controller
         return $view; 
     }
 
-    public function get_information_loan(OutputsFundRotatorie $ouputs_fund_rotatorie)
+    public function get_information_loan(FundRotatoryOutput $ouputs_fund_rotatorie)
     {
         $file_name='';
             $loan = Loan::findOrFail($ouputs_fund_rotatorie->loan_id);

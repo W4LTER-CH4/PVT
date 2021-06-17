@@ -28,4 +28,8 @@ class FundRotatory extends Model
     {
         return $this->latest()->first();
     }
+    public function fund_rotatory_outputs()
+    {
+        return $this->hasMany(FundRotatoryOutput::class);
+    }
 }

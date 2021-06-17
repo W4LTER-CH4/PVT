@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\Util;
 use App\User;
 use App\FundRotatory;
+use App\FundRotatoryOutput;
 use App\Http\Requests\FundRotatoryForm;
 use Illuminate\Support\Facades\Auth;
 
@@ -55,10 +56,10 @@ class FundRotatoryController extends Controller
         $fundRotatory->date_check_delivery = $request->input('date_check_delivery');
         $fundRotatory->description = $request->input('description');
         $fundRotatory->role_id = $request->input('role_id');
-        if($fundRotatory->last == null)
+        if($fundRotatory->last == null){
             $fundRotatory->balance_previous= 0;
             $fundRotatory->balance = $request->input('amount');
-        else{
+        }else{
             $balance_previous= $fundRotatory->last->balance;
             $fundRotatory->balance_previous= $balance_previous;
             $fundRotatory->balance = $request->input('amount')+$fundRotatory->last->balance;
@@ -114,4 +115,22 @@ class FundRotatoryController extends Controller
         $fundRotatory->delete();
         return $fundRotatory;
     }
+     /**
+    * Listado de ingresos y salidas del fondo rotatorio
+    * Devuelve un listado de fondo rotatorio y sus salidas
+    * @authenticated
+    * @responseFile responses/fund_rotary_entry/get_fund_rotatori_entry_output.200.json
+    */
+    public function get_fund_rotatori_entry_output()
+    {
+        $fundRotatories =  FundRotatory::all();
+        foreach($fundRotatories as $fundRotatory){
+                $fundRotatory->fund_rotatory_outputs ;
+            foreach($fundRotatory->fund_rotatory_outputs as $loan_outputs){ 
+                    $loan_outputs->loan;
+            } 
+        } 
+        $fundRotatories = array('data'=>$fundRotatories);
+        return $fundRotatories; 
+      }  
 }

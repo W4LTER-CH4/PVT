@@ -161,6 +161,27 @@
         <v-tab-item :value="'tab-2'">
           <v-card flat tile>
             <v-card-title v-if="permissionSimpleSelected.includes('print-payment-plan')">
+               <v-tooltip top >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-show="loan.modality.procedure_type.second_name == 'Anticipo' && loan.disbursement_date != 'Fecha invalida' "
+                    fab
+                    x-small
+                    color="success"
+                    top
+                    right
+                    absolute
+                    v-on="on"
+                    style="margin-right: 40px; margin-top: 38px;"
+                    @click="imprimirRecive($route.params.id)"
+                    >
+                    <v-icon>mdi-badge-account-horizontal</v-icon>
+                  </v-btn>
+                </template>
+                <div>
+                  <span>Imprimir el Recibo</span>
+                </div>
+              </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -455,7 +476,7 @@ export default {
     this.getSpouse(this.$route.params.id)
     this.getObservation(this.$route.params.id)
     this.getProceduretype(this.$route.params.id)
-    
+
     this.bus1.$on("emitGetObservation", id => {
       //escuchamos la emision de ObserverFlow
       this.getObservation(id) //y monstramos la lista de observaciones segun el id del prestamo
@@ -549,7 +570,7 @@ export default {
         }
         this.setBreadcrumbs()
         this.getAddress(this.affiliate.id)
-    
+
         this.role(this.loan.role_id)
         this.user(this.loan.user_id)
         console.log(this.loan)
@@ -600,7 +621,7 @@ export default {
         this.loading = true
         let res = await axios.get(`loan/${id}/observation`)
         this.observations = res.data
-        
+
         for (this.i = 0; this.i < this.observations.length; this.i++) {
            console.log("ww"+this.observations[this.i].user_id)
           let res1 = await axios.get(`user/${this.observations[this.i].user_id}`
@@ -622,6 +643,20 @@ export default {
         console.log(e)
       } finally {
         this.loading = false
+      }
+    },
+    async imprimirRecive(item) {
+      try {
+          let res = await axios.get(`print_fund_rotary_output/${item}`)
+            printJS({
+              printable: res.data.content,
+              type: res.data.type,
+              file_name: res.data.file_name,
+              base64: true
+            })
+      } catch (e) {
+        this.toastr.error("Ocurrió un error en la impresión.")
+        console.log(e)
       }
     },
     async imprimir(item) {
@@ -757,7 +792,7 @@ export default {
             this.bus.$emit('openDialog', { edit: false, accion: 'validar' })
           }
         }else{
-            this.toastr.error('Faltan registar la fecha de entrega de contrato.')
+            this.toastr.error('Falta registar la fecha de entrega y/o la fecha de devolución del contrato.')
         }
       }else{
         if(this.permissionSimpleSelected.includes('update-accounting-voucher')==true)

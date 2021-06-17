@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FundRotatoryForm extends FormRequest
+class FundRotatoryOutputForm extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +24,14 @@ class FundRotatoryForm extends FormRequest
     public function rules()
     {
         $rules = [
-            'check_number' => 'numeric',
-            'date_check_delivery' => 'date_format:"Y-m-d',
-            'amount' => 'numeric',
-            'role_id' => 'integer|exists:roles,id',//hasta aqui requerido
-            'balance' =>'numeric|nullable',
-            'balance_previous' =>'numeric|nullable',
-            'user_id' =>'integer|nullable',
-            'description' => 'string|nullable'
+            'loan_id'=>'integer|exists:loans,id',
+            'role_id'=>'integer|exists:roles,id',
+            'fund_rotatory_id'=>'integer|exists:fund_rotatories,id|nullable',
+            'user_id'=>'integer|exists:users,id|nullable',
         ];
         switch ($this->method()) {
             case 'POST': {
-                foreach (array_slice($rules, 0, 4) as $key => $rule) {
+                foreach (array_slice($rules, 0, 2) as $key => $rule) {
                     $rules[$key] = implode('|', ['required', $rule]);
                 }
                 return $rules;
@@ -46,5 +42,6 @@ class FundRotatoryForm extends FormRequest
                 return $rules;
             }
         }
+    
     }
 }
