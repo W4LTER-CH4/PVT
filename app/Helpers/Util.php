@@ -428,6 +428,28 @@ class Util
             'file_name' => $file_name
         ];
     }
+    public static function pdf_to_treasury_receipt($views, $file_name,$informationqr, $size = 'letter', $copies = 1, $portrait = true)
+    {
+
+        $options = [
+            'copies' => $copies ?? 1,
+            'user-style-sheet' => public_path('css/report-print.min.css'),
+            'orientation' => $portrait ? 'portrait' : 'landscape',
+            'margin-top' => '15',
+            'margin-right' => '20',
+            'margin-left' => '13', 
+            'margin-bottom' => '15',
+            'encoding' => 'UTF-8',
+            'page-width' => '216'  
+        ];
+        $options['page-height'] = $size == 'letter' ? '279' : '330';
+        $content = base64_encode(\PDF::getOutputFromHtml($views, $options));
+        return [
+            'content' => $content,
+            'type' => 'pdf',
+            'file_name' => $file_name
+        ];
+    }
 
     public static function request_rrhh_employee($position)
     {

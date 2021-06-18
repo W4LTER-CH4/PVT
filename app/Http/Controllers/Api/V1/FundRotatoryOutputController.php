@@ -167,7 +167,7 @@ class FundRotatoryOutputController extends Controller
             'id' => $affiliate->id,
             'full_name' => implode(' ', [$affiliate->title, $affiliate->full_name]),
             'identity_card' => $affiliate->identity_card_ext,
-            'position' => 'RECIBIDIDO POR'
+            'position' => 'RECIBIDO POR'
         ]);      
         $data = [
             'header' => [
@@ -176,7 +176,7 @@ class FundRotatoryOutputController extends Controller
                 'table' => [
                     ['Código', $ouputs_fund_rotatorie->code],
                     ['Fecha', Carbon::now()->format('d/m/Y')],
-                    ['Hora', Carbon::now()->format('h:m:s a')],
+                    ['Hora', Carbon::now()->format('h:m:i')],
                     ['Usuario', Auth::user()->username]
                 ]
             ],
@@ -186,10 +186,10 @@ class FundRotatoryOutputController extends Controller
             'signers' => $persons,
             'lenders' => collect($lenders)
         ];
-        $information = $this->get_information_loan($ouputs_fund_rotatorie);
+     
         $file_name = implode('_', ['ouputs_fund_rotatorie', $ouputs_fund_rotatorie->code]) . '.pdf';
         $view = view()->make('loan.forms.disbursement_receipt_form')->with($data)->render();
-        if ($standalone) return Util::pdf_to_base64([$view], $file_name, $information, 'letter', $request->copies ?? 1);
+        if ($standalone) return Util::pdf_to_treasury_receipt([$view],'letter', $request->copies ?? 1);
         return $view; 
     }
 

@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>PLATAFORMA VIRTUAL ADMINISTRATIVA - MUSERPOL </title>
+    <title>PLATAFORMA VIRTUAL ADMINISTRATIVA - MUSERPOL RECIBO </title>
     <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all"/>
 </head>
 <style>
@@ -39,23 +39,23 @@
     }
   </style>
 <body style="border: 0; border-radius: 0;">
-@for($it = 0; $it<2; $it++)
+@for($it = 0; $it<3; $it++)
     @php ($plural = count($lenders) > 1)
     @php ($n = 1)
-    @include('partials.header', $header)
+    @include('partials.header_treasury', $header)
     <div>
-        <table>
+        <table style="font-size:14px;" class="my-5">
             <tr>
                 <td class="w-25">
                     &nbsp;
                 </td>
                 <td class="w-50">
                     &nbsp;
-                    <div class="font-semibold leading-tight text-center m-b-10 text-3xl">{{ $title }}</div>
+                    <div class="font-semibold leading-tight text-center m-b-10 text-Base">{{ $title }}</div>
                 </td>
                 <td class="font-semibold w-25">
                 Monto en Bs.
-                    <div class="font-semibold leading-tight rounded-full border text-center m-b-10 text-base">Bs. {{  Util::money_format($loan->amount_approved)}} </div>
+                    <div class="font-semibold leading-tight rounded-full border text-center text-base">Bs. {{  Util::money_format($loan->amount_approved)}} </div>
                 </td>
             </tr>
             <tr>
@@ -65,13 +65,13 @@
                 </td>
                 <td class="font-semibold w-25">
                 Contrato Nro. 
-                    <div class="font-semibold leading-tight rounded-full border text-center m-b-5 text-base">{{$loan->code}} </div>
+                    <div class="font-semibold leading-tight rounded-full border text-center text-base">{{$loan->code}} </div>
                 </td>
             </tr>
         </table>
     </div>
     <div class="block">
-        <table class="table-info border w-100 my-20 text-base">
+        <table style="font-size:12px;" class="table-info border w-100 my-5 ">
             <tr>
                 <td class="font-semibold  w-30">
                 CONCEPTO:
@@ -88,20 +88,12 @@
                 {{ Util::money_format($loan->amount_approved, true)}}
                 </td>
             </tr>
-            <tr>
-                <td class="uppercase font-semibold w-30">
-                DESCRIPCIÓN:
-                </td>
-                <td class="uppercase w-70">
-                    {{ $ouputs_fund_rotatorie->description }}
-                </td>
-            </tr>
         </table>
     </div>
-    <div class="m-t-25 no-page-break">
-        <table>
+    <div class="m-t-5 no-page-break">
+        <table style="font-size:12px;">
             <tbody>
-            <tr height="200px" class="">              
+            <tr height="50px" class="">              
             <td class="font-semibold leading-tight text-center w-50">        
                 @php ($cont = 0)  
                 @foreach ($signers->chunk(1) as $chunk)
@@ -124,7 +116,7 @@
             </tbody>
         </table>
     </div>
-    <div class="m-b-10">
+    <div class="m-b-5">
             ***Esta liquidación no es válida sin el Refrendo y Sello de Tesorería***</div>
     </div>
     <br>
@@ -133,6 +125,7 @@
         <span>&#9986;</span>
       </div>
     @endif
+
  @endfor
 </body>
 
