@@ -21,7 +21,7 @@
             <template v-slot:top>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
-              <v-tooltip bottom>
+              <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn
                     fab
@@ -95,11 +95,11 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close()">
-                      Cancel
+                    <v-btn color="error" text @click="close()">
+                      CANCELAR
                     </v-btn>
-                    <v-btn color="blue darken-1" text @click="saveFundRotary()">
-                      Save
+                    <v-btn color="success" text @click="saveFundRotary()">
+                      GUARDAR
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -140,7 +140,7 @@
                 <td @click.stop="props.expand(!props.isExpanded)">
                   {{ props.item.balance_previous | money }}
                 </td>
-                <td @click.stop="props.expand(!props.isExpanded)">
+                <td @click.stop="props.expand(!props.isExpanded)" :class="props.isExpanded ? 'warning black--text font-weight-bold' : ''">
                   {{ parseFloat(props.item.amount) + parseFloat(props.item.balance_previous) - parseFloat(props.item.balance) | money }}
                 </td>
                 <td @click.stop="props.expand(!props.isExpanded)">
@@ -149,10 +149,10 @@
 
                 <!--Actiones-->
                 <td>
-                  <v-tooltip bottom>
+                  <v-tooltip bottom v-if="props.item.fund_rotatory_outputs.length ==0 || props.item.fund_rotatory_outputs.length == 0">
                     <template v-slot:activator="{ on }">
                       <v-btn
-                        v-if="props.item.fund_rotatory_outputs.length ==0"
+                        v-if="last(props.item)"
                         icon
                         small
                         v-on="on"
@@ -165,14 +165,14 @@
                     <span>Editar registro </span>
                   </v-tooltip>
 
-                  <v-tooltip bottom>
+                  <!--<v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                       <v-btn icon small v-on="on" color="error" @click.stop="">
                         <v-icon>mdi-mdi-delete</v-icon>
                       </v-btn>
                     </template>
                     <span>Anular registro</span>
-                  </v-tooltip>
+                  </v-tooltip>-->
                 </td>
               </tr>
             </template>
@@ -187,9 +187,7 @@
                     dense
                     hide-default-footer
                   >
-                  <template v-slot:[`item_correlativo`]="{ item }">
-                    {{$options.filters.fullName(item.loan.affiliate, true) }}
-                  </template>
+
                   <template v-slot:[`item.affiliate`]="{ item }">
                     {{$options.filters.fullName(item.loan.affiliate, true) }}
                   </template>
@@ -202,7 +200,7 @@
                   <template v-slot:[`item.loan.modality`]="{ item }">
                     {{ item.loan.modality.name }}
                   </template>
-                  
+
                   <template v-slot:[`item.actions`]="{ item }">
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on }">
@@ -218,9 +216,6 @@
                       <span>{{tray != 'all'? 'Revisar trámite' : 'Ver trámite'}}</span>
                     </v-tooltip>
                   </template>
-
-
-
                   </v-data-table>
                 </td>
               </tr>
@@ -402,8 +397,7 @@ export default {
     async getFundRotary(params) {
       try {
         this.loading = true;
-        let res = await axios.get(
-          `fund_rotatory_entry_output` /*, {
+        let res = await axios.get(`fund_rotatory_entry_output` /*, {
           params: {
             page: this.options.page,
             per_page: this.options.itemsPerPage,
@@ -493,6 +487,13 @@ export default {
       } catch (e) {
         this.toastr.error("Ocurrió un error en la impresión.")
         console.log(e)
+      }
+    },
+    last(item){
+      if(item.id == this.fund_rotatory_list[this.fund_rotatory_list.length -1].id ){
+        return true
+      }else{
+        return false
       }
     },
 

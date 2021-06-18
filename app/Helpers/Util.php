@@ -435,10 +435,10 @@ class Util
             'copies' => $copies ?? 1,
             'user-style-sheet' => public_path('css/report-print.min.css'),
             'orientation' => $portrait ? 'portrait' : 'landscape',
-            'margin-top' => '15',
+            'margin-top' => '0',
             'margin-right' => '20',
             'margin-left' => '13', 
-            'margin-bottom' => '15',
+            'margin-bottom' => '0',
             'encoding' => 'UTF-8',
             'page-width' => '216'  
         ];

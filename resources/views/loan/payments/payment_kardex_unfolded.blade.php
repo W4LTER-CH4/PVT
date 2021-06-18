@@ -33,7 +33,7 @@
                 <td class="data-row py-5">{{ $lender->title }} {{ $lender->full_name }}</td>
                 <td class="data-row py-5">{{ $lender->identity_card_ext }}</td>
                 <td class="data-row py-5">{{ $lender->registration }}</td>
-                @if($loan->affiliate_state)
+                @if($lender->affiliate_state)
                     <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
                 @else
                     <td class="data-row py-5"></td>
@@ -186,7 +186,7 @@
                     <td class="w-8 text-right">{{ $parent_loan_payment->voucher }}</td>
                     <td class="w-8 text-right">{{ $parent_loan_payment->voucher_treasury ? $parent_loan_payment->voucher_treasury->code : '' }}</td>
                     <td class="w-8 text-right">{{ $parent_loan_payment->state->name }}</td>
-                    <td class="w-12">{{ $payment->paid_by }}-{{ $payment->initial_affiliate }}</td>
+                    <td class="w-12">{{ $parent_loan_payment->paid_by }}-{{ $parent_loan_payment->initial_affiliate }}</td>
                     <td class="w-8">{{ $parent_loan_payment->modality->shortened}}</td>
                 </tr>
                 @php ($sum_estimated_quota += $parent_loan_payment->estimated_quota)

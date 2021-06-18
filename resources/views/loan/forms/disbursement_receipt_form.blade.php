@@ -90,10 +90,10 @@
             </tr>
         </table>
     </div>
-    <div class="m-t-5 no-page-break">
-        <table style="font-size:12px;">
+    <div class="no-page-break">
+        <table style="font-size:10px;">
             <tbody>
-            <tr height="50px" class="">              
+            <tr height="25px" class="">              
             <td class="font-semibold leading-tight text-center w-50">        
                 @php ($cont = 0)  
                 @foreach ($signers->chunk(1) as $chunk)
@@ -116,16 +116,15 @@
             </tbody>
         </table>
     </div>
-    <div class="m-b-5">
+    <div class="m-b-1">
             ***Esta liquidación no es válida sin el Refrendo y Sello de Tesorería***</div>
     </div>
     <br>
-    @if($it == 0)
-      <div class="scissors-rule">
+    @if($it != 2)     
+     <div class="scissors-rule">
         <span>&#9986;</span>
       </div>
-    @endif
-
+      @endif
  @endfor
 </body>
 
