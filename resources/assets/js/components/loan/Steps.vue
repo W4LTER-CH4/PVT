@@ -862,15 +862,31 @@ export default {
                 this.toastr.error("El valor VNR debe ser mayor al monto minimo "+this.modalidad.minimun_amoun+ " correspondiente a la modalidad")
               }
             }else{
-                 this.saveAdjustment()
-                this.liquidCalificated()
-                this.nextStep(1)
+                if(this.remake){
+                  if(this.modalidad.procedure_type_name== 'Refinanciamiento Préstamo a Corto Plazo' || this.modalidad.procedure_type_name== 'Refinanciamiento Préstamo a Largo Plazo' ||  this.modalidad.procedure_type_name== 'Refinanciamiento Préstamo Hipotecario'){
+                    if(this.data_sismu.quota_sismu > 0 ){
+                      this.saveAdjustment()
+                      this.liquidCalificated()
+                      this.nextStep(1)
+                    }else{
+                      this.toastr.error("Introduzca la CUOTA del SISMU")
+                    }
+                  }else{
+                    this.saveAdjustment()
+                    this.liquidCalificated()
+                    this.nextStep(1)
+                  }
+                }else{
+                  this.saveAdjustment()
+                  this.liquidCalificated()
+                  this.nextStep(1)
+                }
             }
           }else if(continuar == true && this.type_sismu){
             if(this.modalidad.procedure_type_name == 'Préstamo Hipotecario' || this.modalidad.procedure_type_name == 'Refinanciamiento Préstamo Hipotecario'){
               if(this.loan_detail.net_realizable_value >= this.modalidad.minimun_amoun){
                 if(this.data_sismu.quota_sismu > 0){
-                   this.saveAdjustment()
+                  this.saveAdjustment()
                   this.liquidCalificated()
                   this.nextStep(1)
                 }else{
@@ -880,8 +896,8 @@ export default {
                 this.toastr.error("El valor VNR debe ser mayor al monto minimo "+this.modalidad.minimun_amoun+ " correspondiente a la modalidad")
               }
             }else{
-                if(this.data_sismu.quota_sismu > 0 || (this.remake && this.data_loan.data_loan != null)){
-                   this.saveAdjustment()
+                  if(this.data_sismu.quota_sismu > 0 || (this.remake && this.data_loan.data_loan != null) ){
+                  this.saveAdjustment()
                   this.liquidCalificated()
                   this.data_loan_parent_aux.estimated_quota= this.data_sismu.quota_sismu
                   this.nextStep(1)
@@ -913,7 +929,7 @@ export default {
             {
               this.toastr.error("Tiene que llenar el Codigo del Prestamo Padre.")
             }else{
-              if(this.data_loan_parent_aux.disbursement_date==null)
+              if(this.data_loan_parent_aux.disbursement_date== null)
               {
                 this.toastr.error("Tiene que llenar la fecha de desembolso del Préstamo Padre.")
               }else{

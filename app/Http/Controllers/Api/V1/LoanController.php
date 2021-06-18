@@ -31,6 +31,7 @@ use App\Contribution;
 use App\AidContribution;
 use App\LoanContributionAdjust;
 use App\LoanGlobalParameter;
+use App\FundRotatoryOutput;
 use App\Http\Requests\LoansForm;
 use App\Http\Requests\LoanForm;
 use App\Http\Requests\LoanPaymentForm;
@@ -40,6 +41,7 @@ use App\Events\LoanFlowEvent;
 use Carbon;
 use App\Helpers\Util;
 use App\Http\Controllers\Api\V1\LoanPaymentController;
+use App\Http\Controllers\Api\V1\FundRotatoryOutputController;
 use Carbon\CarbonImmutable;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ArchivoPrimarioExport;
@@ -511,6 +513,10 @@ class LoanController extends Controller
             $state_id = LoanState::whereName('Vigente')->first()->id;
             $loan['state_id'] = $state_id;
             $loan->save();
+            $procedure_modality_id = ProcedureModality::whereShortened("DES-COMANDO")->first()->id;
+            if($loan->modality->procedure_type->name == "Préstamo Anticipo"){
+                FundRotatoryOutput::register_advance_fund($loan->id,$loan->role_id);
+            }
         }else{
             if($request->date_signal == false){
                 if($request->has('disbursement_date') && $request->disbursement_date != NULL){
@@ -519,6 +525,9 @@ class LoanController extends Controller
                     $state_id = LoanState::whereName('Vigente')->first()->id;
                     $loan['state_id'] = $state_id;
                     $loan->save();
+                    if($loan->modality->procedure_type->name == "Préstamo Anticipo"){
+                        FundRotatoryOutput::register_advance_fund($loan->id,$loan->role_id);
+                    }
                     }  else return $message['validate'] = "El usuario no tiene los permisos necesarios para realizar el registro" ;
                 }
             }
@@ -899,7 +908,8 @@ class LoanController extends Controller
         }
         $employees = [
             ['position' => 'Director General Ejecutivo','name'=>'CNL. DESP. EDGAR JOSE CORTEZ ALBORNOZ','identity_card'=>'3351371 LP'],
-            ['position' => 'Director de Asuntos Administrativos','name'=>'LIC. FRANZ LAZO CHAVEZ','identity_card'=>'3367169 LP']
+            ['position' => 'Director de Asuntos Administrativos','name'=>'LIC. FRANZ LAZO CHAVEZ','identity_card'=>'3367169 LP'],
+            ['position' => 'Director De Estratégias Sociales e Inversiones', 'name'=>'LIC. JORGE FRANCISCO MACHACA CALCINA','identity_card'=>'4881022 LP']
         ];
         /*foreach ($employees as $key => $employee) {
             $employees[$key] = Util::request_rrhh_employee($employee['position']);

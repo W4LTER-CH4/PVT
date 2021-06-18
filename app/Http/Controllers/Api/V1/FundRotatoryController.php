@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Util;
 use App\User;
+use App\Affiliate;
 use App\FundRotatory;
 use App\FundRotatoryOutput;
 use App\Http\Requests\FundRotatoryForm;
@@ -61,12 +62,10 @@ class FundRotatoryController extends Controller
             $fundRotatory->balance = $request->input('amount');
         }else{
             $balance_previous= $fundRotatory->last->balance;
-            $fundRotatory->balance_previous= $balance_previous;
+            $fundRotatory->balance_previous = $balance_previous;
             $fundRotatory->balance = $request->input('amount')+$fundRotatory->last->balance;
         }
-
         return FundRotatory::create($fundRotatory->toArray());
-
     }
 
     /**
@@ -123,14 +122,16 @@ class FundRotatoryController extends Controller
     */
     public function get_fund_rotatori_entry_output()
     {
-        $fundRotatories =  FundRotatory::all();
+        $fundRotatories =  FundRotatory::orderBy('id')->get();
         foreach($fundRotatories as $fundRotatory){
-                $fundRotatory->fund_rotatory_outputs ;
+                $fundRotatory->fund_rotatory_outputs->sortBy('id');
             foreach($fundRotatory->fund_rotatory_outputs as $loan_outputs){ 
-                    $loan_outputs->loan;
+                $loan = $loan_outputs->loan;
+                $loan->affiliate=Affiliate::find($loan->disbursable_id);
+                $loan->procedure_type = $loan->modality->procedure_type;
             } 
         } 
         $fundRotatories = array('data'=>$fundRotatories);
-        return $fundRotatories; 
-      }  
+        return $fundRotatories;
+    }
 }
