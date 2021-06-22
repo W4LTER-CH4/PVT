@@ -10,7 +10,7 @@ Route::group([
     //Route::post('command_senasir_save_payment', 'Api\V1\LoanPaymentController@command_senasir_save_payment');
     //Route::get('senasir_save_payment', 'Api\V1\LoanPaymentController@senasir_save_payment');
     Route::get('loans_delay', 'Api\V1\LoanPaymentController@loans_delay');
-    //Route::get('excel', 'Api\V1\LoanPaymentController@download');  
+    //Route::get('excel', 'Api\V1\LoanPaymentController@download');    
     //sismu
     //Route::get('prueba', 'Api\V1\AffiliateController@get_mixed_guarantees');
     Route::patch('edit_loan/{loan}/qualification', 'Api\V1\LoanController@edit_amounts_loan_term');
@@ -230,6 +230,7 @@ Route::group([
             Route::post('loan/{loan}/payment','Api\V1\LoanController@set_payment');
             Route::post('loan_payment/importation_command_senasir', 'Api\V1\LoanPaymentController@importation_command_senasir');//importacion de pagos
             Route::post('loan_payment/importation_pending_command_senasir', 'Api\V1\LoanPaymentController@importation_pending_command_senasir');//importacion de pendientes de pagos
+            Route::post('loan_payment/upload_file_payment', 'Api\V1\LoanPaymentController@upload_file_payment'); 
         });
         Route::group([
             'middleware' => 'permission:update-payment-loan'

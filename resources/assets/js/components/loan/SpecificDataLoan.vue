@@ -11,7 +11,7 @@
                   <v-col cols="12" class="py-0">
                     <v-tabs dark active-class="secondary">
 
-                      <v-tab>DATOS DEL PRESTAMO</v-tab>
+                      <v-tab>DATOS DEL PRÉSTAMO</v-tab>
                         <v-tab-item>
                           <v-card flat tile class="py-0">
                             <v-card-text class="py-0">
@@ -132,7 +132,7 @@
                                   </v-col>
                                   <v-progress-linear v-show="loan_refinancing.refinancing"></v-progress-linear>
                                     <v-col cols="12" md="6" class="pb-0" v-show="loan_refinancing.refinancing">
-                                    <p style="color:teal"><b>DATOS DEL PRéSTAMO A REFINANCIAR{{' => '+ loan_refinancing.description}}</b></p>
+                                    <p style="color:teal"><b>DATOS DEL PRÉSTAMO A REFINANCIAR{{' => '+ loan_refinancing.description}}</b></p>
                                   </v-col>
                                 <v-col cols="12" md="6" class="py-0" v-show="loan_refinancing.refinancing">
                                 <div  v-if="permissionSimpleSelected.includes('update-refinancing-balance') && $route.query.workTray != 'tracingLoans'">
@@ -207,7 +207,7 @@
                                    ></v-text-field>
                                   </v-col>
                                   <v-col cols="12" md="4" class="py-0" v-show="!cobranzas_edit_sismu">
-                                    <p><b>Saldo de Prestamo a Refinanciar:</b> {{loan_refinancing.balance | money}}</p>
+                                    <p><b>Saldo de Préstamo a Refinanciar:</b> {{loan_refinancing.balance | money}}</p>
                                   </v-col>
                                   <v-col cols="12" md="4" v-show="cobranzas_edit_sismu " class="py-0" >
                                     <v-text-field
@@ -303,7 +303,7 @@
                                         :readonly="!edit_return_date"
                                       ></v-text-field>
                                     </v-col>
-                                      <v-col cols="12" md="3"  v-show="loan.delivery_contract_date == 'Fecha invalida'" v-if="!permissionSimpleSelected.includes('registration-delivery-return-contracts') && $route.query.workTray != 'tracingLoans'">
+                                      <v-col cols="12" md="3"  v-show="loan.delivery_contract_date == 'Fecha invalida' && $route.query.workTray != 'tracingLoans'">
                                     </v-col>
                                     <v-col cols="12" md="3" v-show="loan.delivery_contract_date != 'Fecha invalida'"  v-if="permissionSimpleSelected.includes('registration-delivery-return-contracts') && $route.query.workTray != 'tracingLoans'">
                                       <div >
@@ -1390,7 +1390,13 @@ export default {
               }
             ]
         })
-            this.loan.amount_approved = res.data.amount_requested
+        if(res.data.amount_requested  > res.data.amount_maximum_suggested )
+        {
+           this.loan.amount_approved = res.data.amount_maximum_suggested
+        }
+        else{
+           this.loan.amount_approved = res.data.amount_requested
+        }
             this.loan.loan_term = res.data.months_term
             this.loan.indebtedness_calculated = res.data.indebtedness_calculated_total
             this.loan.estimated_quota = res.data.quota_calculated_estimated_total

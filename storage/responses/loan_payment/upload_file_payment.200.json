@@ -1,0 +1,13 @@
+{
+    "period": {
+        "id": 1,
+        "year": 2021,
+        "month": 6,
+        "amount_concilation": null,
+        "description": "prueba",
+        "created_at": null,
+        "updated_at": null,
+        "deleted_at": null
+    },
+    "fingerprint_exists": "contribución/comando_2021/2021-06-02.csv"
+}
