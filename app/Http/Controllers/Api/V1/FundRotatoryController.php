@@ -117,12 +117,15 @@ class FundRotatoryController extends Controller
      /**
     * Listado de ingresos y salidas del fondo rotatorio
     * Devuelve un listado de fondo rotatorio y sus salidas
+    * @queryParam per_page Número de datos por página. Example: 8
+    * @queryParam page Número de página. Example: 1
     * @authenticated
     * @responseFile responses/fund_rotary_entry/get_fund_rotatori_entry_output.200.json
     */
-    public function get_fund_rotatori_entry_output()
-    {
-        $fundRotatories =  FundRotatory::orderBy('id')->get();
+    public function get_fund_rotatori_entry_output(Request $request)
+    {  
+        $pagination_rows = request('per_page') ?? 10;
+        $fundRotatories =  FundRotatory::orderBy('id')->paginate($pagination_rows);    
         foreach($fundRotatories as $fundRotatory){
                 $fundRotatory->fund_rotatory_outputs->sortBy('id');
             foreach($fundRotatory->fund_rotatory_outputs as $loan_outputs){ 
