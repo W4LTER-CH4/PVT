@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "year": 2021,
+        "month": 6,
+        "amount_concilation": null,
+        "description": null,
+        "created_at": null,
+        "updated_at": null,
+        "deleted_at": null
+    }
+]

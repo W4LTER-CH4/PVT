@@ -134,7 +134,6 @@ class FundRotatoryController extends Controller
                 $loan->procedure_type = $loan->modality->procedure_type;
             } 
         } 
-        $fundRotatories = array('data'=>$fundRotatories);
         return $fundRotatories;
     }
 }
