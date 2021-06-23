@@ -87,7 +87,7 @@
               
             </tr>
             <tr class="bg-grey-darker text-white">
-                <td>Domilicio actual</td>
+                <td>Domicilio actual</td>
                 <td colspan="2">Teléfono(s)</td>
             </tr>
             <tr>
