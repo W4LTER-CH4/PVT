@@ -66,10 +66,12 @@ class LoanController extends Controller
             foreach($loan->lenders as $lender)
             {
                 $lender->affiliate_state = $lender->affiliate_state;
+                $lender->spouse = $lender->spouse;
             }
             foreach($loan->guarantors as $guarantor)
             {
                 $guarantor->affiliate_state = $guarantor->affiliate_state;
+                $guarantor->spouse = $guarantor->spouse;
             }
             $loan->lenders = $loan->lenders;
             $loan->guarantors = $loan->guarantors;

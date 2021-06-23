@@ -30,7 +30,7 @@
                                    <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Interes Corriente de Días:</b></label>
                                   {{payment.estimated_days.current+' Total'}}
-                                  {{payment.estimated_days.current_generated}}
+                                  {{payment.estimated_days.current_generated | moneyString}}
                                 </v-col>
                                  <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Fecha de Transaccion:</b></label>
@@ -40,7 +40,7 @@
                                 <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Interes Penal de Días:</b></label>
                                   {{payment.estimated_days.penal +' Total'}}
-                                  {{payment.estimated_days.penal_generated}}
+                                  {{payment.estimated_days.penal_generated | moneyString}}
                                 </v-col>
                                  <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Saldo Anterior:</b></label>
@@ -48,7 +48,7 @@
                                 </v-col>
                                 <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Interes Corriente Pendiente:</b></label>
-                                  {{payment.interest_remaining}}
+                                  {{payment.interest_remaining | moneyString}}
                                 </v-col>
                                 <v-col cols="6" class="ma-0 py-2">
                                   <label><b style="color:teal">Saldo Actual:</b></label>
@@ -56,20 +56,20 @@
                                 </v-col>
                                 <v-col cols="12" class="ma-0 py-2">
                                   <label><b>Interes Penal Pendiente:</b></label>
-                                  {{payment.penal_remaining}}
+                                  {{payment.penal_remaining | moneyString}}
                                 </v-col>
                                  <v-col cols="12" class="ma-0 py-2">
                                   <label><b>Total Pagado:</b></label>
-                                  {{payment.estimated_quota}}
+                                  {{payment.estimated_quota | moneyString}}
                                 </v-col>
                                  <v-progress-linear></v-progress-linear>
                                 <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Intereses Corrientes Pendientes:</b></label>
-                                  {{payment.interest_accumulated}}
+                                  {{payment.interest_accumulated | moneyString}}
                                 </v-col>
                                 <v-col cols="6" class="ma-0 py-2">
                                   <label><b>Interes Penales Pendientes:</b></label>
-                                  {{payment.penal_accumulated}}
+                                  {{payment.penal_accumulated | moneyString}}
                                 </v-col>
                               </v-row>
                             </template>

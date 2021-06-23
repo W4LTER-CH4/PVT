@@ -1169,11 +1169,11 @@ class LoanReportController extends Controller
                ->distinct('loans.code')
                ->paginate($pagination_rows);
 
-               $list_loan->getCollection()->transform(function ($list_loan) {
+              /* $list_loan->getCollection()->transform(function ($list_loan) {
                  $padron = Loan::findOrFail($list_loan->id_loan);
                  $list_loan->balance_loan=$padron->balance;
                  return $list_loan;
-               });
+               });*/
            return $list_loan;
       }
    }
