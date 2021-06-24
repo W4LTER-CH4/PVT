@@ -335,6 +335,10 @@ export default {
         this.loading = true;
         let res = await axios.get(`financial_entity`);
         this.entity = res.data;
+        this.entity.unshift({
+          id: null,
+          name: "-------"
+        })
       } catch (e) {
         this.dialog = false;
         console.log(e);

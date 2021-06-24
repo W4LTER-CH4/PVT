@@ -130,10 +130,13 @@ class LoanPermissionSeeder extends Seeder
             ],[
                 'name' => 'show-report-payment',
                 'display_name' => 'Ver reporte de cobranza'
-            ] ,[
+            ],[
                 'name' => 'show-list-voucher',
                 'display_name' => 'Ver listado de comprobantes en tesorería'
-            ] 
+            ],[
+                'name' => 'show-fund-rotatory',
+                'display_name' => 'Ver fondo rotatorio'
+            ]
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate($permission);

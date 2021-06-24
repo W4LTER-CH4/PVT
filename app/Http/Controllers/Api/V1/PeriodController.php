@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Helpers\Util;
 use App\User;
 use App\Period;
+use Carbon;
 use App\Http\Requests\PeriodForm;
 
 /** @group Periodos de cobros 
@@ -34,16 +35,38 @@ class PeriodController extends Controller
     /**
      * Nuevo registro de periodo
      * Inserta el periodo 
-     * @bodyParam year numeric required Año del periodo. Example: 2021
-     * @bodyParam month numeric required mes de la boleta es requerido. Example: 2
-     * @bodyParam amount_conciliation numeric Monto de conciliacion. Example: 1255.5
+     * @bodyParam year numeric Año del periodo. Example: 2021
+     * @bodyParam month numeric mes de la boleta es requerido. Example: 2
+     * @bodyParam import_command boolean estado de los registros de pago. Example: true
+     * @bodyParam import_senasir boolean mes de . Example: false
      * @bodyParam description string Descripcion del periodo. Example: Periodo de descripción
      * @authenticated
      * @responseFile responses/periods/store.200.json
      */
-    public function store(PeriodForm $request)
-    {
-        return Period::create($request->all());
+    public function store(Request $request)
+    { 
+      $estimated_date = Carbon::now()->endOfMonth();
+      $period = Period::where('year',$estimated_date->year)->where('month',$estimated_date->month)->first();
+      $last_period = Period::orderBy('id')->get()->last();
+      $last_date=Carbon::parse($last_period->year.'-'.$last_period->month);
+      if($period == null){    
+        if($last_period->import_command && $last_period->import_senasir){ 
+            $period = new Period;
+            $period->year = $estimated_date->year;
+            $period->month = $estimated_date->month;
+            $period->description = $request->description;
+            $period->import_command = false;
+            $period->import_senasir = false;          
+            return Period::create($period->toArray());
+            } 
+        else{
+         $result['message'] = "Para realizar la creación de un nuevo periodo, debe realizar la confirmación de los pagos de Comando y Senasir del periodo de ".$last_date->isoFormat('MMMM');
+        }
+       } 
+       else{
+        $result['message'] = "El periodo ya existe";
+       }
+       return $result; 
     }
 
     /**

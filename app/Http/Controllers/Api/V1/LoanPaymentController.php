@@ -423,11 +423,11 @@ class LoanPaymentController extends Controller
                 $loanPayment->update(['state_id' => $Pagado,'user_id' => $payment->user_id,'validated'=>true,'loan_payment_date'=>Carbon::now(),'voucher'=>$bank_pay_number]);
                 if($loanPayment->loan->payments->count() == 1 && $loanPayment->loan->payments->first()->state_id == $Pagado){
                     $user = User::whereUsername('admin')->first();
-                    $amortizing_tag = Tag::whereSlug('amortizando')->first();
+                   /* $amortizing_tag = Tag::whereSlug('amortizando')->first();
                     $loanPayment->loan->tags()->attach([$amortizing_tag->id => [
                         'user_id' => $user->id,
                         'date' => Carbon::now()
-                    ]]);
+                    ]]);*/
                 }
                 $loan=Loan::find($loanPayment->loan_id);
                  //generar PDF

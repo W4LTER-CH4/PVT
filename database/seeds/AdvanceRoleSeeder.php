@@ -36,7 +36,7 @@ class AdvanceRoleSeeder extends Seeder
         $budget = ['show-all-loan','show-loan','update-loan','update-accounting-voucher','show-history-loan'];
         $collection_court = ['show-all-loan','show-loan','update-loan','update-refinancing-balance','show-history-loan'];
         $pay_permissions_treasury = ['show-list-voucher','show-affiliate','show-loan','show-all-loan','print-payment-kardex-loan','print-payment-loan','print-payment-plan','delete-payment-loan','update-payment','create-payment','show-payment','show-payment-loan','delete-payment', 'print-payment-voucher', 'update-payment-loan'];
-        $treasury_permissions = ['print-payment-plan', 'print-payment-kardex-loan', 'show-loan','disbursement-loan','delete-payment', 'update-loan'];
+        $treasury_permissions = ['print-payment-plan', 'print-payment-kardex-loan', 'show-loan','disbursement-loan','delete-payment', 'update-loan', 'show-fund-rotatory'];
         $loan_collection = ['show-all-loan','show-affiliate','show-report-payment','print-payment-plan', 'print-payment-kardex-loan', 'show-payment-loan', 'create-payment-loan', 'update-payment-loan', 'delete-payment-loan', 'print-payment-loan','update-loan','show-list-payments-generated'];
         $legal_permissions = ['registration-delivery-return-contracts','update-documents-requirements', 'print-contract-loan'];
         $calification_permissions = ['update-loan-calculations','print-qualification-form','update-reference-cosigner'];

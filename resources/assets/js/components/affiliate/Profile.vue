@@ -702,6 +702,10 @@ export default {
         this.loading = true;
         let res = await axios.get(`pension_entity`);
         this.pension_entity = res.data;
+        this.pension_entity.unshift({
+          id: null,
+          name: "-------"
+        })
       } catch (e) {
         this.dialog = false;
         console.log(e);

@@ -15,7 +15,7 @@
                   {{ affiliate.identity_card }}
                 </h6>
                 <h6>
-                  <strong><b style="color:white">PRESTATARIO: </b></strong>
+                  <strong><b style="color:white">TITULAR: </b></strong>
                   {{ $options.filters.fullName(affiliate, true) }}
                 </h6>
                 <h6><strong><b style="color:white">GRADO: </b></strong> {{ degree_name }}</h6>

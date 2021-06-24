@@ -18,7 +18,8 @@ class CreatePeriodsTable extends Migration
             $table->year('year');
             $table->integer('month');
             $table->unique(['year', 'month']);
-            $table->float('amount_concilation', 10, 2)->nullable();
+          	$table->boolean('import_command')->default(false);
+          	$table->boolean('import_senasir')->default(false);
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

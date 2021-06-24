@@ -1,45 +1,10 @@
 {
-    "current_page": 1,
-    "data": [
-        {
-            "id": 2,
-            "year": 2021,
-            "month": 6,
-            "amount_concilation": null,
-            "description": null,
-            "created_at": "2021-05-20T21:15:53.000000Z",
-            "updated_at": "2021-05-20T21:15:53.000000Z",
-            "deleted_at": null
-        },
-        {
-            "id": 4,
-            "year": 2021,
-            "month": 7,
-            "amount_concilation": null,
-            "description": null,
-            "created_at": "2021-05-20T21:16:52.000000Z",
-            "updated_at": "2021-05-20T21:16:52.000000Z",
-            "deleted_at": null
-        },
-        {
-            "id": 5,
-            "year": 2020,
-            "month": 7,
-            "amount_concilation": null,
-            "description": null,
-            "created_at": "2021-05-21T00:09:04.000000Z",
-            "updated_at": "2021-05-21T00:09:04.000000Z",
-            "deleted_at": null
-        }
-    ],
-    "first_page_url": "http://192.168.2.242/api/v1/periods?page=1",
-    "from": 1,
-    "last_page": 1,
-    "last_page_url": "http://192.168.2.242/api/v1/periods?page=1",
-    "next_page_url": null,
-    "path": "http://192.168.2.242/api/v1/periods",
-    "per_page": 10,
-    "prev_page_url": null,
-    "to": 3,
-    "total": 3
+    "year": 2021,
+    "month": 6,
+    "description": null,
+    "import_command": false,
+    "import_senasir": false,
+    "updated_at": "2021-06-23T17:07:13.000000Z",
+    "created_at": "2021-06-23T17:07:13.000000Z",
+    "id": 7
 }

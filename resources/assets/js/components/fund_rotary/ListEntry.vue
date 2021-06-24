@@ -12,7 +12,9 @@
             :headers="headers"
             :items="fund_rotatory_list"
             :loading="loading"
-            :footer-props="{ itemsPerPageOptions: [50,100] }"
+            :options.sync="options"
+            :server-items-length="totalFundRotatoryEntry"
+            :footer-props="{ itemsPerPageOptions: [8, 15, 30] }"
             multi-sort
             single-expand
             :key="refreshFoundRotatoryTable"
@@ -167,8 +169,10 @@
 
                   <!--<v-tooltip bottom>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon small v-on="on" color="error" @click.stop="">
-                        <v-icon>mdi-mdi-delete</v-icon>
+                      <v-btn 
+                      v-if="last(props.item)"
+                      icon small v-on="on" color="error" @click.stop="">
+                        <v-icon>mdi-delete</v-icon>
                       </v-btn>
                     </template>
                     <span>Anular registro</span>
@@ -241,9 +245,9 @@ export default {
     search: "",
     options: {
       page: 1,
-      //itemsPerPage: 8,
-      sortBy: ["code_entry"],
-      sortDesc: [false],
+      itemsPerPage: 8,
+      //sortBy: ["code_entry"],
+      //sortDesc: [false],
     },
     fund_rotatory_list: [],
     totalFundRotatoryEntry: 0,
@@ -363,9 +367,7 @@ export default {
       },
     ],
     fund_rotatory_item: {},
-    editedIndexPerRef: -1,
     dialog: false,
-    //editedItem: {},
     defaultItem: {},
     refreshFoundRotatoryTable: 0,
   }),
@@ -379,9 +381,7 @@ export default {
     options: function (newVal, oldVal) {
       if (
         newVal.page != oldVal.page ||
-        newVal.itemsPerPage != oldVal.itemsPerPage ||
-        newVal.sortBy != oldVal.sortBy ||
-        newVal.sortDesc != oldVal.sortDesc
+        newVal.itemsPerPage != oldVal.itemsPerPage
       ) {
         this.getFundRotary();
       }
@@ -394,28 +394,27 @@ export default {
     this.getFundRotary();
   },
   methods: {
-    async getFundRotary(params) {
+    async getFundRotary() {
       try {
         this.loading = true;
-        let res = await axios.get(`fund_rotatory_entry_output` /*, {
+        let res = await axios.get(`fund_rotatory_entry_output` , {
           params: {
             page: this.options.page,
             per_page: this.options.itemsPerPage,
             //sortBy: this.options.sortBy,
-            sortDesc: this.options.sortDesc,
+            //sortDesc: this.options.sortDesc,
             //search: this.search
           },
         }
-        */
         );
 
         this.fund_rotatory_list = res.data.data;
         console.log(this.fund_rotatory_list);
-        /*this.totalFundRotatoryEntry = res.data.total;
+        this.totalFundRotatoryEntry = res.data.total;
         delete res.data["data"];
         this.options.page = res.data.current_page;
         this.options.itemsPerPage = parseInt(res.data.per_page);
-        this.options.totalItems = res.data.total;*/
+        this.totalItems = res.data.total;
         this.refreshFoundRotatoryTable++
       } catch (e) {
         console.log(e);

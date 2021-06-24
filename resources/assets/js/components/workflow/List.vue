@@ -25,6 +25,12 @@
     <template v-slot:[`item.lenders`]="{ item }">
       {{ item.lenders[0] ? $options.filters.fullName(item.lenders[0], true) : '' }}
     </template>
+    <template v-slot:[`item.lenders[0].spouse.identity_card`]="{ item }">
+      {{ item.lenders[0].spouse ? item.lenders[0].spouse.identity_card : ''}}
+    </template>
+    <template v-slot:[`item.lenders[0].spouse`]="{ item }">
+      {{ item.lenders[0].spouse ? $options.filters.fullName(item.lenders[0].spouse, true) : '' }}
+    </template>
     <template v-slot:[`item.role_id`]="{ item }">
       {{ $store.getters.roles.find(o => o.id == item.role_id).display_name }}
     </template>
@@ -184,14 +190,27 @@ export default {
         align: 'center',
         sortable: true
       }, {
-        text: 'CI',
+        text: 'CI Afiliado',
         value: 'lenders[0].identity_card',
         class: ['normal', 'white--text'],
         align: 'center',
         sortable: true
       }, {
-        text: 'Nombre',
+        text: 'Nombre Afiliado',
         value: 'lenders',
+        class: ['normal', 'white--text'],
+        align: 'center',
+        sortable: true
+      },
+      {
+        text: 'CI Conyugue',
+        value: 'lenders[0].spouse.identity_card',
+        class: ['normal', 'white--text'],
+        align: 'center',
+        sortable: true
+      }, {
+        text: 'Nombre Conyugue',
+        value: 'lenders[0].spouse',
         class: ['normal', 'white--text'],
         align: 'center',
         sortable: true

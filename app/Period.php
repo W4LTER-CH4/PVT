@@ -8,5 +8,5 @@ class Period extends Model
 {
     public $timestamps = true;
     public $guarded = ['id'];
-    public $fillable = ['year','month','amount_concilation', 'description'];
+    public $fillable = ['year','month','amount_concilation', 'description','import_command','import_senasir'];
 }
