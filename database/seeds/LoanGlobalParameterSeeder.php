@@ -14,7 +14,7 @@ class LoanGlobalParameterSeeder extends Seeder
     {
         $global_parameters = [
             ['offset_ballot_day' => 7,
-            'offset_interest_day' => 16,
+            'offset_interest_day' => 15,
             'livelihood_amount' => 510,
             'min_service_years' =>1,
             'min_service_years_adm' =>2,

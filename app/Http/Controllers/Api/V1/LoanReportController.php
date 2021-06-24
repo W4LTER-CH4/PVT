@@ -648,7 +648,7 @@ class LoanReportController extends Controller
              array("Nro Prestamo", "Fecha de desembolso", "Ciudad", "tipo", "Matricula Titular", "Matricula Derecho Habiente", "CI", "Extension", "Primer Nombre", "Segundo Nombre", "Paterno", "Materno", "Saldo Actual", "Cuota Fija Mensual", "Descuento Programado", "Interes")
          );
          foreach($loans as $loan){
-             if(Carbon::parse($loan->disbursement_date)->day < LoanGlobalParameter::first()->offset_interest_day){
+             if(Carbon::parse($loan->disbursement_date)->day <= LoanGlobalParameter::first()->offset_interest_day){
                  if(in_array($loan->procedure_modality_id, $id_comando))
                  {
                      foreach($loan->lenders as $lender)
@@ -706,7 +706,7 @@ class LoanReportController extends Controller
          $sub_month = Carbon::parse($request->date)->subMonth()->format('m');
          $loans_before = Loan::whereMonth('disbursement_date', $sub_month)->whereYear('disbursement_date', $year)->get();//considerar caso fin de año
          foreach($loans_before as $loan){
-             if(Carbon::parse($loan->disbursement_date)->day >= LoanGlobalParameter::first()->offset_interest_day){
+             if(Carbon::parse($loan->disbursement_date)->day > LoanGlobalParameter::first()->offset_interest_day){
                  if(in_array($loan->procedure_modality_id, $id_comando))
                  {
                      foreach($loan->lenders as $lender)

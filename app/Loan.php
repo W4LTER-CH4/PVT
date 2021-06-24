@@ -378,7 +378,7 @@ class Loan extends Model
                 $quota->estimated_days->current +=1;
                 $quota->paid_days->current_generated = Util::round2(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
                 $quota->estimated_days->current_generated = Util::round2(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
-                if($date_ini->day >= LoanGlobalParameter::latest()->first()->offset_interest_day){
+                if($date_ini->day > LoanGlobalParameter::latest()->first()->offset_interest_day){
                     $date_fin = CarbonImmutable::parse($date_ini->endOfMonth());
                     $rest_days_of_month = $date_fin->diffInDays($date_ini);
                     $partial_amount = ($quota->balance * $interest->daily_current_interest * $rest_days_of_month);

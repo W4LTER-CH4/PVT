@@ -908,7 +908,7 @@ class LoanPaymentController extends Controller
                                 $procedure_modality = $procedure_modality_command;
                             if($lender->affiliate_state->name == 'Jubilado' && $lender->affiliate_state && $lender->pension_entity->name == 'SENASIR') 
                                 $procedure_modality = $procedure_modality_senasir;
-                            if($disbursement_day < LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
+                            if($disbursement_day <= LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
                                 LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
                                 $loans_quantity++;
                             }
@@ -928,7 +928,7 @@ class LoanPaymentController extends Controller
                             $paid_by = "G";
                             if($guarantor->affiliate_state->name == 'Servicio' || $guarantor->affiliate_state->name == 'Disponibilidad') $procedure_modality = $procedure_modality_command;
                             if($guarantor->affiliate_state->name == 'Jubilado' && $guarantor->affiliate_state && $guarantor->pension_entity->name == 'SENASIR') $procedure_modality = $procedure_modality_senasir;
-                            if($disbursement_day < LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
+                            if($disbursement_day <= LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
                                 LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $guarantor->pivot->quota_treat, $guarantor->id);
                                 $loans_quantity++;
                             }
@@ -948,7 +948,7 @@ class LoanPaymentController extends Controller
                         $paid_by = "T";
                         if($lender->affiliate_state->name == 'Servicio' || $lender->affiliate_state->name == 'Disponibilidad') $procedure_modality = $procedure_modality_command;
                         if($lender->affiliate_state->name == 'Jubilado' && $lender->pension_entity && $lender->pension_entity->name == 'SENASIR') $procedure_modality = $procedure_modality_senasir;
-                        if($disbursement_day < LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
+                        if($disbursement_day <= LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->toDateString() == Carbon::parse($date_payment)->toDateString()){
                             LoanPayment::registry_payment($categorie->id,$loan, $estimated_date, $description, $procedure_modality->id, $voucher, $paid_by, $lender->pivot->quota_treat, $lender->id);
                             $loans_quantity++;
                         }
@@ -1618,5 +1618,36 @@ class LoanPaymentController extends Controller
            return $list_loan;
       }
    }
+
+    public function import_payments(request $request)
+    {
+        $tempory = "create temporary table payments_aux(period_id integer, identity_card varchar, amount float)";
+        $temporary = DB::select($temporary);
+
+        $copy = "copy payments_aux(identity_card, amount)
+                FROM '$request->ubication'
+                WITH DELIMITER ':' CSV header;";
+        $copy = DB::select($copy);
+
+        $update = "update payments_aux
+                    set period_id = 9";
+        $update = DB::select($update);
+
+        $update2 = "update payments_aux
+                    set identity_card = REPLACE(LTRIM(REPLACE(identity_card,'0',' ')),' ','0')";
+        $update2 = DB::select($update2);
+
+        $insert = "INSERT INTO import_command_payments(period_id, identity_card, amount)
+                    SELECT period_id, identity_card, amount FROM payments_aux;";
+        $insert = DB::select($insert);
+
+        $drop = "drop table if exists payments_aux";
+        $drop = DB::select($drop);
+
+        $consult = "select count(*) from import_command_payments where period_id = 9";
+        $consult = DB::select($consult);
+
+        return $consult;
+    }
 }
     
