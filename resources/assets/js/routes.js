@@ -15,6 +15,7 @@ import FlowAdd from '@/components/workflow/Add'
 import PaymentAdd from '@/components/payment/Add'
 import LoanPaymentIndex from '@/components/payment/Index'
 import ImportExport from '@/components/payment/ImportExport'
+import ImportExportPayment from '@/components/payment/ImportExportPayment'
 import ListLoanGenerate from '@/components/payment/ListLoanGenerate'
 import ListPaymentGenerate from '@/components/payment/ListPaymentGenerate'
 import ChangeRol from '@/components/dashboard/ChangeRol'
@@ -129,6 +130,14 @@ export const routes = [
     path: '/importExport',
     name: 'ImportExport',
     component: ImportExport,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/importExportPayment',
+    name: 'ImportExportPayment',
+    component: ImportExportPayment,
     meta: {
       requiresAuth: true
     }

@@ -97,6 +97,12 @@ Route::group([
 
         Route::apiResource('fund_rotatory_entry', 'Api\V1\FundRotatoryController')->only('index', 'show', 'store', 'update', 'destroy');//Fondo rotatorio
         Route::get('print_fund_rotary_output/{loan_id}', 'Api\V1\FundRotatoryOutputController@print_fund_rotary');
+        //import payments
+        Route::get('agruped_payments', 'Api\V1\ImportationController@agruped_payments');
+        Route::get('importation_payments_prueba', 'Api\V1\ImportationController@importation_payment');
+
+        Route::get('upload_fail_validated_group', 'Api\V1\ImportationController@upload_fail_validated_group');
+
         //get_list_month
         // Afiliados
         Route::group([
@@ -230,7 +236,7 @@ Route::group([
             Route::post('loan/{loan}/payment','Api\V1\LoanController@set_payment');
             Route::post('loan_payment/importation_command_senasir', 'Api\V1\LoanPaymentController@importation_command_senasir');//importacion de pagos
             Route::post('loan_payment/importation_pending_command_senasir', 'Api\V1\LoanPaymentController@importation_pending_command_senasir');//importacion de pendientes de pagos
-            Route::post('loan_payment/upload_file_payment', 'Api\V1\LoanPaymentController@upload_file_payment'); 
+            Route::post('loan_payment/upload_file_payment', 'Api\V1\ImportationController@upload_file_payment'); 
         });
         Route::group([
             'middleware' => 'permission:update-payment-loan'

@@ -44,13 +44,22 @@ class PeriodController extends Controller
      * @responseFile responses/periods/store.200.json
      */
     public function store(Request $request)
-    { 
-      $estimated_date = Carbon::now()->endOfMonth();
-      $period = Period::where('year',$estimated_date->year)->where('month',$estimated_date->month)->first();
-      $last_period = Period::orderBy('id')->get()->last();
-      $last_date=Carbon::parse($last_period->year.'-'.$last_period->month);
-      if($period == null){    
-        if($last_period->import_command && $last_period->import_senasir){ 
+    {  $last_period = Period::orderBy('id')->get()->last();
+     
+       $result = [];
+        if(!$last_period){
+        $estimated_date = Carbon::now()->endOfMonth();
+        $period = new Period;
+            $period->year = $estimated_date->year;
+            $period->month = $estimated_date->month;
+            $period->description = $request->description;
+            $period->import_command = false;
+            $period->import_senasir = false;          
+            return Period::create($period->toArray());
+        }else{  
+        $last_date=Carbon::parse($last_period->year.'-'.$last_period->month); 
+        if($last_period->import_command && $last_period->import_senasir){    
+            $estimated_date = $last_date->addMonth();
             $period = new Period;
             $period->year = $estimated_date->year;
             $period->month = $estimated_date->month;
@@ -60,13 +69,10 @@ class PeriodController extends Controller
             return Period::create($period->toArray());
             } 
         else{
-         $result['message'] = "Para realizar la creación de un nuevo periodo, debe realizar la confirmación de los pagos de Comando y Senasir del periodo de ".$last_date->isoFormat('MMMM');
+          $result['message'] = "Para realizar la creación de un nuevo periodo, debe realizar la confirmación de los pagos de Comando y Senasir del periodo de ".$last_date->isoFormat('MMMM');
         }
-       } 
-       else{
-        $result['message'] = "El periodo ya existe";
-       }
-       return $result; 
+        }  
+        return $result;      
     }
 
     /**

@@ -15,7 +15,7 @@
                   {{ affiliate.identity_card }}
                 </h6>
                 <h6>
-                  <strong><b style="color:white">TITULAR: </b></strong>
+                  <strong><b style="color:white"> {{Object.keys(spouse).length === 0 ? 'PRESTATARIO':'TITULAR' }}: </b></strong>
                   {{ $options.filters.fullName(affiliate, true) }}
                 </h6>
                 <h6><strong><b style="color:white">GRADO: </b></strong> {{ degree_name }}</h6>
@@ -32,7 +32,7 @@
                   <v-icon large left style="font-size: 50px;">
                     mdi-account-heart
                   </v-icon>
-                  <h6><strong><b style="color:white">CONYUGUE:</b></strong> {{ $options.filters.fullName(spouse, true) }}</h6>
+                  <h6><strong><b style="color:white">PRESTATARIO:</b></strong> {{ $options.filters.fullName(spouse, true) }}</h6>
                   <h6><strong><b style="color:white">C.I: </b></strong> {{ spouse.identity_card }}</h6>
                 </v-card-text>
               </v-card>

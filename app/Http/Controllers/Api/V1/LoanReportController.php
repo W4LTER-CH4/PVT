@@ -132,7 +132,7 @@ class LoanReportController extends Controller
                        Util::money_format($row->balance_loan),
                        $row->parent_reason_loan,//ampliacion
                        Util::money_format($row->amount_disbursement),//monto desembolsado
-                       $row->refinancing_balance? Util::money_format($row->payment_amount_ampli->stimated_date):'0',//MONTO REFINANCIADO//MONTO REFINANCIADO
+                       $row->payment_amount_ampli? Util::money_format($row->payment_amount_ampli->stimated_date):'0,00',//MONTO REFINANCIADO//MONTO REFINANCIADO
                        Util::money_format($row->amount_disbursement_liquido),//liquido desembolsado
                        $row->term_loan,//plazo
                        $row->state_loan,//estado del prestamo
@@ -269,7 +269,7 @@ class LoanReportController extends Controller
                        $row->last_payment? Util::money_format($row->last_payment->previous_balance-$row->last_payment->capital_payment):' sin registro',//Saldo a fecha de corte
                        Util::money_format($row->amount_approved),//monto aprobado 
                        $row->refinancing_balance? Util::money_format($row->refinancing_balance):Util::money_format($row->amount_approved),//MONTO DESEMBOLSADO
-                       $row->refinancing_balance? Util::money_format($row->payment_amount_ampli->stimated_date):'0',//MONTO REFINANCIADO
+                       $row->payment_amount_ampli? Util::money_format($row->payment_amount_ampli->stimated_date):'0',//MONTO REFINANCIADO
                        $row->parent_reason? $row->parent_reason:'no',//SI ES AMPLIACION
                        Util::money_format($row->indebtedness_calculated_loan_affiliate)//indice de endeudamineto
                       
@@ -363,7 +363,7 @@ class LoanReportController extends Controller
                       $row->last_payment? Util::money_format($row->last_payment->previous_balance-$row->last_payment->capital_payment):' sin registro',//Saldo a fecha de corte
                       Util::money_format($row->amount_approved),//monto aprobado 
                       $row->refinancing_balance? Util::money_format($row->refinancing_balance):Util::money_format($row->amount_approved),//MONTO DESEMBOLSADO
-                      $row->refinancing_balance? Util::money_format($row->payment_amount_ampli->stimated_date):'0',//MONTO REFINANCIADO
+                      $row->payment_amount_ampli? Util::money_format($row->payment_amount_ampli->stimated_date):'0',//MONTO REFINANCIADO
                       $row->parent_reason? $row->parent_reason:'no',//SI ES AMPLIACION
                       Util::money_format($row->indebtedness_calculated_loan_affiliate)//indice de endeudamineto
                    ));

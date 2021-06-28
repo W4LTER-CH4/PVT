@@ -5,10 +5,10 @@
       <Navbar :expanded.sync="expandNavbar" v-if="$store.getters.user"/>
     </template>
     <Appbar :expanded.sync="expandNavbar" v-if="$store.getters.user"/>
-    <v-content>
+    <v-main>
       <router-view></router-view>
       <div ref="container"></div>
-    </v-content>
+    </v-main>
     <Footer/>
   </v-app>
 </template>

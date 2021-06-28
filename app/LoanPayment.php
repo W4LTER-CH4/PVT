@@ -169,7 +169,7 @@ class LoanPayment extends Model
             $payment_date = Carbon::parse($payment_date)->format('d-m-Y');
             if ($estimated_date < $payment_date || $first)
                 $estimated_date = Carbon::parse($payment_date)->endOfMonth()->format('d-m-Y');
-            if (Carbon::parse($payment_date)->day >= LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->diffInMonths(Carbon::parse($payment_date)) == 0) {
+            if (Carbon::parse($payment_date)->day > LoanGlobalParameter::latest()->first()->offset_interest_day && Carbon::parse($estimated_date)->diffInMonths(Carbon::parse($payment_date)) == 0) {
                 $estimated_date = Carbon::parse($payment_date)->startOfMonth()->addMonth()->endOfMonth();
             }
         } else {

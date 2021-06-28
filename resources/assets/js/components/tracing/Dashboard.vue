@@ -11,7 +11,7 @@
                     <h6><v-icon large left style="font-size: 25px;">
                       mdi-shield-account
                     </v-icon>
-                    <strong><b style="color:white">PRESTATARIO: </b></strong>
+                    <strong><b style="color:white">{{Object.keys(spouse).length === 0 ? 'PRESTATARIO':'TITULAR' }}: </b></strong>
                       {{ $options.filters.fullName(affiliate, true) }}</h6>
                     <h6><strong><b style="color:white">CI: </b></strong>
                       {{ affiliate.identity_card }}</h6>
@@ -19,7 +19,7 @@
                       <h6><v-icon large left style="font-size: 25px;">
                         mdi-account-heart
                         </v-icon>
-                      <strong><b style="color:white">CONYUGUE:</b></strong> {{ $options.filters.fullName(spouse, true) }}
+                      <strong><b style="color:white">PRESTATARIO:</b></strong> {{ $options.filters.fullName(spouse, true) }}
                       <b style="color:white">C.I: </b> {{ spouse.identity_card }}</h6>
                     </div>
                     <div v-for="(lenders,i) in loan.lenders" :key="i" v-show="loan.lenders.length > 1">

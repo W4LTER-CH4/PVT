@@ -58,6 +58,13 @@
     "params": {}
   },
   {
+    "href": "ImportExportPayment",
+    "title": "Imp./Exp. Cobros",
+    "icon": "mdi-bank-transfer",
+    "permission": "show-payment-loan",
+    "params": {}
+  },
+  {
     "href": "listVouchers",
     "title": "Tesoreria",
     "icon": "mdi-bank",
