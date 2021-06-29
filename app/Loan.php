@@ -340,6 +340,8 @@ class Loan extends Model
         $grace_period = LoanGlobalParameter::latest()->first()->grace_period;
             $total_interests = 0;
             $partial_amount = 0;
+            if($estimated_quota == null || $estimated_quota == 0)
+                $estimated_quota = $this->estimated_quota;
             $total_amount = Util::round2($estimated_quota);$amount = 0;
             if($liquidate)
                 $amount = $this->balance;
@@ -385,7 +387,8 @@ class Loan extends Model
                     $quota->paid_days->penal = 0;
                     $quota->penal_generated = 0;
                     $quota->estimated_days->penal = 0;
-                    $amount = $amount + $partial_amount;
+                    if($estimated_quota == $this->estimated_quota)
+                        $amount = $amount + $partial_amount;
                     $quota->estimated_days->penal_generated = 0;
                 }
             }

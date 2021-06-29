@@ -53,7 +53,7 @@
                 <v-col cols="12" md="4" class="py-0"
                   v-for="(item, i) in month"
                   :key="i">
-                  <v-card color="black" class="headline font-weight-bold"  max-width="90%" max-height="500" >
+                  <v-card color="#454545" class="headline font-weight-bold"  max-width="90%" max-height="500" >
                     <v-card-text >
                       <v-row>
                         <v-col cols="4" md="12" class="py-0">
@@ -69,12 +69,12 @@
                               <v-btn
                                 fab
                                 dark
-                                x-small
-                                :color="'teal'"
+                                small
+                                :color="'info'"
                                 bottom
                                 right
                                 v-on="on"
-                                @click.stop="importacionComando(item.month)"
+                                @click.stop="importacionComando(item.month, item.id)"
                                >
                                 <v-icon style="color:white">mdi-warehouse</v-icon>
                               </v-btn>
@@ -90,11 +90,11 @@
                               <v-btn
                                 fab
                                 dark
-                                x-small
-                                :color="'teal'"
+                                small
+                                :color="'info'"
                                 right
                                 v-on="on"
-                                 @click.stop="importacionSenasir(item.month)"
+                                 @click.stop="importacionSenasir(item.month, item.id)"
                               >
                                 <v-icon  style="color:white" >mdi-home-analytics</v-icon>
                               </v-btn>
@@ -120,7 +120,7 @@
                               fab
                               dark
                               small
-                              :color="'black'"
+                              :color="'#454545'"
                               bottom
                               right
                               v-on="on"
@@ -139,7 +139,7 @@
                               fab
                               dark
                               small
-                              :color="'black'"
+                              :color="'#454545'"
                               bottom
                               right
                               v-on="on"
@@ -166,13 +166,13 @@
             >
               <v-card>
                 <v-toolbar dark color="primary" >
-                  <v-btn icon dark @click="dialog = false" >
+                  <v-btn icon dark @click="closePayment()" >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                   <v-toolbar-title>IMPORTACION {{title}}</v-toolbar-title>
                   <v-spacer></v-spacer>
                   <v-toolbar-items>
-                    <v-btn dark text v-show="importacion" @click="dialog = false" >
+                    <v-btn dark text v-show="importacion" @click="importPayment()" >
                       Ejecutar la Importación
                     </v-btn>
                   </v-toolbar-items>
@@ -248,7 +248,8 @@
                           <v-card-text >
                              <v-icon style="color:white">mdi-arrow-right-thick</v-icon>
                             <b style="color:white" >
-                             CI : Carnet de identidad del afiliado
+                             CI / MATRICULA: CI del afiliado cuando sea una importacion por COMANDO.
+                             Matricula del afiliado cuando sea una importacion por SENASIR.
                             </b>
                             <br/>
                             <v-icon style="color:white">mdi-arrow-right-thick</v-icon>
@@ -256,15 +257,6 @@
                              MONTO : Monto de la importación
                             </b>
                             <br/>
-                            <v-icon style="color:white">mdi-arrow-right-thick</v-icon>
-                            <b style="color:white" >
-                             TIPO : S si es senasir, C si es comando
-                            </b>
-                            <br/>
-                            <v-icon style="color:white">mdi-arrow-right-thick</v-icon>
-                            <b style="color:white" >
-                             FECHA PERIODO : Fecha de la importación
-                            </b>
                           </v-card-text>
                         </v-card>
                         <br/>
@@ -282,17 +274,9 @@
                             <b style="color:white" >
                              MONTO
                             </b>
-                            <v-icon style="color:white">*</v-icon>
-                            <b style="color:white" >
-                             TIPO
-                            </b>
-                            <v-icon style="color:white">*</v-icon>
-                            <b style="color:white" >
-                             FECHA PERIODO
-                            </b>
                             <br/>
                             <b style="color:white" >
-                              82716152,1256.56,C,12-06-2021
+                              82716152:1256.56
                             </b>
                           </v-card-text>
                         </v-card>
@@ -317,9 +301,9 @@
 export default {
   name: "payment-ImportExport",
   data: () => ({
-  
+
   bus: new Vue(),
-  importacion:false,
+  importacion:true,
 
   dialog: false,
   aux_period:null,
@@ -426,6 +410,7 @@ export default {
             this.toastr.error(res.data.message)
          }else{
             this.month.push(res.data.month)
+            this.period_year=res.data.year
 
             this.mes= res.data.id
             this.getMonthYear()
@@ -438,15 +423,17 @@ export default {
         this.loading = false;
       }
     },
-     async importacionComando(id){
+     async importacionComando(month, id){
 
-      this.aux_period= id,
+      this.aux_period= month
+      this.mes=id
       this.dialog=true
       this.import_export.state_affiliate = 'C'
       this.title= 'COMANDO'
     },
-    async importacionSenasir(id){
-      this.aux_period= id,
+    async importacionSenasir(month, id){
+      this.aux_period= month
+      this.mes=id
       this.dialog=true
       this.import_export.state_affiliate = 'S'
       this.title= 'SENASIR'
@@ -481,7 +468,7 @@ export default {
       let res = await axios.get(`agruped_payments`,{
         params:{
         origin: this.import_export.state_affiliate,
-        period: this.aux_period
+        period: this.mes
         }
       })
        if(res.data.validated_agroup){
@@ -500,8 +487,8 @@ export default {
           //headers: { Accept: "text/plain" },
           data: formData,
           params: {
-            origin:this.import_export.state_affiliate,
-            period: this.aux_period
+            origin: this.import_export.state_affiliate,
+            period: this.mes
           }
         })
           .then((response) => {
@@ -522,6 +509,47 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    async importPayment(){
+    try {
+      this.loading = true
+      if(this.import_export.state_affiliate=='C'){
+          this.toastr.error('Comando')
+
+      }else{
+        let res = await axios.get(`importation_payments_senasir`,{
+        params:{
+          period: this.mes
+        }
+      })
+      if(res.data.importation_validated){
+          this.toastr.success('Importado Correctamente: '+res.data.paid_by_lenders+ ' titulares y '+ res.data.paid_by_guarantors+' garantes' )
+      }
+      else{
+        this.toastr.error(res.data.message)
+      }
+     }
+       } catch (e) {
+        this.loading = false;
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async closePayment(){
+        let res = await axios.get(`rollback_copy_groups_payments`,{
+        params:{
+          origin: this.import_export.state_affiliate,
+          period: this.mes
+        }
+      })
+      if(res.data.validated_rollback){
+          this.toastr.success(res.data.message)
+      }
+      else{
+        this.toastr.error(res.data.message)
+      }
+     this.dialog=false
     },
   },
 };

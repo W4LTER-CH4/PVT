@@ -129,7 +129,7 @@ class PeriodController extends Controller
         $request->validate([
             'year' => 'required|exists:periods,year'
         ]);
-        $period = Period::where('year',$request->year)->get();
+        $period = Period::where('year',$request->year)->orderBy('month', 'asc')->get();
         return $period;
     }
 

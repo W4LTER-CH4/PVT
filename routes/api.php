@@ -99,9 +99,14 @@ Route::group([
         Route::get('print_fund_rotary_output/{loan_id}', 'Api\V1\FundRotatoryOutputController@print_fund_rotary');
         //import payments
         Route::get('agruped_payments', 'Api\V1\ImportationController@agruped_payments');
-        Route::get('importation_payments_prueba', 'Api\V1\ImportationController@importation_payment');
+        Route::get('importation_payments_senasir', 'Api\V1\ImportationController@importation_payment_senasir');//senasir pagos
 
         Route::get('upload_fail_validated_group', 'Api\V1\ImportationController@upload_fail_validated_group');
+
+        Route::get('copy_payments', 'Api\V1\ImportationController@copy_payments');
+        Route::get('create_payments_command', 'Api\V1\ImportationController@create_payments_command');
+
+        Route::get('rollback_copy_groups_payments', 'Api\V1\ImportationController@rollback_copy_groups_payments');
 
         //get_list_month
         // Afiliados
