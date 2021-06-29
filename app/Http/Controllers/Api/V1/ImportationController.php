@@ -489,6 +489,7 @@ class ImportationController extends Controller
             'file' => 'required',
             'state'=> 'string|in:C,S',       
          ]);
+         $result['validate'] = false;
         try {
             $extencion= strtolower($request->file->getClientOriginalExtension()); 
             if($extencion == "csv"){

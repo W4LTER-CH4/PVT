@@ -28,8 +28,9 @@ class AddressForm extends FormRequest
     {
         $rules = [
             'city_address_id' => 'exists:cities,id',
-            'zone' =>'nullable|min:3',
-            'street' =>'nullable|min:3'
+            'zone' =>'nullable',
+            'street' =>'nullable',
+            'description' =>'nullable|min:3'
         ];
         switch ($this->method()) {
             case 'POST': {
@@ -50,7 +51,8 @@ class AddressForm extends FormRequest
         return [
             'zone' => 'trim|uppercase',
             'street' => 'trim|uppercase',
-            'number_address' => 'trim|uppercase'
+            'number_address' => 'trim|uppercase',
+            'description' =>'trim|uppercase'
         ];
     }
 }
