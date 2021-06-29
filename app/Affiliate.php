@@ -378,9 +378,11 @@ class Affiliate extends Model
       if($modality){
           $modality = ProcedureModality::findOrFail($modality); //evaluando categoria acorde a la modalidad
           if($modality->loan_modality_parameter->min_guarantor_category <= $this->category->percentage && $this->category->percentage <= $modality->loan_modality_parameter->max_guarantor_category) $guarantor = true;
+          else $guarantor = false;
       }else{
           $loan_modality_parameter = LoanModalityParameter::get();
           if( $loan_modality_parameter->min('min_guarantor_category')<= $this->category->percentage && $this->category->percentage <= $loan_modality_parameter->max('max_guarantor_category')) $guarantor = true; //evaluando categoria sin tomar en cuenta la modalidad
+          else $guarantor = false;
       }  
       if($guarantor){
           $loan_global_parameter = LoanGlobalParameter::latest()->first();
