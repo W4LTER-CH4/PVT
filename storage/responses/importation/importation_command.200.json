@@ -1,15 +1,16 @@
 {
     "period": {
-        "id": 11,
+        "id": 12,
         "year": 2021,
-        "month": 6,
+        "month": 7,
         "import_command": true,
-        "import_senasir": true,
+        "import_senasir": false,
         "description": null,
         "created_at": "2021-06-25T21:29:40.000000Z",
         "updated_at": "2021-06-25T21:29:40.000000Z",
         "deleted_at": null
     },
-    "paid_by_lenders": 0,
-    "paid_by_guarantors": 0
+    "paid_by_lenders": 27,
+    "paid_by_guarantors": 1,
+    "importation_validated": false
 }
