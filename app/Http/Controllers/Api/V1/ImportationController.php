@@ -364,9 +364,11 @@ class ImportationController extends Controller
 
     public function copy_payments(request $request)
     {
-       
         DB::beginTransaction();
         try{
+            $file_validate = Storage::disk('ftp')->get($request->location."/".$request->file_name);
+            $file_validate = explode("\n",$file_validate);
+            $file_validate = $file_validate[0]; 
             $base_path = $request->location."/".$request->file_name;
             $base_path ='ftp://'.env('FTP_HOST').'/'.$base_path;
             $username =env('FTP_USERNAME');
@@ -376,61 +378,68 @@ class ImportationController extends Controller
                 $drop = "drop table if exists payments_aux";
                 $drop = DB::select($drop);
                 if($request->type == 'C'){
-                    $temporary = "create temporary table payments_aux(period_id integer, identity_card varchar, amount float)";
-                    $temporary = DB::select($temporary);
-                    $copy = "copy payments_aux(identity_card, amount)
-                            FROM PROGRAM 'wget -q -O - $@  --user=$username --password=$password $base_path'
-                            WITH DELIMITER ':' CSV header;";
-                    $copy = DB::select($copy);
-                   // Storage::disk('public')->delete($request->file_name);
-
-                    $update = "update payments_aux
-                                set period_id = $request->period_id";
-                    $update = DB::select($update);
-
-                    $update2 = "update payments_aux
-                                set identity_card = REPLACE(LTRIM(REPLACE(identity_card,'0',' ')),' ','0')";
-                    $update2 = DB::select($update2);
-
-                    $insert = "INSERT INTO loan_payment_copy_commands(period_id, identity_card, amount)
-                                SELECT period_id, identity_card, amount FROM payments_aux;";
-                    $insert = DB::select($insert);
-                    DB::commit();
-
-                    $drop = "drop table if exists payments_aux";
-                    $drop = DB::select($drop);
-
-                    $consult = "select count(*) from loan_payment_copy_commands where period_id = $request->period_id";
-                    $consult = DB::select($consult);
-                    return $consult;
-                }
-                else{
-                    if($request->type == 'S'){
-                        $temporary = "create temporary table payments_aux(period_id integer, registration varchar, registration_dh varchar, amount float)";
+                    if($file_validate == "identity_card:amount"){
+                        $temporary = "create temporary table payments_aux(period_id integer, identity_card varchar, amount float)";
                         $temporary = DB::select($temporary);
-
-                        $copy = "copy payments_aux(registration, registration_dh, amount)
+                        $copy = "copy payments_aux(identity_card, amount)
                                 FROM PROGRAM 'wget -q -O - $@  --user=$username --password=$password $base_path'
                                 WITH DELIMITER ':' CSV header;";
                         $copy = DB::select($copy);
-                        //Storage::disk('public')->delete($request->file_name);
-
+                
                         $update = "update payments_aux
                                     set period_id = $request->period_id";
                         $update = DB::select($update);
 
-                        $insert = "INSERT INTO loan_payment_copy_senasirs(period_id, registration, registration_dh, amount)
-                                    SELECT period_id, registration, registration_dh, amount FROM payments_aux;";
+                        $update2 = "update payments_aux
+                                    set identity_card = REPLACE(LTRIM(REPLACE(identity_card,'0',' ')),' ','0')";
+                        $update2 = DB::select($update2);
+
+                        $insert = "INSERT INTO loan_payment_copy_commands(period_id, identity_card, amount)
+                                    SELECT period_id, identity_card, amount FROM payments_aux;";
                         $insert = DB::select($insert);
                         DB::commit();
 
                         $drop = "drop table if exists payments_aux";
                         $drop = DB::select($drop);
 
-                        $consult = "select count(*) from loan_payment_copy_senasirs where period_id = $request->period_id";
+                        $consult = "select count(*) from loan_payment_copy_commands where period_id = $request->period_id";
                         $consult = DB::select($consult);
                         return $consult;
-                        
+                    }
+                    else{
+                    return false;
+                    }
+                }
+                else{
+                    if($request->type == 'S'){
+                        if($file_validate == "registration:registration_dh:amount"){
+                            $temporary = "create temporary table payments_aux(period_id integer, registration varchar, registration_dh varchar, amount float)";
+                            $temporary = DB::select($temporary);
+
+                            $copy = "copy payments_aux(registration, registration_dh, amount)
+                                    FROM PROGRAM 'wget -q -O - $@  --user=$username --password=$password $base_path'
+                                    WITH DELIMITER ':' CSV header;";
+                            $copy = DB::select($copy);
+
+                            $update = "update payments_aux
+                                        set period_id = $request->period_id";
+                            $update = DB::select($update);
+
+                            $insert = "INSERT INTO loan_payment_copy_senasirs(period_id, registration, registration_dh, amount)
+                                        SELECT period_id, registration, registration_dh, amount FROM payments_aux;";
+                            $insert = DB::select($insert);
+                            DB::commit();
+
+                            $drop = "drop table if exists payments_aux";
+                            $drop = DB::select($drop);
+
+                            $consult = "select count(*) from loan_payment_copy_senasirs where period_id = $request->period_id";
+                            $consult = DB::select($consult);
+                            return $consult;
+                        }
+                        else{
+                        return false;
+                        }
                     }
                     else{
                         return "tipo inexistente";
@@ -515,9 +524,13 @@ class ImportationController extends Controller
                     $request['type'] = $request->state;
                     $request['file_name'] = $file_name;
                     $result['message'] = $this->copy_payments($request);
-                    
-                    $result['validate'] = true;
-                    return $result;
+                    if($result['message'] == false){
+                        $result['validate'] = false;
+                        $result['message'] = "La informacion requerida no coincide con el contenido";  
+                    }else{
+                        $result['validate'] = true;
+                        return $result;
+                    }               
                 }else{
                     $result['message'] = "No se puede ralizar el cargado del archivo ya que se realizo el registro de pago";  
                 }
