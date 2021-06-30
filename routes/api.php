@@ -85,11 +85,11 @@ Route::group([
         Route::get('report_loans_mora', 'Api\V1\LoanReportController@report_loans_mora');//8
         Route::get('loan_information', 'Api\V1\LoanReportController@loan_information');//reporte de nuevos prestamos desembolsados
         Route::get('loan_defaulted_guarantor', 'Api\V1\LoanReportController@loan_defaulted_guarantor');//reporte de nuevos prestamos desembolsados
-        Route::apiResource('periods', 'Api\V1\PeriodController')->only('index', 'show', 'store', 'update', 'destroy');//cambiar a cobranzas
+        Route::apiResource('periods', 'Api\V1\LoanPaymentPeriodController')->only('index', 'show', 'store', 'update', 'destroy');//cambiar a cobranzas
         Route::apiResource('fundRotatoryOutput', 'Api\V1\FundRotatoryOutputController');
         Route::get('fund_rotatory_entry_output', 'Api\V1\FundRotatoryController@get_fund_rotatori_entry_output');//listadosentradas y salidas
-        Route::get('get_list_month', 'Api\V1\PeriodController@get_list_month');//listado de meses por gestion
-        Route::get('get_list_year', 'Api\V1\PeriodController@get_list_year');//listado de meses por gestion
+        Route::get('get_list_month', 'Api\V1\LoanPaymentPeriodController@get_list_month');//listado de meses por gestion
+        Route::get('get_list_year', 'Api\V1\LoanPaymentPeriodController@get_list_year');//listado de meses por gestion
 
         Route::get('get_categorie_user', 'Api\V1\LoanPaymentCategorieController@get_categorie_user');//listado de meses por gestion
 
@@ -107,6 +107,8 @@ Route::group([
         Route::get('create_payments_command', 'Api\V1\ImportationController@create_payments_command');
 
         Route::get('rollback_copy_groups_payments', 'Api\V1\ImportationController@rollback_copy_groups_payments');
+
+        Route::get('report_amortization_importation_payments', 'Api\V1\ImportationReportController@report_amortization_importation_payments');
 
         //get_list_month
         // Afiliados

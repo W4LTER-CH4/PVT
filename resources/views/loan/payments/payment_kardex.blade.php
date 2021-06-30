@@ -175,7 +175,7 @@
                 <tr>
                     <td class="w-5">{{ $parent_loan_payment->quota_number }}</td>
                     <td class="w-9">{{ Carbon::parse($parent_loan_payment->estimated_date)->format('d/m/Y') }}</td>
-                    <td class="w-9">{{ Carbon::parse($parent_loan_payment->pay_date)->format('d/m/Y') }}</td>
+                    <td class="w-9">{{ Carbon::parse($parent_loan_payment->loan_payment_date)->format('d/m/Y') }}</td>
                     <td class="w-9 text-right">{{ Util::money_format($parent_loan_payment->capital_payment) }}</td> {{-- capital --}}
                     <td class="w-9 text-right">{{ Util::money_format($parent_loan_payment->interest_payment) }}</td>{{-- interes corriente --}}
                     <td class="w-9 text-right">{{ Util::money_format($parent_loan_payment->penal_payment) }}</td>{{-- interes penal --}}
@@ -223,7 +223,7 @@
                 <tr>
                     <td class="w-5">{{ $payment->quota_number }}</td>
                     <td class="w-9">{{ Carbon::parse($payment->estimated_date)->format('d/m/Y') }}</td>
-                    <td class="w-9">{{ Carbon::parse($payment->pay_date)->format('d/m/Y') }}</td>
+                    <td class="w-9">{{ Carbon::parse($payment->loan_payment_date)->format('d/m/Y') }}</td>
                     <td class="w-9 text-right">{{ Util::money_format($payment->capital_payment) }}</td> {{-- capital --}}
                     <td class="w-9 text-right">{{ Util::money_format($payment->interest_payment) }}</td>{{-- interes corriente --}}
                     <td class="w-9 text-right">{{ Util::money_format($payment->penal_payment) }}</td>{{-- interes penal --}}

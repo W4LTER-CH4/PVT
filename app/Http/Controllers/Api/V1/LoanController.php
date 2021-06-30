@@ -390,10 +390,10 @@ class LoanController extends Controller
         })->pluck('id')->contains($loan->role_id)) {
             $loan = self::append_data($loan, true);
             foreach($loan->lenders as $lender){
-                $lender->type_initials = "TIT-".$lender->initials;
+                $lender->type_initials = "T-".$lender->initials;
             }
             foreach($loan->guarantors as $guarantor){
-                $guarantor->type_initials = "GAR-".$guarantor->initials;
+                $guarantor->type_initials = "G-".$guarantor->initials;
             }
             return $loan;
         } else {

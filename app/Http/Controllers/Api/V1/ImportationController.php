@@ -255,6 +255,7 @@ class ImportationController extends Controller
                                     $update = "UPDATE senasir_payment_groups set amount_balance = $amount_group where id = $payment_agroup->id";
                                     $update = DB::select($update);
                                     $senasir_lender++;
+                                    Log::info('Cantidad: '.$senasir_lender.' *Titularidad : Se registro el cobro en el loanPayments con id: '.$registry_patment->id. 'y codigo: '.$registry_patment->code);
                                 }
                             }
                         }
@@ -286,6 +287,7 @@ class ImportationController extends Controller
                                 $update = "UPDATE senasir_payment_groups set amount_balance = $amount_group where id = $payment_agroup->id";
                                 $update = DB::select($update);
                                 $senasir_guarantor++;
+                                Log::info('Cantidad: '.$senasir_guarantor.' *Garantia: Se registro el cobro en el loanPayments con id: '.$registry_patment->id. 'y codigo: '.$registry_patment->code);
                             }
                           }
                         }
@@ -296,6 +298,7 @@ class ImportationController extends Controller
 
             $update_period = "UPDATE periods set import_senasir = true where id = $period->id";
             $update_period = DB::select($update_period);
+            Log::info('Se actualizo el estado del periodo en la columna import_senasir  del id_periodo: '.$period->id);
 
             $paids = [
                 'period'=>$period,
@@ -308,6 +311,7 @@ class ImportationController extends Controller
             return $paids;
 
         }else{
+            Log::info('No se puede volver a realizar la importación de cobros del periodo con id : '.$period->id.' por que ya se lo realizó anteriormente :)');
             $paids = [
                 'period'=>$period,
                 'paid_by_lenders' => $senasir_lender,
@@ -319,6 +323,7 @@ class ImportationController extends Controller
         }
         }catch(Exception $e){
             DB::rollback();
+            Log::info('ocurrio un error se realizó un rollback...');
             return $e;
         }
     }
@@ -359,15 +364,13 @@ class ImportationController extends Controller
 
     public function copy_payments(request $request)
     {
-        //$file = Storage::disk('ftp')->get($request->location."/".$request->file_name);
-        //$file = Storage::path('public')->get($request->location);
-        //Storage::disk('public')->put($request->file_name, $file);
-        //return Storage::disk('local2')->path($request->file_name);
-        //return "ok2";
-        //return Storage::disk('public')->path($request->file_name);
-        //return Storage::disk('public')->getDriver()->getAdapter()->getPathPrefix();
+       
         DB::beginTransaction();
         try{
+            $base_path = $request->location."/".$request->file_name;
+            $base_path ='ftp://'.env('FTP_HOST').'/'.$base_path;
+            $username =env('FTP_USERNAME');
+            $password =env('FTP_PASSWORD');
             $this->delete_copy_payments($request->period_id, $request->type);
             if(Period::whereId($request->period_id)->first()){
                 $drop = "drop table if exists payments_aux";
@@ -375,12 +378,11 @@ class ImportationController extends Controller
                 if($request->type == 'C'){
                     $temporary = "create temporary table payments_aux(period_id integer, identity_card varchar, amount float)";
                     $temporary = DB::select($temporary);
-
                     $copy = "copy payments_aux(identity_card, amount)
-                            FROM '/home/richard/Escritorio/descuento_comando.csv'
+                            FROM PROGRAM 'wget -q -O - $@  --user=$username --password=$password $base_path'
                             WITH DELIMITER ':' CSV header;";
                     $copy = DB::select($copy);
-                    Storage::disk('public')->delete($request->file_name);
+                   // Storage::disk('public')->delete($request->file_name);
 
                     $update = "update payments_aux
                                 set period_id = $request->period_id";
@@ -408,7 +410,7 @@ class ImportationController extends Controller
                         $temporary = DB::select($temporary);
 
                         $copy = "copy payments_aux(registration, registration_dh, amount)
-                                FROM '/home/richard/Escritorio/senasir2.csv'
+                                FROM PROGRAM 'wget -q -O - $@  --user=$username --password=$password $base_path'
                                 WITH DELIMITER ':' CSV header;";
                         $copy = DB::select($copy);
                         //Storage::disk('public')->delete($request->file_name);
@@ -506,13 +508,14 @@ class ImportationController extends Controller
                 }
                 if($period_state == false){
                     $file_name = $last_date.'.csv';
-                    $base_path = 'contribución/'.$origin;    
+                    $base_path = 'contribucion/'.$origin;    
                     $file_path = Storage::disk('ftp')->putFileAs($base_path,$request->file,$file_name);
                     $request['period_id'] = $last_period->id;
                     $request['location'] = $base_path;
                     $request['type'] = $request->state;
                     $request['file_name'] = $file_name;
                     $result['message'] = $this->copy_payments($request);
+                    
                     $result['validate'] = true;
                     return $result;
                 }else{
@@ -666,14 +669,15 @@ class ImportationController extends Controller
                     'period'=> Period::whereId($request->period)->first(),
                     'paid_by_lenders' => $c,
                     'paid_by_guarantors' => $c2,
-                    'importation_validated'=> false                
+                    'message'=>"Comando General Importación realizada con exito! ".$period->month.'/'.$period->year,
+                    'importation_validated'=> true
                 ];
             }else{
             $paids = [
                 'period'=>$period,
                 'paid_by_lenders' => $c,
                 'paid_by_guarantors' => $c2,
-                'message'=>"COMMAND Error! Anteriormente ya realizó la importación del periodo: ".$period->month.'/'.$period->year,
+                'message'=>"Comando General Error! Anteriormente ya realizó la importación del periodo: ".$period->month.'/'.$period->year,
                 'importation_validated'=> false
             ];
             }
@@ -710,6 +714,7 @@ class ImportationController extends Controller
             $payment->paid_by = $request->paid_by;
             $payment->validated = true;
             $payment->user_id = auth()->id();
+            $payment->loan_payment_date = $request->loan_payment_date;
             $loan_payment = $loan->payments()->create($payment->toArray());
             return $payment;
         }else{

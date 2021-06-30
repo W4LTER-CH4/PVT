@@ -124,7 +124,8 @@
                               bottom
                               right
                               v-on="on"
-                              @click.stop="resetForm()"
+                              :loading="reporte_comando_loading"
+                              @click.stop="reporteComandoSenasir(item.id,'C')"
                             >
                               <v-icon>mdi-warehouse</v-icon>
                             </v-btn>
@@ -143,7 +144,8 @@
                               bottom
                               right
                               v-on="on"
-                              @click.stop="resetForm()"
+                              :loading="reporte_senasir_loading"
+                              @click.stop="reporteComandoSenasir(item.id,'S')"
                             >
                               <v-icon >mdi-home-analytics</v-icon>
                             </v-btn>
@@ -166,13 +168,13 @@
             >
               <v-card>
                 <v-toolbar dark color="primary" >
-                  <v-btn icon dark @click="closePayment()" >
+                  <v-btn icon dark @click="dialog_confirm=true" >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                   <v-toolbar-title>IMPORTACION {{title}}</v-toolbar-title>
                   <v-spacer></v-spacer>
                   <v-toolbar-items>
-                    <v-btn dark text v-show="importacion" @click="importPayment()" >
+                    <v-btn dark text v-show="importacion" @click="dialog_confirm_import=true" >
                       Ejecutar la Importación
                     </v-btn>
                   </v-toolbar-items>
@@ -219,7 +221,7 @@
                           >Subir Archivo
                         </v-btn>
                       </v-col>
-                         <v-col cols="6" >
+                         <v-col cols="6" v-show="validar_datos" >
                         <v-btn
                           color="info"
                           @click.stop="validateFilePayment()"
@@ -288,6 +290,62 @@
             </v-col>
           </v-card>
         </v-dialog>
+         <v-dialog
+            v-model="dialog_confirm"
+            max-width="500"
+          >
+            <v-card>
+              <v-card-title>
+                Esta seguro de salir?
+                <br> Al salir se borraran todos los datos ingresados
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red darken-1"
+                  text
+                  @click="dialog_confirm=false"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  color="green darken-1"
+                  text
+                  @click="closePayment()"
+                >
+                  Aceptar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+           <v-dialog
+            v-model="dialog_confirm_import"
+            max-width="500"
+          >
+            <v-card>
+              <v-card-title>
+                Esta seguro de realizar la importación?
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red darken-1"
+                  text
+                  @click="dialog_confirm_import=false"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn
+                  color="green darken-1"
+                  text
+                  :loading="loading_importacion"
+                  @click="importPayment()"
+                >
+                  Aceptar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
       </template>
     </v-card>
   </v-form>
@@ -303,9 +361,14 @@ export default {
   data: () => ({
 
   bus: new Vue(),
-  importacion:true,
-
+  importacion:false,
+  loading_importacion:false,
+  reporte_comando_loading:false,
+  reporte_senasir_loading:false,
+  validar_datos:false,
   dialog: false,
+  dialog_confirm : false,
+  dialog_confirm_import:false,
   aux_period:null,
   title: null,
   dialog1: false,
@@ -363,11 +426,18 @@ export default {
       })
         .then((response) => {
           console.log(response.data);
+           this.validar_datos=response.data.validate
+           if(this.validar_datos){
+            this.toastr.success('Datos efectivizados '+ response.data.message[0].count)
+           }
+           else{
+            this.toastr.error(response.data.message)
+           }
+            this.import_export.file=null
         })
         .catch((e) => {
           console.log(e);
         });
-      this.loading_ipb = false;
     },
 
     async getYear() {
@@ -423,38 +493,37 @@ export default {
         this.loading = false;
       }
     },
-     async importacionComando(month, id){
-
-      this.aux_period= month
-      this.mes=id
-      this.dialog=true
-      this.import_export.state_affiliate = 'C'
-      this.title= 'COMANDO'
+    async importacionComando(month, id){
+      try {
+        let res = await axios.get(`periods/${id}`)
+        if(res.data.import_command){
+          this.toastr.error('Este periodo ya fue Importado')
+        }else{
+          this.aux_period= month
+          this.mes=id
+          this.dialog=true
+          this.import_export.state_affiliate = 'C'
+          this.title= 'COMANDO'
+        }
+      } catch (e) {
+        this.loading = false;
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
     async importacionSenasir(month, id){
-      this.aux_period= month
-      this.mes=id
-      this.dialog=true
-      this.import_export.state_affiliate = 'S'
-      this.title= 'SENASIR'
-    },
-    async validateFilePayment1(){
-    try {
-      let res = await axios.get(`agruped_payments`,{
-        params:{
-          origin:'C',
-          period: this.mes
+        try {
+        let res = await axios.get(`periods/${id}`)
+        if(res.data.import_senasir){
+          this.toastr.error('Este periodo ya fue Importado')
+        }else{
+          this.aux_period= month
+          this.mes=id
+          this.dialog=true
+          this.import_export.state_affiliate = 'S'
+          this.title= 'SENASIR'
         }
-      }).then((res) => {
-          const url = window.URL.createObjectURL(new Blob([res.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "ReporteAfiliadosNoImportados.txt");
-          document.body.appendChild(link);
-          link.click();
-          this.clearInputs();
-        })
-
       } catch (e) {
         this.loading = false;
         console.log(e);
@@ -477,7 +546,8 @@ export default {
       }
       else{
          this.importacion =res.data.validated_agroup
-             const formData = new FormData();
+
+          const formData = new FormData();
 
          await axios({
           url: '/upload_fail_validated_group',
@@ -512,10 +582,25 @@ export default {
     },
     async importPayment(){
     try {
-      this.loading = true
-      if(this.import_export.state_affiliate=='C'){
-          this.toastr.error('Comando')
-
+      this.loading_importacion = true
+      if( this.loading_importacion == true)
+      {
+        if(this.import_export.state_affiliate=='C'){
+          let res = await axios.get(`create_payments_command`,{
+            params:{
+              period: this.mes
+          }
+        })
+        if(res.data.importation_validated){
+          if(res.status==201 || res.status == 200){
+            this.dialog=false
+            this.dialog_confirm_import=false
+            this.toastr.success('Importado Correctamente: '+res.data.paid_by_lenders+ ' titulares y '+ res.data.paid_by_guarantors+' garantes' )
+          }
+        }else{
+          this.dialog_confirm_import=false
+          this.toastr.error(res.data.message)
+        }
       }else{
         let res = await axios.get(`importation_payments_senasir`,{
         params:{
@@ -523,12 +608,19 @@ export default {
         }
       })
       if(res.data.importation_validated){
+        if(res.status==201 || res.status == 200){
+          this.dialog=false
+          this.dialog_confirm_import=false
           this.toastr.success('Importado Correctamente: '+res.data.paid_by_lenders+ ' titulares y '+ res.data.paid_by_guarantors+' garantes' )
+        }
       }
       else{
         this.toastr.error(res.data.message)
       }
      }
+      }
+        this.importacion=false
+        this.validar_datos=false
        } catch (e) {
         this.loading = false;
         console.log(e);
@@ -549,7 +641,56 @@ export default {
       else{
         this.toastr.error(res.data.message)
       }
-     this.dialog=false
+      this.clearInputs()
+      this.dialog=false
+      this.dialog_confirm=false
+      this.validar_datos=false
+    },
+    async reporteComandoSenasir(id, tipo){
+    try {
+          if(tipo=='C')
+          {
+            this.reporte_comando_loading = true
+          }
+          else{
+            this.reporte_senasir_loading = true
+          }
+          if(this.reporte_comando_loading==true || this.reporte_senasir_loading ){
+
+          const formData = new FormData();
+
+         await axios({
+          url: '/report_amortization_importation_payments',
+          method: "GET",
+          responseType: "blob", // important
+          headers: { Accept: "application/vnd.ms-excel" },
+          //headers: { Accept: "text/plain" },
+          data: formData,
+          params: {
+            origin: tipo,
+            period: id
+          }
+        })
+          .then((response) => {
+           const url = window.URL.createObjectURL(new Blob([response.data]));
+           const link = document.createElement("a");
+           link.href = url;
+           link.setAttribute("download", "ReporteImportacion.xls");
+           document.body.appendChild(link);
+           link.click();
+         if(response.status==201 || response.status == 200){
+              this.reporte_comando_loading=false
+              this.reporte_senasir_loading=false
+            }
+        })
+
+          }
+      } catch (e) {
+        this.loading = false;
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };

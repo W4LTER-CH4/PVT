@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Period extends Model
+class LoanPaymentPeriod extends Model
 {
     public $timestamps = true;
     public $guarded = ['id'];

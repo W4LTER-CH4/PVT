@@ -6,15 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Util;
 use App\User;
-use App\Period;
+use App\LoanPaymentPeriod;
 use Carbon;
-use App\Http\Requests\PeriodForm;
+use App\Http\Requests\LoanPaymentPeriodForm;
 
 /** @group Periodos de cobros 
 * Periodos de cobros para la importación
 */
 
-class PeriodController extends Controller
+class LoanPaymentPeriodController extends Controller
 {
     /**
     * Listar periodos
@@ -29,7 +29,7 @@ class PeriodController extends Controller
     */
     public function index(Request $request)
     {
-        return Util::search_sort(new Period(), $request);
+        return Util::search_sort(new LoanPaymentPeriod(), $request);
     }
 
     /**
@@ -44,29 +44,29 @@ class PeriodController extends Controller
      * @responseFile responses/periods/store.200.json
      */
     public function store(Request $request)
-    {  $last_period = Period::orderBy('id')->get()->last();
+    {  $last_period = LoanPaymentPeriod::orderBy('id')->get()->last();
      
        $result = [];
         if(!$last_period){
         $estimated_date = Carbon::now()->endOfMonth();
-        $period = new Period;
-            $period->year = $estimated_date->year;
-            $period->month = $estimated_date->month;
-            $period->description = $request->description;
-            $period->import_command = false;
-            $period->import_senasir = false;          
-            return Period::create($period->toArray());
+        $loan_payment_period = new LoanPaymentPeriod;
+            $loan_payment_period->year = $estimated_date->year;
+            $loan_payment_period->month = $estimated_date->month;
+            $loan_payment_period->description = $request->description;
+            $loan_payment_period->import_command = false;
+            $loan_payment_period->import_senasir = false;          
+            return LoanPaymentPeriod::create($period->toArray());
         }else{  
         $last_date=Carbon::parse($last_period->year.'-'.$last_period->month); 
         if($last_period->import_command && $last_period->import_senasir){    
             $estimated_date = $last_date->addMonth();
-            $period = new Period;
-            $period->year = $estimated_date->year;
-            $period->month = $estimated_date->month;
-            $period->description = $request->description;
-            $period->import_command = false;
-            $period->import_senasir = false;          
-            return Period::create($period->toArray());
+            $loan_payment_period = new LoanPaymentPeriod;
+            $loan_payment_period->year = $estimated_date->year;
+            $loan_payment_period->month = $estimated_date->month;
+            $loan_payment_period->description = $request->description;
+            $loan_payment_period->import_command = false;
+            $loan_payment_period->import_senasir = false;          
+            return LoanPaymentPeriod::create($period->toArray());
             } 
         else{
           $result['message'] = "Para realizar la creación de un nuevo periodo, debe realizar la confirmación de los pagos de Comando y Senasir del periodo de ".$last_date->isoFormat('MMMM');
@@ -84,8 +84,8 @@ class PeriodController extends Controller
      */
     public function show($id)
     {
-        $period = Period::find($id);
-        return $period;
+        $loan_payment_period = LoanPaymentPeriod::find($id);
+        return $loan_payment_period;
     }
 
     /**
@@ -99,11 +99,11 @@ class PeriodController extends Controller
      * @authenticated
      * @responseFile responses/periods/update.200.json
      */
-    public function update(PeriodForm $request,Period $period)
+    public function update(LoanPaymentPeriodForm $request,LoanPaymentPeriod $period)
     {
-        $period->fill($request->all());
-        $period->save();
-        return  $period;
+        $loan_payment_period->fill($request->all());
+        $loan_payment_period->save();
+        return  $loan_payment_period;
     }
 
     /**
@@ -112,10 +112,10 @@ class PeriodController extends Controller
      * @authenticated
      * @responseFile responses/periods/destroy.200.json
      */
-    public function destroy(Period $period)
+    public function destroy(LoanPaymentPeriod $period)
     {
-        $period->delete();
-        return $period;
+        $loan_payment_period->delete();
+        return $loan_payment_period;
     }
 
     /**
@@ -129,8 +129,8 @@ class PeriodController extends Controller
         $request->validate([
             'year' => 'required|exists:periods,year'
         ]);
-        $period = Period::where('year',$request->year)->orderBy('month', 'asc')->get();
-        return $period;
+        $loan_payment_period = LoanPaymentPeriod::where('year',$request->year)->orderBy('month', 'asc')->get();
+        return $loan_payment_period;
     }
 
      /**
@@ -140,8 +140,8 @@ class PeriodController extends Controller
      */
     public function get_list_year(Request $request)
     {
-        $period = Period::select('year')->distinct()->get();
-        return $period;
+        $loan_payment_period = LoanPaymentPeriod::select('year')->distinct()->get();
+        return $loan_payment_period;
     }
 
 }
