@@ -10,7 +10,7 @@ use App\Exports\ArchivoPrimarioExport;
 use Carbon;
 use Util;
 use Illuminate\Support\Facades\Log;
-use App\Period;
+use App\LoanPaymentPeriod;
 use App\Loan;
 use App\ProcedureModality;
 
@@ -33,7 +33,7 @@ class ImportationReportController extends Controller
     {
         $request->validate([
         'origin'=>'required|string|in:C,S',
-        'period'=>'required|exists:periods,id',
+        'period'=>'required|exists:loan_payment_periods,id',
         'category_name'=>'string|in:Refinanciamiento,Regular',
         'state_name'=>'string|in:Pagado,Pendiente por confirmar'
     ]);
@@ -51,7 +51,7 @@ class ImportationReportController extends Controller
             $procedure_modality_id = ProcedureModality::whereShortened('DES-SENASIR')->first()->id;
         }
 
-        $period = Period::whereId($request->period)->first();
+        $period = LoanPaymentPeriod::whereId($request->period)->first();
         $estimated_date = Carbon::create($period->year, $period->month, 1);
         $estimated_date = Carbon::parse($estimated_date)->endOfMonth()->format('Y-m-d');
 
@@ -60,17 +60,17 @@ class ImportationReportController extends Controller
         $conditions = [];
         //filtros
         $initial_date = $estimated_date? $estimated_date:'';
-        $final_date = $estimated_date? $estimated_date:'';
+        $final_date = $estimated_date;
         $category_name = $request->category_name? $request->category_name:'Regular' ;
         $state_pagado= $request->state_name? $request->state_name:'Pagado';
 
-        $final_date = $estimated_date? $estimated_date:'';
+        $final_date = $estimated_date;
 
         if ($initial_date != '') {
-            array_push($conditions, array('loan_payments.estimated_date', '>=', "%{$initial_date}%"));
+            array_push($conditions, array('loan_payments.estimated_date', '=', "%{$initial_date}%"));
         }
         if ($final_date != '') {
-            array_push($conditions, array('loan_payments.estimated_date', '<=', "%{$final_date}%"));
+            array_push($conditions, array('loan_payments.estimated_date', '=', "%{$final_date}%"));
         }
         array_push($conditions, array('loan_payment_states.name', 'ilike', "%{$state_pagado}%"));
         array_push($conditions, array('loan_payment_categories.name', 'ilike', "%{$category_name}%"));

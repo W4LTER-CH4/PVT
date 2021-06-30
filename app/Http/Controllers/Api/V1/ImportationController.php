@@ -10,7 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ArchivoPrimarioExport;
 use Carbon;
 use Illuminate\Support\Facades\Log;
-use App\Period;
+use App\LoanPaymentPeriod;
 use App\Loan;
 use App\ProcedureModality;
 use App\LoanPaymentState;
@@ -40,7 +40,7 @@ class ImportationController extends Controller
  public function agruped_payments(Request $request){
     $request->validate([
         'origin'=>'required|string|in:C,S',
-        'period'=>'required|exists:periods,id'
+        'period'=>'required|exists:loan_payment_periods,id'
     ]);
 
     DB::beginTransaction();
@@ -52,17 +52,17 @@ class ImportationController extends Controller
     $validado = false;
     $origin = $request->origin; $period = $request->period;//entradas
         if($origin == 'C'){
-            $query = "  SELECT import_command_payments.identity_card as identity_card, sum(amount) as amount
-                        FROM import_command_payments
-                        where import_command_payments.period_id = '$period'
-                        group by import_command_payments.identity_card";
+            $query = "  SELECT loan_payment_copy_commands.identity_card as identity_card, sum(amount) as amount
+                        FROM loan_payment_copy_commands
+                        where loan_payment_copy_commands.period_id = '$period'
+                        group by loan_payment_copy_commands.identity_card";
 
             $payment_agroups = DB::select($query);
 
             foreach($payment_agroups as $payment_agroup){
                 $affiliate_id = $this->serch_id($payment_agroup->identity_card);
                 if($affiliate_id != 0){
-                    DB::table("command_payment_groups")
+                    DB::table("loan_payment_group_commands")
                     ->insert([
                       "affiliate_id" => $affiliate_id,
                       "period_id" => $period,
@@ -85,17 +85,17 @@ class ImportationController extends Controller
         }else{
             if($origin == 'S'){
 
-             $query = "  SELECT import_senasir_payments.registration as registration, import_senasir_payments.registration_dh as registration_dh, sum(amount) as amount
-                        FROM import_senasir_payments
-                        where import_senasir_payments.period_id = '$period'
-                        group by import_senasir_payments.registration, import_senasir_payments.registration_dh";
+             $query = "  SELECT loan_payment_copy_senasirs.registration as registration, loan_payment_copy_senasirs.registration_dh as registration_dh, sum(amount) as amount
+                        FROM loan_payment_copy_senasirs
+                        where loan_payment_copy_senasirs.period_id = '$period'
+                        group by loan_payment_copy_senasirs.registration, loan_payment_copy_senasirs.registration_dh";
 
             $payment_agroups = DB::select($query);
 
             foreach($payment_agroups as $payment_agroup){
                 $affiliate_id = $this->serch_id($payment_agroup->registration);
                 if($affiliate_id != 0){
-                    DB::table("senasir_payment_groups")
+                    DB::table("loan_payment_group_senasirs")
                     ->insert([
                       "affiliate_id" => $affiliate_id,
                       "period_id" => $period,
@@ -137,7 +137,7 @@ class ImportationController extends Controller
                         array_push($data_cabeceraS, array($row->registration, $row->registration_dh, $row->amount));
                    }
                }
-               $last_period = Period::find($period);
+               $last_period = LoanPaymentPeriod::find($period);
                $last_date = Carbon::parse($last_period->year.'-'.$last_period->month)->toDateString();
                if($origin == 'C'){
                 $export = new ArchivoPrimarioExport($data_cabeceraC);
@@ -208,11 +208,11 @@ class ImportationController extends Controller
     public function importation_payment_senasir(Request $request){
         $request->validate([
             'origin'=>'string|in:C,S',
-            'period'=>'required|exists:periods,id'
+            'period'=>'required|exists:loan_payment_periods,id'
         ]);
       DB::beginTransaction();
       try{
-        $period =Period::whereId($request->period)->first();
+        $period =LoanPaymentPeriod::whereId($request->period)->first();
         $procedure_modality_id = ProcedureModality::whereShortened('DES-SENASIR')->first()->id;
         $categorie_id = LoanPaymentCategorie::whereTypeRegister('SISTEMA')->first()->id;
         $senasir_lender = 0; $senasir_guarantor = 0;
@@ -220,7 +220,7 @@ class ImportationController extends Controller
             $estimated_date = Carbon::create($period->year, $period->month, 1);
             $estimated_date = Carbon::parse($estimated_date)->endOfMonth()->format('Y-m-d');
 
-            $query = "SELECT * FROM senasir_payment_groups where senasir_payment_groups.period_id = '$period->id'";
+            $query = "SELECT * FROM loan_payment_group_senasirs where loan_payment_group_senasirs.period_id = '$period->id'";
 
             $payment_agroups = DB::select($query);
 
@@ -252,7 +252,7 @@ class ImportationController extends Controller
                                     ];
                                     $registry_patment = $this->set_payment($form, $loan);
                                     $amount_group = $amount_group - $registry_patment->estimated_quota;
-                                    $update = "UPDATE senasir_payment_groups set amount_balance = $amount_group where id = $payment_agroup->id";
+                                    $update = "UPDATE loan_payment_group_senasirs set amount_balance = $amount_group where id = $payment_agroup->id";
                                     $update = DB::select($update);
                                     $senasir_lender++;
                                     Log::info('Cantidad: '.$senasir_lender.' *Titularidad : Se registro el cobro en el loanPayments con id: '.$registry_patment->id. 'y codigo: '.$registry_patment->code);
@@ -284,7 +284,7 @@ class ImportationController extends Controller
                                 ];
                                 $registry_patment = $this->set_payment($form, $loan);
                                 $amount_group = $amount_group - $registry_patment->estimated_quota;
-                                $update = "UPDATE senasir_payment_groups set amount_balance = $amount_group where id = $payment_agroup->id";
+                                $update = "UPDATE loan_payment_group_senasirs set amount_balance = $amount_group where id = $payment_agroup->id";
                                 $update = DB::select($update);
                                 $senasir_guarantor++;
                                 Log::info('Cantidad: '.$senasir_guarantor.' *Garantia: Se registro el cobro en el loanPayments con id: '.$registry_patment->id. 'y codigo: '.$registry_patment->code);
@@ -296,7 +296,7 @@ class ImportationController extends Controller
                 }
             }
 
-            $update_period = "UPDATE periods set import_senasir = true where id = $period->id";
+            $update_period = "UPDATE loan_payment_periods set import_senasir = true where id = $period->id";
             $update_period = DB::select($update_period);
             Log::info('Se actualizo el estado del periodo en la columna import_senasir  del id_periodo: '.$period->id);
 
@@ -372,7 +372,7 @@ class ImportationController extends Controller
             $username =env('FTP_USERNAME');
             $password =env('FTP_PASSWORD');
             $this->delete_copy_payments($request->period_id, $request->type);
-            if(Period::whereId($request->period_id)->first()){
+            if(LoanPaymentPeriod::whereId($request->period_id)->first()){
                 $drop = "drop table if exists payments_aux";
                 $drop = DB::select($drop);
                 if($request->type == 'C'){
@@ -392,7 +392,7 @@ class ImportationController extends Controller
                                 set identity_card = REPLACE(LTRIM(REPLACE(identity_card,'0',' ')),' ','0')";
                     $update2 = DB::select($update2);
 
-                    $insert = "INSERT INTO import_command_payments(period_id, identity_card, amount)
+                    $insert = "INSERT INTO loan_payment_copy_commands(period_id, identity_card, amount)
                                 SELECT period_id, identity_card, amount FROM payments_aux;";
                     $insert = DB::select($insert);
                     DB::commit();
@@ -400,7 +400,7 @@ class ImportationController extends Controller
                     $drop = "drop table if exists payments_aux";
                     $drop = DB::select($drop);
 
-                    $consult = "select count(*) from import_command_payments where period_id = $request->period_id";
+                    $consult = "select count(*) from loan_payment_copy_commands where period_id = $request->period_id";
                     $consult = DB::select($consult);
                     return $consult;
                 }
@@ -419,7 +419,7 @@ class ImportationController extends Controller
                                     set period_id = $request->period_id";
                         $update = DB::select($update);
 
-                        $insert = "INSERT INTO import_senasir_payments(period_id, registration, registration_dh, amount)
+                        $insert = "INSERT INTO loan_payment_copy_senasirs(period_id, registration, registration_dh, amount)
                                     SELECT period_id, registration, registration_dh, amount FROM payments_aux;";
                         $insert = DB::select($insert);
                         DB::commit();
@@ -427,7 +427,7 @@ class ImportationController extends Controller
                         $drop = "drop table if exists payments_aux";
                         $drop = DB::select($drop);
 
-                        $consult = "select count(*) from import_senasir_payments where period_id = $request->period_id";
+                        $consult = "select count(*) from loan_payment_copy_senasirs where period_id = $request->period_id";
                         $consult = DB::select($consult);
                         return $consult;
                         
@@ -449,12 +449,12 @@ class ImportationController extends Controller
     {
         DB::beginTransaction();
         try{
-            if(Period::whereId($period)->first() && $origin == 'C' || Period::whereId($period)->first() && $origin == 'S')
+            if(LoanPaymentPeriod::whereId($period)->first() && $origin == 'C' || LoanPaymentPeriod::whereId($period)->first() && $origin == 'S')
             {
                 $count = 0;
                 if($origin == 'C'){
                     $query = "delete
-                                from import_command_payments
+                                from loan_payment_copy_commands
                                 where period_id = $period";
                     $query = DB::select($query);
                     DB::commit();
@@ -462,7 +462,7 @@ class ImportationController extends Controller
                 }
                 if($origin == 'S'){
                     $query = "delete
-                                from import_senasir_payments
+                                from loan_payment_copy_senasirs
                                 where period_id = $period";
                     $query = DB::select($query);
                     DB::commit();
@@ -497,7 +497,7 @@ class ImportationController extends Controller
             if($extencion == "csv"){
                 $result=[];
                 $period_state =false;
-                $last_period = Period::orderBy('id')->get()->last();
+                $last_period = LoanPaymentPeriod::orderBy('id')->get()->last();
                 $last_date = Carbon::parse($last_period->year.'-'.$last_period->month)->toDateString();
                 if($request->state == "C"){
                     $origin = "comando_".$last_period->year;
@@ -544,11 +544,11 @@ class ImportationController extends Controller
 
         $request->validate([
             'origin'=>'required|string|in:C,S',
-            'period'=>'required|exists:periods,id'
+            'period'=>'required|exists:loan_payment_periods,id'
         ]);
 
         $origin=$request->origin;
-        $last_period = Period::find($request->period);
+        $last_period = LoanPaymentPeriod::find($request->period);
         $last_date = Carbon::parse($last_period->year.'-'.$last_period->month)->toDateString();
 
         if($origin == 'C'){
@@ -576,15 +576,15 @@ class ImportationController extends Controller
     public function create_payments_command(request $request)
     {
         $request->validate([
-            'period'=>'required|exists:periods,id'
+            'period'=>'required|exists:loan_payment_periods,id'
         ]);
         DB::beginTransaction();
         try{
-            $period = Period::whereId($request->period)->first();
+            $period = LoanPaymentPeriod::whereId($request->period)->first();
             $c = 0;$sw = false;$c2 = 0;
             if(!$period->import_command)
             {
-                $query = "select * from command_payment_groups where period_id = $period->id order by id";
+                $query = "select * from loan_payment_group_commands where period_id = $period->id order by id";
                 $payments = DB::select($query);//return $payments;
                 $estimated_date = Carbon::create($period->year, $period->month, 1);
                 $estimated_date = Carbon::parse($estimated_date)->endOfMonth()->format('Y-m-d');
@@ -659,14 +659,14 @@ class ImportationController extends Controller
                             $c2++;
                         }
                     }
-                    $update_command_grupded = "UPDATE command_payment_groups set amount_balance = $amount where id = $payment->id";
+                    $update_command_grupded = "UPDATE loan_payment_group_commands set amount_balance = $amount where id = $payment->id";
                     $update_command_grupded = DB::select($update_command_grupded);
                 }
-                $update_period = "UPDATE periods set import_command = true where id = $period->id";
+                $update_period = "UPDATE loan_payment_periods set import_command = true where id = $period->id";
                 $update_period = DB::select($update_period);
                 DB::commit();
                 $paids = [
-                    'period'=> Period::whereId($request->period)->first(),
+                    'period'=> LoanPaymentPeriod::whereId($request->period)->first(),
                     'paid_by_lenders' => $c,
                     'paid_by_guarantors' => $c2,
                     'message'=>"Comando General Importación realizada con exito! ".$period->month.'/'.$period->year,
@@ -727,12 +727,12 @@ class ImportationController extends Controller
     {
         DB::beginTransaction();
         try{
-            if(Period::whereId($period)->first() && $origin == 'C' || Period::whereId($period)->first() && $origin == 'S')
+            if(LoanPaymentPeriod::whereId($period)->first() && $origin == 'C' || LoanPaymentPeriod::whereId($period)->first() && $origin == 'S')
             {
                 $count = 0;
                 if($origin == 'C'){
                     $query = "delete
-                                from command_payment_groups
+                                from loan_payment_group_commands
                                 where period_id = $period";
                     $query = DB::select($query);
                     DB::commit();
@@ -740,7 +740,7 @@ class ImportationController extends Controller
                 }
                 if($origin == 'S'){
                     $query = "delete
-                                from senasir_payment_groups
+                                from loan_payment_group_senasirs
                                 where period_id = $period";
                     $query = DB::select($query);
                     DB::commit();
@@ -769,13 +769,13 @@ class ImportationController extends Controller
     {
         $request->validate([
             'origin'=>'required|string|in:C,S',
-            'period'=>'required|exists:periods,id'
+            'period'=>'required|exists:loan_payment_periods,id'
         ]);
         DB::beginTransaction();
         try{
             $validated_rollback = false;
             $period = $request->period;$origin = $request->origin;
-            $period =Period::whereId($request->period)->first();
+            $period = LoanPaymentPeriod::whereId($request->period)->first();
 
             if($origin == 'C' && !$period->import_command){
                 $this->delete_agroups_payments($period->id,$origin);

@@ -32,7 +32,7 @@ use App\Loan;
 use App\Role;
 use App\ProcedureModality;
 use App\PaymentType;
-use App\Period;
+use App\LoanPaymentPeriod;
 //use App\AmortizationType;
 use App\ProcedureType;
 use App\AffiliateStateType;
@@ -1592,14 +1592,14 @@ class LoanPaymentController extends Controller
                     set identity_card = REPLACE(LTRIM(REPLACE(identity_card,'0',' ')),' ','0')";
         $update2 = DB::select($update2);
 
-        $insert = "INSERT INTO import_command_payments(period_id, identity_card, amount)
+        $insert = "INSERT INTO loan_payment_copy_commands(period_id, identity_card, amount)
                     SELECT period_id, identity_card, amount FROM payments_aux;";
         $insert = DB::select($insert);
 
         $drop = "drop table if exists payments_aux";
         $drop = DB::select($drop);
 
-        $consult = "select count(*) from import_command_payments where period_id = 9";
+        $consult = "select count(*) from loan_payment_copy_commands where period_id = 9";
         $consult = DB::select($consult);
 
         return $consult;

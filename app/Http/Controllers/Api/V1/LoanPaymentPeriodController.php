@@ -55,7 +55,7 @@ class LoanPaymentPeriodController extends Controller
             $loan_payment_period->description = $request->description;
             $loan_payment_period->import_command = false;
             $loan_payment_period->import_senasir = false;          
-            return LoanPaymentPeriod::create($period->toArray());
+            return LoanPaymentPeriod::create($loan_payment_period->toArray());
         }else{  
         $last_date=Carbon::parse($last_period->year.'-'.$last_period->month); 
         if($last_period->import_command && $last_period->import_senasir){    
@@ -66,7 +66,7 @@ class LoanPaymentPeriodController extends Controller
             $loan_payment_period->description = $request->description;
             $loan_payment_period->import_command = false;
             $loan_payment_period->import_senasir = false;          
-            return LoanPaymentPeriod::create($period->toArray());
+            return LoanPaymentPeriod::create($loan_payment_period->toArray());
             } 
         else{
           $result['message'] = "Para realizar la creación de un nuevo periodo, debe realizar la confirmación de los pagos de Comando y Senasir del periodo de ".$last_date->isoFormat('MMMM');
@@ -99,7 +99,7 @@ class LoanPaymentPeriodController extends Controller
      * @authenticated
      * @responseFile responses/periods/update.200.json
      */
-    public function update(LoanPaymentPeriodForm $request,LoanPaymentPeriod $period)
+    public function update(LoanPaymentPeriodForm $request,LoanPaymentPeriod $loan_payment_period)
     {
         $loan_payment_period->fill($request->all());
         $loan_payment_period->save();
@@ -112,7 +112,7 @@ class LoanPaymentPeriodController extends Controller
      * @authenticated
      * @responseFile responses/periods/destroy.200.json
      */
-    public function destroy(LoanPaymentPeriod $period)
+    public function destroy(LoanPaymentPeriod $loan_payment_period)
     {
         $loan_payment_period->delete();
         return $loan_payment_period;
@@ -127,7 +127,7 @@ class LoanPaymentPeriodController extends Controller
     public function get_list_month(Request $request)
     {
         $request->validate([
-            'year' => 'required|exists:periods,year'
+            'year' => 'required|exists:loan_payment_periods,year'
         ]);
         $loan_payment_period = LoanPaymentPeriod::where('year',$request->year)->orderBy('month', 'asc')->get();
         return $loan_payment_period;
