@@ -29,9 +29,11 @@
                 fab
                 @click="clearAll()"
                 color="info"
-                class="mb-2"
                 v-on="on"
-                small
+                x-small
+                absolute
+                right
+                style="margin-top: -53px; margin-right:10px"
               >
                 <v-icon> mdi-broom </v-icon>
               </v-btn>
@@ -39,10 +41,11 @@
             <span class="caption">Limpiar todos los filtros</span>
           </v-tooltip>
           <v-data-table
+            dense
             :headers="headers"
             :items="loans"
             :options.sync="options"
-            :server-items-length="totalAffiliates"
+            :server-items-length="totalLoans"
             :item-class="itemRowBackground"
             :footer-props="{ itemsPerPageOptions: [8, 15, 50,100] }"
           >
@@ -100,61 +103,6 @@
               </v-menu>
             </template>
 
-            <template v-slot:[`header.code_loan`]="{ header }">
-              {{ header.text }}<br />
-              <v-menu offset-y :close-on-content-click="false">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
-                    <v-icon
-                      small
-                      :color="searching.code_loan != '' ? 'red' : 'black'"
-                    >
-                      mdi-filter
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <div>
-                  <v-text-field
-                    dense
-                    v-model="searching.code_loan"
-                    type="text"
-                    :label="'Buscar ' + header.text"
-                    @keydown.enter="search_loans()"
-                    hide-details
-                    single-line
-                  ></v-text-field>
-                </div>
-              </v-menu>
-            </template>
-
-                        <template v-slot:[`header.identity_card_affiliate`]="{ header }">
-              {{ header.text }}<br />
-              <v-menu offset-y :close-on-content-click="false">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
-                    <v-icon
-                      small
-                      :color="searching.identity_card_affiliate != '' ? 'red' : 'black'"
-                    >
-                      mdi-filter
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <div>
-                  <v-text-field
-                    dense
-                    v-model="searching.identity_card_affiliate"
-                    type="text"
-                    :label="'Buscar ' + header.text"
-                    @keydown.enter="search_loans()"
-                    hide-details
-                    single-line
-                  ></v-text-field>
-                </div>
-              </v-menu>
-            </template>
-
-
             <template v-slot:[`header.user_loan`]="{ header }">
               {{ header.text }}<br />
               <v-menu offset-y :close-on-content-click="false">
@@ -182,15 +130,14 @@
               </v-menu>
             </template>
 
-            <template v-slot:[`header.modality_loan`]="{ header }">
+            <template v-slot:[`header.code_loan`]="{ header }">
               {{ header.text }}<br />
               <v-menu offset-y :close-on-content-click="false">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon v-bind="attrs" v-on="on">
                     <v-icon
                       small
-                      :color="
-                        searching.modality_loan != '' ? 'red' : 'black'"
+                      :color="searching.code_loan != '' ? 'red' : 'black'"
                     >
                       mdi-filter
                     </v-icon>
@@ -199,7 +146,7 @@
                 <div>
                   <v-text-field
                     dense
-                    v-model="searching.modality_loan"
+                    v-model="searching.code_loan"
                     type="text"
                     :label="'Buscar ' + header.text"
                     @keydown.enter="search_loans()"
@@ -210,15 +157,14 @@
               </v-menu>
             </template>
 
-            <template v-slot:[`header.state_loan`]="{ header }">
+            <template v-slot:[`header.identity_card_affiliate`]="{ header }">
               {{ header.text }}<br />
               <v-menu offset-y :close-on-content-click="false">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon v-bind="attrs" v-on="on">
                     <v-icon
                       small
-                      :color="
-                        searching.state_loan != '' ? 'red' : 'black'"
+                      :color="searching.identity_card_affiliate != '' ? 'red' : 'black'"
                     >
                       mdi-filter
                     </v-icon>
@@ -227,35 +173,7 @@
                 <div>
                   <v-text-field
                     dense
-                    v-model="searching.state_loan"
-                    type="text"
-                    :label="'Buscar ' + header.text"
-                    @keydown.enter="search_loans()"
-                    hide-details
-                    single-line
-                  ></v-text-field>
-                </div>
-              </v-menu>
-            </template>
-
-            <template v-slot:[`header.registration_affiliateF`]="{ header }">
-              {{ header.text }}<br />
-              <v-menu offset-y :close-on-content-click="false">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
-                    <v-icon
-                      small
-                      :color="
-                        searching.registration_affiliateF != '' ? 'red' : 'black'"
-                    >
-                      mdi-filter
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <div>
-                  <v-text-field
-                    dense
-                    v-model="searching.registration_affiliateF"
+                    v-model="searching.identity_card_affiliate"
                     type="text"
                     :label="'Buscar ' + header.text"
                     @keydown.enter="search_loans()"
@@ -380,7 +298,7 @@
               </v-menu>
             </template>
 
-            <template v-slot:[`header.surname_husband_affiliate`]="{ header }">
+            <template v-slot:[`header.shortened_sub_modality_loan`]="{ header }">
               {{ header.text }}<br />
               <v-menu offset-y :close-on-content-click="false">
                 <template v-slot:activator="{ on, attrs }">
@@ -388,7 +306,7 @@
                     <v-icon
                       small
                       :color="
-                        searching.surname_husband_affiliate != '' ? 'red' : 'black'"
+                        searching.shortened_sub_modality_loan != '' ? 'red' : 'black'"
                     >
                       mdi-filter
                     </v-icon>
@@ -397,7 +315,7 @@
                 <div>
                   <v-text-field
                     dense
-                    v-model="searching.surname_husband_affiliate"
+                    v-model="searching.shortened_sub_modality_loan"
                     type="text"
                     :label="'Buscar ' + header.text"
                     @keydown.enter="search_loans()"
@@ -408,10 +326,38 @@
               </v-menu>
             </template>
 
-            <template v-slot:[`item.modality_loan`]="{ item }">
+            <template v-slot:[`header.state_loan`]="{ header }">
+              {{ header.text }}<br />
+              <v-menu offset-y :close-on-content-click="false">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon
+                      small
+                      :color="
+                        searching.state_loan != '' ? 'red' : 'black'"
+                    >
+                      mdi-filter
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <div>
+                  <v-text-field
+                    dense
+                    v-model="searching.state_loan"
+                    type="text"
+                    :label="'Buscar ' + header.text"
+                    @keydown.enter="search_loans()"
+                    hide-details
+                    single-line
+                  ></v-text-field>
+                </div>
+              </v-menu>
+            </template>
+
+            <template v-slot:[`item.shortened_sub_modality_loan`]="{ item }">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <span v-on="on">{{ item.modality_loan }}</span>
+                  <span v-on="on">{{ item.shortened_sub_modality_loan }}</span>
                 </template>
                 <span>{{ item.sub_modality_loan }}</span>
               </v-tooltip>
@@ -515,48 +461,36 @@ export default {
     return {
       searching: {
         citi_loan:"",
-        user_loan:"",
         name_role_loan:"",
+        user_loan:"",
         code_loan: "",
         identity_card_affiliate: "",
-        registration_affiliate: "",
-        registration_spouse:"",
         last_name_affiliate: "",
         mothers_last_name_affiliate: "",
         first_name_affiliate: "",
         second_name_affiliate: "",
-        surname_husband_affiliate: "",
-        modality_loan: "",
+        shortened_sub_modality_loan: "",
         request_date_loan: "",
         amount_approved_loan: "",
-        state_type_affiliate: "",
+        loan_term: "",
         quota_loan: "",
         state_loan: "",
-        guarantor_loan_affiliate: "",
-
       },
       headers: [
         { text: 'Dpto', value: 'citi_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%', sortable: false},
         { text: 'Área', value: 'name_role_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
-         { text: 'Usuario',value:'user_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
+        { text: 'Usuario',value:'user_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         { text: 'Cód. Préstamo', value: 'code_loan',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: true},
         { text: 'CI', value: 'identity_card_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
-        
-        //{ text: 'Matrícula', value: 'registration_affiliate' ,input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        //{ text: 'Matrícula conyugue', value: 'registration_spouse' ,input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
         { text: '1er Nombre', value: 'first_name_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%', sortable: false},
         { text: '2do Nombre', value: 'second_name_affiliate',input:'' , menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         { text: 'Ap. Paterno', value: 'last_name_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         { text: 'Ap. Materno',value:'mothers_last_name_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%', sortable: false},
-        //{ text: 'Ap. Casada',value:'surname_husband_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        { text: 'Modalidad',value:'modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
+        { text: 'Modalidad',value:'shortened_sub_modality_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         { text: 'Fecha Solicitud',value:'request_date_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
-        //{ text: 'Monto Desembolsado',value:'amount_approved_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
         { text: 'Monto aprobado', value: 'amount_approved_loan' ,input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
-        //{ text: 'Saldo Capital',value:'balance_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
-        //{ text: 'Sector',value:'state_type_affiliate',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%'},
+        { text: 'Plazo', value: 'loan_term ',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         { text: 'Cuota',value:'quota_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
-        //{ text: 'Garante?',value:'guarantor_loan_affiliate',class: ['normal', 'white--text','text-md-center'],width: '5%'},
         { text: 'Estado',value:'state_loan',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'],width: '5%',sortable: false},
         { text: 'Acción',value:'actions',input:'', menu:false,type:"text",class: ['normal', 'white--text','text-md-center'], sortable: false,width: '10%'},
       ],
@@ -568,7 +502,7 @@ export default {
         sortBy: ["code_loan"],
         sortDesc: [false],
       },
-      totalAffiliates: 0,
+      totalLoans: 0,
     };
   },
   computed: {
@@ -599,24 +533,16 @@ export default {
         let res = await axios.get(`loan_tracking`, {
           params: {
             citi_loan:this.searching.citi_loan,
-            user_loan:this.searching.user_loan,
             name_role_loan:this.searching.name_role_loan,
+            user_loan:this.searching.user_loan,
             code_loan: this.searching.code_loan,
             identity_card_affiliate: this.searching.identity_card_affiliate,
-            registration_affiliate: this.searching.registration_affiliate,
-            registration_spouse: this.searching.registration_spouse,
             last_name_affiliate: this.searching.last_name_affiliate,
             mothers_last_name_affiliate: this.searching.mothers_last_name_affiliate,
             first_name_affiliate: this.searching.first_name_affiliate,
             second_name_affiliate: this.searching.second_name_affiliate,
-            surname_husband_affiliate: this.searching.surname_husband_affiliate,
-            modality_loan: this.searching.modality_loan,
-            request_date_loan: this.searching.request_date_loan,
-            amount_approved_loan: this.searching.amount_approved_loan,
-            state_type_affiliate: this.searching.state_type_affiliate,
-            quota_loan: this.searching.quota_loan,
+            shortened_sub_modality_loan: this.searching.shortened_sub_modality_loan,
             state_loan: this.searching.state_loan,
-            guarantor_loan_affiliate: false,
             excel: false,
             page: this.options.page,
             per_page: this.options.itemsPerPage,
@@ -625,7 +551,7 @@ export default {
           },
         });
         this.loans = res.data.data;
-        this.totalAffiliates = res.data.total;
+        this.totalLoans = res.data.total;
         delete res.data["data"];
         this.options.page = res.data.current_page;
         this.options.itemsPerPage = parseInt(res.data.per_page);
@@ -652,7 +578,7 @@ export default {
           first_name_affiliate: this.searching.first_name_affiliate,
           second_name_affiliate: this.searching.second_name_affiliate,
           surname_husband_affiliate: this.searching.surname_husband_affiliate,
-          modality_loan: this.searching.modality_loan,
+          shortened_sub_modality_loan: this.searching.shortened_sub_modality_loan,
           request_date_loan: this.searching.request_date_loan,
           amount_approved_loan: this.searching.amount_approved_loan,
           state_type_affiliate: this.searching.state_type_affiliate,
@@ -689,7 +615,7 @@ export default {
       this.searching.first_name_affiliate = "",
       this.searching.second_name_affiliate = "",
       this.searching.surname_husband_affiliate = "",
-      this.searching.modality_loan = "",
+      this.searching.shortened_sub_modality_loan = "",
       this.searching.request_date_loan = "",
       this.searching.amount_approved_loan = "",
       this.searching.state_type_affiliate = "",

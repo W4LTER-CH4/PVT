@@ -36,7 +36,7 @@
                 @if($lender->affiliate_state != null)
                     <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
                 @else
-                    <td class="data-row py-5">{{ $lender->affiliate_state->affiliate_state_type->name }}</td>
+                    <td class="data-row py-5"></td>
                 @endif
             </tr>
         </table>

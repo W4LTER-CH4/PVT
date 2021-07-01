@@ -48,16 +48,12 @@
     <template v-slot:[`item.amount_approved`]="{ item }">
       {{ item.amount_approved | money }}
     </template>
-    <template v-slot:[`item.balance`]="{ item }">
-      {{ item.balance | money }}
-    </template>
     <template v-slot:[`item.estimated_quota`]="{ item }">
       {{ item.estimated_quota | money}}
     </template>
     <template v-slot:[`item.user`]="{ item }">
       {{ item.user }}
     </template>
-    
     <template v-slot:[`item.actions`]="{ item }">
       <v-tooltip bottom>
         <template v-slot:activator="{ on }">
@@ -80,7 +76,6 @@
             small
             v-on="on"
             color="error"
-          
             @click.stop="freeLoan(item.id, item.code)"
           >
             <v-icon>mdi-lock-open-variant</v-icon>
@@ -107,7 +102,7 @@
           <v-list-item
             v-for="doc in printDocs"
             :key="doc.id"
-            @click="imprimir(doc.id, item.id)"
+            @click="imprimir(doc.id, item)"
           >
             <v-list-item-icon class="ma-0 py-0 pt-2">
               <v-icon 
@@ -201,8 +196,7 @@ export default {
         class: ['normal', 'white--text'],
         align: 'center',
         sortable: true
-      },
-      {
+      }, {
         text: 'CI Conyugue',
         value: 'lenders[0].spouse.identity_card',
         class: ['normal', 'white--text'],
@@ -233,17 +227,11 @@ export default {
         align: 'center',
         sortable: true
       }, {
-        text: 'Saldo capital [Bs]',
-        value: 'balance',
-        class: ['normal', 'white--text'],
-        align: 'center',
-        sortable: false
-      }, {
-        text: 'Meses Plazo',
+        text: 'Plazo [Meses]',
         value: 'loan_term',
         class: ['normal', 'white--text'],
         align: 'center',
-        sortable: true
+        sortable: false
       }, {
         text: 'Cuota [Bs]',
         value: 'estimated_quota',
@@ -313,24 +301,25 @@ export default {
       try {
         let res
         if(id==1){
-          res = await axios.get(`loan/${item}/print/contract`)
+          res = await axios.get(`loan/${item.id}/print/contract`)
         }else if(id==2){
-          res = await axios.get(`loan/${item}/print/form`)
-        }else if(id==3) {
-          res = await axios.get(`loan/${item}/print/plan`)
-        }else {
-          res = await axios.get(`loan/${item}/print/kardex`)
-        } 
+          res = await axios.get(`loan/${item.id}/print/form`)
+        }else if(id==3){
+          if(item.disbursement_date != null)
+            res = await axios.get(`loan/${item.id}/print/plan`)
+          else
+            this.toastr.error("El préstamo no se encuentra desembolsado.")
+        }
         printJS({
             printable: res.data.content,
             type: res.data.type,
             documentTitle: res.data.file_name,
             base64: true
-        })  
+        })
       } catch (e) {
         this.toastr.error("Ocurrió un error en la impresión.")
         console.log(e)
-      }      
+      }
     },
     updateHeader() {
       if (this.tray != 'all') {
@@ -356,29 +345,26 @@ export default {
       }
     },
 
-      docsLoans(){
-        let docs =[]    
-        if(this.permissionSimpleSelected.includes('print-contract-loan')){
-          docs.push(
-            { id: 1, title: 'Contrato', icon: 'mdi-file-document'},
-            { id: 2, title: 'Solicitud', icon: 'mdi-file'})
-        }
-        if(this.permissionSimpleSelected.includes('print-payment-plan')){
-          docs.push(
-            { id: 3, title: 'Plan de pagos', icon: 'mdi-cash'})
-        }    
-        if(this.permissionSimpleSelected.includes('print-payment-kardex-loan')){
-          docs.push(
-            { id: 4, title: 'Kardex', icon: 'mdi-view-list'})
-        }else{
-          console.log("Se ha producido un error durante la generación de la impresión")
-        }
-        this.printDocs=docs
-        console.log(this.printDocs)
-      },
-      
-    async freeLoan(id, code) {
-      try {     
+    docsLoans(){
+      let docs =[]
+      if(this.permissionSimpleSelected.includes('print-contract-loan')){
+        docs.push(
+          { id: 1, title: 'Contrato', icon: 'mdi-file-document'},
+          { id: 2, title: 'Solicitud', icon: 'mdi-file'})
+      }
+      if(this.permissionSimpleSelected.includes('print-payment-plan')){
+        docs.push(
+          { id: 3, title: 'Plan de pagos', icon: 'mdi-cash'})
+      }
+      else{
+        console.log("Se ha producido un error durante la generación de la impresión")
+      }
+      this.printDocs=docs
+      console.log(this.printDocs)
+    },
+
+    async freeLoan(id, code){
+      try {
           //this.loading = true;
             let res = await axios.patch(`loan/${id}`, {
               user_id: null,
@@ -387,17 +373,15 @@ export default {
             console.log(res)
             //this.sheet = false;
             this.bus.$emit('emitRefreshLoans');
-            this.toastr.success("El trámite "+ code +" fue liberado" ) 
-     
+            this.toastr.success("El trámite "+ code +" fue liberado" )
       } catch (e) {
         console.log(e)
         this.toastr.error("Ocurrió un error en la liberación del trámite...")
       }
     }
 
-
-    } 
   }
+}
 
 </script>
 <style>

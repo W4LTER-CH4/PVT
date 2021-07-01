@@ -1,12 +1,88 @@
 <template>
   <v-card flat>
-    <v-card-title>
-      <v-toolbar dense style="z-index: 1" color='tertiary'>
+    <v-card-title class="pb-0">
+      <v-toolbar dense color='tertiary'>
         <v-toolbar-title>
           <Breadcrumbs />
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <template><h6 class="caption">
+        <template>
+          <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    small
+                    v-on="on"
+                    color="primary"
+                    :to="{ name: 'tracingAdd', params: { id: item.id_loan } }"
+                    ><v-icon>mdi-eye</v-icon>
+                  </v-btn>
+                </template>
+                <span>Ver información del trámite</span>
+              </v-tooltip>
+              <v-tooltip bottom >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    fab
+                    x-small
+                    outlined
+                    v-on="on"
+                    color="primary"
+                    class="ml-1"
+                    @click="imprimir(2, item.id_loan)"
+                    ><v-icon>mdi-file-document</v-icon>
+                  </v-btn>
+                </template>
+                <span>Imprimir Solictud</span>
+              </v-tooltip>
+              <v-tooltip bottom >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    fab
+                    x-small
+                    outlined
+                    v-on="on"
+                    color="primary"
+                    class="ml-1"
+                    @click="imprimir(1, item.id_loan)"
+                    ><v-icon>mdi-file</v-icon>
+                  </v-btn>
+                </template>
+                <span>Imprimir Contrato</span>
+              </v-tooltip>
+              <v-tooltip bottom v-if="loan.state.name == 'Vigente'">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    fab
+                    x-small
+                    outlined
+                    v-on="on"
+                    color="primary"
+                    class="ml-1"
+                    @click="imprimir(3, item.id_loan)"
+                    ><v-icon>mdi-cash</v-icon>
+                  </v-btn>
+                </template>
+                <span>Imprimir Plan de pagos</span>
+              </v-tooltip>
+              <v-tooltip bottom v-if=" loan.state.name == 'Vigente'">
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    fab
+                    x-small
+                    outlined
+                    v-on="on"
+                    color="primary"
+                    class="ml-1"
+                    @click="imprimir(4, item.id_loan)"
+                    ><v-icon>mdi-view-list</v-icon>
+                  </v-btn>
+                </template>
+                <span>Imprimir Kardex</span>
+              </v-tooltip>
+
+          <v-divider vertical class="mx-4"></v-divider>
+          <h6 class="caption">
           <strong>Ubicación trámite:</strong> <br />
           <v-icon x-small color="orange">mdi-folder-information</v-icon>{{role_name}} <br>
           <v-icon x-small color="blue" v-if="user_name != null">mdi-file-account</v-icon> {{user_name}}</h6>
@@ -198,7 +274,7 @@ export default {
           this.getSpouse(this.affiliate.id)
         }
         this.setBreadcrumbs()
-         this.getAddress(this.affiliate.id)
+        this.getAddress(this.affiliate.id)
 
         this.role(this.loan.role_id)
         this.user(this.loan.user_id)
@@ -306,6 +382,30 @@ export default {
         console.log(e)
       } finally {
         this.loading = false
+      }
+    },
+
+    async imprimir(id, item) {
+      try {
+        let res;
+        if (id == 1) {
+          res = await axios.get(`loan/${item}/print/contract`);
+        } else if (id == 2) {
+          res = await axios.get(`loan/${item}/print/form`);
+        } else if (id == 3) {
+          res = await axios.get(`loan/${item}/print/plan`);
+        } else {
+          res = await axios.get(`loan/${item}/print/kardex`);
+        }
+        printJS({
+          printable: res.data.content,
+          type: res.data.type,
+          documentTitle: res.data.file_name,
+          base64: true,
+        });
+      } catch (e) {
+        this.toastr.error("Ocurrió un error en la impresión.");
+        console.log(e);
       }
     },
   }

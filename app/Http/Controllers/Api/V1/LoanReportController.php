@@ -912,6 +912,7 @@ class LoanReportController extends Controller
    * @queryParam second_name_affiliate Buscar por segundo Nombre del afiliado. Example: FAUST
    * @queryParam surname_husband_affiliate Buscar por Apellido de casada Nombre del afiliado. Example: De LA CRUZ
    * @queryParam sub_modality_loan Buscar por sub modalidad del préstamo. Example: Corto plazo sector activo
+   * @queryParam shortened_sub_modality_loan Buscar por nombre corto sub modalidad del préstamo. Example: COR-AFP
    * @queryParam modality_loan Buscar por Modalidad del prestamo. Example: Préstamo a corto plazo
    * @queryParam amount_approved_loan Buscar monto aprobado del afiliado. Example: 25000
    * @queryParam state_type_affiliate Buscar por tipo de estado del afiliado. Example: Activo
@@ -961,6 +962,7 @@ class LoanReportController extends Controller
     $surname_husband_affiliate = request('surname_husband_affiliate') ?? '';
 
     $sub_modality_loan = request('sub_modality_loan') ?? '';
+    $shortened_sub_modality_loan = request('shortened_sub_modality_loan') ?? '';
     $modality_loan = request('modality_loan') ?? '';
     $amount_approved_loan = request('amount_approved_loan') ?? '';
     $state_type_affiliate = request('state_type_affiliate') ?? '';
@@ -1024,6 +1026,9 @@ class LoanReportController extends Controller
 
       if ($sub_modality_loan != '') {
         array_push($conditions, array('procedure_modalities.name', 'ilike', "%{$sub_modality_loan}%"));
+      }
+      if ($shortened_sub_modality_loan != '') {
+        array_push($conditions, array('procedure_modalities.shortened', 'ilike', "%{$shortened_sub_modality_loan}%"));
       }
       if ($modality_loan != '') {
         array_push($conditions, array('procedure_types.name', 'ilike', "%{$modality_loan}%"));
@@ -1125,6 +1130,7 @@ class LoanReportController extends Controller
                        $row->second_name_affiliate,
                        $row->surname_husband_affiliate,
                        $row->sub_modality_loan,
+                       $row->shortened_sub_modality_loan,
                        $row->modality_loan,
                        $row->amount_approved_loan,
                        $row->state_type_affiliate,
