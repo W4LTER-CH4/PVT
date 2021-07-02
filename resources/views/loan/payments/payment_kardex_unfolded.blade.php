@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>PLATAFORMA VIRTUAL ADMINISTRATIVA - MUSERPOL </title>
+    <title>{{'DESPLEGADO_'.$file_title}}</title>
     <link rel="stylesheet" href="{{ public_path("/css/report-print.min.css") }}" media="all"/>
 </head>
 

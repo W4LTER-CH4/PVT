@@ -899,6 +899,7 @@ class LoanController extends Controller
     {
         $procedure_modality = $loan->modality;
         $parent_loan = "";
+        $file_title = implode('_', ['CONTRATO', $procedure_modality->shortened, $loan->code,Carbon::now()->format('m/d')]);
         if($loan->parent_loan_id) $parent_loan = Loan::findOrFail($loan->parent_loan_id);
         $lenders = [];
         foreach ($loan->lenders as $lender) {
@@ -926,7 +927,8 @@ class LoanController extends Controller
             'loan' => $loan,
             'lenders' => collect($lenders),
             'guarantors' => collect($guarantors),
-            'parent_loan' => $parent_loan
+            'parent_loan' => $parent_loan,
+            'file_title' => $file_title
         ];
         $file_name = implode('_', ['contrato', $procedure_modality->shortened, $loan->code]) . '.pdf';
         $modality_type = $procedure_modality->procedure_type->name;
@@ -990,6 +992,7 @@ class LoanController extends Controller
         $lenders = [];
         $is_dead = false;
         $is_spouse = false;
+        $file_title = implode('_', ['FORM','SOLICITUD','PRESTAMO', $loan->code,Carbon::now()->format('m/d')]);
         foreach ($loan->lenders as $lender) {
             array_push($lenders, self::verify_spouse_disbursable($lender)->disbursable);
             if($lender->dead) $is_dead = true;
@@ -1065,6 +1068,7 @@ class LoanController extends Controller
             'guarantors'=> collect($guarantors),
             'is_dead'=> $is_dead,
             'is_spouse'=> $is_spouse,
+            'file_title' => $file_title
         ];
         $information_loan= $this->get_information_loan($loan);
         $file_name = implode('_', ['solicitud', 'prestamo', $loan->code]) . '.pdf';
@@ -1084,6 +1088,7 @@ class LoanController extends Controller
     public function print_plan(Request $request, Loan $loan, $standalone = true)
     {
         if($loan->disbursement_date){
+            $file_title = implode('_', ['PLAN','DE','PAGOS', $procedure_modality->shortened, $loan->code,Carbon::now()->format('m/d')]);
             $procedure_modality = $loan->modality;
             $lenders = [];
             $is_dead = false;
@@ -1107,7 +1112,8 @@ class LoanController extends Controller
                 'title' => 'PLAN DE PAGOS',
                 'loan' => $loan,
                 'lenders' => collect($lenders),
-                'is_dead'=> $is_dead
+                'is_dead'=> $is_dead,
+                'file_title'=>$file_title
             ];
             $information_loan= $this->get_information_loan($loan);
             $file_name = implode('_', ['plan', $procedure_modality->shortened, $loan->code]) . '.pdf';
@@ -1135,7 +1141,8 @@ class LoanController extends Controller
         $parent_loan_id=$loan->parent_loan_id;
         $estimated=LoanPayment::where('loan_id',$parent_loan_id)->get();
         $estimated=$estimated->last(); 
-        $loan_type_title=" ";    
+        $loan_type_title=" "; 
+        $file_title =implode('_', ['FORM','CALIFICACION', $procedure_modality->shortened, $loan->code,Carbon::now()->format('m/d')]);    
     if($parent_loan_id == null && !$parent_reason == null){
         $loan_type_title = $loan->parent_reason== "REFINANCIAMIENTO" ? "SISMU"." ".$loan->parent_reason:"SISMU REFINANCIAMIENTO";
     }
@@ -1158,8 +1165,9 @@ class LoanController extends Controller
            ],
            'loan' => $loan,
            'lenders' => collect($lenders), 
-           'Loan_type_title'=>$loan_type_title, 
-           'estimated'=>$estimated
+           'Loan_type_title' => $loan_type_title, 
+           'estimated' => $estimated,
+           'file_title' => $file_title
        ];
        $information_loan= $this->get_information_loan($loan);
        $file_name =implode('_', ['calificación', $procedure_modality->shortened, $loan->code]) . '.pdf'; 
@@ -1518,6 +1526,7 @@ class LoanController extends Controller
             foreach ($loan->lenders as $lender) {
                 $lenders[] = self::verify_spouse_disbursable($lender)->disbursable;
             }
+          $file_title = implode('_', ['KARDEX', $procedure_modality->shortened, $loan->code,Carbon::now()->format('m/d')]);
             $data = [
                 'header' => [
                     'direction' => 'DIRECCIÓN DE ESTRATEGIAS SOCIALES E INVERSIONES',
@@ -1532,7 +1541,8 @@ class LoanController extends Controller
                 ],
                 'title' => 'KARDEX DE PAGOS',
                 'loan' => $loan,
-                'lenders' => collect($lenders)
+                'lenders' => collect($lenders),
+                'file_title' => $file_title
             ];
             $information_loan= $this->get_information_loan($loan);
             $file_name = implode('_', ['kardex', $procedure_modality->shortened, $loan->code]) . '.pdf';
