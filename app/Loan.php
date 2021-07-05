@@ -374,10 +374,10 @@ class Loan extends Model
             if($date_ini->day <= LoanGlobalParameter::latest()->first()->offset_interest_day)
                 $date_pay = $date_ini->endOfMonth()->format('Y-m-d');
             else
-                $date_pay = $date_ini->addMonth()->endOfMonth()->format('Y-m-d');
+                $date_pay = $date_ini->startOfMonth()->addMonth()->endOfMonth()->format('Y-m-d');
             if(!$this->last_payment_validated && CarbonImmutable::parse($quota->estimated_date)->format('Y-m-d') <= CarbonImmutable::parse($date_pay)->format('Y-m-d') && CarbonImmutable::parse($quota->estimated_date)->format('Y-m-d') != CarbonImmutable::parse($this->disbursement_date)->format('Y-m-d')){
-                //$quota->paid_days->current +=1;
-                //$quota->estimated_days->current +=1;
+                $quota->paid_days->current +=1;
+                $quota->estimated_days->current +=1;
                 $quota->paid_days->current_generated = Util::round2(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
                 $quota->estimated_days->current_generated = Util::round2(LoanPayment::interest_by_days($quota->paid_days->current, $this->interest->annual_interest, $this->balance));
                 if($date_ini->day > LoanGlobalParameter::latest()->first()->offset_interest_day){
@@ -1149,4 +1149,24 @@ class Loan extends Model
     return $message;            
     }
 
+    public function verify_regular_payments(){
+        $date = Carbon::parse($this->disbursement_date)->format('Y-m-d');
+        $c = 1;
+        $regular = true;
+        if(Carbon::parse($date)->format('d') <= LoanGlobalParameter::first()->offset_interest_day)
+            $date = $date->endOfMonth();
+        else{
+            $date = $date->startOfMonth()->addMonth()->endOfMonth();
+        }
+        foreach($this->paymentsKardex as $payment)
+        {
+            if($date != Carbon::parse($payment->estimated_date)->format('Y-m-d') || $this->estimated_quota > $payment->estimated_quota){
+                $regular = false;
+                break;
+            }
+            else
+                $date = $date->startOfMonth()->addMonth()->endOfMonth();
+        }
+        return $regular;
+    }
 }

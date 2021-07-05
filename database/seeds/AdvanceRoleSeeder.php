@@ -40,6 +40,7 @@ class AdvanceRoleSeeder extends Seeder
         $loan_collection = ['show-all-loan','show-affiliate','show-report-payment','print-payment-plan', 'print-payment-kardex-loan', 'show-payment-loan', 'create-payment-loan', 'update-payment-loan', 'delete-payment-loan', 'print-payment-loan','update-loan','show-list-payments-generated'];
         $legal_permissions = ['registration-delivery-return-contracts','update-documents-requirements', 'print-contract-loan'];
         $calification_permissions = ['update-loan-calculations','print-qualification-form','update-reference-cosigner'];
+        $reports_supervition = ['show-report-payment','show-all-loan'];
         $sequence_roles = [
             [ 
                 'name' => 'Plataforma',
@@ -92,6 +93,9 @@ class AdvanceRoleSeeder extends Seeder
             ], [
                 'name' => 'Archivo',
                 'action' => 'archivado',
+            ], [
+                'name' => 'Supervisor',
+                'action' => 'Supervidor de tramites',
             ],
         ];
       
@@ -124,8 +128,9 @@ class AdvanceRoleSeeder extends Seeder
                     $role->syncPermissions(array_merge($sequence_permissions,$calification_permissions,$reports_permissions));
                 }elseif (in_array($role['display_name'], ['Archivo'])) {
                     $role->syncPermissions(array_merge($file,$reports_permissions));
-                }
-                else {
+                }elseif (in_array($role['display_name'], ['Supervisor'])) {
+                    $role->syncPermissions(array_merge($reports_supervition));
+                }else {
                     $role->syncPermissions($sequence_permissions,$reports_permissions);
                 }
             }

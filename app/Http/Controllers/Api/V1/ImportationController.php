@@ -349,7 +349,7 @@ class ImportationController extends Controller
                     and  loan_states.name = 'Vigente'
                     and  loans.guarantor_amortizing = false
                     and  loans.disbursement_date <= '$estimated_date'
-                    order by loans.disbursement_date desc";
+                    order by loans.disbursement_date";
 
         $loan_lenders = DB::select($query);
         return $loan_lenders;
@@ -370,7 +370,7 @@ class ImportationController extends Controller
                     and  loan_states.name = 'Vigente'
                     and  loans.guarantor_amortizing = true
                     and  loans.disbursement_date <= '$estimated_date'
-                    order by loans.disbursement_date desc";
+                    order by loans.disbursement_date";
 
        $loan_guarantors= DB::select($query);
         return $loan_guarantors;
