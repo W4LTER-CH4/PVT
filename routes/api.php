@@ -239,7 +239,7 @@ Route::group([
         Route::group([
             'middleware' => 'permission:create-payment-loan'
         ], function () {
-            Route::get('get_payment', 'Api\V1\LoanController@get_payment');
+            Route::get('get_amount_payment', 'Api\V1\LoanController@get_amount_payment');
             Route::patch('loan/{loan}/payment','Api\V1\LoanController@get_next_payment');
             Route::post('loan/{loan}/payment','Api\V1\LoanController@set_payment');
             Route::post('loan_payment/importation_command_senasir', 'Api\V1\LoanPaymentController@importation_command_senasir');//importacion de pagos

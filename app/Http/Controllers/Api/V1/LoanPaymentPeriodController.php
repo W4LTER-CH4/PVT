@@ -140,7 +140,7 @@ class LoanPaymentPeriodController extends Controller
      */
     public function get_list_year(Request $request)
     {
-        $loan_payment_period = LoanPaymentPeriod::select('year')->distinct()->get();
+        $loan_payment_period = LoanPaymentPeriod::select('year')->distinct()->orderBy('year', 'asc')->get();
         return $loan_payment_period;
     }
 

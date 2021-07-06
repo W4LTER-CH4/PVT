@@ -62,7 +62,8 @@ class Loan extends Model
         'delivery_contract_date',
         'return_contract_date',
         'regional_delivery_contract_date',
-        'regional_return_contract_date'
+        'regional_return_contract_date',
+        'payment_plan_compliance'
     ];
 
     function __construct(array $attributes = [])
@@ -236,7 +237,7 @@ class Loan extends Model
     {
         $id_pagado = LoanPaymentState::where('name','Pagado')->first();
         $id_pendiente = LoanPaymentState::where('name', 'Pendiente por confirmar')->first();
-        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [$id_pagado->id, $id_pendiente->id])->orderBy('quota_number', 'desc')->orderBy('created_at');
+        return $this->hasMany(LoanPayment::class)->whereIn('state_id', [$id_pagado->id, $id_pendiente->id])->orderBy('quota_number', 'asc');
     }
     //relacion uno a muchos
     public function loan_contribution_adjusts()
@@ -1151,21 +1152,24 @@ class Loan extends Model
 
     public function verify_regular_payments(){
         $date = Carbon::parse($this->disbursement_date)->format('Y-m-d');
-        $c = 1;
+        $extra_amount = 0;
         $regular = true;
         if(Carbon::parse($date)->format('d') <= LoanGlobalParameter::first()->offset_interest_day)
-            $date = $date->endOfMonth();
+            $date = Carbon::parse($date)->endOfMonth()->format('Y-m-d');
         else{
-            $date = $date->startOfMonth()->addMonth()->endOfMonth();
+            $extra_days = Carbon::parse($date)->endOfMonth()->format('d') - Carbon::parse($this->disbursement_date)->format('d');
+            $date = Carbon::parse($date)->startOfMonth()->addMonth()->endOfMonth()->format('Y-m-d');
+            $extra_amount = number_format(((($this->interest->annual_interest/100)/360)*$extra_days*$this->amount_approved) , 2);
         }
         foreach($this->paymentsKardex as $payment)
         {
-            if($date != Carbon::parse($payment->estimated_date)->format('Y-m-d') || $this->estimated_quota > $payment->estimated_quota){
+            if($date != Carbon::parse($payment->estimated_date)->format('Y-m-d') || $payment->estimated_quota != $this->estimated_quota + $extra_amount){
                 $regular = false;
                 break;
             }
             else
-                $date = $date->startOfMonth()->addMonth()->endOfMonth();
+                $date = Carbon::parse($date)->startOfMonth()->addMonth()->endOfMonth()->format('Y-m-d');
+            $extra_amount = 0;
         }
         return $regular;
     }

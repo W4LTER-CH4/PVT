@@ -1088,8 +1088,8 @@ class LoanController extends Controller
     public function print_plan(Request $request, Loan $loan, $standalone = true)
     {
         if($loan->disbursement_date){
-            $file_title = implode('_', ['PLAN','DE','PAGOS', $procedure_modality->shortened, $loan->code,Carbon::now()->format('m/d')]);
             $procedure_modality = $loan->modality;
+            $file_title = implode('_', ['PLAN','DE','PAGOS', $procedure_modality->shortened, $loan->code,Carbon::now()->format('m/d')]);
             $lenders = [];
             $is_dead = false;
             foreach ($loan->lenders as $lender) {
@@ -2219,7 +2219,7 @@ class LoanController extends Controller
    }
 
    /**
-    * monto a pagar
+    * Obtener el monto a pagar
     * devuelve el monto a pagar del titular o garante del prestamo
     * @bodyParam loan integer required ID del préstamo. Example: 6
     * @bodyParam loan_payment_date date required fecha calculada del pago. Example: 31-07-2021
@@ -2228,7 +2228,7 @@ class LoanController extends Controller
     * @authenticated
     * @responseFile responses/loan/payment_amount.200.json
     */
-   public function get_payment(request $request){
+   public function get_amount_payment(request $request){
        $request->validate([
         'loan'=>'required|integer|exists:loans,id',
         'loan_payment_date'=>'required|date_format:d-m-Y',
@@ -2236,7 +2236,7 @@ class LoanController extends Controller
         'type'=>'required|string|in:T,G',
        ]);
        $loan = Loan::whereId($request->loan)->first();
-       $quota = 0;$penal_interest = 0;
+       $quota = 0;$penal_interest = 0;$suggested_amount = 0;
        if($request->liquidate){
             if(!$loan->last_payment_validated)
                 $days = Carbon::parse($request->loan_payment_date)->diffInDays(Carbon::parse($loan->disbursement_date)) + 1;
@@ -2246,33 +2246,37 @@ class LoanController extends Controller
                 $interest_by_days = LoanPayment::interest_by_days($days, $loan->interest->annual_interest, $loan->balance);
                 if($days > LoanGlobalParameter::first()->days_current_interest + LoanGlobalParameter::first()->grace_period)
                     $penal_interest = LoanPayment::interest_by_days($days - LoanGlobalParameter::first()->days_current_interest, $loan->interest->penal_interest, $loan->balance);
-                return number_format(($loan->balance + $interest_by_days + $penal_interest),2);
+                    $suggested_amount = number_format(($loan->balance + $interest_by_days + $penal_interest),2);
        }
        if($request->type == "T"){
             if(!$loan->last_payment_validated){
                     $date_ini = CarbonImmutable::parse($loan->disbursement_date);
                     if($date_ini->day <= LoanGlobalParameter::latest()->first()->offset_interest_day){
                         $quota = $loan->estimated_quota;
-                        return number_format($loan->estimated_quota, 2);
+                        $suggested_amount = number_format($loan->estimated_quota, 2);
                     }
                     else{
                         $days = date('t', strtotime($request->loan_payment_date)) - Carbon::parse($loan->disbursement_date)->format('d')-1;
                         $interest_by_days = LoanPayment::interest_by_days($days, $loan->interest->annual_interest, $loan->balance);
-                        return number_format($loan->estimated_quota + $interest_by_days, 2);
+                        $suggested_amount = number_format($loan->estimated_quota + $interest_by_days, 2);
                     }
             }
             else{
                 if($loan->regular_payments && ($loan->paymentsKardex->count()+1) == $loan->loan_term){
                     $days = Carbon::parse($request->loan_payment_date)->format('d');
                     $interest_by_days = LoanPayment::interest_by_days($days, $loan->interest->annual_interest, $loan->balance);
-                    return number_format(($loan->estimated_quota + $loan->balance), 2);
+                    $suggested_amount = number_format(($loan->estimated_quota + $loan->balance), 2);
                 }
                 else{
-                    return $loan->estimated_quota;
+                    $suggested_amount = $loan->estimated_quota;
                 }
             }
         }
         else
-            return $loan->guarantors->first()->pivot->quota_treat;
+            $suggested_amount = $loan->guarantors->first()->pivot->quota_treat;
+
+        return response()->json([
+                'suggested_amount' => $suggested_amount
+        ]);
     }
 }

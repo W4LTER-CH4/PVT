@@ -136,6 +136,9 @@ class LoanPermissionSeeder extends Seeder
             ],[
                 'name' => 'show-fund-rotatory',
                 'display_name' => 'Ver fondo rotatorio'
+            ],[
+                'name' => 'importation_payments',
+                'display_name' => 'Importación de cobros Comando Senasir'
             ]
         ];
         foreach ($permissions as $permission) {

@@ -18,6 +18,11 @@ class LoanPaymentObserver
      */
     public function created(LoanPayment $object)
     {
+        $loan = Loan::whereId($object->loan_id)->first();
+        if($loan->payment_plan_compliance && !$loan->verify_regular_payments() && ($object->state_id == LoanPaymentState::whereName('Pagado')->first()->id || $object->state_id == LoanPaymentState::whereName('Pendiente por confirmar')->first()->id)){
+            $loan->payment_plan_compliance = false;
+            $loan->update();
+        }
         Util::save_record($object, 'datos-de-un-tramite', 'registró pago : '. $object->code);
     }
 
@@ -42,6 +47,10 @@ class LoanPaymentObserver
                 $loan->update();
             });
         }
+        if($loan->payment_plan_compliance && !$loan->verify_regular_payments() && $object->state_id == LoanPaymentState::whereName('Pagado')->first()->id && $object->validated){
+            $loan->payment_plan_compliance = false;
+            $loan->update();
+        }
         Util::save_record($object, 'datos-de-un-tramite', Util::concat_action($object));
     }
 
@@ -53,6 +62,11 @@ class LoanPaymentObserver
      */
     public function deleted(LoanPayment $object)
     {
+        $loan = Loan::whereId($object->loan_id)->first();
+        if(!$loan->payment_plan_compliance && $loan->verify_regular_payments()){
+            $loan->payment_plan_compliance = true;
+            $loan->update();
+        }
         Util::save_record($object, 'datos-de-un-tramite', 'eliminó registro pago: ' . $object->code);
     }
 
